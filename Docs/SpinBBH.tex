@@ -1,0 +1,818 @@
+ \documentclass[prd,aps,tightenlines,superscriptaddress,nofootinbib,eqsecnum,amsfonts,amsmath,epsfig]{revtex4} 
+\input{epsf} 
+\usepackage{thumbpdf}
+\usepackage{pdfsync}
+\usepackage{graphicx}
+\def\be{\begin{equation}}
+\def\en{\end{equation}}
+\def\bea{\begin{eqnarray}}
+\def\ena{\end{eqnarray}}
+\def\di{\partial}
+\def\bSo{{\bf \hat{S}_1}}
+\def\bSt{{\bf \hat{S}_2}}
+\def\bL{{\bf \hat{L}_{N}}}
+\def\bk{{\bf \hat{k}}}
+\def\bp{{\bf p} }
+
+
+\begin{document}
+
+\title{LMDC: Model for SMBH (comparable masses).}
+\author{Stas Babak}
+\date{\today}
+
+\maketitle
+
+\section{Models overview}
+Currently the following PPn models are available:
+\begin{itemize}
+\item Circular orbit, non-spinning bodies
+
+Here we know the phase up to 3.5PN order and amplitude up 
+to 2.5PN in usual Taylor expansion in velocity or equivalently in
+$x = (M\omega)^{2/3}$, where $M = m1+m2$ is total mass and 
+$\omega$ is orbital angular frequency (we work in geometrical units:
+$G=c=1$). Besides this different resummation techniques could be applied: Pade, EOB (effective one body), see \cite{BCV1} for overview
+of various models.
+
+\item Circular orbit, spinning bodies.
+
+Here we know the carrier phase with (almost) the same precision
+as non-spinning (3.5PN): namely we have spin contribution only 
+formally on 1.5PN level (spin-orbit) and on 2PN (spin-spin). 
+PN corrections to leading 1.5PN (spin-orbit) term will be available
+ soon. Amplitude corrections are known up to 1.5PN order \cite{Kidder}.
+ 
+ 
+ \item Eccentric orbit, non-spinning bodies
+ 
+Here we know phase up to 3.5 PN (very recent result) and 
+amplitude up to 2PN beyond leading term. Expressions are 
+very complicated. Spin effects will be included in the near
+future. 
+ 
+\end{itemize}
+
+I want to propose to use only one model for BBH injections
+in the first/second parts of LMDC, this is the model for two
+spinning bodies in quasi-circular orbit. 
+
+Pros:
+
+We expect that SMBH will be spinning (realism).
+We can study effect of spins on the parameter determination.
+We can study effect of higher order harmonics on the 
+parameter determination. Relatively easy to generate (software).
+
+
+Cons:
+
+I am not aware of the existing search algorithm for these 
+signals with reliable parameter determination. Less well known
+as compared to signals from non-spinning binaries. 
+Despite the mentioned 'cons', it could have positive effect as 
+it could boost research in those directions.
+
+
+\section{Details of the proposed model}
+
+In first two subsections we define orbital evolution and 
+waveform in the source and in radiation frames as defined 
+in \cite{FC, Kidder, BCV2}.
+
+We start with defining the notations. The masses of bodies
+are defined by $m_1, m_2$. The total mass is $M=m_1+m_2$,
+symmetric mass ration $\eta = m_1m_2/M^2$, the reduced 
+mass $\mu = m_1m_2/M$ and $\delta m = m_1-m_2$ is mass difference.
+ Inspiral is described by the the 
+orbital angular frequency $\omega$, the orbital phase $\Phi$,
+the direction $\bL \sim \bf{r\times v}$ of the orbital angular momentum, and the two spins ${\bf S_1} =  \chi_1m_1^2 \bSo$
+and ${\bf S_2} = \chi_2m_2^2 \bSt$, where $\bSo, \bSt$ are 
+unit vectors and $0\le \chi_{1,2} < 1$. Bold fonts denote 
+3-d vectors and hats denote the unit vectors. We use geometrical
+units $G=c=1$.
+
+\subsection{Orbital evolution}
+
+For orbital angular frequency evolution we can use 
+simple Taylor expression with spin-orbital (1.5PN) and
+spin-spin (formal 2PN) terms as given in \cite{BCPV}
+eqns.(1-7) with $\hat{\theta} = \theta -3/7\lambda = 
+\frac{1039}{4620}$.
+Or explicitly:
+
+\bea
+\frac{d\omega}{dt} = \frac{96}{5}\frac{\eta}{M^2}(M\omega)^{11/3}
+\left\{ 1 + 1PN + 1.5PN + SO + 2PN + SS + 2.5PN + 3PN + 3.5PN\right\}
+\label{domdt}
+\ena
+and
+\bea
+1PN &=& -\frac{743 + 924\eta}{336}(M\omega)^{2/3} \\
+1.5PN &=& 4\pi (M\omega) \\
+SO &=& -\frac1{12}\sum_{i=1,2}\left[ 
+\chi_i\left(\bL.{\bf \hat{S}_i}\right)\left(113\frac{m_i^2}{M^2} + 75\eta\right)
+\right](M\omega)\\
+2PN &=& \left( \frac{34103}{18144} +\frac{13661}{2016}\eta +\frac{59}{16}\eta^2
+\right) (M\omega)^{4/3}\\
+\SS &=& -\frac1{48}\eta\chi_1\chi_2\left[ 247(\bSo.\bSt) - 721(\bL.\bSo)(\bL.\bSt)
+\right](M\omega)^{4/3}\\
+2.5PN &=& -\frac1{672}(4159 + 14532\eta)\pi (M\omega)^{5/3}\\
+3PN &=& \left[ \left( \frac{16 447 322 263}{139 708 800} - \frac{1 712}{105}
+\gamma_{E} + \frac{16}{3}\pi^2\right) + \left( -\frac{273 811 877}{1 088 640}
++ \frac{451}{48}\pi^2 -\frac{88}{3}\hat{\theta} \right)\eta\right.\nonumber\\
+& & \left. + \frac{541}{896}\eta^2 - \frac{5 605}{2 592}\eta^3 - \frac{856}{105}
+\ln\left(16(M\omega)^{2/3}\right)\right](M\omega)^{2}\\
+3.5PN &=& \left( -\frac{4415}{4032} + \frac{661 775}{12096}\eta + 
+\frac{149 789}{3 024}\eta^2\right)\pi (M\omega)^{7/3},
+\ena
+where $\gamma_{E}$ is Euler's constant. 
+Note that transformation $t\to t/M, \omega \to \omega M$,
+leads to eliminating total mass. This implies that the waveform
+for different total masses can be obtained by simple re-scaling.
+
+For precession of spins and newtonian angular momentum 
+${\bf L}_N = \eta M^2(M\omega)^{-1/3}\bL$
+we can use eqns.(4.17a-c) in \cite{Kidder} or equivalently
+eqns.(8-10) in \cite{BCPV}:
+
+\bea
+\frac{d\bSo}{dt} &=& \frac{(M\omega)^2}{2M}\left\{ \eta (M\omega)^{-1/3}
+\left(4+3\frac{m_2}{m_1}\right)\bL + \chi_2\frac{m_2^2}{M^2}\left[
+\bSt - 3(\bSt.\bL)\bL\right]\right\}\times \bSo \\
+\frac{d\bSt}{dt} &=& \frac{(M\omega)^2}{2M}\left\{ \eta (M\omega)^{-1/3}
+\left(4+3\frac{m_1}{m_2}\right)\bL + \chi_1\frac{m_1^2}{M^2}\left[
+\bSo - 3(\bSo.\bL)\bL\right]\right\}\times \bSt\\
+\frac{d\bL}{dt} &=& {\bf V_{L_N} }\times\bL \equiv \frac{(M\omega)^2}{2M}
+\left\{ \left(4 + 3\frac{m_2}{m_1}\right)\chi_1\frac{m_1^2}{M^2}\bSo +
+\left(4 + 3\frac{m_1}{m_2}\right)\chi_2\frac{m_2^2}{M^2}\bSt- \right.
+\nonumber\\
+&& \left. 3(M\omega)^{1/3}\eta\chi_1\chi_2\left[ (\bSt.\bL)\bSo +
+(\bSo.\bL)\bSt \right] \right\}\times\bL.\label{dLn}
+\ena
+Alternatively, instead of the last equation we can use 
+$$
+\bL = \{ \sin(i)\cos(\alpha), \sin(i)\sin(\alpha), \cos(i) \}
+$$ 
+which leads to evolution of $\alpha, i$:
+\bea
+\frac{di}{dt} &=& V_{L_N}^{y} \cos(\alpha) - V_{L_N}^{x}\sin(\alpha)\\
+\frac{d\alpha}{dt} &=& V_{L_N}^z - \frac{\cos(i)}{\sin(i)}\left[ 
+V_{L_N}^{x} \cos(\alpha) + V_{L_N}^{y}\sin(\alpha) \right]
+\ena
+Here we have used condition that $\sin(i) \neq 0$, and ${\bf V_{L_N} } = 
+\{ V_{L_N}^{x}, V_{L_N}^{y}, V_{L_N}^{z}\}$.
+In the implementation of this scheme (described below), I integrate  
+equations for $(i, \alpha)$ and eqn.(\ref{dLn}) and check consistency
+(error of integration).
+
+Finally, for the phase evolution we have:
+\bea
+\frac{d\Phi}{dt} = \omega - \frac{d\alpha}{dt}\cos(i).
+\ena 
+
+Besides masses $m_1, m_2$ and amplitude of spins $\chi_1, \chi_2$,
+one has to specify the initial conditions. Initial data for the differential 
+equations specified at $t=t_0$, those are initial directions of spins:
+$\bSo(t_0), \bSt(t_0)$, initial direction of the orbital angular momentum
+$i(t_0), \alpha(t_0)$, initial frequency $\omega_0 = \omega(t_0)$ and
+initial phase $\Phi_0 = \Phi(t_0)$. 
+These values are defined in source coordinate frame (see nice figure in \cite{BCV2}).
+
+Termination point (follow \cite{BCV2}) is defined as
+$$
+min_{\omega}\left\{ \dot{\omega}= 0; \frac{dE_{3PN}}{d\omega} = 0\right\}
+$$
+and referred to as MECO.
+One can write $\frac{dE_{3PN}}{d\omega} = 0$ explicitly using equations above
+and 
+$$
+\frac{d}{d\omega} = \frac{1}{\dot{\omega}} \frac{d}{dt}
+$$
+when we need to differentiate vectors. I use $\dot{\omega}$ in the above
+equation only up to 1PN order, neglecting others. Following this prescription 
+and neglecting term cubic in spins: $O(S^3)$ one can arrive at the following:
+
+\bea
+\frac1{M} \frac{dE_{3PN}}{d\omega} = -\frac{\mu}{3}(M\omega)^{-1/3}\left\{
+1 - \frac{9+\eta}{6}(M\omega)^{2/3} + \frac{20}{3M^2}(\bL.{\bf S_{eff}})(M\omega)+
+\right. \nonumber\\
+\left. \frac5{64}\left( 1 - \frac3{8}\eta\right) (M\omega)^{1/3} \frac{\delta m}{M}
+\chi_1\chi_2\left[ 1 + \frac{743 + 924\eta}{336}(M\omega)^{2/3}\right]
+(\bSo\times\bSt)\bL \right. \nonumber \\
+\left. \frac{1}{8}(-81 + 57\eta -\eta^2)(M\omega)^{4/3} + \frac{3\eta}{4}
+\chi_1\chi_2 \left[ (\bSo.\bSt) - 3(\bL.\bSo)(\bL.\bSt) \right](M\omega)^{4/3}
+\right. \nonumber \\
+\left. 4\left[ -\frac{675}{64} + \left( \frac{34445}{576} - \frac{205}{96}\pi^2
+\right)\eta -\frac{155}{96}\eta^2 - \frac{35}{5184}\eta^3 \right](M\omega)^{2}
+\right\},
+\ena 
+where 
+$$
+{\bf S_{eff}} = \left( 1 + \frac3{4}\frac{m_2}{m_1} \right) {\bf S_1}+ 
+\left( 1 + \frac3{4}\frac{m_1}{m_2} \right) {\bf S_2}
+$$
+For non-spinning binaries $\omega_{MECO} = 0.129M^{-1}$, compared to the LSO
+for test mass case ($\eta \to 0$), $\omega_{LSO} = 0.068M^{-1}$. I find that 
+MECO gives quite high ending frequency (almost twice LSO).
+
+
+\subsection{Gravitational Waveform}
+
+The waveform is defined in \cite{Kidder}, eqn.(4.8) up to 
+1.5PN. and it is given explicitly in the AppendixB 
+up to 1PN. In the radiation coordinate frame (see \cite{FC} eqns.(3.1-3.3),
+\cite{Kidder} eqns.(4.22a-c), \cite{BCV2} eqns.(21-23) )
+waveform is given as
+\begin{eqnarray}
+h_{TT}^{ij} = h_+T^{ij}_+ + h_{\times}T^{ij}_{\times}\\
+{\bf T}_{\times} = {\bf e}_x^R\otimes{\bf e}_x^R - {\bf e}_y^R\otimes{\bf e}_y^R\\
+{\bf T}_{\times} = {\bf e}_x^R\otimes{\bf e}_y^R + {\bf e}_y^R\otimes{\bf e}_x^R\\
+h_+ = \frac1{2}h^{ij}(T_+)_{ij}, \,\,\, 
+h_{\times} = \frac1{2}h^{ij}(T_{\times})_{ij}
+\end{eqnarray}
+
+Radiative system introduces one more angle $\theta$ which
+is defined as inclination of direction to the observer $\hat{\bf N}$
+to the total angular momentum at $t_0$\footnote{Another angle, $\phi$, defining 
+direction to the observer, can always
+be put to zero by rotating coordinate frame around z-axis}. 
+
+Finally waveform (plus and cross polarizations in the radiation
+coordinate frame) can be written as 
+
+\begin{equation}
+h_{+,\times} = \frac{2\mu}{D}\frac{M}{r}\left[ 
+Q_{+,\times}  + \left(\frac{M}{r}\right)^{1/2}Q^{1}_{+,\times} +
+\left(\frac{M}{r}\right)Q^{2}_{+,\times}
+ + {\mathcal O}\left(\frac{M}{r}\right)^{3/2}\right]
+\end{equation}
+where expressions for $Q^{1}_{+,\times} = P^{0.5}_{+,\times},\;\; Q^{2}_{+,\times} = PQ_{+,\times}$ are given in AppendixB of \cite{Kidder}. 
+In order to show the conventions used here we will give the formulae explicitly
+(should be useful if one wants to use different coordinate frame or wants to
+check our result). 
+\bea
+Q_{+,\times} = \frac1{2} Q^{ij}(T_{+,\times})_{ij}; \;\;\;
+Q^1_{+,\times} = \frac1{2} (Q^1)^{ij}(T_{+,\times})_{ij}; \;\;\;
+Q^2_{+,\times} = \frac1{2} (Q^2)^{ij}(T_{+,\times})_{ij}.
+\ena
+where
+\bea
+Q^{ij} &=&  2(\lambda^i\lambda^j - n^in^j), \\
+(Q^1)^{ij} &=& \frac{\delta m}{m}\left\{ 6({\bf \hat{N}.n})n^{(i}\lambda^{j)} +
+({\bf \hat{N}.\lambda})(n^in^j - 2\lambda^i\lambda^j) \right\}\\
+(Q^2)^{ij} &=& \frac2{3}(1-3\eta)\left\{ ({\bf \hat{N}.n})^2(5n^in^j -
+7\lambda^i\lambda^j) - 16 ({\bf \hat{N}.n})({\bf \hat{N}.\lambda})n^{(i}\lambda^{j)}
+ ({\bf \hat{N}.\lambda})^2(3\lambda^i\lambda^j - n^in^j)\right\} \nonumber \\
+ & &\frac1{3}(19-3\eta)(n^in^j - \lambda^i\lambda^j) + \frac2{M^2}n^{(i}
+ ({\bf \Delta \times \hat{N}})^{j)},
+\ena 
+where ${\bf \lambda}$ is unit vector along relative velocity ${\bf v}$, 
+${\bf n}$ is unit vector along the separation vecotr of binary ${\bf r}$,
+${\bf \hat{N}}$ is the unit vector in the direction of the observer (SSB) and 
+$$
+\frac{{\bf \Delta}}{M^2} = \chi_2\frac{m_2}{M}\bSt - \chi_1\frac{m_1}{M}\bSo. 
+$$
+In the source coordinate frame:
+\bea
+{\bf n} &=& \{ -\sin(\alpha)\sin(\Phi)-\cos(\alpha)\cos(i)\cos(\Phi), 
+-\cos(\alpha)\sin(\Phi)-\sin(\alpha)\cos(i)\cos(\Phi), \sin(i)\cos(\Phi) \}\\
+{\bf \lambda} &=& \{  \sin(\alpha)\sin(\Phi)-\cos(\alpha)\cos(i)\cos(\Phi), 
+-\cos(\alpha)\sin(\Phi)-\sin(\alpha)\cos(i)\cos(\Phi), \sin(i)\cos(\Phi) \},\\
+{\bf \hat{N}} &=& \{ \sin(\theta), 0, \cos(\theta) \}.
+\ena
+The radiation frame related to source frame in the following way
+\bea
+{\bf \hat{e}_x^R} &=& {\bf \hat{e}_x^S}\cos(\theta) - {\bf \hat{e}_z^S}\sin(\theta)\\
+{\bf \hat{e}_y^R} &=& {\bf \hat{e}_y^S}\\
+{\bf \hat{e}_z^R} &=& {\bf \hat{e}_x^S}\sin(\theta) + {\bf \hat{e}_z^S}\cos(\theta) = 
+{\bf \hat{N}}.
+\ena
+So that 
+\bea
+{\bf T_+} &=& {\bf \hat{e}_x^S}\otimes{\bf \hat{e}_x^S}\cos^2(\theta) - 
+{\bf \hat{e}_x^S}\otimes{\bf \hat{e}_z^S}\sin(\theta)\cos(\theta) - 
+{\bf \hat{e}_z^S}\otimes {\bf \hat{e}_x^S}\sin(\theta)\cos(\theta) -
+{\bf \hat{e}_y^S}\otimes{\bf \hat{e}_y^S} +
+{\bf \hat{e}_y^S}\otimes{\bf \hat{e}_y^S}\sin^2(\theta)\\
+{\bf T_x} &=& ({\bf \hat{e}_x^S}\otimes{\bf \hat{e}_y^S} +
+ {\bf \hat{e}_y^S}\otimes{\bf \hat{e}_x^S})\cos(\theta) - 
+ ({\bf \hat{e}_y^S}\otimes{\bf \hat{e}_z^S} +
+ {\bf \hat{e}_z^S}\otimes{\bf \hat{e}_y^S})\sin(\theta)
+\ena
+Using these relationships we have for $Q$s (we give expression for "+" polarization
+only, "x" polarization can be obtained by replacing "+" with "x"):
+\bea
+Q_+ &=& -2(C_+ \cos(2\Phi) + S_+\sin(2\Phi))\\
+Q^1_+ &=& \frac1{4}\frac{\delta m}{M}\left\{ 9(aS_+ + bC_+)\cos(3\Phi) +
+9(bS_+ -aC_+)\sin(3\Phi) + \right. \nonumber\\ 
+& & \left.(3aS_+ -3bC_+ -2bK+)\cos(\Phi) -
+(3bS_+ + 3aC_+ -2aK_+)\sin(\Phi)\right\}\\
+Q^2_+ &=& \frac8{3}(1-3\eta)\left\{ [(a^2-b^2)C_+ -2abS_+]\cos(4\Phi)
++[(a^2-b^2)S_+ + 2abC_+]\sin(4\Phi)\right\} \nonumber \\
+& &+ \frac1{3}\left\{ 2(1-3\eta)[(b^2-a^2)K_+ + 2(a^2+b^2)C_+] +
+(19 -3\eta)C_+  \right\}\cos(2\Phi) + \nonumber \\
+& &+ \frac1{3}\left\{ 4(1-3\eta)[(a^2+b^2)S_+ - abK_+]  + (19-3\eta)S_+ 
+\right\}\sin(2\Phi) + DC_+\cos(\Phi) + DS_+\sin(\Phi). \label{Q2}
+\ena
+where 
+\bea
+C_+ &=& \frac1{2}\cos^2(\theta)\left( \sin^2(\alpha) - \cos^2(i)\cos^2(\alpha)\right)
++ \frac1{2}\left(\cos^2(i)\sin^2(\alpha) - \cos^2(\alpha)\right) -
+\nonumber \\
+& &\frac1{2}\sin^2(\theta)\sin^2(i) - \frac1{4}\sin(2\theta)\sin(2i)\cos(\alpha),\\
+C_{\times} &=& -\frac1{2}\cos(\theta)\sin(2\alpha)\left( 1+\cos^2(i) \right)
+-\frac1{2}\sin(\theta)\sin(2i)\sin(\alpha),\\
+S_+ &=& \frac1{2}\left(1 + \cos^2(\theta)\right)\cos(i)\sin(2\alpha) + 
+\frac1{2}\sin(2\theta)\sin(i)\sin(\alpha),\\
+S_{\times}&=& -\cos(\theta)\cos(i)\cos(2\alpha) - \sin(\theta)\sin(i)\cos(\alpha)\\
+K_+ &=& \frac1{2}\cos^2(\theta)\left( \sin^2(\alpha) + \cos^2(i)\cos^2(\alpha)\right)
+- \frac1{2}\left(\cos^2(i)\sin^2(\alpha) + \cos^2(\alpha)\right) +
+\nonumber \\
+& &\frac1{2}\sin^2(\theta)\sin^2(i) + \frac1{4}\sin(2\theta)\sin(2i)\cos(\alpha),\\
+K_{\times} &=& -\frac1{2}\cos(\theta)\sin(2\alpha)\sin^2(i) 
++\frac1{2}\sin(\theta)\sin(2i)\sin(\alpha),\\
+DC_+ &=& -\frac1{M^2}\left[ \Delta^{y}\sin(\alpha)\cos(\theta) + d\cos(\alpha)\right],\\
+DS_+ &=& -\frac1{M^2}\left[ c\Delta^y - d\cos(i)\sin(\alpha)\right], \\
+DC_{\times} &=& \frac1{M^2}\left[ \Delta^y\cos(\alpha) -d\cos(\theta)\sin(\alpha)
+\right],\\
+DS_{\times} &=& \frac1{M^2}\left[ -\Delta^y\cos(i)\sin(\alpha) + cd \right],\\
+a &=& -\sin(\theta)\sin(\alpha), \\
+b &=& \cos(\theta)\sin(i) -\sin(\theta)\cos(i)\cos(\alpha),\\
+c &=& \cos(\theta)\cos(i)\cos(\alpha) + \sin(i)\sin(\theta),\\
+d &=& \Delta^z\sin(\theta) - \Delta^x\cos(\theta).
+\ena
+Since we integrate orbital angular frequency we need to relate 
+$M/r$ to $(M\omega)$ (with sufficient for our purpose accuracy):
+$$
+\frac{M}{r} \approx (M\omega)^{2/3}\left[ 1 + \frac1{3}(3-\eta)(M\omega)^{2/3}\right]
+$$
+Taking the above into account we can rewrite $h_{+,\times}$ as follows:
+\bea
+h_{+,\times} = \frac{2\mu}{D}(M\omega)^{2/3}\left[ 
+Q_{+,\times}  + (M\omega)^{1/3}Q^{1}_{+,\times} +
+(M\omega)^{2/3}\left(Q^{2}_{+,\times} + \frac1{3}(3-\eta)Q_{+,\times}\right)
+ + {\mathcal O}(M\omega)\right]\label{hom}
+\ena
+The last term in (\ref{hom}) yields the following change in (\ref{Q2}), instead of
+$(19 - 3\eta)C_+$, $(19 - 3\eta)S_+$ we have $(13-\eta)C_+$, $(13-\eta)S_+$
+correspondingly. 
+
+In order to generate waveform using the inspiralling trajectory  
+described in the previous subsection one need to specify 
+distance between observer and the source, and the direction 
+to the observer in the source frame $\theta, \phi=0$.
+
+
+\section{Reduction to non-spinning case}
+
+Reducing from spinning to non-spinning case can be done pretty easily
+We start with orbital evolution 
+
+\subsection{Non-spinning case: orbital evolution}
+
+The orbital evolution is described by only one differential equation which can
+be integrated analytically. This is the equation for the orbital frequency
+(\ref{domdt}) with $SO=SS=0$. 
+The analytic expressions for frequency and phase are given in \cite{Blanchet}
+we also give them here. First introduce 
+\bea
+\tau = \frac{\eta}{5M}(t_c - t)\\
+x = v^2 = (M\omega)^{2/3}
+\ena
+Then 
+\bea
+(M\omega)^{2/3} &=& \frac1{4}\tau^{-1/4}\left\{ 1 + \left(\frac{743}{4032} + \frac{11}{48}\eta\right)
+\tau^{-1/4} - \frac1{5}\pi \tau^{-3/8} + \right.\nonumber \\
+& &\left. \left( \frac{19583}{254016} + \frac{24401}{193536}\eta + \frac{31}{288}\eta^2\right)
+\tau^{-1/2} + \left(-\frac{11891}{53760} + \frac{109}{1920}\eta\right)\pi \tau^{-5/8} -
+\right. \nonumber \\
+& & \left. \left[ -\frac{10052469856691}{6008596070400} + \frac1{6}\pi^2 + 
+\frac{107}{420}\gamma_E - \frac{107}{3360}\ln\left(\frac{\tau}{256}\right) 
++ \left(\frac{15335597827}{3901685760} - \frac{451}{3072}\pi^2 - 
+\frac{77}{72}\lambda + \frac{11}{24}\theta \right)\eta - \right. \right. \nonumber \\
+& & \left. \left. \frac{15211}{442368}\eta^2 + \frac{25565}{331776}\eta^3 \right]
+\tau^{-3/4} + \left(-\frac{113868647}{433520640} - \frac{31821}{143360}\eta + 
+\frac{294941}{3870720}\eta^2\right)\pi\tau^{-7/8}  \right\}
+\ena
+where $\lambda = -\frac{1987}{3080}, \theta=-\frac{11831}{9240}$.
+Or taking the power $3/2$:
+\bea
+M\omega &=& \frac1{8} \tau^{-3/8}\left\{ 1 + \left( \frac{11}{32}\eta + \frac{743}{2688}\right) 
+\tau^{-1/4} - \frac{3}{10}\pi\tau^{-3/8} 
++ \left(\frac{1855099}{14450688} + \frac{371}{2048}\eta^2 + \frac{56975}{258048}\eta\right)
+\tau^{-1/2} + \right. \nonumber \\
+& &\left.\left( \frac{13}{256}\eta- \frac{7729}{21504}\right)\pi \tau^{-5/8} +
+\left[ \frac{235925}{176472}\eta^3 - \frac{30913}{1835008}\eta^2 + \left(-\frac{451}{2048} \pi^2+ 
+\frac{25302017977}{4161798144}\right) eta -\right. \right. \nonumber \\
+& & \left. \left.
+\frac{720817631400877}{288412611379200} + \frac{53}{200}\pi^2 + \frac{107}{280}\gamma_E - 
+\frac{107}{2240}\ln\left(\frac{\tau}{256}\right) \right]\tau^{-3/4} +
+\right. \nonumber \\
+& & \left. \left(\frac{141769}{1290240}\eta^2- \frac{188516689}{433520640} -\frac{97765}{258048}\eta\right) 
+\pi\tau^{-7/8}
+\right\}
+\label{omNosp}
+\ena
+
+The termination frequency is defined by MECO \cite{BCV2}: $\omega_{MECO} = 0.129M^{-1}$ or 
+by condition $\dot{\omega}=0$.
+
+The orbital phase could be expressed in terms of orbital frequency
+\bea
+\Phi &=& -\frac1{32\eta}(M\omega)^{-5/3}\left\{ 1 + \left( \frac{3715}{1008} + \frac{55}{12}\eta\right)
+(M\omega)^{2/3} - 10\pi(M\omega) + \right. \nonumber \\
+& & \left. \left( \frac{15293365}{1016064} + \frac{27145}{1008}\eta + \frac{3085}{144}\eta^2\right)
+(M\omega)^{4/3} + \left( \frac{38645}{1344} - \frac{65}{16}\eta \right)\pi\ln\left( \frac{\omega}{\omega_0}\right) (M\omega)^{5/3} \right. \nonumber \\
+& &  \left. \left[ \frac{12348611926451}{18776862720} -\frac{160}{3}\pi^2 - \frac{1712}{21}\gamma_E
+- \frac{856}{21}\ln\left[ 16(m\omega)^{2/3}\right] + \left( -\frac{15335597827}{12192768} +
+\frac{2255}{48}\pi^2 + \frac{3080}{9}\lambda - \right.\right.\right. \nonumber \\
+& & \left.\left.\left.  \frac{440}{3}\theta\right)\eta - \frac{76055}{6912}\eta^2 - 
+\frac{127825}{5184}\eta^3\right](M\omega)^{2} + \left( \frac{77096675}{2032128} + 
+\frac{378515}{12096}\eta - \frac{74045}{6048}\eta^2\right)\pi(M\omega)^{7/3} 
+\right\}
+\ena
+
+This is waveform "TaylorT3" in classification described in \cite{DIS} if one substitutes 
+orbital angular frequency (\ref{omNosp}) in the expression for phase above.
+
+\subsection{Gravitational waveform: non-spinning case}
+
+The reduction to non-spinning case can be easily done by using (\ref{hom})
+and setting 
+$$
+\alpha =0,\;\;\; i = 0.
+$$
+Together with $\chi_1=\chi_2=0$.
+This reduces the long expression to relatively short\footnote{Note that here $\theta$ angle correspond
+to $i$ used in \cite{FC}}:
+\bea
+C_{+} = -\frac1{2}(1+ \cos^2(\theta)), \;\;\; C_{\times} = 0\\
+S_{+} = 0,\;\;\; S_{\times} = -\cos(\theta)\\
+K_{+} = -\frac1{2}\sin^2(\theta),\;\;\; K_{\times} = 0\\
+DC_{+}=DC_{\times}=DS_{+}=DS_{\times} = 0\\
+a=0,\;\;\; d=0,\;\;\; b=-\sin(\theta),\;\;\; c=\cos(\theta). 
+\ena
+Substituting these expressions into (\ref{Q2}) we get:
+
+\bea
+Q_{+} &=& (1+\cos^2(\theta))\cos(2\Phi)\\
+Q_{\times} &=& 2\cos(\theta)\sin(2\Phi)\\
+Q^{(1)}_{+} &=& \frac1{8}\frac{\delta m}{M}\sin(\theta)
+\left[ 9(1+\cos^2(\theta))\cos(3\Phi) - (5+\cos^2(\theta))\cos(\Phi) \right]\\
+Q^{(1)}_{\times} &=& \frac3{4} \frac{\delta m}{M}\sin(\theta)
+\cos(\theta)\left[ 3\sin(3\Phi) - \sin(\Phi) \right]\\
+\frac1{3}(3-\eta)Q_{+} + Q^{(2)}_{+} &=& \frac4{3} (1-3\eta)
+(1-\cos^4(\theta))\cos(4\Phi) + \nonumber \\
+& &\frac1{6}\left[ -19 + 19\eta -(9 + 11\eta)\cos^2(\theta) + (1-3\eta)\cos^4(\theta)\right] \cos(2\Phi)\\
+\frac1{3}(3-\eta)Q_{\times} + Q^{(2)}_{\times} &=&
+\frac8{3}(1-3\eta)(1-\cos^2(\theta))\cos(\theta)\sin(4\Phi) - 
+\nonumber \\
+& &\frac1{3}\left[ 17  -13\eta -4(1-3\eta)\cos^2(\theta)
+ \right]\cos(\theta)\sin(2\Phi)
+\ena
+which is in agreement with result derived by number of authors.
+
+
+
+
+\section{Transformation to SSB}
+\label{SSB}
+
+Transformation to Solar-System-Baricentric ecliptic coordinates 
+is given by $O_1$ rotation matrix given in \cite{KTV} eqn.7-9.
+Transformation to the LISA frame is given by eqn.6,9 \cite{KTV}.
+For completeness we will write it here explicitly. 
+At the origin of the SSB frame, the transverse-traceless metric perturbation due 
+to a source located at ecliptic latitude $\beta$ and longitude $\lambda$ can be written as
+\be
+H(t) = O_1 H^S(t)O_1^{-1}
+\en
+where the metric perturbation in the source frame is taken to be
+\be
+H^S(t) = \left( \begin{array}{ccc}
+h_{+}(t) & h_{\times}(t) & 0 \\
+h_{\times}(t) & -h_{+}(t) & 0 \\
+0 & 0 & 0 \end{array} \right),
+\en
+The two polarizations are given by eqn.(\ref{hom}) and the rotation matrix
+$O_1$:
+\be
+O_1 =\left( \begin{array}{ccc}
+\sin(\lambda)\cos(\psi) - \cos(\lambda)\sin(\beta)\sin(\psi) &  
+-\sin(\lambda)\sin(\psi) - \cos(\lambda)\sin(\beta)\cos(\psi) & 
+-\cos(\lambda)\cos(\beta) \\  
+-\cos(\lambda)\cos(\psi)  - \sin(\lambda)\sin(\beta)\sin(\psi) &
+\cos(\lambda)\sin(\psi) - \sin(\lambda)\sin(\beta)\cos(\psi) &
+ -\sin(\lambda)\cos(\beta) \\  
+\cos(\beta)\sin(\psi) &  \cos(\beta)\cos(\psi) & -\sin(\beta)  
+ \end{array} 
+\right).
+\en 
+These equations describe the plane waves, which are
+propagating from a source located in the direction
+\be
+{\bf \hat{k}} = \{ \cos(\lambda)\cos(\beta), \sin(\lambda)\cos(\beta), 
+\sin(\beta)\}.
+\en
+The polarization angle $\psi$ encodes a rotation around the direction of wave propagation, $-{\bf \hat{k}}$, setting the convention used to define the two polarizations, "$+$" and "$\times$".
+
+So in order to describe the gravitational wave signal in SBB  one requires 
+3 more parameters determining the position of the source and the polarization angle
+\begin{equation}
+\lambda, \beta, \psi
+\end{equation}
+%Gravitational wave responses are given by eqns.(12-14) \cite{KTV}.
+%Taking care of Dopler shift in phase...
+%\begin{eqnarray}
+%\int f(\tau) d\tau &=& \left[ \tau = t + {\bf k}{\bf p }_i \right] = 
+%\int f(t + {\bf k}{\bf p }_i) \left(1 + {\bf k}\frac{{\bf p }_i}
+%{dt}\right) dt \approx \int \left[ f(t) + \dot{f}(t)* {\bf k}{\bf p }_i\right]\left(1 
+%+ {\bf k}\frac{{\bf p }_i}
+%{dt}\right) dt \approx \nonumber \\
+%& &\int  f(t) dt + f(t) {\bf k}{\bf p }_i
+%\end{eqnarray}
+ 
+%Check if the above approximation is reasonable and expand ${\bf p}_i$
+
+
+
+\section{Parameter distribution}
+
+Here I will try to define the distribution of the parameter for injections.
+\begin{itemize}
+
+\item {\it Masses}. Individual masses are uniformly distributed in the range
+$[10^5 - 10^{7}]M_{\odot}$. For first challenges we can reduce upper bound to
+$10^6M_{\odot}$ as this will increase duration of the waveform in the LISA band.
+
+\item {\it Spins}. Initial conditions for spins. 
+For spinning binaries $\chi_1,\chi_2$ are uniformly distributed
+on $[0,1]$, $\hat{S}_i^z$ are uniformly distributed on $[-1,1]$, and angles
+$\phi_{S_i}$ are uniformly distributed on $[0,2\pi]$
+
+\item {\it Initial orbit} Initial orbit is defined by initial direction
+of the orbital angular momentum $\bL$, initial phase and initial orbital frequency.
+$\bL^z = \cos(i)$ is uniformly distributed on $[-1,1]$, $\alpha$ and $\Phi_0$ are uniformly
+distributed on $[0,2\pi]$. The initial orbital angular frequency $\omega_0$ 
+will be defined by the length of the duration of the signal $t_{cut}$. User should define 
+$\Delta t = t_c - t_{cut}$ (say 1 week before $t_c$).
+
+\item {\it Direction to the observer}. As mentioned in the text $\phi=0$ and
+$\cos(\theta)$ is distributed uniformly on $[-1,1]$
+
+\item {\it Distance to the observer}. Distance to the source should be defined
+by SNR for a given direction. Here there is an option: 1. try to estimate actual
+SNR for a given parameters 2. estimate SNR for non-spinning binary for the same
+location on the sky, the same masses 3. Restricted SPA waveform for moving or
+static LISA
+
+\item {\it Location on the sky in SSB}. In SSB we need to set the direction to the source
+and polarization angle: $\sin(\beta)$ is distributed uniformly on $[-1,1]$, and
+$\lambda, \psi$ are uniformly distributed on $[0,2\pi]$
+
+\end{itemize}
+
+\section{Implementation}
+
+The computation of GW from the spinning binary (in the source frame)
+is implemented as  C++ class. It has the following methods:
+\begin{itemize}
+\item {\tt SpinBBHWaveform(float mass1, float mass2)}, Constructor, the
+input are two masses in units of solar mass.
+
+\item {\tt SetInitialSpins(float chi1, float S1z0, float phiS10, float chi2, float S2z0,
+		   float phiS20)}. Here user specifies the initial value for spins.
+The spins are specified by its amplitude {\tt chi1, chi2}, and the orientation
+is defined $\bSo = \{ \sqrt{1-(S1z0)^2}\cos(phiS10), \sqrt{1-(S1z0)^2}\sin(phiS10),
+S1z0\}$ (similar for $\bSt$). 
+This parametrization was chosen as the most convenient for generating the 
+random signal, since {\tt S1z0, S2z0} are distributed uniformly on $[-1,1]$ and
+{\tt phiS10, phiS20} are distributed uniformly on $[0, 2\pi)$. 
+
+\item {\tt void SetInitialOrbit(float omega0, float phi0, float iota0, float alpha0)}
+Here user specifies initial orbit: initial frequency {\tt omega0}, initial
+ phase {\tt phi0}, and initial direction of the orbital angular momentum 
+ {\tt iota0, alpha0} (corresponding to $i,\alpha$). 
+ 
+\item {\tt void ComputeInspiral(float timeStep)}. This method integrates 
+equations of motion and as a result produces the inspiralling trajectory.
+User must specify sampling step {\tt timeStep} in seconds.
+
+\item {\tt void SetObserver(float thetaD, double D)}. Here user specifies direction
+{\tt thetaD} and distance {\tt D} (in pc) to the observer.
+
+\item {\tt void ComputeWaveform(int order,  Matrix<double>\& hPlus, Matrix<double>\& hCross)}. This method computes the waveform $h_+, h_{\times}$ for observer 
+described in {\tt SetObserver} and trajectory computed in {\tt ComputeInspiral}.
+This can be called multiple number of times for different observers without 
+re-computing inspiral. The parameter {\tt order} allows user to get only leading
+order amplitude (0), only 0.5PN amplitude (1), only 1PN amplitude or all of them
+together (default).
+
+\end{itemize}
+
+In the figure below one can see the example of the waveform.
+
+As I have mentioned above the MECO condition gives quite high frequency.
+I have used the condition $\frac1{M} |dE/d\omega| < 3.5\times 10^{-6}$ to 
+terminate inspiral.
+
+
+
+\begin{figure}[ht]
+%\includegraphics[height=8cm,width=14cm]{SpinBBHWave.pdf}
+\caption{Gravitational waveform in the source frame for the 
+following parameters: $m_1 = 2.0M_{\odot}, m_2=4.0M_{\odot}, 
+\chi_1 = 0.7, \chi_2=0.9, \hat{S}_1^z(t_0) = 0.4, \hat{S}_2^z(t_0) = 0.7,
+\phi_{S1}(t_0) = \pi/7, \phi_{S2}(t_0) = \pi/3.5, \omega(t_0) = 40\pi, 
+\Phi(t_0)=0, i(t_0) = \pi/7, \alpha(t_0) = \pi/3, \theta=\pi/2.2, D=10^6(pc)$}
+\label{fig:waveforms}
+\end{figure}
+
+\section{Model of the signal for the first mock data challenge}
+
+Here we summarize the model which will be used for the first 
+LISA mock data challenge. It is a restricted non-spinning 
+model with the phase up to 2PN.
+
+The orbital evolution is presented by orbital angular frequency 
+and orbital phase up to 2PN order:
+
+\bea
+M\omega &=& \frac1{8} \tau^{-3/8}\left\{ 1 + \left( \frac{11}{32}\eta + \frac{743}{2688}\right) 
+\tau^{-1/4} - \frac{3}{10}\pi\tau^{-3/8} 
++ \left(\frac{1855099}{14450688} + \frac{371}{2048}\eta^2 + \frac{56975}{258048}\eta\right)
+\tau^{-1/2} 
+\right\}
+\label{fr}
+\ena
+And the phase is described by:
+\bea
+\Phi &=& -\frac1{32\eta}(M\omega)^{-5/3}\left\{ 1 + \left( \frac{3715}{1008} + \frac{55}{12}\eta\right)
+(M\omega)^{2/3} - 10\pi(M\omega) +  \left( \frac{15293365}{1016064} + \frac{27145}{1008}\eta + \frac{3085}{144}\eta^2\right)
+(M\omega)^{4/3}\right\}
+\ena
+The evolution is terminated by condition $r=6M$ which corresponds to 
+$$
+\omega_{LSO} = 0.068(M_{\odot}/M)Hz
+$$
+unless user wants to terminate it $\Delta t$ sec before the coalescence time $t_c$.
+
+Waveform is described by two polarizations in the 
+radiation frame:
+
+\bea
+h_{+} &=& \frac{2\mu}{D}(M\omega)^{2/3}(1+\cos^2(\theta))\cos(2\Phi)
+\label{hp}\\
+h_{\times} &=& \frac{4\mu}{D}(M\omega)^{2/3}\cos(\theta)\sin(2\Phi)
+\label{hc}
+\ena
+
+The transformation to the SSB system is given in the Section~\ref{SSB}. This is finalizes the time domain description of the 
+signal which will be an input to the simulator. 
+
+\subsection{Stationary phase approximation}
+
+Here we derive the fourier image of the time-domain signal 
+described above using stationary phase approximation (SPA).
+
+The signal in the radiation frame is given by eqns.(\ref{hp},
+\ref{hc}), this signal has to be passed through a particular 
+transfer function to get a TDI observable, this can be presented in a rather symbolic form as follows
+\bea
+h^{I} = \sum_{j=1}^{3}\sum_k A_{k,j}^{I}(t)\left[ 
+F^{+}_j(t)h_{+}(t-t_k) + F^{\times}_{j}(t)h_{\times}(t-t_k)
+\right]
+\ena
+where index $I$ corresponds to a different TDI combination $\alpha_i$,
+$\bar{A}, \bar{E}, \bar{T},....$; $t_k$ are delays and $A_{k,j}(t)$
+ scales an amplitude of each delayed waveform. The antenna pattern 
+if given as 
+\bea
+F_j^{+} &=& u_j(t)\cos(2\psi) + v_j(t)\sin(2\psi),\\
+F_j^{\times} &=& v_j(t)\cos(2\psi) - u_j(t)\sin(2\psi)
+\ena
+where $\psi$ is polarization angle introduced in Section~\ref{SSB}. 
+The functions $u_j(t), v_j(t)$ depend on the rotation matrix $O_1$
+and on LISA-to-SSB transformation, thus, they depend on time through  motion of the guiding center and cartwheelng motion of the spacecrafts, and on the position of the source in the sky,given by the ecliptic coordinates $\beta,\lambda$. The explicit 
+expressions for those functions are given in \cite{KTV}, eqns.(27-39). 
+Following \cite{Cutler} introduce polarization phase $\Phi_p^j(t)$:
+
+\bea
+F^{+}_j(t)h_{+}(t-t_k) + F^{\times}_{j}(t)h_{\times}(t-t_k) =
+%(M\omega)^{2/3} \left[ F^{+}_j(t)h^{+}_0\cos(2\Phi(t-t_k)) + 
+%F^{\times}_{j}(t)h^{\times}_0\sin(2\Phi(t-t_k))\right] =\\
+\mathcal{A}^j(t)(M\omega)^{2/3}\cos(2\Phi(t-t_k) -\Phi_p^j(t))
+\ena
+where
+\bea
+\mathcal{A}^j(t) &=& \frac{2\mu}{D} \sqrt{(F^{+}_j(t)h^{+}_0)^2 + 
+(F^{\times}_{j}(t)h^{\times}_0)^2},\\
+\tan(\Phi_p^j) &=& \frac{F^{\times}_{j}(t)h^{\times}_0}
+{F^{+}_{j}(t)h^{+}_0}\\
+h^{\times}_0 &=& 2\cos(\theta),\;\;\; 
+h^{+}_0 = \frac1{2}(1 + \cos^2(\theta))
+\ena
+As a next step we expand the phase around $t$:
+\be
+\Phi(t - t_k) \approx \Phi(t) - \omega t_k +....
+\en
+here we neglected second order Doppler corrections (see \cite{Cutler}
+for justification).
+It also convenient to represent $\cos$ in exponential form:
+\be
+\cos(2\Phi(t-t_k) - \Phi_p^j(t)) = \frac1{2}
+e^{-i\left[ 2\Phi(t) - 2\omega t_k  - \Phi_p^j(t)\right]} + c.c.
+\en
+where $c.c.$ stands for complex conjugate, which we will omit 
+in further expressions (I assume that we mainly interested in 
+positive frequencies).
+Here we can identify the Doppler phase $\Phi^k_D(t) = 2\omega t_k$.
+The delays can be further expanded according to:
+\bea
+t_j = \omega R \cos(\beta) \cos(\Omega t + \eta_0 -\lambda) +
+\bk(O_2(t)\bp_j^L) - m_jL
+\ena
+where $R=1au$, $\eta_0$ is initial phase of the LISA's guiding 
+center, $O_2$ is the LISA-to-SSB rotation matrix (see \cite{KTV}),
+$\bp^L_j$ is the vector connecting the guiding center and $j$-th spacecraft and $m_j$ is integer coming from a particular TDI combination. Note that $\omega \bk(O_2(t)\bp_j^L) \sim \omega L$.
+
+Put all pieces together:
+\bea
+h^I = \Lambda^I(t) (M\omega)^{2/3}e^{-i(2\Phi(t))},\\
+\Lambda^I(t) = \sum_{j=1}^{3}\sum_k \frac1{2}
+A_{k,j}^I(t)\mathcal{A}^j(t)e^{i(\Phi_D^k(t) + \Phi_p^j(t))}
+\ena
+Since $\Lambda(t)$ varies on the timescale $1yr >> 2\pi/\omega$
+we can apply SPA to evaluate the waveform in the frequency domain:
+
+\bea
+\tilde{h}^I_{spa} = \Lambda(t_f) (M\omega(t_f))^{2/3}
+\left[ \frac{\pi}{\dot{\omega}(t_f)} \right]^{1/2}
+e^{i(2\pi ft_f - 2\Phi(t_f) - \pi/4)}
+\ena
+where $t_f$ is defined by equation
+\be
+\omega(t_f) = \pi f
+\en
+For restricted waveform it is sufficient to use only leading
+order term in amplitude:
+\be
+(\dot{\omega}(t_f))^{-1/2} = M\sqrt{\frac{5}{96\eta}} 
+(\pi Mf)^{-11/6}
+\en
+The phase (up to 2PN order) is given in \cite{DIS}:
+
+\bea
+2\pi ft_f - 2\Phi(t_f) &=& 2\pi ft_c - \phi_c + 
+\frac3{128\eta}(\pi Mf)^{-5/3}\left\{ 
+1 + \frac5{9}\left( \frac{743}{84} + 11\eta\right) - 16\pi
+(\pi Mf) + \right.\nonumber\\
+& & \left. \left( \frac{15293365}{1016064} + \frac{27145}{1008}\eta
++ \frac{3085}{144}\eta^2\right) (\pi Mf)^{4/3}
+\right\} 
+\ena
+and inverting (\ref{fr}) we obtain
+\bea
+t_f  &=& t_c - \frac{5M}{256\eta}(\pi Mf)^{-8/3}\left\{
+1 + \left( \frac{743}{252} + \frac{11}{3}\eta \right)(\pi Mf)^{2/3}
+- \frac{32}{5}\pi (\pi Mf) + \right. \nonumber \\
+& & \left. \left( \frac{8579163}{508032} + 
+\frac{29555}{1008}\eta + \frac{203}{8}\eta^2\right) (\pi Mf)^{4/3}
+\right\}
+\ena
+
+{\bf Confirm 2PN term in $t_f$}.
+
+
+
+
+\begin{thebibliography}{}
+
+\bibitem{BCV1} Buonanno, Chen, Vallisneri, Phys.Rev. D67 (2003) 
+024016
+
+\bibitem{Kidder} Kidder, Phys.Rev. D52 (1995) 821
+
+\bibitem{FC} Finn, Chernoff, Phys.Rev. D47 (1993) 2198
+
+\bibitem{BCV2} Buonanno, Chen, Vallisneri, Phys.Rev D67 (2003) 104025
+
+\bibitem{BCPV} Buonanno, Chen, Pan, Vallisneri Phys.Rev. D70 (2004)
+104003 
+
+\bibitem{Blanchet} Blanchet, Faye, Iyer, Joguet Phys.Rev. D65 (2002) 061501
+
+\bibitem{DIS} Damour, Iyer, Sathyaprakash Phys.Rev. D63 (2001) 044023
+
+\bibitem{Cutler} Cutler, Phys.Rev. D57 (1998) 7089
+
+\bibitem{ACST} Apostolatos, Cutler, Sussman, Thorne, Phys.Rev D49 (1994) 6274
+
+\bibitem{KTV} Krolak,  Tinto, Vallisneri, Phys.Rev D70, (2004) 022003
+
+\end{thebibliography}
+
+
+
+\end{document}
