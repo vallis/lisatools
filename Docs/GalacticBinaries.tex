@@ -1,0 +1,173 @@
+\font\brm = cmr10 scaled
+\magstep 1
+\parskip = 12pt
+\hsize=6.5in
+\vsize=8.3in
+\voffset=0.3in
+
+\centerline {\brm Galactic Binaries Source Descriptors (MLDC)}
+\centerline {Matthew Benacquista}
+\centerline {May 3, 2006}
+
+Galactic binaries will be provided as two distinct types of sources in the Mock LISA Data Challenge---a bulk signal from the Galaxy, and resolvable binaries. In the first instance the source descriptors will be applicable to the model Galaxy as a whole, while in the second instance the source descriptors will be applicable to the properties of the individual binaries. In this note, we will describe the source descriptors along with the approximations and definitions for the different types of binaries that may appear in the Mock LISA Data Challenge. The specific waveforms for the initial challenge are given at the end of this note.
+
+{\bf Galaxy Descriptors}
+
+The bulk properties of the Galaxy can be broken down into morphology and composition. The morphology of a Galaxy is best described in terms of a population density function. For the purposes of the MLDC, it is probably best to use the two population densities currently in the literature. The double exponential used by Hils, Bender \& Webbink (1990) and Timpano, Rubbo \& Cornish (2005) is described entirely by central density, $\rho_0$, radial scale, $R_0$, and scale height, $z_0$, and has the form (in Galactocentric cylindrical coordinates):
+$$
+\rho({\bf r}) = \rho_0 e^{-R/R_0} e^{-z/z_0}. \eqno(1)
+$$
+The ``cuspy'' exponential-${\rm sech}^2$ used by Nelemans {\it et al.} (2001), Benacquista, DeGoes \& Lunder (2004), and Edlund {\it et al.} (2005) includes the possibility for a central cusp and so has an additional parameter $c$:
+$$
+\rho({\bf r}) = \rho_0 r^{-c} e^{-R/R_0} {\rm sech}^2(-z/z_0). \eqno(2)
+$$
+In the current usage, $c = 0,~1$, although any real number within this range is acceptable. The total number of binaries $N$ is related to $\rho_0$ and can be found by integrating the density over all space.
+
+The composition of the Galaxy is best described by the separate binary sub-types (e.g.: WD-WD, WD-NS, WD-BH, etc.) which make up the total population of binaries. Since it is quite likely that different sub-types will also have different population density descriptions, the most extensible and efficient way to describe the bulk properties of the Galaxy will be a list of parameters for each sub-type. The parameters will include the sub-type, a flag for the density distribution used, and the values of $N$ (or $\rho_0$), $c$, $R_0$, and $z_0$.
+
+{\bf Binary Descriptors}
+
+The source descriptors for individual, resolvable binaries should allow for a wide class of binaries, but they should be based upon the observable quantities in the LISA data stream to the greatest degree possible. In order of increasing complexity the descriptors can be:
+\item{$\triangleright$} Circular, monochromatic: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$
+\item{$\triangleright$} Circular, chirping: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$, $\dot{f}$, $\ddot{f}$
+\item{$\triangleright$} Eccentric, monochromatic: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$, $e$
+\item{$\triangleright$} Eccentric, chirping: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$, $e$, $\dot{f}$, $\ddot{f}$
+
+where the amplitude is given by:
+$$
+{\cal A} = {{2G^{5/3}}\over{c^4d}}(2\pi f)^{2/3} {\cal M}^{5/3} \eqno(3)
+$$
+with chirp mass ${\cal M}^{5/3} = M_1M_2(M_1+M_2)^{-1/3}$ and distance $d$; the source position is $\theta$, $\phi$; the angle of inclination is $\iota$; the polarization angle is $\psi$; and the initial phase is $\phi_0$; the frequency derivative $\dot{f}$ can be due to either mass transfer or gravitational wave emission; and the eccentricity is $e$. The waveforms should be generated using the quadrupole approximation that can be found in Peters \& Mathews (1963), and described in detail in Rubbo, Cornish \& Poujade (2004) or Pierro {\it et al.} (2001).
+
+{\bf Circular Monochromatic Binaries}
+
+If a binary is considered circular, then the spreading of the power into higher harmonics of the orbital frequency is deemed small enough to ignore. For small eccentricities, the fitting factor (FF) is found from (Pierro {\it et al.}, 2001) to be:
+$$
+{\rm FF}_{+,\times} \sim 1 - {{\rm THD}^2_{+,\times}\over{2}}, \eqno(4)
+$$
+where (to first order in $e$),
+$$\eqalignno{
+{\rm THD}_+ & \leq 2.574 e  & (5a)\cr
+{\rm THD}_{\times} & \leq 2.372 e. & (5b)\cr
+}$$
+Consequently, the maximum eccentricity allowed for a binary to be considered circular is determined by the fitting factor:
+$$
+e_{\rm max} = {\sqrt{2(1-{\rm FF})}\over{2.574}}. \eqno(6)
+$$
+For a fitting factor of ${\rm FF} = 0.999$, this gives $e_{\rm max} \sim 0.02$. Increasing the fitting factor to ${\rm FF} = 0.9999$ gives $e_{\rm max} \sim 0.005$. Thus, we define circular binaries to be those with $e < 0.005$.
+
+If a binary is considered monochromatic, then the frequency shift during the observation time $T_{\rm obs}$ is considered unmeasurable. This can be set as a requirement on the accumulated phase over the observation period. If an accumulated phase difference of $\alpha \pi$ can be measured, then the requirement on $\dot{f}$ is found from:
+$$
+\Delta \phi = 2 \pi \int_0^{T_{\rm obs}}{\dot{f} t dt} \leq \alpha \pi \eqno(7)
+$$
+so a binary is monochromatic if $\dot{f} \leq \alpha / T_{\rm obs}$. If the binary is detached and the frequency shift is entirely due to gravitational radiation, this requires that:
+$$
+{\cal M}^{5/3}f^{11/3} \leq {{5 \alpha c^5} \over {\pi^{8/3} G^{5/3} T_{\rm obs}^2}}. \eqno(8)
+$$
+If the binary is undergoing Roche lobe overflow (RLOF), then we assume that the mass transfer is stable and is driven by angular momentum loss through gravitational radiation. The change in frequency due to RLOF is calculated from a knowledge of the donor mass radius, $R_d\left(M_d\right)$, and the Roche lobe radius:
+$$
+R_{\rm R} = a F\left(M_d,M_a\right), \eqno(9)
+$$
+where $a$ is the orbital separation and $F$ is a function of the donor and accretor masses ($M_d$ and $M_a$, respectively). Given specific functional forms for $F$ and $R_d$, the frequency shift is given by:
+$$
+\dot{f} = \dot{f}_{\rm GR}\left(1 + {2 \over 3}{G^{1/3} \over {f^{2/3}\pi^{1/3}}} \left(M_d - M_a\right)\left[\left({\partial F \over \partial M_a} - {\partial F \over \partial M_d}\right)\left({G \left(M_d + M_a\right) \over \pi}\right)^{1/3} + {\partial R_d \over \partial M_d}\right]^{-1}\right)^{-1} \leq {\alpha \over {T_{\rm obs}^2}}. \eqno(10)
+$$
+
+If these conditions are met, then the signal is circular and monochromatic and it can be described by the simple quadrupole formulae of Peters \& Mathews (1963). We will consider the waveform at the barycenter. Following the notation of Rubbo, Cornish \& Poujade (2004), we have:
+$$
+{\bf h}(t) = A_+ \cos{\left(2\pi f t+\phi_0\right)}{\bf \epsilon}^{+} + A_{\times} \sin{\left(2\pi f t+\phi_0\right)}{\bf \epsilon}^{\times}, \eqno(11)
+$$
+where
+$$\eqalignno{
+A_+ & = {\cal A} \left(1 + \cos^2{\iota}\right) & (12a) \cr
+A_{\times} & = -2{\cal A} \cos{\iota}. & (12b) \cr
+}$$
+The propagation polarization tensors are related to the barycenter tensors by:
+$$
+\eqalignno{
+\epsilon^+ & = \cos{(2\psi)}e^+ - \sin{(2\psi)} e^{\times} & (13a)\cr
+\epsilon^{\times} & = \sin{(2\psi)} e^+ + \cos{(2\psi)} e^{\times}. & (13b) \cr
+}$$
+The barycenter basis tensors are formed by taking the sums and differences of the outer products between a pair of orthogonal unit vectors:
+$$\eqalignno{
+e^+ & = \hat{u}\otimes\hat{u} - \hat{v}\otimes\hat{v} & (14a) \cr
+e^{\times} & = \hat{u}\otimes\hat{v} + \hat{v}\otimes\hat{u}. & (14b) \cr
+}$$
+In the SSB reference frame, the basis vectors are given by:
+$$\eqalignno{
+\hat{u} & = \hat{x}\sin{\phi} + \hat{y}\cos{\phi} & (15a) \cr
+\hat{v} & = \hat{x}\cos{\phi}\cos{\theta} + \hat{y}\sin{\phi}\cos{\theta} - \hat{z}\sin{\theta} & (15b) \cr
+\hat{k} & = -\hat{x}\cos{\phi}\sin{\theta} - \hat{y}\sin{\phi}\sin{\theta} - \hat{z}\cos{\theta}. & (15c) \cr
+}$$
+
+{\bf Circular Chirping Binaries}
+
+If the binary is chirping (but still circular), then we replace the accumulated phase $2\pi f t$ by:
+$$
+\int_0^{t}{2\pi f(\tau) d\tau}, \eqno(16)
+$$
+and all instances of $f$ in the amplitude by $f(t)$. Using a Taylor expansion of $f$, we can describe the time evolution of the gravitational wave phase in terms of the frequency and its time derivatives as determined at $t = 0$. Thus,
+$$
+\int_0^t{2\pi f(\tau) d\tau} = 2 \pi f t + \pi \dot{f} t^2 + {\pi \over 3} \ddot{f} t^3 + \cdots. \eqno(17)
+$$
+It will only be necessary to include $\ddot{f}$ when $\ddot{f} \geq 3\alpha/T_{\rm obs}^3$. Thus, the general circularized binary waveform will be calculated from:
+$$
+{\bf h}(t) = A_+ \cos{\left(2\pi f t+ \pi \dot{f} t^2 + {\pi \over 3} \ddot{f} t^3 + \phi_0\right)}{\bf \epsilon}^{+} + A_{\times} \sin{\left(2\pi f t+\pi \dot{f} t^2 + {\pi \over 3} \ddot{f} t^3 + \phi_0\right)}{\bf \epsilon}^{\times}, \eqno(18)
+$$
+with:
+$$
+{\cal A} = {{2G^{5/3}}\over{c^4d}}\left(2\pi f + \pi \dot{f} t + {\pi \over 3} \ddot{f} t^3\right)^{2/3} {\cal M}^{5/3}. \eqno(19)
+$$
+
+{\bf Challenge 1 Waveforms}
+
+For the first challenge, all binaries will be considered circular and monochromatic. Thus, the input waveform at the SSB is given by Eqs. (11-16). It can be completely described by the seven source descriptors for a circular, monochromatic binary. The source descriptors ${\cal A}$ and $f$ are related to the underlying binary parameters by:
+$$\eqalignno{
+{\cal A} & = {{2 G^{5/3}}\over{c^4 d}}{{M_1M_2}\over{\left(M_1 + M_2\right)^{1/3}}}\left(2\pi f\right)^{2/3} & (20) \cr
+f & = {{2}\over{P_{\rm orb}}}, & (21) \cr
+}
+$$
+where $P_{\rm orb}$ is the orbital period.
+
+
+
+% If the binary is eccentric, but still monochromatic
+
+% The basis for the calculation of the waveform should be the Peters \& Mathews (1963) formulation for eccentric binaries as described by Pierro {\it et al.} (2001). In a coordinate system centered on an eccentric binary with orbital frequency $f$, the gravitational wave at a distant detector located at angular position $\vartheta$ and $\varphi$ is given by the two polarizations:
+% $$\eqalignno{
+% h_{\times} &= {{\cos{\vartheta}}\over{\sqrt{2}}}\sum_{n=1}^{\infty}{\left[2h_{xy}^{(n)}\sin{(2\pi nft)}\cos{2\varphi}-h_{x-y}^{(n)}\cos{(2\pi nft)}\sin{2\varphi}\right]}& (3) \cr
+% h_+ &= {{1}\over{2\sqrt{2}}}\sum_{n=1}^{\infty}{{\Big [}(1+\cos^2{\vartheta})\left(2h_{xy}^{(n)}\sin{(2\pi nft)}\sin{2\varphi}+h_{x-y}^{(n)}\cos{(2\pi nft)}\cos{2\varphi}\right)} & (4) \cr
+% &  ~~~~~~~~~~~~-(1-\cos^2{\vartheta})h_{x+y}^{(n)}\cos{(2\pi nft)}{\Big ]}, \cr 
+% }$$
+% where the metric components $h^{(n)}_{xy}$ and $h^{(n)}_{x\pm y}$ are:
+% $$\eqalignno{
+% h^{(n)}_{xy} & =  h_0 n \left(1 - e^2\right)^{1/2}\left[J_{n-2}(ne) - 2J_{n}(ne) + J_{n+2}(ne)\right] & (5) \cr
+% h^{(n)}_{x-y} & =  2h_0 n \left[J_{n-2}(ne) - 2 e J_{n-1}(ne) + {{2}\over{n}} J_n(ne) + 2 e J_{n+1}(ne) - J_{n+2}(ne)\right] & (6) \cr
+% h^{(n)}_{x+y} & =  - 4 h_0 J_n(ne). & (7) \cr
+% }$$
+% The common amplitude factor $h_0$ is:
+% $$
+% h_0 = {{2G^{5/3}}\over{c^4}}(2\pi f)^{2/3} {\cal M}^{5/3} \eqno(8)
+% $$
+% with the ``chirp mass'' ${\cal M}^{5/3} = M_1M_2(M_1+M_2)^{-1/3}$.
+
+
+
+
+{\bf References}
+
+\noindent{Benacquista, M., DeGoes, J. \& Lunder, D., {\it Class. Quant. Grav.} {\bf 21}, S509 (2004)}
+
+\noindent{Edlund, J.~A., Tinto, M., Krolak, A. \& Nelemans, G., {\it Phys. Rev. D} {\bf 71}, 122003 (2005)}
+
+\noindent{Hils, D., Bender, P. \& Webbink R.~F., {\it Astrophys. J.}, {\it Astrophys. J.} {\bf 360}, 75 (1990).
+
+\noindent{Peters, P.~C. \& Mathews, J., {\it Phys. Rev.} {\bf 131}, 434 (1963).
+
+\noindent{Pierro, V., Pinto, I.~M., Spallicci, A.~D., Laserra, E. \& Recano, F., {\it Mon. Not. R. Astron. Soc.} {\bf 325}, 358 (2001)}
+
+\noindent{Rubbo, L.~J., Cornish, N.~J. \& Poujade, O., {\it Phys. Rev. D} {\bf 69}, 082003 (2004)
+
+\noindent{Timpano, S., Rubbo, L. \& Cornish, N., {\it Preprint}, gr-qc/0504071 (2005).
+
+\end{document}

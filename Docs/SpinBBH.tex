@@ -595,19 +595,30 @@ Here user specifies initial orbit: initial frequency {\tt omega0}, initial
  phase {\tt phi0}, and initial direction of the orbital angular momentum 
  {\tt iota0, alpha0} (corresponding to $i,\alpha$). 
  
-\item {\tt void ComputeInspiral(float timeStep)}. This method integrates 
+\item {\tt void ComputeInspiral(float timeStep, std::string order, std::string route)}. This method integrates 
 equations of motion and as a result produces the inspiralling trajectory.
 User must specify sampling step {\tt timeStep} in seconds.
+The parameter {\tt order} specifies the PPN order of phase
+and orbital frequency, and parameter {\tt route} specifies
+for non-spinniung binaries method to compute orbit 
+(analytic or numerical integration).
 
 \item {\tt void SetObserver(float thetaD, double D)}. Here user specifies direction
 {\tt thetaD} and distance {\tt D} (in pc) to the observer.
 
-\item {\tt void ComputeWaveform(int order,  Matrix<double>\& hPlus, Matrix<double>\& hCross)}. This method computes the waveform $h_+, h_{\times}$ for observer 
+\item {\tt EstimateTc(double omega0, std::string order)}.
+This method returns estimated value of coalescence time
+using orbital evolution of non-spinning binary up to
+PPN order specified by {\tt order} and with initial frequency
+{\tt omega0}.
+
+\item {\tt void ComputeWaveform(int order, float truncateTime, Matrix<double>\& hPlus, Matrix<double>\& hCross)}. This method computes the waveform $h_+, h_{\times}$ for observer 
 described in {\tt SetObserver} and trajectory computed in {\tt ComputeInspiral}.
 This can be called multiple number of times for different observers without 
 re-computing inspiral. The parameter {\tt order} allows user to get only leading
 order amplitude (0), only 0.5PN amplitude (1), only 1PN amplitude or all of them
-together (default).
+together (default). User can also truncate the waveform at the time
+$\Delta T = $  {\tt truncateTime} (in sec) before coalescence. 
 
 \end{itemize}
 
@@ -694,7 +705,8 @@ F_j^{\times} &=& v_j(t)\cos(2\psi) - u_j(t)\sin(2\psi)
 \ena
 where $\psi$ is polarization angle introduced in Section~\ref{SSB}. 
 The functions $u_j(t), v_j(t)$ depend on the rotation matrix $O_1$
-and on LISA-to-SSB transformation, thus, they depend on time through  motion of the guiding center and cartwheelng motion of the spacecrafts, and on the position of the source in the sky,given by the ecliptic coordinates $\beta,\lambda$. The explicit 
+and on LISA-to-SSB transformation, thus, they depend on time through  motion of the guiding center and cartwheelng motion of the spacecrafts, and on the position of the source in the sky,
+given by the ecliptic coordinates $\beta,\lambda$. The explicit 
 expressions for those functions are given in \cite{KTV}, eqns.(27-39). 
 Following \cite{Cutler} introduce polarization phase $\Phi_p^j(t)$:
 
