@@ -2200,10 +2200,182 @@ for the same intrinsic parameters (multiple call to {\tt SetSourceLocation} and 
 
 \subsection{Foreground from a simulation of the galaxy}
 
-\chapter{Formats}
+\chapter{Data formats and relevant software}
+
 
 \chapter{Challenge 1}
 
+The goal of Challenge-1 is to enable the development of the necessary data analysis infrastructure and the tacking of simple LISA data analysis problems in which essentially one single source is present in the data stream. The challenges will concentrate on the minimum science requirements (galactic binaries, including verification binaries, and the in-spiral part of the coalescence of a massive black hole binary system. A data set containing an EMRI will also be made available, though the results are due 
+
+{\bf ID}: Challenge-1\\
+{\bf Release date}: June 2006\\ 
+{\bf Due date}: December 2006
+
+ [known source analysis reported in September 2006] 
+Note: I would propose to distribute two data sets (with just slightly different source parameters) for each sub-challenge: (i) one with known parameters mainly for code validation (this is a “known source analysis, and we should have report around Septermber) and (ii) one with unknown parameters
+
+\section{Challenge 1.1 -- White Dwarfs}
+
+
+
+Challenge 1.1.1
+
+1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency 0.3 mHz 
+1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 4 mHz 
+1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 20 mHz 
+Note: should we just choose one of the above?
+
+Challenge 1.1.2
+
+1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) with the 20 or so verification binaries (parameters chosen according to our current best guess) + 5 mock verification binaries in the frequency range 5 mHz - 20 mHz where fdot (positive and negative) is detectable
+Challenge 1.1.3
+
+1 year of Gaussian stationary noise (instrumental + envelope of “confusion”) with 50 WD binaries chosen all around 1 mHz in a band $\approx 0.1$ mHz, SNR in the range 3-10 and overlap in the range 0.1 - 0.95.
+Challenge 1.2 - MBHs
+
+Challenge 1.2.1
+
+1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 2$ months (from f = 0.1 mHz) at SNR = 500 (for single IFO). We need to agree on tapering and we will also provide stationary phase approximation waveform. The waveform model for the inspiral is restricted to 2PN approximation with no spin-orbit nor spin-spin modultations.
+  Comment on waveform: I would use no spin-orbit modulation [now taken into account]
+  Comment on parameters: I agree with non-spinning and for a parmeter range I'd say the masses should 
+  be between $10^5$ and $3\times 10^6$ (measured locally), and that for the first challenge the redshift should 
+  be in the range 0.9-1.1 (i.e., close to 1, but still something people have to extract from the data).
+  By that redshift, I really mean the luminosity distance should be about 6.4 Gpc, plus or minus 10% (CC).
+Challenge 1.2.2
+
+* 1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 13$ months (anyway > 1 yr) (from f = 0.1 mHz) at SNR = 20 (for single IFO)
+
+ Comment on waveform: I would use no spin-orbit modulation
+ 
+ Comment on schedule: I think 1.2.2 is quite a different/harder challenge than 1.2.1, and it should come 6 months later in 
+ Challenge 2. I'd also favor adding ringdowns at that later stage, though we should also continue to give some
+ data with the last week chopped out (CC). 
+Challenge 1.3 - EMRIs
+
+Challenge 1.3.1 [THIS IS NOW GONE]
+
+1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (e = 0) and SNR = 100 (for single IFO). [Results are actually expected in June 2007, as part of challenge 2]
+Comment on physical params: I think the early challenges should concentrate on the stronger sources--BHs of about 10 Msun--
+which we also expect to detect more of. LIkewise, might as well make the MBH about $10^6$ (CC).
+Comment on e=0.0: the inspirals get more eccentric at the end, not less, so I don't think e=0 is very realistic (CC).
+Comment on challenge set-up: I'd favor breaking the EMRI challenge into 2: very bright sources (like the SNR =100 above) and 
+the presumably more typical ones with SNR = 30 (in single IFO).  I think we should issue 2 different data sets: one with
+a bright SNR=100 source, and one with SNR =30, since the methods for the 2 problems might be quite different.  The weaker
+source should come will a restricted parameter range (e.g., we tell people a small patch on the sky to look in, and perhaps
+a narrow mass range, to make up for our poor computational resources relative to 2015 (CC).
+Comment on number of sources: As we discussed in the telecon, for each SNR (100 and 30) I think we should produce 2 data
+sets: one w/ a single source and one with ~10 overlapping sources, since I can imagine some methods that might succeed for
+the former but have real troubles w/ the latter (CC).
+Challenge 1.3.1
+
+1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (with $e \approx 0.2$ at plunge) and SNR = 100 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
+Comment on e=0.20: of course we have to say "when" it's 0.2; I'd suggest e=0.2 at very end of inspiral, or maybe
+e=0.3  when the m=2 harmonic sweeps thru 3mHz (which amounts to pretty much the same thing, for a $10/10^6$ pair) (CC).
+Comment on e=0.20: I (AV) propose that we use: m1 = $10^6$ and m2 = 10; e=0.3  when the m=2 harmonic sweeps thru 3mHz; random parameters for the geometry and distance is adjusted in order to have the desired SNR
+Challenge 1.3.2
+
+1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (with $e \approx 0.2$ at plunge - see for the parameters the comment above) and SNR = 30 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
+Challange 1.4 - Bursts
+
+Challenge 1.4.1
+
+only starting from challenge 2
+Challange 1.5 - stochastic backgrounds
+
+Challenge 1.5.1
+
+only starting from challenge 2
+
+
+Challenge 2
+
+Goal: Test analysis with some overalap; start including EMRIs, bursts and stochastic
+Release date: December 2006 
+Due date: June 2007 
+
+Challenge 2.1 - White Dwarfs
+
+Challenge 2.1.1
+
+No follow-up
+
+Challenge 2.1.2
+
+Same as Challenge 1.1.2 - the 20 or so verification binaries (parameters chosen according to our current best guess) + 5 mock verification binaries in the frequency range 5 mHz - 20 mHz where fdot (positive and negative) is detectable - but now with noise given by instrumental (Gaussian and stationary) + confusion produced by actual simulation of the galaxy
+Challenge 2.1.3
+
+Same as 1.1.3 but now with 500 sources, that is: 1 year of Gaussian stationary noise (instrumental + envelope of “confusion”) with 500 WD binaries chosen all around 1 mHz in a band $\approx 0.1$ mHz, SNR in the range 3-10 and overlap in the range 0.1 - 0.95.
+Challenge 2.2 - MBHs
+
+Note: the enphasys here is on “interference” amongst sources of different classes
+
+Challenge 2.2.1
+
+Same as 1.2.1 but now adding the verification sources of Challenges 1.1.2 and the cluster of 50 sources studied in Challenge 1.1.3
+Challenge 2.2.2
+
+1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 13$ months (anyway > 1 yr) (from f = 0.1 mHz) at SNR = 20 (for single IFO). Waveform computed according to 2PN restricted post-Newtonian approximation. No spin-orbit or spin-spin modulations
+ Comment on waveform: I would use no spin-orbit modulation
+ 
+ Comment on schedule: I think 1.2.2 is quite a different/harder challenge than 1.2.1, and it should come 6 months later in 
+ Challenge 2. I'd also favor adding ringdowns at that later stage, though we should also continue to give some
+ data with the last week chopped out (CC). 
+Challange 2.3 - EMRIs
+
+No new challenge: continuation of 1.3
+
+Challange 2.4 - Bursts
+
+Challenge 2.4.1
+
+One year of Gaussian and stationary noise (the spectal shape is instrumental + “confusion”) and a number of “burst signals” (as model choose the bursts from cosmic kinks/cusps), say one every couple of weeks - of different SNR (between 5 and 1000) and with characteristic frequency in the range 0.1 mHz - 10 mHz
+Challenge 2.4.2
+
+Same as above but now the “confusion noise” comes from a real simulation of the galaxy
+Challange 2.5 - stochastic backgrounds
+
+Challenge 2.5.1
+
+One year of Gaussian and stationary instrumental noise + an isotropic stochastic background of spectrum $S_h(f) \propto f^{-7/3}$ and amplitude equal to the instrumental noise at 2 mHz. No other source is present in the data stream.
+  Comment: We do need to write down the exact expression for the noise spectral density [which we cook up in an ad hoc fashion
+
+
+Challenge 3
+
+Goal: Test analysis with some realistic overlap 
+Release date: June 2007 
+Due date: December 2007 
+
+Challenge 3.1 - WDs + MBHs + confusion from galaxy
+
+1 year of Gaussian stationary noise + confusion noise from the galaxy + 20+5 verification binaries + 30 loud (SNR in the range 20-100 in one year) unknown white dwarfs at f < 3 mHz + 3 black hole binaries (one with time to coalescence $\approx 1$ month and SNR = 1000, one with time to coalescence $ \approx 9$ months and SNR = 200 and one with time to coalescence $\approx 15$ months and SNR = 50); the binaries with coalescence < year could have the ring-down (we’ll need to decide)
+Challenge 3.3 - EMRIs
+
+Continuation of 3.1/2
+Depending on progress we could design a more ambitious challenge (maybe putting some WD next to the EMRIs in 3.1/2)
+Challenge 3.5 - stochastic
+
+1 year of Gaussian stationary noise + stochastic background with given structure for spectrum and anisotropy [we need to decide]
+
+
+Challenge 4
+
+Goal: Test analysis with realistic noise behaviour (non-stationarities, non-Gaussianity, data dropouts..) 
+Release date: December 2007 
+Due date: June 2008 
+
+
+
+Discussion
+
+
+As I have mentioned in the previous teleconference, I think we are missing a very important branch of challenges: we need to include more sophisticated (mean realistic) models in the latest challenges. It would be good to have another branch of challenges which aims at the detection of more complicated signals. For instance for galactic binaries it would mean including eccentricity, interacting binaries, etc,; for SMBH it would mean going to higher PPN orders, including spins, eccentricity and higher harmonics; for EMRIs it is including numerical kludge or even waveform based on the Teukolsky formalism.
+
+* It was mentioned several times that we should not oversimplify the problem. Here I suggest to include study of more complicated signals starting with a “single source” challenge and introducing the confusion problem much later. Some numbers given for simplified models might not work that well for more complicated signals. One good example is parameter estimation for SMBH. We know that including the spins and higher harmonics can improve parameter estimation, and, since we want to study problem of issuing “early warning “, I think it is important to cover this in our challenges as well.
+
+* My second point is that we can learn a lot from the study when the injected signal and templates do not match exactly. We use this strategy successfully for ground-based ifos. I am sure we can use the simplified models for detection in many cases, we need to learn whether we can estimate parameters as well (or rather “how well”). One of the problem we will face is removal of strong signals and estimation of residuals. Another reason is that we use some assumption when we model the GW signal, and the “best-of-our-knowledge” model might not match the true signal perfectly.
+
+* My third point was already mentioned by Curt, the use of simple model and nice (hopefully) result of simplified analysis might make people too comfortable. This false comfort can hide the amount of work which has to be done in reality! Use of more complicated models might require NEW data analysis methods. This challenges should be introduced early enough, so people can start working on it. I do not suggest here to start running before we learned to crawl, I rather suggest to give people more time to think and start working in the directions outlined above.
 
 
 \begin{thebibliography}{}
