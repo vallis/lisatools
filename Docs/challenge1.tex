@@ -12,11 +12,11 @@
 \usepackage{fancyhdr}
 
 % some definitions 
-\newcommand{\be}{\begin{equation}}
-\newcommand{\ee}{\end{equation}}
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
 %
-\newcommand{\bea}{\begin{eqnarray}}
-\newcommand{\eea}{\end{eqnarray}}
+\def\bea{\begin{eqnarray}}
+\def\eea{\end{eqnarray}}
 %
 \def\ltsima{$\; \buildrel < \over \sim \;$}
 \def\simlt{\lower.5ex\hbox{\ltsima}}
@@ -2205,22 +2205,87 @@ for the same intrinsic parameters (multiple call to {\tt SetSourceLocation} and 
 
 \chapter{Challenge 1}
 
-The goal of Challenge-1 is to enable the development of the necessary data analysis infrastructure and the tacking of simple LISA data analysis problems in which essentially one single source is present in the data stream. The challenges will concentrate on the minimum science requirements (galactic binaries, including verification binaries, and the in-spiral part of the coalescence of a massive black hole binary system. A data set containing an EMRI will also be made available, though the results are due 
+The goal of Challenge-1 is to enable the development of the necessary data analysis infrastructure and the tacking of simple LISA data analysis problems in which either a {\em single} source or a small number of sources well separated in parameter space are present in the data stream. The challenges will concentrate on the minimum science requirements (galactic binaries, including verification binaries, and the in-spiral part of the coalescence of a massive black hole binary system. A data set containing an EMRI will also be made available, though the results are due 
 
-{\bf ID}: Challenge-1\\
-{\bf Release date}: June 2006\\ 
-{\bf Due date}: December 2006
+\section{Training data sets}
 
- [known source analysis reported in September 2006] 
-Note: I would propose to distribute two data sets (with just slightly different source parameters) for each sub-challenge: (i) one with known parameters mainly for code validation (this is a “known source analysis, and we should have report around Septermber) and (ii) one with unknown parameters
+Training data sets containing signals with the same features of those in the challenge are distributed where all the parameters are known. This is aimed at facilitating the validation of the codes used by the participants and provides an additional level of testing.
 
-\section{Challenge 1.1 -- White Dwarfs}
+The training data sets are as follows:
+
+\begin{description}
+
+\item{{\bf T1 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
+\be
+f = 0.3xxx\,
+\ee
+Need here also noise spectral density and ``initial conditions'' for LISA
+
+\item{{\bf T2 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
+\be
+f = 3 xxx\,\mathrm{mHz}
+\ee
+Need here also noise spectral density and ``initial conditions'' for LISA
+
+\item{{\bf T3 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
+\be
+f = 20 xxx\,\mathrm{mHz}
+\ee
+Need here also noise spectral density and ``initial conditions'' for LISA
+
+\item{T4 -- ``Massive black holes''} A 1-yr long data set consisting of Gassian and stationary instrumental noise and a signal produced by the inspiral of a massive binary system lasting several ($\le 6$) months. The SNR produced by the signal is several hundreds. The in-spiral waveform is cmputed according to the Eq(xx) (``restricted post-Newtonian'' approximation, whith phase at the 2PN order). The inspiral is tapered at $r = xx\,M$ according to the following model:
+\be
+this is the expression
+\ee
+The parameters of the signal are:
+
+\item{{\bf T5 -- Massive black holes}} Same kind of data set as T4, but with a different set of source parameters. In this case they are: ....
 
 
+\item{{\bf T6 -- Extreme Mass Ratio Inspirals''}} A set of 1 year of Gaussian and stationary noise (instrumental only) with superimposed on EMRI (with $e \approx 0.2$ at plunge) and SNR = 100 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
+Comment on e=0.20: of course we have to say "when" it's 0.2; I'd suggest e=0.2 at very end of inspiral, or maybe
+e=0.3  when the m=2 harmonic sweeps thru 3mHz (which amounts to pretty much the same thing, for a $10/10^6$ pair) (CC). The parameters are:
+\bea
+m_1 & = & 10^6\,\M_\odot \\
+m_2 & = & 10\,\M_\odot \\
+e & = & 0.3 \quad\mathrm{at} f_{m = 2} = 3\,\mathrm{mHz}\\
+.... & = & ...
+\eea
 
-Challenge 1.1.1
 
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency 0.3 mHz 
+\end{description}
+
+\section{Challenge 1.1 -- Galactic binaries}
+
+This consists in a number of data sets with essentially single 
+
+
+\subsection{Challenge 1.1.1}
+
+This is single source analysis for galactic binaries. 
+
+\begin{itemize}
+\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown; the frequency is in the range:
+\be
+0.2\,\mathrm{mHz} \le f \le = 0.4\,\mathrm{mHz}
+\ee
+Need here also noise spectral density and ``initial conditions'' for LISA
+
+\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown; the frequency is in the range:
+\be
+3.3\,\mathrm{mHz} \le f \le = 3.5\,\mathrm{mHz}
+\ee
+Need here also noise spectral density and ``initial conditions'' for LISA
+
+\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown; the frequency is in the range:
+\be
+2.01\,\mathrm{mHz} \le f \le = 2.03\,\mathrm{mHz}
+\ee
+Need here also noise spectral density and ``initial conditions'' for LISA
+
+\end{itemize}
+
+A 1-yr long data set consisting of intrumental Gaussian and stationary noise and a 1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency 0.3 mHz 
 1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 4 mHz 
 1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 20 mHz 
 Note: should we just choose one of the above?
