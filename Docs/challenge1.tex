@@ -10,6 +10,7 @@
 \usepackage{amssymb}
 \usepackage{url}
 \usepackage{fancyhdr}
+\usepackage{rotating}
 
 % some definitions 
 \def\be{\begin{equation}}
@@ -63,13 +64,13 @@
 \setlength{\evensidemargin}{0in}
 
 %set up headers and footers on each page
-\pagestyle{fancy}
-\fancyhf{}
-\lhead{\bf\begin{tabular}{c}Section\\\thesubsection\end{tabular}}
-\chead{\bf\leftmark}
-\rhead{\bf\begin{tabular}{c}Page\\\thepage\end{tabular}}
+%\pagestyle{fancy}
+%\fancyhf{}
+%\lhead{\bf\begin{tabular}{c}Section\\\thesubsection\end{tabular}}
+%\chead{\bf\leftmark}
+%\rhead{\bf\begin{tabular}{c}Page\\\thepage\end{tabular}}
 %\lfoot{\bf\versionnumber}
-\cfoot{\bf Page~\thepage}
+%\cfoot{\bf Page~\thepage}
 %\rfoot{\bf\today}
 
 
@@ -84,186 +85,184 @@
 
 \chapter{Introduction}
 
+At the LISA International Science Team (LIST) meeting of December 2005, in Pasadena, the Working Group on Data Analysis (LIST-WG1B) decided to embark in the organisation of several rounds of mock data challenges (MLDC), with the dual purpose of:
+\begin{enumerate}
+\item fostering the development of LISA data analysis tools and capabilities, and 
+\item demonstrating the technical readiness already achieved by the gravitational-wave community in distilling a rich science payoff from the LISA data output.
+\end{enumerate}
+ The LISA Mock Data Challenges were proposed and discussed at meetings organized by the US and European LISA Project that were attended by a broad cross section of the international gravitational-wave community. These challenges are meant to be blind tests, but not really a contest.
+
+This (working) document contains a summary of the key activities of the TMock LISA Data Challenge (MLDC) Taskforce that has been has been charged to formulate challenge problems of maximum efficacy, to establish criteria for the evaluation of the analyses, to develop standard models of the LISA mission (orbit, noises) and of the LISA sources (waveforms, parameterization), to provide computing tools such as LISA response simulators, source waveform generators, and a Mock Data Challenge file format, and more generally to provide any technical support necessary to the challengers, including moderated discussion forums and a software repository. 
+
+The first set of challenge datasets will be released during the 6th LISA Symposium (June 19-23, 2006, at Goddard Space Flight Center, Greenbelt, Maryland). The challenges will involve the distribution of several datasets, encoded in a simple standard format, and containing combinations of realistic simulated LISA noise with the signals from one or more LISA gravitational-wave sources of parameters unknown to the challenge participants.
+
+It is envisaged that the results of the first MLDCs will be presented to the broad community and discussed in a dedicated session at the 11th Gravitational-Wave Data Analysis Workshop (December 18-21, 2006, at the Albert Einstein Institute, in Golm). The second and third sets of challenge datasets, embodying more ambitious data-analysis problems, will be released in December 2006, with target timeframes for the completion of the analyses in June and December 2007. 
+
 \section{Overall scheme of the challenges}
 
-Challenge 1
+The structure of the challenges is as follows:
 
-Goal: Code validation (known parameters) and single source analysis 
-Release date: June 2006 
-Due date: December 2006 [known source analysis reported in September 2006] 
-Note: I would propose to distribute two data sets (with just slightly different source parameters) for each sub-challenge: (i) one with known parameters mainly for code validation (this is a “known source analysis, and we should have report around Septermber) and (ii) one with unknown parameters
+\begin{description}
 
-Challenge 1.1 - White Dwarfs
+\item{{\bf Challenge 1}} -- The goal of this challenge is to foster the development in the community of key LISA data analysis tools to meet the minium science requirements, test and validate of simple analysis approaches. The challenge data sets will concentrate on signle source or small number of sources with only moderate overalap in parameter space. As part of this first challenge, training data sets, where all the parameters are made public, will be distributed.
 
-Challenge 1.1.1
+\begin{itemize} 
 
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency 0.3 mHz 
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 4 mHz 
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 20 mHz 
-Note: should we just choose one of the above?
-
-Challenge 1.1.2
-
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) with the 20 or so verification binaries (parameters chosen according to our current best guess) + 5 mock verification binaries in the frequency range 5 mHz - 20 mHz where fdot (positive and negative) is detectable
-Challenge 1.1.3
-
-1 year of Gaussian stationary noise (instrumental + envelope of “confusion”) with 50 WD binaries chosen all around 1 mHz in a band $\approx 0.1$ mHz, SNR in the range 3-10 and overlap in the range 0.1 - 0.95.
-Challenge 1.2 - MBHs
-
-Challenge 1.2.1
-
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 2$ months (from f = 0.1 mHz) at SNR = 500 (for single IFO). We need to agree on tapering and we will also provide stationary phase approximation waveform. The waveform model for the inspiral is restricted to 2PN approximation with no spin-orbit nor spin-spin modultations.
-  Comment on waveform: I would use no spin-orbit modulation [now taken into account]
-  Comment on parameters: I agree with non-spinning and for a parmeter range I'd say the masses should 
-  be between $10^5$ and $3\times 10^6$ (measured locally), and that for the first challenge the redshift should 
-  be in the range 0.9-1.1 (i.e., close to 1, but still something people have to extract from the data).
-  By that redshift, I really mean the luminosity distance should be about 6.4 Gpc, plus or minus 10% (CC).
-Challenge 1.2.2
-
-* 1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 13$ months (anyway > 1 yr) (from f = 0.1 mHz) at SNR = 20 (for single IFO)
-
- Comment on waveform: I would use no spin-orbit modulation
- 
- Comment on schedule: I think 1.2.2 is quite a different/harder challenge than 1.2.1, and it should come 6 months later in 
- Challenge 2. I'd also favor adding ringdowns at that later stage, though we should also continue to give some
- data with the last week chopped out (CC). 
-Challenge 1.3 - EMRIs
-
-Challenge 1.3.1 [THIS IS NOW GONE]
-
-1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (e = 0) and SNR = 100 (for single IFO). [Results are actually expected in June 2007, as part of challenge 2]
-Comment on physical params: I think the early challenges should concentrate on the stronger sources--BHs of about 10 Msun--
-which we also expect to detect more of. LIkewise, might as well make the MBH about $10^6$ (CC).
-Comment on e=0.0: the inspirals get more eccentric at the end, not less, so I don't think e=0 is very realistic (CC).
-Comment on challenge set-up: I'd favor breaking the EMRI challenge into 2: very bright sources (like the SNR =100 above) and 
-the presumably more typical ones with SNR = 30 (in single IFO).  I think we should issue 2 different data sets: one with
-a bright SNR=100 source, and one with SNR =30, since the methods for the 2 problems might be quite different.  The weaker
-source should come will a restricted parameter range (e.g., we tell people a small patch on the sky to look in, and perhaps
-a narrow mass range, to make up for our poor computational resources relative to 2015 (CC).
-Comment on number of sources: As we discussed in the telecon, for each SNR (100 and 30) I think we should produce 2 data
-sets: one w/ a single source and one with ~10 overlapping sources, since I can imagine some methods that might succeed for
-the former but have real troubles w/ the latter (CC).
-Challenge 1.3.1
-
-1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (with $e \approx 0.2$ at plunge) and SNR = 100 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
-Comment on e=0.20: of course we have to say "when" it's 0.2; I'd suggest e=0.2 at very end of inspiral, or maybe
-e=0.3  when the m=2 harmonic sweeps thru 3mHz (which amounts to pretty much the same thing, for a $10/10^6$ pair) (CC).
-Comment on e=0.20: I (AV) propose that we use: m1 = $10^6$ and m2 = 10; e=0.3  when the m=2 harmonic sweeps thru 3mHz; random parameters for the geometry and distance is adjusted in order to have the desired SNR
-Challenge 1.3.2
-
-1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (with $e \approx 0.2$ at plunge - see for the parameters the comment above) and SNR = 30 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
-Challange 1.4 - Bursts
-
-Challenge 1.4.1
-
-only starting from challenge 2
-Challange 1.5 - stochastic backgrounds
-
-Challenge 1.5.1
-
-only starting from challenge 2
+\item {\bf Sources}: galactic white dwarf binaries ($< 50$), verification binaries ($\approx 20$) and massive black hole binay systems (1)
 
 
-Challenge 2
+\item {\bf Relase date}: June 2006
 
-Goal: Test analysis with some overalap; start including EMRIs, bursts and stochastic
-Release date: December 2006 
-Due date: June 2007 
+\item {\bf Due date}: June 2006
 
-Challenge 2.1 - White Dwarfs
+\end{itemize}
 
-Challenge 2.1.1
+\item{{\bf Challenge 2}} -- The goal of this challenge is to test a slighly more realistic data set, with a substantially larger number of sources and to start tackling analysis challenges that include non-minimum science requirement sources (EMRIs, bursts and stochastic backgrounds). Foreground radiation from galaxy simulations will also be added.
 
-No follow-up
+\begin{itemize}
 
-Challenge 2.1.2
-
-Same as Challenge 1.1.2 - the 20 or so verification binaries (parameters chosen according to our current best guess) + 5 mock verification binaries in the frequency range 5 mHz - 20 mHz where fdot (positive and negative) is detectable - but now with noise given by instrumental (Gaussian and stationary) + confusion produced by actual simulation of the galaxy
-Challenge 2.1.3
-
-Same as 1.1.3 but now with 500 sources, that is: 1 year of Gaussian stationary noise (instrumental + envelope of “confusion”) with 500 WD binaries chosen all around 1 mHz in a band $\approx 0.1$ mHz, SNR in the range 3-10 and overlap in the range 0.1 - 0.95.
-Challenge 2.2 - MBHs
-
-Note: the enphasys here is on “interference” amongst sources of different classes
-
-Challenge 2.2.1
-
-Same as 1.2.1 but now adding the verification sources of Challenges 1.1.2 and the cluster of 50 sources studied in Challenge 1.1.3
-Challenge 2.2.2
-
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 13$ months (anyway > 1 yr) (from f = 0.1 mHz) at SNR = 20 (for single IFO). Waveform computed according to 2PN restricted post-Newtonian approximation. No spin-orbit or spin-spin modulations
- Comment on waveform: I would use no spin-orbit modulation
- 
- Comment on schedule: I think 1.2.2 is quite a different/harder challenge than 1.2.1, and it should come 6 months later in 
- Challenge 2. I'd also favor adding ringdowns at that later stage, though we should also continue to give some
- data with the last week chopped out (CC). 
-Challange 2.3 - EMRIs
-
-No new challenge: continuation of 1.3
-
-Challange 2.4 - Bursts
-
-Challenge 2.4.1
-
-One year of Gaussian and stationary noise (the spectal shape is instrumental + “confusion”) and a number of “burst signals” (as model choose the bursts from cosmic kinks/cusps), say one every couple of weeks - of different SNR (between 5 and 1000) and with characteristic frequency in the range 0.1 mHz - 10 mHz
-Challenge 2.4.2
-
-Same as above but now the “confusion noise” comes from a real simulation of the galaxy
-Challange 2.5 - stochastic backgrounds
-
-Challenge 2.5.1
-
-One year of Gaussian and stationary instrumental noise + an isotropic stochastic background of spectrum $S_h(f) \propto f^{-7/3}$ and amplitude equal to the instrumental noise at 2 mHz. No other source is present in the data stream.
-  Comment: We do need to write down the exact expression for the noise spectral density [which we cook up in an ad hoc fashion
+\item {\bf Sources}: galactic white dwarf binaries, verification binaries, massive black hole binay systems, EMRIs, stochastic backgrounds, bursts
 
 
-Challenge 3
+\item {\bf Relase date}: December 2006
 
-Goal: Test analysis with some realistic overlap 
-Release date: June 2007 
-Due date: December 2007 
+\item {\bf Due date}: June 2007
 
-Challenge 3.1 - WDs + MBHs + confusion from galaxy
+\end{itemize}
 
-1 year of Gaussian stationary noise + confusion noise from the galaxy + 20+5 verification binaries + 30 loud (SNR in the range 20-100 in one year) unknown white dwarfs at f < 3 mHz + 3 black hole binaries (one with time to coalescence $\approx 1$ month and SNR = 1000, one with time to coalescence $ \approx 9$ months and SNR = 200 and one with time to coalescence $\approx 15$ months and SNR = 50); the binaries with coalescence < year could have the ring-down (we’ll need to decide)
-Challenge 3.3 - EMRIs
+\item{{\bf Challenge 3}} -- The goal of this challenge is to test a quite realistic (at least for some source classes) LISA data stream, with substantial degree of overalapping amongst different sources. The design of this challenge will also depends on progress made and the outcome of the two previous ones.
 
-Continuation of 3.1/2
-Depending on progress we could design a more ambitious challenge (maybe putting some WD next to the EMRIs in 3.1/2)
-Challenge 3.5 - stochastic
+\begin{itemize}
 
-1 year of Gaussian stationary noise + stochastic background with given structure for spectrum and anisotropy [we need to decide]
+\item {\bf Sources}: galactic white dwarf binaries, verification binaries, massive black hole binay systems, EMRIs, stochastic backgrounds, bursts
 
 
-Challenge 4
+\item {\bf Relase date}: June 2007
 
-Goal: Test analysis with realistic noise behaviour (non-stationarities, non-Gaussianity, data dropouts..) 
-Release date: December 2007 
-Due date: June 2008 
+\item {\bf Due date}: December 2007
+
+\end{itemize}
+
+\item{{\bf Challenge 4}} -- Continue to The goal of this challenge is to test a quite realistic (at least for some source classes) LISA data stream, with substantial degree of overalapping amongst different sources. The design of this challenge will also depends on progress made and the outcome of the two previous ones.
+
+\begin{itemize}
+
+\item {\bf Sources}: galactic white dwarf binaries, verification binaries, massive black hole binay systems, EMRIs, stochastic backgrounds, bursts
 
 
+\item {\bf Relase date}: December 2007
 
-Discussion
+\item {\bf Due date}: Mid/end 2008
 
+\end{itemize}
 
-As I have mentioned in the previous teleconference, I think we are missing a very important branch of challenges: we need to include more sophisticated (mean realistic) models in the latest challenges. It would be good to have another branch of challenges which aims at the detection of more complicated signals. For instance for galactic binaries it would mean including eccentricity, interacting binaries, etc,; for SMBH it would mean going to higher PPN orders, including spins, eccentricity and higher harmonics; for EMRIs it is including numerical kludge or even waveform based on the Teukolsky formalism.
+\end{description}
 
-* It was mentioned several times that we should not oversimplify the problem. Here I suggest to include study of more complicated signals starting with a “single source” challenge and introducing the confusion problem much later. Some numbers given for simplified models might not work that well for more complicated signals. One good example is parameter estimation for SMBH. We know that including the spins and higher harmonics can improve parameter estimation, and, since we want to study problem of issuing “early warning “, I think it is important to cover this in our challenges as well.
+\section{Challenge organisation}
 
-* My second point is that we can learn a lot from the study when the injected signal and templates do not match exactly. We use this strategy successfully for ground-based ifos. I am sure we can use the simplified models for detection in many cases, we need to learn whether we can estimate parameters as well (or rather “how well”). One of the problem we will face is removal of strong signals and estimation of residuals. Another reason is that we use some assumption when we model the GW signal, and the “best-of-our-knowledge” model might not match the true signal perfectly.
+The challange data sets with all the relevant information (including the present documents) will be posted on http://www....
 
-* My third point was already mentioned by Curt, the use of simple model and nice (hopefully) result of simplified analysis might make people too comfortable. This false comfort can hide the amount of work which has to be done in reality! Use of more complicated models might require NEW data analysis methods. This challenges should be introduced early enough, so people can start working on it. I do not suggest here to start running before we learned to crawl, I rather suggest to give people more time to think and start working in the directions outlined above.
+John Baker -- member of the TaskForce and not participating to the analysis of the data sets -- has agreed to produce the data files. Relevant software as well as parameters used to generate the data set will be kept under cvs control by him and not disclosed to the challenge participants nor the other member of the Task Force untill the results have been reported.
 
+\section{Reporting and evaluating results}
+
+Need to fill this.. but we require:
+
+\begin{itemize}
+\item Class of source in the data stream
+\item Parameters that characterise the source(s) -- in the form of posterior probability density functions, or confidence intervals, or any statistical quantity that is relevant for the adopted analysis strategy
+\item A short description of the analysis pipeline
+\item A short description of the software implementation, platform(s) on which the analysis was carried out and quantification of run times
+\item Participants will be asked (whenever possible) to tag the codes used for ``production analysis'' and mantain them under version control to enable possible future checks and/or comparisons that might be required
+\item It is at the participants discretion to make the software available; althought the TaskForce encourages this approach, this is not a requirement to participate to the MLDCs.
+\end{itemize}
+
+The TaskForce will set up the necessary infrastructure to make the report of the results available
+
+The TaskForce will also produce an evaluation matrix to compare different approaches.
+
+{\bf Dissemination of the results: I probably need to say something about this}
+
+\begin{sidewaystable}
+\centering
+\small{
+\begin{tabular}{|l|cccccc|}
+\hline\hline
+& & & & & &  \\
+Challenge ID & Length & signal            & waveform        & comments                               & Noise & Foregrounds \\
+& & & & & & \\
+\hline
+& & & & & &  \\
+& \multicolumn{6}{|c|}{{\bf Challenge 1}}\\
+& & & & & &  \\
+\hline
+1.1.1a       & 1 year             & 1 DWD             & no fdot         & f $\approx 0.3$ mHz, SNR $\approx 20$  & G-S          & no \\
+1.1.1b       & 1 year             & 1 DWD             & no fdot         & f $\approx 3$ mHz, SNR $\approx 20$  & G-S        & no \\
+1.1.1c       & 1 year             & 1 DWD             & no fdot         & f $\approx 20$ mHz, SNR $\approx 20$  & G-G    & no \\
+\hline
+1.1.2       & 1 year              & 20 (mock) VB     & no fdot         & SNR $> 10$  & G-S         & no \\
+1.1.3       & 1 year              & 50 unknwon DWD          & no fdot         & SNR $> 10$  & G-S          & no \\
+\hline
+1.2.1       & 1 year              & 1 MBHB         & restricted 2PN          & SNR $> 200$, $\tau \approx 6$ months   & G-S          & no \\
+\hline
+1.3.1       & 1 year              & 1 EMRI         & kludge Barack\&Cutler         & SNR $\approx 100$ $e \approx 0.2$ at plunge  & G-S          & no \\
+1.3.2       & 1 year              & 1 EMRI         & kludge Barack\&Cutler         & SNR $\approx 30$ $e \approx 0.2$ at plunge  & G-S         & no \\
+\hline
+& & & & & &  \\
+&\multicolumn{6}{|c|}{{\bf Challenge 2}}\\
+& & & & & &  \\
+\hline
+2.1.2       & 1 year              & 25 (mock) VB     & additional 5 with fdot (p/n)   & SNR $> 10$  & G-S       & galaxy \\
+2.1.3       & 1 year              & 500 unknown DWD                & no fdot         & SNR $> 10$  & G-S         & galaxy \\
+\hline
+2.2.1       & 1 year              & 1 MBHB         & restricted 2PN             & SNR $> 200$ $\tau \approx 6 $ months  & G-S         &  \\
+            &                     & +20 VB (1.1.2)      & no fdot                      & SNR $> 10$   &                    &  \\
+            &                     & +50 unknown DWD  (like 1.1.3) & no fdot                      & SNR $> 10$   &                    &  \\
+\hline
+2.2.2       & 1 year              & 1 MBHB         & restricted 2PN         & SNR $ \approx 20$, $\tau \approx 13$ months  & G-S        & no \\
+\hline
+1.3.1 & \multicolumn{6}{|l|}{{continuation of Challenge 1}}\\
+1.3.2 & \multicolumn{6}{|l|}{{continuation of Challenge 1}}\\
+\hline
+2.4.1    & 1 year              & bursts          & cosmic strings     & rate $\approx 10^{-6}$ s (for a range of SNR)        & G-S & no \\
+2.4.2    & 1 year              & bursts          & cosmic strings     & rate rate $\approx 10^{-6}$ s (for a range of SNR)        & G-S & galaxy \\
+\hline
+2.5.1      & 1 year              & stochastic  signal &                 &                                       &  & \\
+\hline
+& & & & & &  \\
+&\multicolumn{6}{|c|}{{\bf Challenge 3}}\\
+& & & & & &  \\
+\hline
+3.1         & 1 year              & 25 (mock) VB     & see 1/2.1.2    & SNR $> 10$               & G-S       & galaxy \\
+            &                     & 30 unknown WDW   & no fdot        & SNR $20-100$ $f< 3$ mHz  &           &        \\
+            &                     & 1 MBHB           & restricted 2PN             & SNR $\approx 10^3$ $\tau \approx 1 $ month  & &  \\
+            &                     & 1 MBHB           & restricted 2PN             & SNR $\approx 200$ $\tau \approx 9 $ month  & &  \\
+            &                     & 1 MBHB           & restricted 2PN             & SNR $\approx 50$ $\tau \approx 15 $ month  & &  \\
+            &                     & bursts           & see 2.4.1                  &    & &  \\
+\hline
+3.2         & 1 year              & DWD + EMRI     &   \ldots  &  \ldots           &  \ldots       &  \ldots \\
+\hline
+\ldots & \ldots &\ldots &\ldots &\ldots &\ldots &\ldots  \\
+\hline
+\hline\hline
+\end{tabular}
+}
+\caption{VB stands for verification binaries, DWD for double white dwarf; G-S stands for Gaussian and stationary; ``galaxy'' for foregrounds means galactic foreground generated using a simulation of the binary pupulations in the galaxy; ``restricted 2PN''should be intended as restricted 2PN waveform with no precession}
+\end{sidewaystable}
+
+%
+%
+%
 \chapter{LISA conventions}
 
 \section{Introduction}
 \label{sec:intro}
 
-The goal of this document is to define a basic set of conventions for describing virtual LISA observatories.
+The goal of this section is to define a basic set of conventions for describing virtual LISA observatories.
 The authors of the \emph{LISA Simulator} and \emph{Synthetic LISA} simulation software have committed to
 adopting these conventions. Early papers on LISA, and even early versions of the simulators, have at times
-used other conventions. An appendix to this document will contain a Rosetta Wheel that explains how other
-the results from other sets of conventions can be mapped onto the new standard.
+used other conventions. An appendix to this document will contain a Rosetta Wheel that explains how
+results from other sets of conventions can be mapped onto the new standard.
 
 Where possible, conventions have have been adopted that are already in common use. In some cases, such as with the
 initial reference orbits and TDI variables, the choices incorporate certain approximations.
@@ -280,12 +279,7 @@ generation 1.5 TDI variables that account for the rotation of the constellation.
 \section{Coordinate System}
 \label{sec:coordinates}
 
-The orbital configuration of the LISA observatory makes
-Heliocentric Ecliptic Coordinates (HEC) a natural choice. These coordinates have the Sun as their
-origin with the $z$ axis pointing toward the north ecliptic pole; the $x-y$
-plane lies in the ecliptic and the $x$ axis points towards the first point of Aries (where the Earth,
-as seen from the Sun, will be located on September 22nd); the $y$ axis completes
-a right-handed orthogonal coordinate system. Sky positions in the HEC system are quoted as
+The orbital configuration of the LISA observatory makes Heliocentric Ecliptic Coordinates (HEC) a natural choice. These coordinates have the Sun as their origin with the $z$ axis pointing toward the north ecliptic pole; the $x-y$ plane lies in the ecliptic and the $x$ axis points towards the first point of Aries (where the Earth, as seen from the Sun, will be located on September 22nd); the $y$ axis completes a right-handed orthogonal coordinate system. Sky positions in the HEC system are quoted as
 ecliptic longitude and ecliptic latitude. When referring to the location of objects far from
 the solar system ({\it i.e.} typical LISA sources) the HEC system coincides with the
 Geocentric Ecliptic Coordinate (GEC) system. Sky positions in the GEC system are quoted as
@@ -367,6 +361,123 @@ ecliptic hemisphere.
 such as Peterseim, Jennrich, and Danzmann, CQG 13, 279 (1996); Schilling, CQG 14, 1513 (1997);
 Peterseim, Jennrich, and Danzmann, CQG 14, 1507 (1997); plus others from the 1997 CQG proceedings.}
 
+
+\section{LISA responses}
+\label{sec:responses}
+
+The basic LISA response to gravitational waves is taken to be the \emph{phase response} $\Phi_{ij}$ used in the
+\emph{LISA Simulator} and discussed in Sec.\ II of Ref.\ \cite{cr2003} [see especially Eqs.\ (4)--(13) and (22)],
+or equivalently the \emph{fractional frequency response} $y^\mathrm{gw}_{slr}$ used in \emph{Synthetic LISA} and
+discussed in Sec.\ II B of Ref.\ \cite{vallis2005}. Here $i$ and $s$ identify the transmitting spacecraft, $j$
+and $r$ the receiving spacecraft for each phase measurement, $l$ is a redundant link index given by
+$l= 1: s = 3 \rightarrow r = 2$; 
+$2: 1 \rightarrow 3$;
+$3: 2 \rightarrow 1$;
+$-1$ (or $1'$): $2 \rightarrow 3$;
+$-2$ (or $2'$): $3 \rightarrow 1$; and
+$-3$ (or $3'$): $1 \rightarrow 2$.
+
+The phase and fractional frequency formalisms are equivalent, and related by a simple time integration.
+{\em Both data streams will be distributed for the challenges}. The frequency measurements have the advantage of being directly proportional to the
+gravitational strain; the phase measurements have the advantage of representing more closely the actual output
+of the LISA phasemeters.  
+
+\section{TDI observables}
+\label{sec:tdi}
+
+At present it appears that Time Delay Interferometry \cite{firstgen} will be needed to cancel laser phase
+noise (arm locking may soften the requirements, but is unlikely to dispense with the need for TDI).
+{\em We will adopt the modified Time Delay Interferometry variables (TDI 1.5)~\cite{secondgen,modified},
+as defined below, as the standard pseudo-LISA data outputs}. The modified TDI variables are a nice compromise
+between the unrealistically simple Michelson variables that are swamped by laser phase noise, and the complicated
+second generation TDI variables
+that are designed to cancel laser phase noise in an array that both rotates and flexes. The modified
+TDI variables fit nicely with the order $e$ truncation of the spacecraft orbits, as the TDI 1.5 scheme is
+able to account for rotation but not flexing \cite{modified}.
+
+We define the standard TDI observables following the \emph{Synthetic LISA} \cite{synthlisa,vallis2005} naming scheme
+and sign conventions (see also the \emph{Synthetic LISA} file \texttt{lisasim-tdi.cpp}). All of these can be used both
+as frequency and phase observables by replacing $y_{slr}$ measurements with $\Phi_{ij}$ measurements. See the TDI
+Rosetta Stone \cite{rosetta} for translations between index notations (in particular, the primed indices of
+Ref.\ \cite{secondgen} correspond to positive indices in the \emph{Synthetic LISA} usage). 
+%
+\begin{itemize}
+%
+\item First-generation TDI (TDI 1.0): the \emph{Sagnac} observables $\alpha$, $\beta$, $\gamma$ (``centered,'' respectively, on spacecraft 1, 2, 3, as all following sets of three), and the \emph{symmetrized Sagnac} observable $\zeta$, as defined in Ref.\ \cite{firstgen}. No need to define the eight-pulse observables (Michelson, etc.), which are the same as in modified TDI.
+%
+\item Modified TDI (TDI 1.5): the \emph{unequal-arm Michelson} observables $X$, $Y$, $Z$;
+the \emph{relay} observables $U$, $V$, $W$; the \emph{monitor} observables $E$, $F$, $G$; the \emph{beacon} observables $P$, $Q$, $R$; the \emph{Sagnac} observables $\alpha_1$, $\alpha_2$, $\alpha_3$; and the \emph{symmetrized Sagnac} observables $\zeta_1$, $\zeta_2$, $\zeta_3$ as defined in Ref.\ \cite{secondgen}.
+%
+\item Second-generation TDI (TDI 2.0): the \emph{unequal-arm Michelson} observables $X_1$, $X_2$, $X_3$;
+the \emph{relay} observables $U_1$, $U_2$, $U_3$; the \emph{monitor} observables $E_1$, $E_2$, $E_3$; the \emph{beacon} observables $P_1$, $P_2$, $P_3$ as defined in Ref.\ \cite{secondgen}.
+%
+\item Optimal TDI observables: in first-generation TDI, $A$, $E$, and $T$ as defined in terms of $\alpha$, $\beta$, $\gamma$ in Ref.\ \cite{optimal}; in modified TDI, $\bar{A}$, $\bar{E}$, $\bar{T}$ as defined in terms of $\alpha_1$, $\alpha_2$, $\alpha_3$ in Ref.\ \cite{ktv}.
+%
+\end{itemize}
+%
+Note also that there is a naming conflict here between the first-generation spacecraft-1--centered monitor
+observable and the first-generation spacecraft-2--centered optimal observable. 
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\hline \hline
+\multicolumn{3}{c}{{\bf TDI Data Streams}} \\
+\hline
+variable & descriptor (phase) & descriptor (fractional frequency offset) \\
+\hline
+\multicolumn{3}{c}{TDI-1.0 Sagnac observables} \\
+$\alpha$, $\beta$, $\gamma$  & \texttt{alphap}, \texttt{betap}, \texttt{gammap} & \texttt{alphaf}, \texttt{betaf}, \texttt{gammaf} \\
+$\zeta$  & \texttt{zetap}  & \texttt{zetaf} \\
+\hline
+\multicolumn{3}{c}{TDI-1.0 \emph{optimal} observables (``\texttt{O}'' for ``optimal'')} \\
+$A$, $E$, $T$ & \texttt{AOp}, \texttt{EOp}, \texttt{TOp} & \texttt{AOf}, \texttt{EOf}, \texttt{TOf} \\
+\hline
+\multicolumn{3}{c}{TDI-1.0 and TDI-1.5 unequal-arm--Michelson observables} \\
+$X$, $Y$, $Z$, & \texttt{Xp}, \texttt{Yp}, \texttt{Zp} & \texttt{Xf}, \texttt{Yf}, \texttt{Zf} \\
+\hline
+\multicolumn{3}{c}{TDI-1.0 and TDI-1.5 \emph{relay}, \emph{monitor}, and \emph{beacon} observables} \\
+$U$, $V$, $W$ & \texttt{Up}, \texttt{Vp}, \texttt{Wp} & \texttt{Uf}, \texttt{Vf}, \texttt{Wf} \\
+$E$, $F$, $G$ & \texttt{Ep}, \texttt{Fp}, \texttt{Gp} & \texttt{Ef}, \texttt{Ff}, \texttt{Gf} \\
+$P$, $Q$, $R$ & \texttt{Pp}, \texttt{Qp}, \texttt{Rp} & \texttt{Pf}, \texttt{Qf}, \texttt{Rf} \\
+\hline
+\multicolumn{3}{c}{TDI-1.5 Sagnac observables} \\
+$\alpha_1$, $\alpha_2$, $\alpha_3$ & \texttt{alpha1p}, \texttt{alpha2p}, \texttt{alpha3p} & \texttt{alpha1f}, \texttt{alpha2f}, \texttt{alpha3f} \\
+$\zeta_1$, $\zeta_2$, $\zeta_3$  & \texttt{zeta1p}, \texttt{zeta2p}, \texttt{zeta3p}  & \texttt{zeta1f}, \texttt{zeta2f}, \texttt{zeta3f} \\
+\hline
+\multicolumn{3}{c}{TDI-1.5 \emph{optimal} observables (``\texttt{B}'' for ``bar'')} \\
+$\bar{A}$, $\bar{E}$, $\bar{T}$ & \texttt{ABp}, \texttt{EBp}, \texttt{TBp} & \texttt{ABf}, \texttt{EBf}, \texttt{TBf} \\
+\hline
+\multicolumn{3}{c}{TDI-2.0 unequal-arm--Michelson observables} \\
+$X_1$, $X_2$, $X_3$, & \texttt{X1p}, \texttt{X2p}, \texttt{X3p} & \texttt{X1f}, \texttt{X2f}, \texttt{X3f} \\
+\hline
+\multicolumn{3}{c}{TDI-2.0 \emph{relay}, \emph{monitor}, and \emph{beacon} observables} \\
+$U_1$, $U_2$, $U_3$ & \texttt{U1p}, \texttt{U2p}, \texttt{U3p} & \texttt{U1f}, \texttt{U2f}, \texttt{U3f} \\
+$E_1$, $E_2$, $E_3$ & \texttt{E1p}, \texttt{E2p}, \texttt{E3p} & \texttt{E1f}, \texttt{E2f}, \texttt{E3f} \\
+$P_1$, $P_2$, $P_3$ & \texttt{P1p}, \texttt{P2p}, \texttt{P3p} & \texttt{P1f}, \texttt{P2f}, \texttt{P3f} \\
+\hline \hline
+\end{tabular}
+\end{center}
+
+
+%%%%%%%%%%
+
+\section{Instrumental Noise}
+
+Here we need to include the description of the instrumnetal noise model that we adopt
+
+
+
+%%%%%%%%
+%
+%
+%%%%%%%%
+
+\chapter{Sources and waveform conventions}
+
+\section{Introduction}
+
+This chapter contains a description of the conventions used to describe the two gravitational wave polarisation and the adopted model for the different class of sources whose signals are present in the mock data sets.
+
 \section{Gravitational-wave sources}
 \label{sec:sources}
 
@@ -377,7 +488,7 @@ comprise the amplitude, frequency, HEC colatitude, HEC longitude, inclination, p
 orbital phase. Some galactic binaries may require additional parameters such as eccentricity and first and
 second derivatives of the frequency. Other systems, such as Extreme Mass Ratio Inspirals (EMRIs) are described
 by a much larger set of parameters since these systems have fewer (approximate) constants of motion. In particular,
-spin-orbit coupling and periholion precession render familiar parameters such as inclination and polarization
+spin-orbit coupling and perihelion precession render familiar parameters such as inclination and polarization
 angle meaningless. On the other hand, while the set of parameters that describe an EMRI can be used to
 describe a galactic binary, there is no way to recover all of these parameters from the observed signal. In terms of
 a Fisher information matrix description, the 17 parameter set of EMRI parameters would yield 10 zero eigenvalues
@@ -489,69 +600,6 @@ These variables are related to the $(\theta_L,\phi_L)$ used by Cutler~\cite{cutl
 and to the $(\psi,\iota)$  used in \emph{Synthetic LISA} \cite{synthlisa,vallis2005} by
 $\iota = \iota_\mathrm{(SL)}$, $\psi = -\psi_\mathrm{(SL)}$.
 
-\subsection{Geometry for Precessing Binaries}
-
-\section{LISA responses}
-\label{sec:responses}
-
-The basic LISA response to gravitational waves is taken to be the \emph{phase response} $\Phi_{ij}$ used in the
-\emph{LISA Simulator} and discussed in Sec.\ II of Ref.\ \cite{cr2003} [see especially Eqs.\ (4)--(13) and (22)],
-or equivalently the \emph{fractional frequency response} $y^\mathrm{gw}_{slr}$ used in \emph{Synthetic LISA} and
-discussed in Sec.\ II B of Ref.\ \cite{vallis2005}. Here $i$ and $s$ identify the transmitting spacecraft, $j$
-and $r$ the receiving spacecraft for each phase measurement, $l$ is a redundant link index given by
-$l= 1: s = 3 \rightarrow r = 2$; 
-$2: 1 \rightarrow 3$;
-$3: 2 \rightarrow 1$;
-$-1$ (or $1'$): $2 \rightarrow 3$;
-$-2$ (or $2'$): $3 \rightarrow 1$; and
-$-3$ (or $3'$): $1 \rightarrow 2$.
-
-The phase and fractional frequency formalisms are equivalent, and related by a simple time integration.
-It is not clear at this time which will be the primary format for LISA data, and perhaps both should be
-adopted concurrently. The frequency measurements have the advantage of being directly proportional to the
-gravitational strain; the phase measurements have the advantage of representing more closely the actual output
-of the LISA phasemeters.  
-
-\section{TDI observables}
-\label{sec:tdi}
-
-At present it appears that Time Delay Interferometry \cite{firstgen} will be needed to cancel laser phase
-noise (arm locking may soften the requirements, but is unlikely to dispense with the need for TDI).
-We will adopt the modified Time Delay Interferometry variables (TDI 1.5)~\cite{secondgen,modified},
-as defined below, as the standard pseudo-LISA data outputs. The modified TDI variables are a nice compromise
-between the unrealistically simple Michelson variables that are swamped by laser phase noise, and the complicated
-second generation TDI variables
-that are designed to cancel laser phase noise in an array that both rotates and flexes. The modified
-TDI variables fit nicely with the order $e$ truncation of the spacecraft orbits, as the TDI 1.5 scheme is
-able to account for rotation but not flexing \cite{modified}.
-
-We define the standard TDI observables following the \emph{Synthetic LISA} \cite{synthlisa,vallis2005} naming scheme
-and sign conventions (see also the \emph{Synthetic LISA} file \texttt{lisasim-tdi.cpp}). All of these can be used both
-as frequency and phase observables by replacing $y_{slr}$ measurements with $\Phi_{ij}$ measurements. See the TDI
-Rosetta Stone \cite{rosetta} for translations between index notations (in particular, the primed indices of
-Ref.\ \cite{secondgen} correspond to positive indices in the \emph{Synthetic LISA} usage). 
-%
-\begin{itemize}
-%
-\item First-generation TDI (TDI 1.0): the \emph{Sagnac} observables $\alpha$, $\beta$, $\gamma$ (``centered,'' respectively, on spacecraft 1, 2, 3, as all following sets of three), and the \emph{symmetrized Sagnac} observable $\zeta$, as defined in Ref.\ \cite{firstgen}. No need to define the eight-pulse observables (Michelson, etc.), which are the same as in modified TDI.
-%
-\item Modified TDI (TDI 1.5): the \emph{unequal-arm Michelson} observables $X$, $Y$, $Z$;
-the \emph{relay} observables $U$, $V$, $W$; the \emph{monitor} observables $E$, $F$, $G$; the \emph{beacon} observables $P$, $Q$, $R$; the \emph{Sagnac} observables $\alpha_1$, $\alpha_2$, $\alpha_3$; and the \emph{symmetrized Sagnac} observables $\zeta_1$, $\zeta_2$, $\zeta_3$ as defined in Ref.\ \cite{secondgen}.
-%
-\item Second-generation TDI (TDI 2.0): the \emph{unequal-arm Michelson} observables $X_1$, $X_2$, $X_3$;
-the \emph{relay} observables $U_1$, $U_2$, $U_3$; the \emph{monitor} observables $E_1$, $E_2$, $E_3$; the \emph{beacon} observables $P_1$, $P_2$, $P_3$ as defined in Ref.\ \cite{secondgen}.
-%
-\item Optimal TDI observables: in first-generation TDI, $A$, $E$, and $T$ as defined in terms of $\alpha$, $\beta$, $\gamma$ in Ref.\ \cite{optimal}; in modified TDI, $\bar{A}$, $\bar{E}$, $\bar{T}$ as defined in terms of $\alpha_1$, $\alpha_2$, $\alpha_3$ in Ref.\ \cite{ktv}.
-%
-\end{itemize}
-%
-Note also that there is a naming conflict here between the first-generation spacecraft-1--centered monitor
-observable and the first-generation spacecraft-2--centered optimal observable. 
-
-\section{Abstract file format}
-
-\subsection{Gravitational-wave sources}
-
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
 \hline \hline
@@ -565,86 +613,23 @@ $\phi$   & $\lambda$       & $\phi_s$   & \texttt{EclipticLongitude}  & radians,
 \multicolumn{5}{c}{non-precessing binary geometry} \\
 $\iota$ & $\iota$ & see Eq.\ \eqref{eq:iotatocutler}  & \texttt{BinaryInclination} & radians, degrees \\
 $\psi$  & $-\psi$ & see Eq.\ \eqref{eq:iotatocutler}  & \texttt{BinaryPolarization} & radians, degrees \\
-\hline
-\multicolumn{5}{c}{precessing binary geometry} \\
-\ldots & \ldots & \ldots & \ldots & \ldots \\
-\hline
-\multicolumn{5}{c}{physical parameters for non-evolving circular binaries} \\
-\ldots & \ldots & \ldots & \ldots & \ldots \\
-\hline
-\multicolumn{5}{c}{additional parameters for non-evolving elliptical binaries} \\
-\ldots & \ldots & \ldots & \ldots & \ldots \\
-\hline
-\multicolumn{5}{c}{additional parameters for evolving circular binaries} \\
-\ldots & \ldots & \ldots & \ldots & \ldots \\
-\hline
-\multicolumn{5}{c}{additional parameters for spinning black-hole binaries} \\
-\ldots & \ldots & \ldots & \ldots & \ldots \\
-\hline
-\multicolumn{5}{c}{additional (or alternative) parameters for EMRIs} \\
 \hline \hline
 \end{tabular} \\
 ${}^1$Only one out of \texttt{EclipticColatitude} and \texttt{EclipticLatitude} required.
 \end{center}
 
-\subsection{TDI Data Streams}
+\subsection{Geometry for Precessing Binaries}
 
-\begin{center}
-\begin{tabular}{c|c|c}
-\hline \hline
-variable & descriptor (phase) & descriptor (fractional frequency offset) \\
-\hline
-\multicolumn{3}{c}{TDI-1.0 Sagnac observables} \\
-$\alpha$, $\beta$, $\gamma$  & \texttt{alphap}, \texttt{betap}, \texttt{gammap} & \texttt{alphaf}, \texttt{betaf}, \texttt{gammaf} \\
-$\zeta$  & \texttt{zetap}  & \texttt{zetaf} \\
-\hline
-\multicolumn{3}{c}{TDI-1.0 \emph{optimal} observables (``\texttt{O}'' for ``optimal'')} \\
-$A$, $E$, $T$ & \texttt{AOp}, \texttt{EOp}, \texttt{TOp} & \texttt{AOf}, \texttt{EOf}, \texttt{TOf} \\
-\hline
-\multicolumn{3}{c}{TDI-1.0 and TDI-1.5 unequal-arm--Michelson observables} \\
-$X$, $Y$, $Z$, & \texttt{Xp}, \texttt{Yp}, \texttt{Zp} & \texttt{Xf}, \texttt{Yf}, \texttt{Zf} \\
-\hline
-\multicolumn{3}{c}{TDI-1.0 and TDI-1.5 \emph{relay}, \emph{monitor}, and \emph{beacon} observables} \\
-$U$, $V$, $W$ & \texttt{Up}, \texttt{Vp}, \texttt{Wp} & \texttt{Uf}, \texttt{Vf}, \texttt{Wf} \\
-$E$, $F$, $G$ & \texttt{Ep}, \texttt{Fp}, \texttt{Gp} & \texttt{Ef}, \texttt{Ff}, \texttt{Gf} \\
-$P$, $Q$, $R$ & \texttt{Pp}, \texttt{Qp}, \texttt{Rp} & \texttt{Pf}, \texttt{Qf}, \texttt{Rf} \\
-\hline
-\multicolumn{3}{c}{TDI-1.5 Sagnac observables} \\
-$\alpha_1$, $\alpha_2$, $\alpha_3$ & \texttt{alpha1p}, \texttt{alpha2p}, \texttt{alpha3p} & \texttt{alpha1f}, \texttt{alpha2f}, \texttt{alpha3f} \\
-$\zeta_1$, $\zeta_2$, $\zeta_3$  & \texttt{zeta1p}, \texttt{zeta2p}, \texttt{zeta3p}  & \texttt{zeta1f}, \texttt{zeta2f}, \texttt{zeta3f} \\
-\hline
-\multicolumn{3}{c}{TDI-1.5 \emph{optimal} observables (``\texttt{B}'' for ``bar'')} \\
-$\bar{A}$, $\bar{E}$, $\bar{T}$ & \texttt{ABp}, \texttt{EBp}, \texttt{TBp} & \texttt{ABf}, \texttt{EBf}, \texttt{TBf} \\
-\hline
-\multicolumn{3}{c}{TDI-2.0 unequal-arm--Michelson observables} \\
-$X_1$, $X_2$, $X_3$, & \texttt{X1p}, \texttt{X2p}, \texttt{X3p} & \texttt{X1f}, \texttt{X2f}, \texttt{X3f} \\
-\hline
-\multicolumn{3}{c}{TDI-2.0 \emph{relay}, \emph{monitor}, and \emph{beacon} observables} \\
-$U_1$, $U_2$, $U_3$ & \texttt{U1p}, \texttt{U2p}, \texttt{U3p} & \texttt{U1f}, \texttt{U2f}, \texttt{U3f} \\
-$E_1$, $E_2$, $E_3$ & \texttt{E1p}, \texttt{E2p}, \texttt{E3p} & \texttt{E1f}, \texttt{E2f}, \texttt{E3f} \\
-$P_1$, $P_2$, $P_3$ & \texttt{P1p}, \texttt{P2p}, \texttt{P3p} & \texttt{P1f}, \texttt{P2f}, \texttt{P3f} \\
-\hline \hline
-\end{tabular}
-\end{center}
-
-
-%%%%%%%%%%
-
-
-
-\section{Orbit and motion}
-
-\section{Redouts and channels}
-
-\section{Noise}
-
-\chapter{Sources and waveform conventions}
+Not needed yet.
 
 \section{Galactic binaries}
 
-Galactic binaries will be provided as two distinct types of sources in the Mock LISA Data Challenge---a bulk signal from the Galaxy, and resolvable binaries. In the first instance the source descriptors will be applicable to the model Galaxy as a whole, while in the second instance the source descriptors will be applicable to the properties of the individual binaries. In this note, we will describe the source descriptors along with the approximations and definitions for the different types of binaries that may appear in the Mock LISA Data Challenge. The specific waveforms for the initial challenge are given at the end of this note.
+Galactic binaries will be provided as two distinct types of sources in the Mock LISA Data Challenge---a bulk signal from the Galaxy, and resolvable binaries. In the first instance the source descriptors will be applicable to the model Galaxy as a whole, while in the second instance the source descriptors will be applicable to the properties of the individual binaries. Challange-1 data sets include only signals from resolvable binaries, and we will concentrate on those. LISA has 
 
-{\bf Galaxy Descriptors}
+
+In this note, we will describe the source descriptors along with the approximations and definitions for the different types of binaries that may appear in the Mock LISA Data Challenge. The specific waveforms for the initial challenge are given at the end of this note.
+
+\subsection{Galactic model}
 
 The bulk properties of the Galaxy can be broken down into morphology and composition. The morphology of a Galaxy is best described in terms of a population density function. For the purposes of the MLDC, it is probably best to use the two population densities currently in the literature. The double exponential used by Hils, Bender \& Webbink (1990) and Timpano, Rubbo \& Cornish (2005) is described entirely by central density, $\rho_0$, radial scale, $R_0$, and scale height, $z_0$, and has the form (in Galactocentric cylindrical coordinates):
 $$
@@ -658,7 +643,7 @@ In the current usage, $c = 0,~1$, although any real number within this range is 
 
 The composition of the Galaxy is best described by the separate binary sub-types (e.g.: WD-WD, WD-NS, WD-BH, etc.) which make up the total population of binaries. Since it is quite likely that different sub-types will also have different population density descriptions, the most extensible and efficient way to describe the bulk properties of the Galaxy will be a list of parameters for each sub-type. The parameters will include the sub-type, a flag for the density distribution used, and the values of $N$ (or $\rho_0$), $c$, $R_0$, and $z_0$.
 
-{\bf Binary Descriptors}
+\subsection{Stellar mass binaries}
 
 The source descriptors for individual, resolvable binaries should allow for a wide class of binaries, but they should be based upon the observable quantities in the LISA data stream to the greatest degree possible. In order of increasing complexity the descriptors can be:
 
@@ -674,7 +659,7 @@ $$
 $$
 with chirp mass ${\cal M}^{5/3} = M_1M_2(M_1+M_2)^{-1/3}$ and distance $d$; the source position is $\theta$, $\phi$; the angle of inclination is $\iota$; the polarization angle is $\psi$; and the initial phase is $\phi_0$; the frequency derivative $\dot{f}$ can be due to either mass transfer or gravitational wave emission; and the eccentricity is $e$. The waveforms should be generated using the quadrupole approximation that can be found in Peters \& Mathews (1963), and described in detail in Rubbo, Cornish \& Poujade (2004) or Pierro {\it et al.} (2001).
 
-{\bf Circular Monochromatic Binaries}
+\subsubsection{Circular Monochromatic Binaries}
 
 If a binary is considered circular, then the spreading of the power into higher harmonics of the orbital frequency is deemed small enough to ignore. For small eccentricities, the fitting factor (FF) is found from (Pierro {\it et al.}, 2001) to be:
 $$
@@ -2215,23 +2200,69 @@ The training data sets are as follows:
 
 \begin{description}
 
-\item{{\bf T1 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
-\be
-f = 0.3xxx\,
-\ee
-Need here also noise spectral density and ``initial conditions'' for LISA
+\item{{\bf T1 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. 
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge T1 -- Source(s): galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$ & \\
+$\phi$   & \\ 
+$\iota$  & \\ 
+$\psi$   & \\
+${\cal A}$ & \\
+$f_0$    & \\ 
+$\phi_0$ & \\
+noise    & \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
 
 \item{{\bf T2 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
-\be
-f = 3 xxx\,\mathrm{mHz}
-\ee
-Need here also noise spectral density and ``initial conditions'' for LISA
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge T2 -- Source(s): galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$ & \\
+$\phi$   & \\ 
+$\iota$  & \\ 
+$\psi$   & \\
+${\cal A}$ & \\
+$f_0$    & \\ 
+$\phi_0$ & \\
+noise    & \\
+\hline \hline
+\end{tabular} \\
+\end{center}
 
 \item{{\bf T3 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
-\be
-f = 20 xxx\,\mathrm{mHz}
-\ee
-Need here also noise spectral density and ``initial conditions'' for LISA
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge T2 -- Source(s): galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$ & \\
+$\phi$   & \\ 
+$\iota$  & \\ 
+$\psi$   & \\
+${\cal A}$ & \\
+$f_0$    & \\ 
+$\phi_0$ & \\
+noise    & \\
+\hline \hline
+\end{tabular} \\
+\end{center}
 
 \item{T4 -- ``Massive black holes''} A 1-yr long data set consisting of Gassian and stationary instrumental noise and a signal produced by the inspiral of a massive binary system lasting several ($\le 6$) months. The SNR produced by the signal is several hundreds. The in-spiral waveform is cmputed according to the Eq(xx) (``restricted post-Newtonian'' approximation, whith phase at the 2PN order). The inspiral is tapered at $r = xx\,M$ according to the following model:
 \be
@@ -2265,182 +2296,74 @@ This consists in a number of data sets with essentially single
 This is single source analysis for galactic binaries. 
 
 \begin{itemize}
-\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown; the frequency is in the range:
-\be
-0.2\,\mathrm{mHz} \le f \le = 0.4\,\mathrm{mHz}
-\ee
-Need here also noise spectral density and ``initial conditions'' for LISA
+\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown.
 
-\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown; the frequency is in the range:
-\be
-3.3\,\mathrm{mHz} \le f \le = 3.5\,\mathrm{mHz}
-\ee
-Need here also noise spectral density and ``initial conditions'' for LISA
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.1a -- Source(s): galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$ & \\
+$\phi$   & \\ 
+$\iota$  & \\ 
+$\psi$   & \\
+${\cal A}$ & \\
+$f_0$    & \\ 
+$\phi_0$ & \\
+noise    & \\
+\hline \hline
+\end{tabular} \\
+\end{center}
 
-\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown; the frequency is in the range:
-\be
-2.01\,\mathrm{mHz} \le f \le = 2.03\,\mathrm{mHz}
-\ee
-Need here also noise spectral density and ``initial conditions'' for LISA
+
+\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown.
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.1b -- Source(s): galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$ & \\
+$\phi$   & \\ 
+$\iota$  & \\ 
+$\psi$   & \\
+${\cal A}$ & \\
+$f_0$    & \\ 
+$\phi_0$ & \\
+noise    & \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
+
+\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown.
+
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.1c -- Source(s): galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$ & \\
+$\phi$   & \\ 
+$\iota$  & \\ 
+$\psi$   & \\
+${\cal A}$ & \\
+$f_0$    & \\ 
+$\phi_0$ & \\
+noise    & \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
 
 \end{itemize}
-
-A 1-yr long data set consisting of intrumental Gaussian and stationary noise and a 1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency 0.3 mHz 
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 4 mHz 
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 exactly monochromatic WD with SNR 20 over 1 year (for single IFO) at frequency a 20 mHz 
-Note: should we just choose one of the above?
-
-Challenge 1.1.2
-
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) with the 20 or so verification binaries (parameters chosen according to our current best guess) + 5 mock verification binaries in the frequency range 5 mHz - 20 mHz where fdot (positive and negative) is detectable
-Challenge 1.1.3
-
-1 year of Gaussian stationary noise (instrumental + envelope of “confusion”) with 50 WD binaries chosen all around 1 mHz in a band $\approx 0.1$ mHz, SNR in the range 3-10 and overlap in the range 0.1 - 0.95.
-Challenge 1.2 - MBHs
-
-Challenge 1.2.1
-
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 2$ months (from f = 0.1 mHz) at SNR = 500 (for single IFO). We need to agree on tapering and we will also provide stationary phase approximation waveform. The waveform model for the inspiral is restricted to 2PN approximation with no spin-orbit nor spin-spin modultations.
-  Comment on waveform: I would use no spin-orbit modulation [now taken into account]
-  Comment on parameters: I agree with non-spinning and for a parmeter range I'd say the masses should 
-  be between $10^5$ and $3\times 10^6$ (measured locally), and that for the first challenge the redshift should 
-  be in the range 0.9-1.1 (i.e., close to 1, but still something people have to extract from the data).
-  By that redshift, I really mean the luminosity distance should be about 6.4 Gpc, plus or minus 10% (CC).
-Challenge 1.2.2
-
-* 1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 13$ months (anyway > 1 yr) (from f = 0.1 mHz) at SNR = 20 (for single IFO)
-
- Comment on waveform: I would use no spin-orbit modulation
- 
- Comment on schedule: I think 1.2.2 is quite a different/harder challenge than 1.2.1, and it should come 6 months later in 
- Challenge 2. I'd also favor adding ringdowns at that later stage, though we should also continue to give some
- data with the last week chopped out (CC). 
-Challenge 1.3 - EMRIs
-
-Challenge 1.3.1 [THIS IS NOW GONE]
-
-1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (e = 0) and SNR = 100 (for single IFO). [Results are actually expected in June 2007, as part of challenge 2]
-Comment on physical params: I think the early challenges should concentrate on the stronger sources--BHs of about 10 Msun--
-which we also expect to detect more of. LIkewise, might as well make the MBH about $10^6$ (CC).
-Comment on e=0.0: the inspirals get more eccentric at the end, not less, so I don't think e=0 is very realistic (CC).
-Comment on challenge set-up: I'd favor breaking the EMRI challenge into 2: very bright sources (like the SNR =100 above) and 
-the presumably more typical ones with SNR = 30 (in single IFO).  I think we should issue 2 different data sets: one with
-a bright SNR=100 source, and one with SNR =30, since the methods for the 2 problems might be quite different.  The weaker
-source should come will a restricted parameter range (e.g., we tell people a small patch on the sky to look in, and perhaps
-a narrow mass range, to make up for our poor computational resources relative to 2015 (CC).
-Comment on number of sources: As we discussed in the telecon, for each SNR (100 and 30) I think we should produce 2 data
-sets: one w/ a single source and one with ~10 overlapping sources, since I can imagine some methods that might succeed for
-the former but have real troubles w/ the latter (CC).
-Challenge 1.3.1
-
-1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (with $e \approx 0.2$ at plunge) and SNR = 100 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
-Comment on e=0.20: of course we have to say "when" it's 0.2; I'd suggest e=0.2 at very end of inspiral, or maybe
-e=0.3  when the m=2 harmonic sweeps thru 3mHz (which amounts to pretty much the same thing, for a $10/10^6$ pair) (CC).
-Comment on e=0.20: I (AV) propose that we use: m1 = $10^6$ and m2 = 10; e=0.3  when the m=2 harmonic sweeps thru 3mHz; random parameters for the geometry and distance is adjusted in order to have the desired SNR
-Challenge 1.3.2
-
-1 year of Gaussian stationary noise (instrumental only) + 1 EMRI (with $e \approx 0.2$ at plunge - see for the parameters the comment above) and SNR = 30 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
-Challange 1.4 - Bursts
-
-Challenge 1.4.1
-
-only starting from challenge 2
-Challange 1.5 - stochastic backgrounds
-
-Challenge 1.5.1
-
-only starting from challenge 2
-
-
-Challenge 2
-
-Goal: Test analysis with some overalap; start including EMRIs, bursts and stochastic
-Release date: December 2006 
-Due date: June 2007 
-
-Challenge 2.1 - White Dwarfs
-
-Challenge 2.1.1
-
-No follow-up
-
-Challenge 2.1.2
-
-Same as Challenge 1.1.2 - the 20 or so verification binaries (parameters chosen according to our current best guess) + 5 mock verification binaries in the frequency range 5 mHz - 20 mHz where fdot (positive and negative) is detectable - but now with noise given by instrumental (Gaussian and stationary) + confusion produced by actual simulation of the galaxy
-Challenge 2.1.3
-
-Same as 1.1.3 but now with 500 sources, that is: 1 year of Gaussian stationary noise (instrumental + envelope of “confusion”) with 500 WD binaries chosen all around 1 mHz in a band $\approx 0.1$ mHz, SNR in the range 3-10 and overlap in the range 0.1 - 0.95.
-Challenge 2.2 - MBHs
-
-Note: the enphasys here is on “interference” amongst sources of different classes
-
-Challenge 2.2.1
-
-Same as 1.2.1 but now adding the verification sources of Challenges 1.1.2 and the cluster of 50 sources studied in Challenge 1.1.3
-Challenge 2.2.2
-
-1 year of Gaussian stationary noise (the spectral shape is instrumental + “confusion”) + 1 (Schwarzschild) SMBH binary with time to coalescence $\approx 13$ months (anyway > 1 yr) (from f = 0.1 mHz) at SNR = 20 (for single IFO). Waveform computed according to 2PN restricted post-Newtonian approximation. No spin-orbit or spin-spin modulations
- Comment on waveform: I would use no spin-orbit modulation
- 
- Comment on schedule: I think 1.2.2 is quite a different/harder challenge than 1.2.1, and it should come 6 months later in 
- Challenge 2. I'd also favor adding ringdowns at that later stage, though we should also continue to give some
- data with the last week chopped out (CC). 
-Challange 2.3 - EMRIs
-
-No new challenge: continuation of 1.3
-
-Challange 2.4 - Bursts
-
-Challenge 2.4.1
-
-One year of Gaussian and stationary noise (the spectal shape is instrumental + “confusion”) and a number of “burst signals” (as model choose the bursts from cosmic kinks/cusps), say one every couple of weeks - of different SNR (between 5 and 1000) and with characteristic frequency in the range 0.1 mHz - 10 mHz
-Challenge 2.4.2
-
-Same as above but now the “confusion noise” comes from a real simulation of the galaxy
-Challange 2.5 - stochastic backgrounds
-
-Challenge 2.5.1
-
-One year of Gaussian and stationary instrumental noise + an isotropic stochastic background of spectrum $S_h(f) \propto f^{-7/3}$ and amplitude equal to the instrumental noise at 2 mHz. No other source is present in the data stream.
-  Comment: We do need to write down the exact expression for the noise spectral density [which we cook up in an ad hoc fashion
-
-
-Challenge 3
-
-Goal: Test analysis with some realistic overlap 
-Release date: June 2007 
-Due date: December 2007 
-
-Challenge 3.1 - WDs + MBHs + confusion from galaxy
-
-1 year of Gaussian stationary noise + confusion noise from the galaxy + 20+5 verification binaries + 30 loud (SNR in the range 20-100 in one year) unknown white dwarfs at f < 3 mHz + 3 black hole binaries (one with time to coalescence $\approx 1$ month and SNR = 1000, one with time to coalescence $ \approx 9$ months and SNR = 200 and one with time to coalescence $\approx 15$ months and SNR = 50); the binaries with coalescence < year could have the ring-down (we’ll need to decide)
-Challenge 3.3 - EMRIs
-
-Continuation of 3.1/2
-Depending on progress we could design a more ambitious challenge (maybe putting some WD next to the EMRIs in 3.1/2)
-Challenge 3.5 - stochastic
-
-1 year of Gaussian stationary noise + stochastic background with given structure for spectrum and anisotropy [we need to decide]
-
-
-Challenge 4
-
-Goal: Test analysis with realistic noise behaviour (non-stationarities, non-Gaussianity, data dropouts..) 
-Release date: December 2007 
-Due date: June 2008 
-
-
-
-Discussion
-
-
-As I have mentioned in the previous teleconference, I think we are missing a very important branch of challenges: we need to include more sophisticated (mean realistic) models in the latest challenges. It would be good to have another branch of challenges which aims at the detection of more complicated signals. For instance for galactic binaries it would mean including eccentricity, interacting binaries, etc,; for SMBH it would mean going to higher PPN orders, including spins, eccentricity and higher harmonics; for EMRIs it is including numerical kludge or even waveform based on the Teukolsky formalism.
-
-* It was mentioned several times that we should not oversimplify the problem. Here I suggest to include study of more complicated signals starting with a “single source” challenge and introducing the confusion problem much later. Some numbers given for simplified models might not work that well for more complicated signals. One good example is parameter estimation for SMBH. We know that including the spins and higher harmonics can improve parameter estimation, and, since we want to study problem of issuing “early warning “, I think it is important to cover this in our challenges as well.
-
-* My second point is that we can learn a lot from the study when the injected signal and templates do not match exactly. We use this strategy successfully for ground-based ifos. I am sure we can use the simplified models for detection in many cases, we need to learn whether we can estimate parameters as well (or rather “how well”). One of the problem we will face is removal of strong signals and estimation of residuals. Another reason is that we use some assumption when we model the GW signal, and the “best-of-our-knowledge” model might not match the true signal perfectly.
-
-* My third point was already mentioned by Curt, the use of simple model and nice (hopefully) result of simplified analysis might make people too comfortable. This false comfort can hide the amount of work which has to be done in reality! Use of more complicated models might require NEW data analysis methods. This challenges should be introduced early enough, so people can start working on it. I do not suggest here to start running before we learned to crawl, I rather suggest to give people more time to think and start working in the directions outlined above.
 
 
 \begin{thebibliography}{}
