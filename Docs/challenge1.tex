@@ -2281,20 +2281,8 @@ noise    & \\
 
 \begin{sidewaystable}
 \centering
-\begin{table}
-\caption{LISA Verification Binaries.  These data are the exact numbers
-used to produce the input data streams for the Challenge 1.1.2
-(Verification Binaries).  Note that of this list, only the first six
-binaries are known verification binaries at the current time.  The
-values for their parameters are derived from a list maintained by
-Nelemans\cite{NelemansWiki}.  The observer dependent parameters
-($\psi, \iota, \phi_{o}$) for these six binaries are poorly known, and
-were assigned random values for this Challenge (indicated by italics;
-the excpetion is the value of $\iota$ for AM CVn, which is reasonably
-well known).  The remaining binaries are included to mimic
-verification binaries which might be known before the LISA flight era;
-their parameter values are drawn from a population synthesis galaxy by
-Matt Benacquista.}
+\small{
+%\begin{table}
 \begin{tabular}{|l|c|c|c|c|c|c|c|}
 \hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
 Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
@@ -2324,19 +2312,26 @@ bltOPEN20   &  -0.1691986732   &       4.592845   &       4.930721   & 1.1893483
 \hline
 \label{tbl.LISAbinaries}
 \end{tabular}
-\end{table}
+\caption{LISA Verification Binaries.  These data are the exact numbers
+used to produce the input data streams for the Challenge 1.1.2
+(Verification Binaries).  Note that of this list, only the first six
+binaries are known verification binaries at the current time.  The
+values for their parameters are derived from a list maintained by
+Nelemans\cite{NelemansWiki}.  The observer dependent parameters
+($\psi, \iota, \phi_{o}$) for these six binaries are poorly known, and
+were assigned random values for this Challenge (indicated by italics;
+the excpetion is the value of $\iota$ for AM CVn, which is reasonably
+well known).  The remaining binaries are included to mimic
+verification binaries which might be known before the LISA flight era;
+their parameter values are drawn from a population synthesis galaxy by
+Matt Benacquista.}
+%\end{table}
+}
 \end{sidewaystable}
 
-%%%%%%%%%%
-
-\begin{turnpage}
-\begin{table}[t]
-\begin{center}
-    \caption{LISA Resolvable Binaries.  These data are the exact numbers
-    used to produce the input data streams for the Challenge 1.1.3
-    (Resolvable Binaries), with $3 {\rm mHz} \leq f \leq 10 {\rm mHz}$.
-    The binary parameter values are drawn from a
-    population synthesis galaxy by Matt Benacquista.}
+\begin{sidewaystable}
+%\begin{table}[t]
+\centering
 \begin{tabular}{|l|c|c|c|c|c|c|c|}
 \hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
 Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
@@ -2365,9 +2360,22 @@ bltOPEN520   &    1.044871727   &       5.105563   &       4.176902 & 1.75827096
 \hline
 \end{tabular}
 \label{tbl.LISAbinaries}
-\end{center}
-\end{table}
-\end{turnpage}
+    \caption{LISA Resolvable Binaries.  These data are the exact numbers
+    used to produce the input data streams for the Challenge 1.1.3
+    (Resolvable Binaries), with $3 {\rm mHz} \leq f \leq 10 {\rm mHz}$.
+    The binary parameter values are drawn from a
+    population synthesis galaxy by Matt Benacquista.}
+%\end{table}
+\end{sidewaystable}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
+
+
+%%%%%%%%%%
+
 
 \begin{thebibliography}{}
 \input{biblio_ch1}
