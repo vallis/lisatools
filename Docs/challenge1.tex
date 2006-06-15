@@ -647,131 +647,40 @@ The composition of the Galaxy is best described by the separate binary sub-types
 
 The source descriptors for individual, resolvable binaries should allow for a wide class of binaries, but they should be based upon the observable quantities in the LISA data stream to the greatest degree possible. In order of increasing complexity the descriptors can be:
 
-\begin{itemize}
-\item Circular, monochromatic: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$
-\item Circular, chirping: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$, $\dot{f}$, $\ddot{f}$
-\item Eccentric, monochromatic: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$, $e$
-\item Eccentric, chirping: ${\cal A}$, $f$, $\theta$, $\phi$, $\iota$, $\psi$, $\phi_0$, $e$, $\dot{f}$, $\ddot{f}$
-\end{itemize}
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Galactic binaries source descriptors}} \\
+\hline
+\hline
+${\cal A}$ & \\
+$f_0$    & \\ 
+$\phi_0$ & \\
+$\dot{f}_0$ & \\
+$\ddot{f}_0$ & \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
 where the amplitude is given by:
 $$
 {\cal A} = {{2G^{5/3}}\over{c^4d}}(2\pi f)^{2/3} {\cal M}^{5/3} \eqno(3)
 $$
 with chirp mass ${\cal M}^{5/3} = M_1M_2(M_1+M_2)^{-1/3}$ and distance $d$; the source position is $\theta$, $\phi$; the angle of inclination is $\iota$; the polarization angle is $\psi$; and the initial phase is $\phi_0$; the frequency derivative $\dot{f}$ can be due to either mass transfer or gravitational wave emission; and the eccentricity is $e$. The waveforms should be generated using the quadrupole approximation that can be found in Peters \& Mathews (1963), and described in detail in Rubbo, Cornish \& Poujade (2004) or Pierro {\it et al.} (2001).
 
-\subsubsection{Circular Monochromatic Binaries}
-
-If a binary is considered circular, then the spreading of the power into higher harmonics of the orbital frequency is deemed small enough to ignore. For small eccentricities, the fitting factor (FF) is found from (Pierro {\it et al.}, 2001) to be:
-$$
-{\rm FF}_{+,\times} \sim 1 - {{\rm THD}^2_{+,\times}\over{2}}, \eqno(4)
-$$
-where (to first order in $e$),
 \bea
-{\rm THD}_+ & \leq 2.574 e  & (5a)\cr
-{\rm THD}_{\times} & \leq 2.372 e. & (5b)\cr
-\eea
-Consequently, the maximum eccentricity allowed for a binary to be considered circular is determined by the fitting factor:
-$$
-e_{\rm max} = {\sqrt{2(1-{\rm FF})}\over{2.574}}. \eqno(6)
-$$
-For a fitting factor of ${\rm FF} = 0.999$, this gives $e_{\rm max} \sim 0.02$. Increasing the fitting factor to ${\rm FF} = 0.9999$ gives $e_{\rm max} \sim 0.005$. Thus, we define circular binaries to be those with $e < 0.005$.
-
-If a binary is considered monochromatic, then the frequency shift during the observation time $T_{\rm obs}$ is considered unmeasurable. This can be set as a requirement on the accumulated phase over the observation period. If an accumulated phase difference of $\alpha \pi$ can be measured, then the requirement on $\dot{f}$ is found from:
-$$
-\Delta \phi = 2 \pi \int_0^{T_{\rm obs}}{\dot{f} t dt} \leq \alpha \pi \eqno(7)
-$$
-so a binary is monochromatic if $\dot{f} \leq \alpha / T_{\rm obs}$. If the binary is detached and the frequency shift is entirely due to gravitational radiation, this requires that:
-$$
-{\cal M}^{5/3}f^{11/3} \leq {{5 \alpha c^5} \over {\pi^{8/3} G^{5/3} T_{\rm obs}^2}}. \eqno(8)
-$$
-If the binary is undergoing Roche lobe overflow (RLOF), then we assume that the mass transfer is stable and is driven by angular momentum loss through gravitational radiation. The change in frequency due to RLOF is calculated from a knowledge of the donor mass radius, $R_d\left(M_d\right)$, and the Roche lobe radius:
-$$
-R_{\rm R} = a F\left(M_d,M_a\right), \eqno(9)
-$$
-where $a$ is the orbital separation and $F$ is a function of the donor and accretor masses ($M_d$ and $M_a$, respectively). Given specific functional forms for $F$ and $R_d$, the frequency shift is given by:
-$$
-\dot{f} = \dot{f}_{\rm GR}\left(1 + {2 \over 3}{G^{1/3} \over {f^{2/3}\pi^{1/3}}} \left(M_d - M_a\right)\left[\left({\partial F \over \partial M_a} - {\partial F \over \partial M_d}\right)\left({G \left(M_d + M_a\right) \over \pi}\right)^{1/3} + {\partial R_d \over \partial M_d}\right]^{-1}\right)^{-1} \leq {\alpha \over {T_{\rm obs}^2}}. \eqno(10)
-$$
-
-If these conditions are met, then the signal is circular and monochromatic and it can be described by the simple quadrupole formulae of Peters \& Mathews (1963). We will consider the waveform at the barycenter. Following the notation of Rubbo, Cornish \& Poujade (2004), we have:
-$$
-{\bf h}(t) = A_+ \cos{\left(2\pi f t+\phi_0\right)}{\bf \epsilon}^{+} + A_{\times} \sin{\left(2\pi f t+\phi_0\right)}{\bf \epsilon}^{\times}, \eqno(11)
-$$
-where
-\bea
-A_+ & = {\cal A} \left(1 + \cos^2{\iota}\right) & (12a) \cr
-A_{\times} & = -2{\cal A} \cos{\iota}. & (12b) \cr
-\eea
-The propagation polarization tensors are related to the barycenter tensors by:
-\bea
-\epsilon^+ & = \cos{(2\psi)}e^+ - \sin{(2\psi)} e^{\times} & (13a)\cr
-\epsilon^{\times} & = \sin{(2\psi)} e^+ + \cos{(2\psi)} e^{\times}. & (13b) \cr
-\eea
-The barycenter basis tensors are formed by taking the sums and differences of the outer products between a pair of orthogonal unit vectors:
-\bea
-e^+ & = \hat{u}\otimes\hat{u} - \hat{v}\otimes\hat{v} & (14a) \cr
-e^{\times} & = \hat{u}\otimes\hat{v} + \hat{v}\otimes\hat{u}. & (14b) \cr
-\eea
-In the SSB reference frame, the basis vectors are given by:
-\bea
-\hat{u} & = \hat{x}\sin{\phi} + \hat{y}\cos{\phi} & (15a) \cr
-\hat{v} & = \hat{x}\cos{\phi}\cos{\theta} + \hat{y}\sin{\phi}\cos{\theta} - \hat{z}\sin{\theta} & (15b) \cr
-\hat{k} & = -\hat{x}\cos{\phi}\sin{\theta} - \hat{y}\sin{\phi}\sin{\theta} - \hat{z}\cos{\theta}. & (15c) \cr
+A_+ & = & {\cal A} \left(1 + \cos^2{\iota}\right) \\
+A_{\times} & = & -2{\cal A} \cos{\iota}. \\
 \eea
 
-{\bf Circular Chirping Binaries}
-
-If the binary is chirping (but still circular), then we replace the accumulated phase $2\pi f t$ by:
-$$
-\int_0^{t}{2\pi f(\tau) d\tau}, \eqno(16)
-$$
-and all instances of $f$ in the amplitude by $f(t)$. Using a Taylor expansion of $f$, we can describe the time evolution of the gravitational wave phase in terms of the frequency and its time derivatives as determined at $t = 0$. Thus,
-$$
-\int_0^t{2\pi f(\tau) d\tau} = 2 \pi f t + \pi \dot{f} t^2 + {\pi \over 3} \ddot{f} t^3 + \cdots. \eqno(17)
-$$
-It will only be necessary to include $\ddot{f}$ when $\ddot{f} \geq 3\alpha/T_{\rm obs}^3$. Thus, the general circularized binary waveform will be calculated from:
-$$
-{\bf h}(t) = A_+ \cos{\left(2\pi f t+ \pi \dot{f} t^2 + {\pi \over 3} \ddot{f} t^3 + \phi_0\right)}{\bf \epsilon}^{+} + A_{\times} \sin{\left(2\pi f t+\pi \dot{f} t^2 + {\pi \over 3} \ddot{f} t^3 + \phi_0\right)}{\bf \epsilon}^{\times}, \eqno(18)
-$$
-with:
-$$
-{\cal A} = {{2G^{5/3}}\over{c^4d}}\left(2\pi f + \pi \dot{f} t + {\pi \over 3} \ddot{f} t^3\right)^{2/3} {\cal M}^{5/3}. \eqno(19)
-$$
-
-{\bf Challenge 1 Waveforms}
 
 For the first challenge, all binaries will be considered circular and monochromatic. Thus, the input waveform at the SSB is given by Eqs. (11-16). It can be completely described by the seven source descriptors for a circular, monochromatic binary. The source descriptors ${\cal A}$ and $f$ are related to the underlying binary parameters by:
 \bea
-{\cal A} & = {{2 G^{5/3}}\over{c^4 d}}{{M_1M_2}\over{\left(M_1 + M_2\right)^{1/3}}}\left(2\pi f\right)^{2/3} & (20) \cr
-f & = {{2}\over{P_{\rm orb}}}, & (21) \cr
+{\cal A} & = {{2 G^{5/3}}\over{c^4 d}}{{M_1M_2}\over{\left(M_1 + M_2\right)^{1/3}}}\left(2\pi f\right)^{2/3} & \\
+f & = {{2}\over{P_{\rm orb}}}, & (21) \\
 \eea
 where $P_{\rm orb}$ is the orbital period.
 
-
-
-% If the binary is eccentric, but still monochromatic
-
-% The basis for the calculation of the waveform should be the Peters \& Mathews (1963) formulation for eccentric binaries as described by Pierro {\it et al.} (2001). In a coordinate system centered on an eccentric binary with orbital frequency $f$, the gravitational wave at a distant detector located at angular position $\vartheta$ and $\varphi$ is given by the two polarizations:
-% $$\eqalignno{
-% h_{\times} &= {{\cos{\vartheta}}\over{\sqrt{2}}}\sum_{n=1}^{\infty}{\left[2h_{xy}^{(n)}\sin{(2\pi nft)}\cos{2\varphi}-h_{x-y}^{(n)}\cos{(2\pi nft)}\sin{2\varphi}\right]}& (3) \cr
-% h_+ &= {{1}\over{2\sqrt{2}}}\sum_{n=1}^{\infty}{{\Big [}(1+\cos^2{\vartheta})\left(2h_{xy}^{(n)}\sin{(2\pi nft)}\sin{2\varphi}+h_{x-y}^{(n)}\cos{(2\pi nft)}\cos{2\varphi}\right)} & (4) \cr
-% &  ~~~~~~~~~~~~-(1-\cos^2{\vartheta})h_{x+y}^{(n)}\cos{(2\pi nft)}{\Big ]}, \cr 
-% }$$
-% where the metric components $h^{(n)}_{xy}$ and $h^{(n)}_{x\pm y}$ are:
-% $$\eqalignno{
-% h^{(n)}_{xy} & =  h_0 n \left(1 - e^2\right)^{1/2}\left[J_{n-2}(ne) - 2J_{n}(ne) + J_{n+2}(ne)\right] & (5) \cr
-% h^{(n)}_{x-y} & =  2h_0 n \left[J_{n-2}(ne) - 2 e J_{n-1}(ne) + {{2}\over{n}} J_n(ne) + 2 e J_{n+1}(ne) - J_{n+2}(ne)\right] & (6) \cr
-% h^{(n)}_{x+y} & =  - 4 h_0 J_n(ne). & (7) \cr
-% }$$
-% The common amplitude factor $h_0$ is:
-% $$
-% h_0 = {{2G^{5/3}}\over{c^4}}(2\pi f)^{2/3} {\cal M}^{5/3} \eqno(8)
-% $$
-% with the ``chirp mass'' ${\cal M}^{5/3} = M_1M_2(M_1+M_2)^{-1/3}$.
-
-
-
-\subsection{Verification binaries}
 
 \section{Super massive black holes}
 
@@ -2222,6 +2131,8 @@ noise    & \\
 \end{center}
 
 
+
+
 \item{{\bf T2 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
 
 \begin{center}
@@ -2285,6 +2196,8 @@ e & = & 0.3 \quad\mathrm{at} f_{m = 2} = 3\,\mathrm{mHz}\\
 
 
 \end{description}
+
+
 
 \section{Challenge 1.1 -- Galactic binaries}
 
@@ -2365,6 +2278,96 @@ noise    & \\
 
 \end{itemize}
 
+
+\begin{sidewaystable}
+\centering
+\begin{table}
+\caption{LISA Verification Binaries.  These data are the exact numbers
+used to produce the input data streams for the Challenge 1.1.2
+(Verification Binaries).  Note that of this list, only the first six
+binaries are known verification binaries at the current time.  The
+values for their parameters are derived from a list maintained by
+Nelemans\cite{NelemansWiki}.  The observer dependent parameters
+($\psi, \iota, \phi_{o}$) for these six binaries are poorly known, and
+were assigned random values for this Challenge (indicated by italics;
+the excpetion is the value of $\iota$ for AM CVn, which is reasonably
+well known).  The remaining binaries are included to mimic
+verification binaries which might be known before the LISA flight era;
+their parameter values are drawn from a population synthesis galaxy by
+Matt Benacquista.}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
+Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
+$\phi_{o}$ \\
+\hline
+RXJ0806 & 0.2697997832    & 2.100953649   & \emph{0.4121481023}   & 2.679125245e-22    & \emph{3.111359347}   & 0.006220276603   & \emph{4.299962148}\\
+V407Vul & 0.4353820782    & 5.147481878   & \emph{5.53934687}     & 9.861549125e-23    & \emph{1.491703432}   & 0.00351250011    & \emph{3.675461931}\\
+ESCet   & -0.1642146356   & 0.4258413339  & \emph{3.802604023}    & 8.196435522e-23    & \emph{1.755106891}   & 0.003220611916   & \emph{4.132944549}\\
+AMCVn   & 0.6567450961    & 2.97249322    & \emph{1.597400834}    & 1.357046386e-22    & 1.657422424          & 0.001944144722   & \emph{3.525471775}\\
+HPLib   & -0.2481858196   & 4.101821899   & \emph{0.8128179939}   & 1.003718413e-22    & \emph{1.960603819}   & 0.001813236627   & \emph{3.911222637}\\
+EIPsc   & 0.1129174697    & 6.205956271   & \emph{5.716790142}    & 1.771013358e-22    & \emph{1.17411724}    & 0.0005194805195  & \emph{2.008091229}\\
+\hline
+bltOPEN7    & -0.03915967321   &       4.659023   &       2.814029   & 5.650102912e-23   &       1.123419   & 0.002241279322   &       5.156588\\
+bltOPEN8    &  -0.1215176732   &       4.611835   &       2.471447   & 1.306265368e-23   &       2.150754   & 0.003804718269   &         6.1921\\
+bltOPEN9    &  -0.1916106732   &       4.573473   &       5.166275   & 1.909589017e-23   &      0.6442629   &  0.00249343261   &        3.11823\\
+bltOPEN10   &  -0.2591296732   &       4.576755   &       5.771645   & 2.011967739e-23   &      0.9514448   & 0.004637477917   &       1.236167\\
+bltOPEN11   &  -0.2480356732   &       4.562141   &       4.027521   & 4.167770628e-23   &       1.449309   & 0.005264798295   &       3.840472\\
+bltOPEN12   & -0.07585267321   &       4.659945   &       1.464888   & 2.482665963e-23   &       1.845565   & 0.004172251399   &       4.107216\\
+bltOPEN13   &  -0.2322486732   &       4.555888   &        2.29418   & 1.081439409e-23   &       1.142934   & 0.002888578848   &       6.278553\\
+bltOPEN14   &   0.4606343268   &       4.889561   &       2.701282   & 1.381230059e-22   &       0.259648   & 0.001895290866   &       2.408257\\
+bltOPEN15   & -0.04175967321   &       4.675081   &       4.862735   & 1.776734238e-23   &      0.9410425   & 0.003260301493   &      0.2920396\\
+bltOPEN16   &  0.04693432679   &       4.693987   &       2.746264   & 1.565644369e-23   &       2.222739   & 0.005550863534   &       3.691068\\
+bltOPEN17   &  -0.1212016732   &       4.647935   &       5.871894   & 7.475139968e-23   &       2.442722   & 0.004500949363   &        3.62837\\
+bltOPEN18   &  -0.3304586732   &       4.503075   &         3.8334   & 1.237943361e-23   &       2.291761   & 0.003612768971   &       5.716634\\
+bltOPEN19   &  -0.5143066732   &       4.328396   &       1.669917   & 1.969683885e-23   &         1.5455   & 0.002392751494   &       4.419614\\
+bltOPEN20   &  -0.1691986732   &       4.592845   &       4.930721   & 1.189348388e-23   &       1.421999   & 0.003587171772   &      0.9258192\\
+\hline
+\label{tbl.LISAbinaries}
+\end{tabular}
+\end{table}
+\end{sidewaystable}
+
+%%%%%%%%%%
+
+\begin{turnpage}
+\begin{table}[t]
+\begin{center}
+    \caption{LISA Resolvable Binaries.  These data are the exact numbers
+    used to produce the input data streams for the Challenge 1.1.3
+    (Resolvable Binaries), with $3 {\rm mHz} \leq f \leq 10 {\rm mHz}$.
+    The binary parameter values are drawn from a
+    population synthesis galaxy by Matt Benacquista.}
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
+Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
+$\phi_{o}$ \\
+\hline
+bltOPEN501   & -0.03126467321   &       4.706227   &       3.477867 & 7.975926792e-24   &       1.663271   & 0.003226746892   &       6.168194\\
+bltOPEN502   & -0.04668867321   &       4.653327   &      0.8455663 & 1.303000708e-23   &      0.5902373   & 0.003960011801   &      0.9673871\\
+bltOPEN503   & -0.06069167321   &       4.688448   &        5.39618 & 1.433200666e-23   &       2.705093   & 0.003030535371   &       2.171853\\
+bltOPEN504   &   0.4960663268   &       4.892542   &       5.755596 & 1.466692098e-23   &       1.219406   & 0.004309482931   &       3.546356\\
+bltOPEN505   &  -0.2278456732   &       4.584483   &      0.9727224 & 8.011456101e-24   &       1.120006   & 0.005274110001   &        4.19336\\
+bltOPEN506   &  -0.4185596732   &       4.500647   &       1.252429   & 1.62615137e-23   &       1.518414   & 0.003258930325   &       3.998353\\
+bltOPEN507   &  -0.1402016732   &        4.62777   &       4.647681 & 4.946943225e-24   &       2.390413   & 0.003323515668   &     0.09927731\\
+bltOPEN508   &  -0.4323126732   &        4.48238   &       2.490703 & 1.618867649e-23   &       1.004005   & 0.003026027162   &       1.963438\\
+bltOPEN509   &  -0.1629896732   &       4.633953   &        2.94178 & 1.346343778e-22   &       1.188397   & 0.007429922825   &       6.203598\\
+bltOPEN510   & -0.07332567321   &       4.651057   &       1.581822 & 1.537216651e-23   &       1.927643   & 0.005150395409   &       3.031517\\
+bltOPEN511   &  0.03750632679   &       4.723535   &       1.390272 & 1.380371656e-23   &      0.9851213   & 0.003034008198   &       2.822454\\
+bltOPEN512   & -0.04090967321   &       4.697756   &       1.312514 & 8.406421087e-24   &       1.312648   & 0.003217982602   &       5.288885\\
+bltOPEN513   &  -0.1366796732   &       4.620584   &       2.469484 & 1.824029106e-23   &       1.192552   &  0.00697825019   &        2.95085\\
+bltOPEN514   & -0.07305967321   &       4.682803   &       4.987947 & 1.082912388e-23   &       2.829123   &  0.00310212137   &       4.961306\\
+bltOPEN515   &  0.02950632679   &       4.712275   &         2.2486 & 2.574147768e-23   &      0.5559797   & 0.007368528866   &       1.676706\\
+bltOPEN516   & -0.03705667321   &       4.701372   &       5.732585   & 8.97323576e-24   &       2.723086   & 0.003213194663   &       1.852484\\
+bltOPEN517   &  -0.1124316732   &       4.627653   &       1.531119   & 2.27637226e-23   &    0.094470896   & 0.003543080762   &       1.821451\\
+bltOPEN518   &  -0.1165646732   &       4.659796   &       3.078499 & 1.463878452e-23   &       0.860752   & 0.003408801936   &       1.624042\\
+bltOPEN519   &   0.8328389268   &       5.318692   &       5.661136 & 5.253336999e-23   &       2.050507   & 0.004202518527   &       3.383861\\
+bltOPEN520   &    1.044871727   &       5.105563   &       4.176902 & 1.758270963e-22   &       1.968382   & 0.005793172167   &       1.584872\\
+\hline
+\end{tabular}
+\label{tbl.LISAbinaries}
+\end{center}
+\end{table}
+\end{turnpage}
 
 \begin{thebibliography}{}
 \input{biblio_ch1}
