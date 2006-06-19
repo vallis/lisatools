@@ -554,7 +554,7 @@ The remaining pieces of information required to specify the geometry of a source
 where orbital precession is significant, and those where it is not. The later category includes classes (1) through (4) in the classification scheme given above.
 
 \subsection{Geometry for Non-precessing Binaries}
-
+\label{non-precbin}
 Non-precessing sources can have their orbital orientation described in terms of inclination to the line of sight and
 polarization angle. For circular orbits the later quantity is equivalent to the longitude of the ascending node.
 For elliptical orbits the polarization angle is related to a combination of the argument of pericenter and
@@ -1065,7 +1065,7 @@ M\omega &=& \frac1{8} \tau^{-3/8}\left\{ 1 + \left( \frac{11}{32}\eta + \frac{74
 \tau^{-1/2} + \right. \nonumber \\
 & &\left.\left( \frac{13}{256}\eta- \frac{7729}{21504}\right)\pi \tau^{-5/8} +
 \left[ \frac{235925}{176472}\eta^3 - \frac{30913}{1835008}\eta^2 + \left(-\frac{451}{2048} \pi^2+ 
-\frac{25302017977}{4161798144}\right) eta -\right. \right. \nonumber \\
+\frac{25302017977}{4161798144}\right) \eta -\right. \right. \nonumber \\
 & & \left. \left.
 \frac{720817631400877}{288412611379200} + \frac{53}{200}\pi^2 + \frac{107}{280}\gamma_E - 
 \frac{107}{2240}\ln\left(\frac{\tau}{256}\right) \right]\tau^{-3/4} +
@@ -1084,7 +1084,7 @@ The orbital phase could be expressed in terms of orbital frequency
 \Phi &=& -\frac1{32\eta}(M\omega)^{-5/3}\left\{ 1 + \left( \frac{3715}{1008} + \frac{55}{12}\eta\right)
 (M\omega)^{2/3} - 10\pi(M\omega) + \right. \nonumber \\
 & & \left. \left( \frac{15293365}{1016064} + \frac{27145}{1008}\eta + \frac{3085}{144}\eta^2\right)
-(M\omega)^{4/3} + \left( \frac{38645}{1344} - \frac{65}{16}\eta \right)\pi\ln\left( \frac{\omega}{\omega_0}\right) (M\omega)^{5/3} \right. \nonumber \\
+(M\omega)^{4/3} + \left( \frac{38645}{1344} - \frac{65}{16}\eta \right)\pi\ln\left( \frac{\omega}{\omega_0}\right) (M\omega)^{5/3}+ \right. \nonumber \\
 & &  \left. \left[ \frac{12348611926451}{18776862720} -\frac{160}{3}\pi^2 - \frac{1712}{21}\gamma_E
 - \frac{856}{21}\ln\left[ 16(m\omega)^{2/3}\right] + \left( -\frac{15335597827}{12192768} +
 \frac{2255}{48}\pi^2 + \frac{3080}{9}\lambda - \right.\right.\right. \nonumber \\
@@ -1326,9 +1326,20 @@ And the phase is described by:
 \ena
 The evolution is terminated by condition $r=6M$ which corresponds to 
 $$
-\omega_{LSO} = 0.068(M_{\odot}/M)Hz
+\omega_{LSO} = 0.0138(10^6M_{\odot}/M)Hz
 $$
 unless user wants to terminate it $\Delta t$ sec before the coalescence time $t_c$.
+Alternatively one can use "MECO" condition at 2PN:
+\bea
+\omega_{MECO} = \frac1{27}\left[ 
+-\frac{54 + 6\eta - 6\sqrt{1539 -1008\eta + 19\eta^2}}
+{81 - 57\eta + \eta^2}\right]\frac{M_{\odot}}{M}\, Hz
+\ena
+and/or condition 
+$$
+\dot{\omega} > 0.
+$$
+In practice we use whatever is smaller.
 
 Waveform is described by two polarizations in the 
 radiation frame:
@@ -1339,8 +1350,25 @@ h_{+} &=& \frac{2\mu}{D}(M\omega)^{2/3}(1+\cos^2(\theta))\cos(2\Phi)
 h_{\times} &=& \frac{4\mu}{D}(M\omega)^{2/3}\cos(\theta)\sin(2\Phi)
 \label{hc}
 \ena
+Since we terminate waveform suddenly in time domain and spectra of the signal has large dynamical range we have spectral leakage in the 
+frequency domain which we have to deal with by applying window
+(tapering) in the time domain. We have chosen the following taper
+which causes exponential dumping of the signal in time domain 
+after time $t_R = t(R)$, time when radius of orbit is $R$:
+\be
+w(t) = \frac1{2}\left( 1 + \tanh\left[A(t_{k} - t)\right]  \right)
+\en
+where $t_k = (t_c + t_R)/2$ and coefficient $A = 0.1\left(\frac{7M}{R}
+\right)^{7.5}$ was found empirically to produce smooth dumping 
+for $R$ in range $[7M, 9M]$.
 
-The transformation to the SSB system is given in the Section~\ref{SSB}. This is finalizes the time domain description of the 
+
+The transformation to the SSB system is given in the Section~\ref{non-precbin}:
+\bea
+h_{+}^{SSB}(\xi) &=& \cos (2\psi) \, h_+(\xi)  + \sin (2 \psi) \, h_\times(\xi), \\
+h_\times^{SSB}(\xi) &=& \cos (2\psi) \, h_\times(\xi)  - \sin (2 \psi) \, h_+(\xi).
+\ena
+ This is finalizes the time domain description of the 
 signal which will be an input to the simulator. 
 
 \subsection{Stationary phase approximation}
@@ -1403,7 +1431,7 @@ positive frequencies).
 Here we can identify the Doppler phase $\Phi^k_D(t) = 2\omega t_k$.
 The delays can be further expanded according to:
 \bea
-t_j = \omega R \cos(\beta) \cos(\Omega t + \eta_0 -\lambda) +
+t_j = R \cos(\beta) \cos(\Omega t + \eta_0 -\lambda) +
 \bk(O_2(t)\bp_j^L) - m_jL
 \ena
 where $R=1au$, $\eta_0$ is initial phase of the LISA's guiding 
@@ -1439,7 +1467,7 @@ The phase (up to 2PN order) is given in \cite{DIS}:
 \bea
 2\pi ft_f - 2\Phi(t_f) &=& 2\pi ft_c - \phi_c + 
 \frac3{128\eta}(\pi Mf)^{-5/3}\left\{ 
-1 + \frac5{9}\left( \frac{743}{84} + 11\eta\right) - 16\pi
+1 + \frac5{9}\left( \frac{743}{84} + 11\eta\right)(\pi Mf)^{2/3} - 16\pi
 (\pi Mf) + \right.\nonumber\\
 & & \left. \left( \frac{15293365}{1016064} + \frac{27145}{1008}\eta
 + \frac{3085}{144}\eta^2\right) (\pi Mf)^{4/3}
@@ -1455,7 +1483,6 @@ t_f  &=& t_c - \frac{5M}{256\eta}(\pi Mf)^{-8/3}\left\{
 \right\}
 \ena
 
-{\bf Confirm 2PN term in $t_f$}.
 
 \section{EMRI - Analytic kludge waveforms for extreme-mass-ratio inspirals}
 
