@@ -1,3 +1,5 @@
+(for all of this, you need to have compiled synthLISA and to have set its path)
+
 ==== preferred pipeline for synthetic LISA ====
 
 1)  run galactic_xml, BBH_xml.py, EMRI_xml.py to create XML parameter files
