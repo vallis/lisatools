@@ -1,0 +1,12 @@
+(require a compiled and installed synthlisa, with the path set)
+
+compare-simulators.py   takes as arguments an XML challenge file produced with
+                        synthLISA and an XML challenge file produced with the
+                        LISA simulator; converts the synthLISA fractional-frequency
+                        X data to phase, and the LISA simulator equivalent strain
+                        X data to phase, and outputs the two spectra together with
+                        a theoretical curve for X noise. The results are stored
+                        in file tdispectrum.xml
+                        
+plotxml.py              plot spectra from a lisaXML file
+
