@@ -1,0 +1,75 @@
+==== preferred pipeline for synthetic LISA ====
+
+1)  run galactic_xml, BBH_xml.py, EMRI_xml.py to create XML parameter files
+    for the sources
+   
+2)  run galactic, BBH_p.py, EMRI_p.py to create XML files with binary descriptions
+    of the strains (the "Barycenter" files)
+   
+3)  run makenoise.py to create random seeds for the LISA noises, as well as the
+    standard XML description of geometry
+   
+4a) run makechallenge-serial.py with the noise/geometry file and the Barycenter
+    source files to create the TDI challenge file
+   
+OR
+
+4b) run makechallenge-train.py with the noise/geometry file and the Barycenter
+    source files to create the TDI challenge file, including the noise and source
+    "keys"
+
+ALTERNATIVELY (faster, but different from the LISA Simulator pipelines)
+
+1)     as above
+
+2)     skip this!
+
+3)     as above
+
+4a-4b) as above, but run it directly on the "parameter" source files (and not
+       on the barycenter files)
+
+==== description of pipeline scripts ====
+
+makenoise.py    creates a lisaXML file describing all LISA noises necessary
+                to create a TDI Challenge files. The noise descriptors include
+                random seeds (created from the CPU clock) that uniquely
+                determine the resulting pseudorandom noise time series
+
+                makenoise.py takes a single argument "challengename"
+                describing the challenge name, and outputs a lisaXML file
+                "challengename-noise.xml"
+                
+makechallenge-serial.py     creates a challenge lisaXML file from a geometry/noise
+                            file and a set of source XML files. It's serial in the
+                            sense that each source is loaded in sequence, and its
+                            TDI combinations are computed, then summed together.
+                            The XML source files can be either "parameter" files
+                            or hp/hc binary files.
+                            
+                            takes a first argument "challengename" and a set of
+                            source XML files; will read challengename-noise.xml
+                            for noise seeds and geometry definitions; will output
+                            TDI series to challengename.xml
+                 
+makechallenge-parallel.py   same as makechallenge-serial.py, but will try to load
+                            all sources in memory at once; could run faster, but
+                            may require too much memory
+                            
+makechallenge-noiseonly.py  takes only a challenge name, loads challengename-noise.xml,
+                            computes TDI only for noises, outputs to challengename.xml
+                            
+makechallenge-nonoise.py    same as makechallenge-serial.py, but does not include
+                            noises. The noise/geometry definition file
+                            challengename-noise.xml is still needed for the geometry.
+                          
+makekey.py                  uses a noise/geometry definition file and a set of XML
+                            source files (the first argument is the challenge name,
+                            as above); outputs a file challengename-key.xml
+                            describing geometry, noises (with seeds), and all sources.
+                            run this on the source "parameter" files, otherwise
+                            it will describe "sampled" (hp/hc) sources and make a
+                            copy of their binary files
+                            
+makekey-sourceonly.py       same as above, but does not include noise/geometry
+                            information
