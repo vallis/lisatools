@@ -1,0 +1,22 @@
+The DataImport code demonstrates how to read an XML Challenge
+data set into a data analysis routine. The code takes the data
+set name as a command line argument:
+
+./DataImport Challenge1.1.xml
+
+It then allocates arrays and imports the binary data. The X, Y
+and Z channels are then used to form up variants of the A and E
+channels. All the data channels are then FFTed and the one sided
+strain spectral densities are saved to disk as X_FFT.dat etc.
+
+You can cut and paste the first section of DataImport into
+your data analysis programs as an easy way to read in the
+challenge data files.
+
+The code is compiled with the command
+
+gcc -O2 -o DataImport DataImport.c ../io-C/lisaxml.c ../io-C/ezxml.c 
+           ../io-C/xmlbinary.c ../io-C/readxml.c -lm
+
+The io-C directory contains the xml read-write routines. You will need
+to download this directory from sourceforge.
