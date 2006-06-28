@@ -1,0 +1,92 @@
+
+Here are instructions for running BBH signal generation
+
+In this directory you will find 4 scripts, to find the argument list 
+you can run BBH python scripts with --help option.
+
+1. BBH_xml.py
+
+This scripts generates xml file with source parameters.
+User must specify the following parameters:
+
+Usage: BBH_xml.py [options]
+
+ -h, --help        display this message
+ -s, --seed        seed for random number generator
+ -d, --distance    distance (pc) at which source is to be placed
+                   (recommended 2.e10) 
+ -t, --coalesTime  instance of colescence from t=0 in days
+ -f, --outXMLfile  name of the output xml file
+
+
+example:
+
+./BBH_xml.py --seed 4 --distance 1.e10 --coalesTime 178 --outXMLfile data/BBHchallenge1_2_1.xml
+
+coalescence time should be 178 for Challenge 1.2.1 and coalescence time should be 
+400 for Challenge 1.2.2
+
+Distance should be adjusted to get required SNR (see below)
+
+
+2. BBH_p.py
+
+This script generates data in binary format and xml file for data simulators.
+User must specify the following parameters:
+
+ Usage: BBH_p.py [options]
+
+  -h, --help       display this message
+  -f, --xmlFile    input XML file with source parameters
+
+example:
+
+./BBH_p.py --xmlFile data/BBHchallenge1_2_1.xml
+
+3. test_snr.py
+
+Estimates SNR for the source specified by xmlfile(s)
+It estimates a combined coherent SNR and then converts
+it to one-ifo SNR by dividing combined SNR by sqrt(2)
+This code works slowly, so if you need to estimate 
+SNR for many source, run for all sources at once.
+!!! Duration of data set is assumed to be 1 year !!!
+
+Usage:
+
+  ./test_snr.py xmlfile(s)
+
+example:
+
+./test_snr.py data/BBHchallenge1_2_1.xml data/BBHchallenge1_2_2.xml
+
+
+4. EstimeateBBH_SNR 
+
+This script combines ./BBH_xml.py and ./test_snr.py
+It runs first ./BBH_xml.py for challenge 1.2.1 and
+for 1.2.2 then estimates SNR for resulting sources
+using ./test_snr.py.
+
+Feel free to modify it (parameters, ....)
+
+5. bbh_script
+
+This is the master script which produces the source data
+for BBH chalenges 1.2.1 and 1.2.2. It runs first 
+./BBH_xml.py for given seed and other params and then it
+runs ./BBH_p.py to generate source data and xml files required
+by LISA Simulator and synthetic LISA.
+
+You need to modify it according to challenge definition.
+Use ./EstimateBBH_SNR to estimate distance.
+
+
+Have fun.
+
+
+
+
+
+
+

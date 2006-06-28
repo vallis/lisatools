@@ -1,0 +1,9 @@
+#!/bin/sh
+
+./BBH_xml.py --seed 3 --distance 2.e10 --coalesTime 178 --outXMLfile data/BBHchallenge1_2_1.xml
+
+./BBH_xml.py --seed 4 --distance 3.e10 --coalesTime 400 --outXMLfile data/BBHchallenge1_2_2.xml
+
+./BBH_p.py --xmlFile data/BBHchallenge1_2_1.xml
+
+./BBH_p.py --xmlFile data/BBHchallenge1_2_2.xml
