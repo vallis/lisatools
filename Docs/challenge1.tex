@@ -454,7 +454,7 @@ the  frequency response version produced by {\it Synthetic LISA}.
 %%%%%%%%%%
 
 \section{Instrumental Noise}
-
+\label{s:noise}
 The model of the instrumental noise that is adopted for Challenge 1 is as follows:
 
 \begin{itemize}
@@ -469,7 +469,7 @@ S_{n,o}^{1/2}(f) = 20 \times 10^{-12} {\rm m}\, {\rm Hz}^{-1/2}\,;
 
 \item White+red acceleration noise, with with one-sided spctral density given by 
 \be
-S_{n,a}^{1/2}(f) = 2 \times 10^{-15} \left[1 + \left(\frac{10^{-4}\,{\rm Hz}}{f}\right)^{-2}\right]^{1/2}\, {\rm m}\,{\rm s}^{-2}\, {\rm Hz}^{-1/2}\,;
+S_{n,a}^{1/2}(f) = 2 \times 10^{-15} \left[1 + \left(\frac{10^{-4}\,{\rm Hz}}{f}\right)^{-2}\right]^{1/2}\, {\rm m}\,{\rm s}^{-2}\, {\rm Hz}^{-1/2}\,.
 \label{e:Sna}
 \ee
 
@@ -2531,282 +2531,179 @@ In the following we provide details on each of the Challenge data sets for round
 
 \section{Challenge 1.1 -- Galactic binaries}
 
-This consists in a number of data sets with essentially single 
-
-\bigskip
-
-The Challenge 1 data sets have the following common properties:
-
-\begin{list}{$\bullet$}{}
-  \item{The data covers $\sim 1$ year of observations. The sample cadence is
-15 seconds and there are $2^{21}$ samples. Thus, the precise observation time is
-31457280 seconds}
-  \item{The data sets contain the times $t$ when the samples are taken, and the $X(t), Y(t)$ and
-$Z(t)$ TDI 1.5 variables.}
-  \item{The noise model includes three sources, position noise with $S_p = 4 \times 10^{-22}\;
-{\rm m}^2 {\rm Hz}^{-1}$, a white acceleration noise component with $S_{aw} = 9 \times 10^{-30}\;
-{\rm m}^2 {\rm s}^{-4} {\rm Hz}^{-1}$, and a red $(1/f)$ acceleration noise component with
-$S_{ar} = (2 \pi 10^{-4} {\rm Hz})^2 S_{aw}$. The white and red acceleration noise levels
-are equal at $1 \times 10^{-4}$ Hz.}
-\end{list}
+In the following the notation $U[a,b]$ stands is short-hand for a uniform distribution over the range $a,b$.
 
 
+\begin{description}
 
-\subsection{Challenge 1.1.1}
-
-This is single source analysis for galactic binaries. 
-
-\begin{itemize}
-\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown.
+\item {\bf C1.1.1a -- Single source} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and {\em one} low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is in the range $\approx 10-20$. 
 
 \begin{center}
 \begin{tabular}{l|c}
 \hline \hline
-\multicolumn{2}{c}{{\bf Challenge 1.1.1a -- Source(s): galactic binary}} \\
+\multicolumn{2}{c}{{\bf Challenge 1.1.1a -- Source(s): 1 galactic binary}} \\
 \hline
 Parameters & Value or range \\
 \hline
-$\theta$ & \\
-$\phi$   & \\ 
-$\iota$  & \\ 
-$\psi$   & \\
-${\cal A}$ & \\
-$f_0$    & \\ 
-$\phi_0$ & \\
-noise    & \\
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & unknown \\
+$f_0$             & U[0.95 mHz, 1.05 mHz] \\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
 \hline \hline
 \end{tabular} \\
 \end{center}
 
 
-\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown.
+\item {\bf C1.1.1b -- Single source} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and {\em one} mid-frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is in the range $\approx 10-20$. 
 
 \begin{center}
 \begin{tabular}{l|c}
 \hline \hline
-\multicolumn{2}{c}{{\bf Challenge 1.1.1b -- Source(s): galactic binary}} \\
+\multicolumn{2}{c}{{\bf Challenge 1.1.1b -- Source(s): 1 galactic binary}} \\
 \hline
 Parameters & Value or range \\
 \hline
-$\theta$ & \\
-$\phi$   & \\ 
-$\iota$  & \\ 
-$\psi$   & \\
-${\cal A}$ & \\
-$f_0$    & \\ 
-$\phi_0$ & \\
-noise    & \\
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & unknown \\
+$f_0$             & U[0.0095 Hz, 0015 Hz] ?????\\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
+\item {\bf C1.1.1c -- Single source} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and {\em one} high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is in the range $\approx 10-20$. 
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.1c -- Source(s): 1 galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & unknown \\
+$f_0$             & U[0.0095 Hz, 0015 Hz] ?????\\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
 \hline \hline
 \end{tabular} \\
 \end{center}
 
 
-\item A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is $\approx 20$. The parameters of the source are unknown.
-
+\item {\bf C1.1.2 -- Verification binaries} We define ``verification binaries'' systems for which the GW frequency $f_0$ and source position in the sky $\theta$ and $\varphi$ are exactly known. The data stream for this challenge is 1-yr long and contains instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from {\em 20} verification binaries (5 ``real'' and 15 mock). The ``name'' and known parameters of each source are reported in the table below. The signal of all the binaries is {\em exactly} monochromatic in the source reference frame ($\dot{f}_0 = \ddot{f}_0 = 0$). The remaning parameters are chosen randomly according to $\cos\iota\in$ U[-1,1], $\psi \in$ U$[0,2\pi]$ and $\cos\iota\in$ U[-1,1]. The amplitude is selected randomly subject to the contraint that the SNR is $> 10$.
 
 \begin{center}
 \begin{tabular}{l|c}
 \hline \hline
-\multicolumn{2}{c}{{\bf Challenge 1.1.1c -- Source(s): galactic binary}} \\
+\multicolumn{2}{c}{{\bf Challenge 1.1.1a -- Source(s): 1 galactic binary}} \\
 \hline
 Parameters & Value or range \\
 \hline
-$\theta$ & \\
-$\phi$   & \\ 
-$\iota$  & \\ 
-$\psi$   & \\
-${\cal A}$ & \\
-$f_0$    & \\ 
-$\phi_0$ & \\
-noise    & \\
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & unknown \\
+$f_0$             & U[0.0095 Hz, 0015 Hz] ?????\\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
 \hline \hline
 \end{tabular} \\
 \end{center}
 
+\item {\bf C1.1.3 -- Resolvable binaries} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from {\em 20} unknown resolvable galactic binaries. The signal of all the binaries is {\em exactly} monochromatic in the source reference. The SNR of each signal is $> 10$.
 
-\end{itemize}
-
-
-\begin{sidewaystable}
-\centering
-\small{
-\begin{tabular}{|l|c|c|c|c|c|c|c|}
-\hline \textbf{Name (Challenge)} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
-Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
-$\phi_{o}$ \\
-\hline 
-bltOPENsingle1mHz (a) & 0.4741143268 & 5.19921 & 3.975816 & 1.789229908e-22 & 0.1793956 & 0.0009930348535 & 5.781211\\
-bltOPENsingle3mHz (b) & 0.03834232679 & 4.742862 & 5.097536 & 3.995025829e-23 & 1.413846 & 0.002909689776 & 1.740975\\
-bltOPENsingle10mHz (c) & -0.2250446732 & 4.606922 & 2.798886 & 8.05894569e-23 & 0.3975902 & 0.01068342968 & 3.427764\\
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.3 -- Source(s): 20 galactic binary}} \\
 \hline
-\end{tabular}
-    \caption{LISA Verification Binaries (Challenge 1.1.1, open).  These data are the exact numbers
-    used to produce the input data streams for the Challenge.  The parameter values are drawn from a population synthesis galaxy by
-    Matt Benacquista.}
-}
-\label{tbl.LISAbinaries1.1.1}
-\end{sidewaystable}
-
-
-\begin{sidewaystable}
-\centering
-\small{
-\begin{tabular}{|l|c|c|c|c|c|c|c|}
-\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
-Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
-$\phi_{o}$ \\
-\hline 
-RXJ0806   & 0.2697997832   &  2.100953649   & \emph{0.4121481023}   & 2.679125245e-22   &  \emph{3.111359347}   &  0.006220276603   &  \emph{4.299962148}\\
-V407Vul   & 0.4353820782   &  5.147481878   &   \emph{5.53934687}   & 9.861549125e-23   &  \emph{1.491703432}   & 0.00351250011   &  \emph{3.675461931}\\
-ESCet   & -0.1642146356   & 0.4258413339   &  \emph{3.802604023}   & 8.196435522e-23   &  \emph{1.755106891}   &  0.003220611916   &  \emph{4.132944549}\\
-AMCVn   & 0.6567450961   &   2.97249322   &  \emph{1.597400834}   & 1.357046386e-22   &  1.657422424   &  0.001944144722   &  \emph{3.525471775}\\
-HPLib   & -0.2481858196   &  4.101821899   & \emph{0.8128179939}   & 1.003718413e-22   &  \emph{1.960603819}   &  0.001813236627   &  \emph{3.911222637}\\
-EIPsc   & 0.1129174697   &  6.205956271   &  \emph{5.716790142}   & 1.771013358e-22   &   \emph{1.17411724}   & 0.0005194805195   &  \emph{2.008091229}\\
+Parameters & Value or range \\
 \hline
-bltOPEN7   & 0.1996953268   &     4.757415   &     2.527014   & 6.905198084e-23   &    0.7692599   &  0.002095374315   &     5.262859\\
-bltOPEN8   & -0.6154346732   &      4.13981   &    0.3632213   & 6.534787823e-23   &    0.9055759   &  0.001839178549   &     4.028324\\
-bltOPEN9   & -0.1422176732   &     4.649333   &     1.994939   & 4.451552893e-23   &     1.756768   &  0.001910351046   &      1.54592\\
-bltOPEN10   & 0.01476832679   &     4.756822   &     1.809718   & 1.052682025e-22   &     1.557614   &  0.006334684838   &     1.469529\\
-bltOPEN11   & 0.7497998268   &     5.174382   &     5.666218   & 1.338375078e-23   &     1.239189   &  0.003208731343   &     3.661884\\
-bltOPEN12   & 0.1200253268   &     4.780427   &     2.436986   & 5.124425841e-23   &     1.513927   &  0.003502950886   &     4.219012\\
-bltOPEN13   & -0.7670126732   &     4.047208   &     3.259933   & 5.576823165e-23   &      1.49333   &  0.002926858537   &     2.164082\\
-bltOPEN14   & -0.3583376732   &      4.46843   &     5.087589   & 1.347687874e-23   &     2.833322   &  0.002706457364   &     1.236043\\
-bltOPEN15   & -0.2166256732   &     4.607265   &     1.363608   & 2.191432316e-23   &     1.121772   &  0.002506720518   &     3.415738\\
-bltOPEN16   & -0.2676646732   &      4.50488   &     6.167674   & 2.238928336e-23   &     1.446075   &  0.004841122821   &    0.6249065\\
-bltOPEN17   &  -0.06588667321   &     4.663938   &     1.607599   & 1.571652582e-23   &     2.182752   &  0.003375130955   &     4.869657\\
-bltOPEN18   & 0.04105132679   &     4.748964   &     3.895397   & 1.812540806e-23   &    0.2622156   &  0.004139974183   &     4.614429\\
-bltOPEN19   &  -0.04352567321   &     4.749986   &     4.217893   & 2.517991681e-23   &     2.603745   &  0.007870408994   &    0.3448426\\
-bltOPEN20   &  -0.01221367321   &     4.728495   &     4.381518   & 1.304792146e-23   &     2.362326   &  0.002455096892   &     1.947693\\
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & random such that SNR $> 10$  \\
+$f_0$             & U[0.0001 Hz, 0.010 Hz] \\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
+\item {\bf C1.1.4 -- Overlapping binaries} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from $\approx 50$ unknown strongly overlapping galactic binaries. The sources located in a frequency region centered at 3 mHz over a $\pm 1.5 \mu$Hz band. The signal of all the binaries is {\em exactly} monochromatic in the source reference. The SNR of each signal is $> 5$. Note that the total number of signals $N$ is unknown, randomly chosen in the range $40 \le N \le 60$.
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.5 -- Source(s): $\approx 50$ galactic binary}} \\
 \hline
-\end{tabular}
-    \caption{LISA Verification Binaries (Challenge 1.1.2, open).  These data are the exact numbers
-    used to produce the input data streams for the Challenge 1.1.2
-    (Verification Binaries).  Note that of this list, only the first six
-    binaries are known verification binaries at the current time.  The
-    values for their parameters are derived from a list maintained by
-    Nelemans\cite{NelemansWiki}.  The observer dependent parameters
-    ($\psi, \iota, \phi_{o}$) for these six binaries are poorly known, and
-    were assigned random values for this Challenge (indicated by italics; 
-    the excpetion is the value of $\iota$ for AM CVn, which is reasonably 
-    well known).  The remaining binaries are included to mimic
-    verification binaries which might be known before the LISA flight era;
-    their parameter values are drawn from a population synthesis galaxy by
-    Matt Benacquista.}
-\label{tbl.LISAbinaries1.1.2}
-}
-\end{sidewaystable}
-
-
-\begin{sidewaystable}
-\centering
-\small{
-\begin{tabular}{|l|c|c|c|c|c|c|c|}
-\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
-Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
-$\phi_{o}$ \\
-\hline 
-bltOPEN101   & 0.5551443268   &     5.144816   &    0.3157544   & 2.689398064e-23   &     2.189936   & 0.003396299019   &     1.636168\\
-bltOPEN102   & -0.4420866732   &     4.409351   &     2.249839   & 1.313583967e-22   &     1.083007   & 0.003519811789   &     3.993302\\
-bltOPEN103   & -0.1841986732   &     4.599144   &    0.3738202   & 3.803289765e-23   &     1.850827   & 0.002740597387   &     1.098652\\
-bltOPEN104   & -0.1528946732   &     4.611344   &      2.76847   & 4.51389654e-23   &     1.626107   & 0.002240598365   &     4.716584\\
-bltOPEN105   & -0.1452646732   &     4.668415   &      3.32127   & 1.740985e-23   &     2.186683   & 0.004640501508   &     5.737249\\
-bltOPEN106   & -0.1399346732   &     4.637259   &      1.71006   & 3.414290208e-23   &     1.187685   & 0.003381325043   &     5.700299\\
-bltOPEN107   & -0.1109606732   &     4.675635   &     1.364952   & 8.625389647e-23   &     1.928985   & 0.005201948754   &     1.223227\\
-bltOPEN108   & -0.1169306732   &     4.641041   &     2.527301   & 1.566727462e-23   &     2.402011   & 0.004820346877   &     1.654564\\
-bltOPEN109   & -0.09577567321   &      4.66947   &     3.783203   & 5.501289279e-23   &     1.154582   & 0.003462549326   &     2.789387\\
-bltOPEN110   & -0.1020606732   &     4.656468   &    0.5130786   & 2.398636579e-23   &     1.647828   & 0.003268047013   &     3.378753\\
-bltOPEN111   & -0.4144656732   &     4.456629   &     1.563013   & 1.988108915e-23   &    0.5271457   & 0.002571157755   &    0.7285082\\
-bltOPEN112   & -0.2012746732   &     4.588201   &     4.856152   & 3.925760638e-23   &     1.699465   & 0.002420159542   &     1.614504\\
-bltOPEN113   & -0.1346476732   &     4.636082   &     4.060802   & 2.251548959e-23   &     1.786749   & 0.002246211259   &    0.9586449\\
-bltOPEN114   & 0.2547383268   &     4.859088   &      3.62922   & 2.576776487e-23   &    0.6602926   & 0.002729128783   &     2.227683\\
-bltOPEN115   & -0.1393386732   &     4.621698   &     4.415524   & 1.466511117e-23   &      1.47779   & 0.002275470766   &     2.634269\\
-bltOPEN116   & -0.06300067321   &     4.689342   &     1.904893   & 1.810059735e-23   &     1.547542   & 0.002896446813   &     4.845582\\
-bltOPEN117   & 0.07031532679   &     4.785422   &     6.205516   & 1.113169587e-22   &     2.422862   & 0.00206561445   &     3.067871\\
-bltOPEN118   & 0.1406423268   &     4.810691   &    0.7387418   & 7.600032912e-23   &     1.469013   & 0.002663168329   &     2.069497\\
-bltOPEN119   & -0.1819266732   &     4.654125   &     2.655385   & 3.266615155e-23   &     2.116061   & 0.00249873564   &    0.1194132\\
-bltOPEN120   & -0.1000736732   &     4.658095   &    0.7844886   & 4.747803678e-23   &     2.329331   & 0.002213248728   &     1.339854\\
+Parameters & Value or range \\
 \hline
-\end{tabular}
-\label{tbl.LISAbinaries1.1.3}
-    \caption{LISA Resolvable Binaries (Challenge 1.1.3, open).  These data are the exact numbers
-    used to produce the input data streams, with $0.1  {\rm mHz} \leq f \leq 10 {\rm mHz}$.
-    The binary parameter values are drawn from a
-    population synthesis galaxy by Matt Benacquista.}
-}
-\end{sidewaystable}
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & random such that SNR $> 10$  \\
+$f_0$             & U[2.9985 mHz, 3.0015 mHz] \\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
+number of sources & U[40,60] \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
+\end{description}
 
 
+\section{Challenge 1.2 -- Massive black hole binary systems}
 
-\begin{sidewaystable}
-\centering
-\tiny{
-    \begin{tabular}{|l|c|c|c|c|c|c|c|}
-    \hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
-    Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
-    $\phi_{o}$ \\
-    \hline 
-    bltOPEN501   & -0.3556896732   &       4.47036   &       5.32167   & 1.525764337e-23   &      1.942178   & 0.003014821465   &      3.372873\\
-    bltOPEN502   & -0.03943367321   &      4.703935   &      5.079013   & 3.846126582e-23   &      2.421117   & 0.003001955924   &      1.866554\\
-    bltOPEN503   &  0.1765353268   &      4.825705   &      2.297467   & 1.750290591e-23   &      1.696761   & 0.003014201259   &      2.269778\\
-    bltOPEN504   & -0.09225567321   &      4.658252   &      1.446976   & 2.30723423e-23   &      2.728259   & 0.003003445853   &       5.55052\\
-    bltOPEN505   & -0.05487467321   &      4.675729   &      1.135749   & 9.685886177e-24   &      1.247204   & 0.003014861913   &      6.217826\\
-    bltOPEN506   & -0.09121867321   &      4.650051   &      2.440814   & 1.218641032e-23   &     0.7391825   & 0.003007044453   &      0.463448\\
-    bltOPEN507   & -0.2573726732   &      4.552703   &     0.9754909   & 1.0110351e-23   &       1.32265   & 0.003012910775   &      1.310073\\
-    bltOPEN508   & -0.08047967321   &      4.681123   &      2.246906   & 9.518643488e-23   &      1.657077   & 0.003011234615   &      5.253538\\
-    bltOPEN509   & 0.09966832679   &      4.772784   &      1.347727   & 2.841481384e-23   &      1.662996   & 0.003010892355   &      2.959267\\
-    bltOPEN510   & -0.09126367321   &      4.629534   &      3.440039   & 1.889751583e-23   &      2.150017   & 0.003003220804   &      3.824376\\
-    bltOPEN511   &  0.1626943268   &      4.814645   &      3.557965   & 2.1850258e-23   &     0.6432248   & 0.00300983705   &      2.951851\\
-    bltOPEN512   & -0.3954536732   &      4.463923   &      2.295206   & 2.350549404e-23   &      1.155095   & 0.003012236004   &      5.373871\\
-    bltOPEN513   & -0.03867467321   &      4.646785   &      2.474178   & 4.992141197e-23   &     0.7928898   & 0.003004444776   &      1.098389\\
-    bltOPEN514   &  0.1630883268   &      4.808945   &      1.033436   & 7.83100476e-24   &      1.454817   & 0.003013381069   &      5.325282\\
-    bltOPEN515   &  0.1557743268   &      4.786062   &     0.5084665   & 2.940532054e-23   &       2.44499   & 0.003007798771   &      1.493309\\
-    bltOPEN516   & 0.05452932679   &      4.711226   &      1.277553   & 3.326235605e-23   &      2.070016   & 0.003013616272   &      4.931587\\
-    bltOPEN517   & 0.04015032679   &      4.753871   &       1.23617   & 6.995953696e-23   &      2.354789   & 0.003002803267   &      1.279687\\
-    bltOPEN518   & -0.05729567321   &       4.63589   &      4.877932   & 9.517115646e-24   &      1.952635   & 0.003014063167   &      3.895026\\
-    bltOPEN519   & -0.2300876732   &      4.572137   &      2.120373   & 4.908691196e-23   &     0.8891096   & 0.003006022566   &     0.5510634\\
-    bltOPEN520   & -0.1459266732   &      4.577511   &      1.715593   & 4.750785509e-23   &      1.210389   & 0.003004146022   &     0.1685839\\
-    bltOPEN521   &  0.1635443268   &      4.813947   &      2.134165   & 7.106720016e-24   &      1.813235   & 0.003013787021   &      2.134136\\
-    bltOPEN522   & -0.2196946732   &      4.596741   &      2.794801   & 5.513766836e-23   &     0.3623512   & 0.003006890289   &      5.577981\\
-    bltOPEN523   & -0.1403996732   &       4.64125   &      3.825858   & 6.219856513e-23   &      1.071808   & 0.003014339817   &     0.7050047\\
-    bltOPEN524   & -0.07593267321   &      4.598514   &      4.386826   & 1.758856099e-23   &      1.889541   & 0.003004718309   &     0.5663961\\
-    bltOPEN525   &  0.1680843268   &      4.815904   &      1.768916   & 3.343373229e-23   &      1.481831   & 0.003012130301   &      4.748302\\
-    bltOPEN526   & -0.3844226732   &      4.475619   &      3.963355   & 1.13311771e-23   &      2.875541   & 0.003007617845   &     0.6686734\\
-    bltOPEN527   & -0.1391626732   &      4.664445   &     0.7333857   & 2.954728588e-23   &      1.821006   & 0.003002262355   &      2.905277\\
-    bltOPEN528   & -0.5293366732   &      4.348829   &      3.876937   & 1.639721888e-23   &      2.502296   & 0.003008828203   &      1.402516\\
-    bltOPEN529   & -0.5712176732   &       4.36062   &      2.633254   & 2.121398818e-23   &      2.141836   & 0.003004444776   &      1.761335\\
-    bltOPEN530   &  0.1615813268   &      4.824399   &      4.730908   & 2.394959917e-23   &     0.7644302   & 0.003000085802   &      2.556743\\
-    bltOPEN531   & -0.08683867321   &      4.649268   &      4.168053   & 1.154244188e-23   &      1.468753   & 0.003014847824   &     0.7340329\\
-    bltOPEN532   &  0.1119853268   &      4.742019   &      5.801331   & 1.449956501e-23   &      1.975768   & 0.00300693414   &      4.006674\\
-    bltOPEN533   &  0.4597053268   &      5.097522   &      1.728264   & 5.624172021e-23   &      2.315123   & 0.003006291416   &      5.788288\\
-    bltOPEN534   & 0.05181232679   &      4.712044   &      4.329603   & 1.047294076e-23   &      2.340105   & 0.003011028343   &      4.354186\\
-    bltOPEN535   & -0.6428546732   &      4.342612   &     0.2059696   & 6.751063327e-23   &     0.2989914   & 0.003005890644   &       2.55011\\
-    bltOPEN536   &  0.1802483268   &      4.835298   &      5.857642   & 1.35139986e-23   &      1.863909   & 0.003008119969   &      2.447806\\
-    bltOPEN537   & -0.07612867321   &      4.680019   &      1.220656   & 1.016894995e-23   &     0.8548632   & 0.003010752753   &      4.411715\\
-    bltOPEN538   & -0.03420067321   &       4.73275   &      0.591487   & 1.540588777e-23   &      1.676524   & 0.003007764393   &      5.813353\\
-    bltOPEN539   & 0.06482732679   &      4.831481   &     0.5784485   & 1.664209164e-23   &      1.419567   & 0.003004172194   &      4.281158\\
-    bltOPEN540   & -0.3287426732   &      4.525711   &     0.1533283   & 1.924691777e-23   &      1.744032   & 0.00300731846   &      4.706994\\
-    bltOPEN541   &  0.1921143268   &      4.846147   &         4.184   & 7.704046231e-24   &      1.452731   & 0.003014339817   &      1.842703\\
-    bltOPEN542   & -0.3659066732   &      4.463962   &      4.259128   & 1.396119872e-23   &      1.399474   & 0.003000336038   &      0.365172\\
-    bltOPEN543   & -0.06510367321   &      4.676478   &      1.874277   & 1.374245519e-23   &       1.77862   & 0.00300937737   &     0.2636896\\
-    bltOPEN544   & 0.08700232679   &      4.815191   &      2.881006   & 2.164489003e-23   &      2.003314   & 0.003010862892   &       2.07026\\
-    bltOPEN545   & -0.1213296732   &      4.565434   &   0.044703808   & 2.063057207e-23   &     0.8375783   & 0.00300718145   &      5.834569\\
-    bltOPEN546   &  0.4280373268   &      4.954865   &      3.533772   & 4.058228667e-23   &      2.186047   & 0.003006213242   &      3.649042\\
-    bltOPEN547   & -0.09374967321   &      4.660285   &      4.983929   & 2.015969249e-23   &      2.483658   & 0.003000629082   &      1.436196\\
-    bltOPEN548   & -0.08621267321   &      4.645386   &     0.2258746   & 1.70349023e-23   &     0.4907173   & 0.003007220336   &      2.880087\\
-    bltOPEN549   & -0.1511566732   &      4.621061   &      1.562674   & 2.858433099e-23   &     0.8519143   & 0.003013234427   &      4.663027\\
-    bltOPEN550   &  0.1550283268   &       4.74103   &     0.2551194   & 2.658667401e-23   &      1.858826   & 0.003011652233   &      2.431812\\
-    \hline
-    \end{tabular}
-    \label{tbl.LISAbinaries1.1.4}
-        \caption{LISA Resolvable Binaries (Challenge 1.1.4, open).  These data are the exact numbers
-        used to produce the input data streams, with $3.0  {\rm mHz} \leq f \leq 3.015 {\rm mHz}$.
-        The binary parameter values are drawn from a
-        population synthesis galaxy by Matt Benacquista.}
-}
-\end{sidewaystable}
+In the following the notation $U[a,b]$ stands is short-hand for a uniform distribution over the range $a,b$.
 
 
+\begin{description}
 
+\item {\bf C1.2. -- } A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and {\em one} low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is in the range $\approx 10-20$. 
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.1a -- Source(s): 1 galactic binary}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & unknown \\
+$f_0$             & U[0.95 mHz, 1.05 mHz] \\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
+\end{description}
 
 \begin{thebibliography}{}
 \input{biblio_ch1}
@@ -2815,6 +2712,7 @@ bltOPEN120   & -0.1000736732   &     4.658095   &    0.7844886   & 4.747803678e-
 
 
 \end{document}
+
 
 
 %%%%%%%%%%%%%%%%%
@@ -4463,3 +4361,187 @@ for the same intrinsic parameters (multiple call to {\tt SetSourceLocation} and 
 \subsection{Foreground - mock model}
 
 \subsection{Foreground from a simulation of the galaxy}
+
+
+%%%%%%%%%%%
+%%%%%%%%%%%
+
+
+
+\begin{sidewaystable}
+\centering
+\small{
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline \textbf{Name (Challenge)} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
+Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
+$\phi_{o}$ \\
+\hline 
+bltOPENsingle1mHz (a) & 0.4741143268 & 5.19921 & 3.975816 & 1.789229908e-22 & 0.1793956 & 0.0009930348535 & 5.781211\\
+bltOPENsingle3mHz (b) & 0.03834232679 & 4.742862 & 5.097536 & 3.995025829e-23 & 1.413846 & 0.002909689776 & 1.740975\\
+bltOPENsingle10mHz (c) & -0.2250446732 & 4.606922 & 2.798886 & 8.05894569e-23 & 0.3975902 & 0.01068342968 & 3.427764\\
+\hline
+\end{tabular}
+    \caption{LISA Verification Binaries (Challenge 1.1.1, open).  These data are the exact numbers
+    used to produce the input data streams for the Challenge.  The parameter values are drawn from a population synthesis galaxy by
+    Matt Benacquista.}
+}
+\label{tbl.LISAbinaries1.1.1}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}
+\centering
+\small{
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
+Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
+$\phi_{o}$ \\
+\hline 
+RXJ0806   & 0.2697997832   &  2.100953649   & \emph{0.4121481023}   & 2.679125245e-22   &  \emph{3.111359347}   &  0.006220276603   &  \emph{4.299962148}\\
+V407Vul   & 0.4353820782   &  5.147481878   &   \emph{5.53934687}   & 9.861549125e-23   &  \emph{1.491703432}   & 0.00351250011   &  \emph{3.675461931}\\
+ESCet   & -0.1642146356   & 0.4258413339   &  \emph{3.802604023}   & 8.196435522e-23   &  \emph{1.755106891}   &  0.003220611916   &  \emph{4.132944549}\\
+AMCVn   & 0.6567450961   &   2.97249322   &  \emph{1.597400834}   & 1.357046386e-22   &  1.657422424   &  0.001944144722   &  \emph{3.525471775}\\
+HPLib   & -0.2481858196   &  4.101821899   & \emph{0.8128179939}   & 1.003718413e-22   &  \emph{1.960603819}   &  0.001813236627   &  \emph{3.911222637}\\
+EIPsc   & 0.1129174697   &  6.205956271   &  \emph{5.716790142}   & 1.771013358e-22   &   \emph{1.17411724}   & 0.0005194805195   &  \emph{2.008091229}\\
+\hline
+bltOPEN7   & 0.1996953268   &     4.757415   &     2.527014   & 6.905198084e-23   &    0.7692599   &  0.002095374315   &     5.262859\\
+bltOPEN8   & -0.6154346732   &      4.13981   &    0.3632213   & 6.534787823e-23   &    0.9055759   &  0.001839178549   &     4.028324\\
+bltOPEN9   & -0.1422176732   &     4.649333   &     1.994939   & 4.451552893e-23   &     1.756768   &  0.001910351046   &      1.54592\\
+bltOPEN10   & 0.01476832679   &     4.756822   &     1.809718   & 1.052682025e-22   &     1.557614   &  0.006334684838   &     1.469529\\
+bltOPEN11   & 0.7497998268   &     5.174382   &     5.666218   & 1.338375078e-23   &     1.239189   &  0.003208731343   &     3.661884\\
+bltOPEN12   & 0.1200253268   &     4.780427   &     2.436986   & 5.124425841e-23   &     1.513927   &  0.003502950886   &     4.219012\\
+bltOPEN13   & -0.7670126732   &     4.047208   &     3.259933   & 5.576823165e-23   &      1.49333   &  0.002926858537   &     2.164082\\
+bltOPEN14   & -0.3583376732   &      4.46843   &     5.087589   & 1.347687874e-23   &     2.833322   &  0.002706457364   &     1.236043\\
+bltOPEN15   & -0.2166256732   &     4.607265   &     1.363608   & 2.191432316e-23   &     1.121772   &  0.002506720518   &     3.415738\\
+bltOPEN16   & -0.2676646732   &      4.50488   &     6.167674   & 2.238928336e-23   &     1.446075   &  0.004841122821   &    0.6249065\\
+bltOPEN17   &  -0.06588667321   &     4.663938   &     1.607599   & 1.571652582e-23   &     2.182752   &  0.003375130955   &     4.869657\\
+bltOPEN18   & 0.04105132679   &     4.748964   &     3.895397   & 1.812540806e-23   &    0.2622156   &  0.004139974183   &     4.614429\\
+bltOPEN19   &  -0.04352567321   &     4.749986   &     4.217893   & 2.517991681e-23   &     2.603745   &  0.007870408994   &    0.3448426\\
+bltOPEN20   &  -0.01221367321   &     4.728495   &     4.381518   & 1.304792146e-23   &     2.362326   &  0.002455096892   &     1.947693\\
+\hline
+\end{tabular}
+    \caption{LISA Verification Binaries (Challenge 1.1.2, open).  These data are the exact numbers
+    used to produce the input data streams for the Challenge 1.1.2
+    (Verification Binaries).  Note that of this list, only the first six
+    binaries are known verification binaries at the current time.  The
+    values for their parameters are derived from a list maintained by
+    Nelemans\cite{NelemansWiki}.  The observer dependent parameters
+    ($\psi, \iota, \phi_{o}$) for these six binaries are poorly known, and
+    were assigned random values for this Challenge (indicated by italics; 
+    the excpetion is the value of $\iota$ for AM CVn, which is reasonably 
+    well known).  The remaining binaries are included to mimic
+    verification binaries which might be known before the LISA flight era;
+    their parameter values are drawn from a population synthesis galaxy by
+    Matt Benacquista.}
+\label{tbl.LISAbinaries1.1.2}
+}
+\end{sidewaystable}
+
+
+\begin{sidewaystable}
+\centering
+\small{
+\begin{tabular}{|l|c|c|c|c|c|c|c|}
+\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
+Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
+$\phi_{o}$ \\
+\hline 
+bltOPEN101   & 0.5551443268   &     5.144816   &    0.3157544   & 2.689398064e-23   &     2.189936   & 0.003396299019   &     1.636168\\
+bltOPEN102   & -0.4420866732   &     4.409351   &     2.249839   & 1.313583967e-22   &     1.083007   & 0.003519811789   &     3.993302\\
+bltOPEN103   & -0.1841986732   &     4.599144   &    0.3738202   & 3.803289765e-23   &     1.850827   & 0.002740597387   &     1.098652\\
+bltOPEN104   & -0.1528946732   &     4.611344   &      2.76847   & 4.51389654e-23   &     1.626107   & 0.002240598365   &     4.716584\\
+bltOPEN105   & -0.1452646732   &     4.668415   &      3.32127   & 1.740985e-23   &     2.186683   & 0.004640501508   &     5.737249\\
+bltOPEN106   & -0.1399346732   &     4.637259   &      1.71006   & 3.414290208e-23   &     1.187685   & 0.003381325043   &     5.700299\\
+bltOPEN107   & -0.1109606732   &     4.675635   &     1.364952   & 8.625389647e-23   &     1.928985   & 0.005201948754   &     1.223227\\
+bltOPEN108   & -0.1169306732   &     4.641041   &     2.527301   & 1.566727462e-23   &     2.402011   & 0.004820346877   &     1.654564\\
+bltOPEN109   & -0.09577567321   &      4.66947   &     3.783203   & 5.501289279e-23   &     1.154582   & 0.003462549326   &     2.789387\\
+bltOPEN110   & -0.1020606732   &     4.656468   &    0.5130786   & 2.398636579e-23   &     1.647828   & 0.003268047013   &     3.378753\\
+bltOPEN111   & -0.4144656732   &     4.456629   &     1.563013   & 1.988108915e-23   &    0.5271457   & 0.002571157755   &    0.7285082\\
+bltOPEN112   & -0.2012746732   &     4.588201   &     4.856152   & 3.925760638e-23   &     1.699465   & 0.002420159542   &     1.614504\\
+bltOPEN113   & -0.1346476732   &     4.636082   &     4.060802   & 2.251548959e-23   &     1.786749   & 0.002246211259   &    0.9586449\\
+bltOPEN114   & 0.2547383268   &     4.859088   &      3.62922   & 2.576776487e-23   &    0.6602926   & 0.002729128783   &     2.227683\\
+bltOPEN115   & -0.1393386732   &     4.621698   &     4.415524   & 1.466511117e-23   &      1.47779   & 0.002275470766   &     2.634269\\
+bltOPEN116   & -0.06300067321   &     4.689342   &     1.904893   & 1.810059735e-23   &     1.547542   & 0.002896446813   &     4.845582\\
+bltOPEN117   & 0.07031532679   &     4.785422   &     6.205516   & 1.113169587e-22   &     2.422862   & 0.00206561445   &     3.067871\\
+bltOPEN118   & 0.1406423268   &     4.810691   &    0.7387418   & 7.600032912e-23   &     1.469013   & 0.002663168329   &     2.069497\\
+bltOPEN119   & -0.1819266732   &     4.654125   &     2.655385   & 3.266615155e-23   &     2.116061   & 0.00249873564   &    0.1194132\\
+bltOPEN120   & -0.1000736732   &     4.658095   &    0.7844886   & 4.747803678e-23   &     2.329331   & 0.002213248728   &     1.339854\\
+\hline
+\end{tabular}
+\label{tbl.LISAbinaries1.1.3}
+    \caption{LISA Resolvable Binaries (Challenge 1.1.3, open).  These data are the exact numbers
+    used to produce the input data streams, with $0.1  {\rm mHz} \leq f \leq 10 {\rm mHz}$.
+    The binary parameter values are drawn from a
+    population synthesis galaxy by Matt Benacquista.}
+}
+\end{sidewaystable}
+
+
+
+\begin{sidewaystable}
+\centering
+\tiny{
+    \begin{tabular}{|l|c|c|c|c|c|c|c|}
+    \hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
+    Longitude (rad)} & $\psi$ & $\cal A$ &$\iota$ & $f_{gw} ({\rm Hz})$ &
+    $\phi_{o}$ \\
+    \hline 
+    bltOPEN501   & -0.3556896732   &       4.47036   &       5.32167   & 1.525764337e-23   &      1.942178   & 0.003014821465   &      3.372873\\
+    bltOPEN502   & -0.03943367321   &      4.703935   &      5.079013   & 3.846126582e-23   &      2.421117   & 0.003001955924   &      1.866554\\
+    bltOPEN503   &  0.1765353268   &      4.825705   &      2.297467   & 1.750290591e-23   &      1.696761   & 0.003014201259   &      2.269778\\
+    bltOPEN504   & -0.09225567321   &      4.658252   &      1.446976   & 2.30723423e-23   &      2.728259   & 0.003003445853   &       5.55052\\
+    bltOPEN505   & -0.05487467321   &      4.675729   &      1.135749   & 9.685886177e-24   &      1.247204   & 0.003014861913   &      6.217826\\
+    bltOPEN506   & -0.09121867321   &      4.650051   &      2.440814   & 1.218641032e-23   &     0.7391825   & 0.003007044453   &      0.463448\\
+    bltOPEN507   & -0.2573726732   &      4.552703   &     0.9754909   & 1.0110351e-23   &       1.32265   & 0.003012910775   &      1.310073\\
+    bltOPEN508   & -0.08047967321   &      4.681123   &      2.246906   & 9.518643488e-23   &      1.657077   & 0.003011234615   &      5.253538\\
+    bltOPEN509   & 0.09966832679   &      4.772784   &      1.347727   & 2.841481384e-23   &      1.662996   & 0.003010892355   &      2.959267\\
+    bltOPEN510   & -0.09126367321   &      4.629534   &      3.440039   & 1.889751583e-23   &      2.150017   & 0.003003220804   &      3.824376\\
+    bltOPEN511   &  0.1626943268   &      4.814645   &      3.557965   & 2.1850258e-23   &     0.6432248   & 0.00300983705   &      2.951851\\
+    bltOPEN512   & -0.3954536732   &      4.463923   &      2.295206   & 2.350549404e-23   &      1.155095   & 0.003012236004   &      5.373871\\
+    bltOPEN513   & -0.03867467321   &      4.646785   &      2.474178   & 4.992141197e-23   &     0.7928898   & 0.003004444776   &      1.098389\\
+    bltOPEN514   &  0.1630883268   &      4.808945   &      1.033436   & 7.83100476e-24   &      1.454817   & 0.003013381069   &      5.325282\\
+    bltOPEN515   &  0.1557743268   &      4.786062   &     0.5084665   & 2.940532054e-23   &       2.44499   & 0.003007798771   &      1.493309\\
+    bltOPEN516   & 0.05452932679   &      4.711226   &      1.277553   & 3.326235605e-23   &      2.070016   & 0.003013616272   &      4.931587\\
+    bltOPEN517   & 0.04015032679   &      4.753871   &       1.23617   & 6.995953696e-23   &      2.354789   & 0.003002803267   &      1.279687\\
+    bltOPEN518   & -0.05729567321   &       4.63589   &      4.877932   & 9.517115646e-24   &      1.952635   & 0.003014063167   &      3.895026\\
+    bltOPEN519   & -0.2300876732   &      4.572137   &      2.120373   & 4.908691196e-23   &     0.8891096   & 0.003006022566   &     0.5510634\\
+    bltOPEN520   & -0.1459266732   &      4.577511   &      1.715593   & 4.750785509e-23   &      1.210389   & 0.003004146022   &     0.1685839\\
+    bltOPEN521   &  0.1635443268   &      4.813947   &      2.134165   & 7.106720016e-24   &      1.813235   & 0.003013787021   &      2.134136\\
+    bltOPEN522   & -0.2196946732   &      4.596741   &      2.794801   & 5.513766836e-23   &     0.3623512   & 0.003006890289   &      5.577981\\
+    bltOPEN523   & -0.1403996732   &       4.64125   &      3.825858   & 6.219856513e-23   &      1.071808   & 0.003014339817   &     0.7050047\\
+    bltOPEN524   & -0.07593267321   &      4.598514   &      4.386826   & 1.758856099e-23   &      1.889541   & 0.003004718309   &     0.5663961\\
+    bltOPEN525   &  0.1680843268   &      4.815904   &      1.768916   & 3.343373229e-23   &      1.481831   & 0.003012130301   &      4.748302\\
+    bltOPEN526   & -0.3844226732   &      4.475619   &      3.963355   & 1.13311771e-23   &      2.875541   & 0.003007617845   &     0.6686734\\
+    bltOPEN527   & -0.1391626732   &      4.664445   &     0.7333857   & 2.954728588e-23   &      1.821006   & 0.003002262355   &      2.905277\\
+    bltOPEN528   & -0.5293366732   &      4.348829   &      3.876937   & 1.639721888e-23   &      2.502296   & 0.003008828203   &      1.402516\\
+    bltOPEN529   & -0.5712176732   &       4.36062   &      2.633254   & 2.121398818e-23   &      2.141836   & 0.003004444776   &      1.761335\\
+    bltOPEN530   &  0.1615813268   &      4.824399   &      4.730908   & 2.394959917e-23   &     0.7644302   & 0.003000085802   &      2.556743\\
+    bltOPEN531   & -0.08683867321   &      4.649268   &      4.168053   & 1.154244188e-23   &      1.468753   & 0.003014847824   &     0.7340329\\
+    bltOPEN532   &  0.1119853268   &      4.742019   &      5.801331   & 1.449956501e-23   &      1.975768   & 0.00300693414   &      4.006674\\
+    bltOPEN533   &  0.4597053268   &      5.097522   &      1.728264   & 5.624172021e-23   &      2.315123   & 0.003006291416   &      5.788288\\
+    bltOPEN534   & 0.05181232679   &      4.712044   &      4.329603   & 1.047294076e-23   &      2.340105   & 0.003011028343   &      4.354186\\
+    bltOPEN535   & -0.6428546732   &      4.342612   &     0.2059696   & 6.751063327e-23   &     0.2989914   & 0.003005890644   &       2.55011\\
+    bltOPEN536   &  0.1802483268   &      4.835298   &      5.857642   & 1.35139986e-23   &      1.863909   & 0.003008119969   &      2.447806\\
+    bltOPEN537   & -0.07612867321   &      4.680019   &      1.220656   & 1.016894995e-23   &     0.8548632   & 0.003010752753   &      4.411715\\
+    bltOPEN538   & -0.03420067321   &       4.73275   &      0.591487   & 1.540588777e-23   &      1.676524   & 0.003007764393   &      5.813353\\
+    bltOPEN539   & 0.06482732679   &      4.831481   &     0.5784485   & 1.664209164e-23   &      1.419567   & 0.003004172194   &      4.281158\\
+    bltOPEN540   & -0.3287426732   &      4.525711   &     0.1533283   & 1.924691777e-23   &      1.744032   & 0.00300731846   &      4.706994\\
+    bltOPEN541   &  0.1921143268   &      4.846147   &         4.184   & 7.704046231e-24   &      1.452731   & 0.003014339817   &      1.842703\\
+    bltOPEN542   & -0.3659066732   &      4.463962   &      4.259128   & 1.396119872e-23   &      1.399474   & 0.003000336038   &      0.365172\\
+    bltOPEN543   & -0.06510367321   &      4.676478   &      1.874277   & 1.374245519e-23   &       1.77862   & 0.00300937737   &     0.2636896\\
+    bltOPEN544   & 0.08700232679   &      4.815191   &      2.881006   & 2.164489003e-23   &      2.003314   & 0.003010862892   &       2.07026\\
+    bltOPEN545   & -0.1213296732   &      4.565434   &   0.044703808   & 2.063057207e-23   &     0.8375783   & 0.00300718145   &      5.834569\\
+    bltOPEN546   &  0.4280373268   &      4.954865   &      3.533772   & 4.058228667e-23   &      2.186047   & 0.003006213242   &      3.649042\\
+    bltOPEN547   & -0.09374967321   &      4.660285   &      4.983929   & 2.015969249e-23   &      2.483658   & 0.003000629082   &      1.436196\\
+    bltOPEN548   & -0.08621267321   &      4.645386   &     0.2258746   & 1.70349023e-23   &     0.4907173   & 0.003007220336   &      2.880087\\
+    bltOPEN549   & -0.1511566732   &      4.621061   &      1.562674   & 2.858433099e-23   &     0.8519143   & 0.003013234427   &      4.663027\\
+    bltOPEN550   &  0.1550283268   &       4.74103   &     0.2551194   & 2.658667401e-23   &      1.858826   & 0.003011652233   &      2.431812\\
+    \hline
+    \end{tabular}
+    \label{tbl.LISAbinaries1.1.4}
+        \caption{LISA Resolvable Binaries (Challenge 1.1.4, open).  These data are the exact numbers
+        used to produce the input data streams, with $3.0  {\rm mHz} \leq f \leq 3.015 {\rm mHz}$.
+        The binary parameter values are drawn from a
+        population synthesis galaxy by Matt Benacquista.}
+}
+\end{sidewaystable}
