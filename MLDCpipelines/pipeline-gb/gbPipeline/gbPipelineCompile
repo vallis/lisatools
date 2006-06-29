@@ -1,0 +1,5 @@
+  # Example of Galactic binary pipeline: Input File Generation codes
+
+gcc -O2 -o galactic_params galactic_params.c IO/lisaxml.c IO/ezxml.c -lm
+
+gcc -O2 -o galactic_barycenter galactic_barycenter.c IO/lisaxml.c IO/xmlbinary.c IO/readxml.c IO/ezxml.c -lm
