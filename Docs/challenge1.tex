@@ -2514,107 +2514,19 @@ obs = fread(readfile,[4,inf],'double');
 %
 where \texttt{'n'} specifies that the data are to be read in native format (i.e., with the enddianness of the local platform); it could also be \texttt{'l'} or \texttt{'b'} to specify little- or big-endian explicitly. Also, 4 is the number of records in the array. The TDI observables then become available as \texttt{obs(1,:)}, \texttt{obs(2,:)}, etc.
 
+%%%%%%%%%%%
 
 \chapter{Challenge 1}
 
-The goal of Challenge-1 is to enable the development of the necessary data analysis infrastructure and the tacking of simple LISA data analysis problems in which either a {\em single} source or a small number of sources well separated in parameter space are present in the data stream. The challenges will concentrate on the minimum science requirements (galactic binaries, including verification binaries, and the in-spiral part of the coalescence of a massive black hole binary system. A data set containing an EMRI will also be made available, though the results are due 
+The goal of Challenge-1 is to enable the development of the necessary data analysis infrastructure of and building blocks for LISA data analysis. It focuses on the analysis of data sets that contain a single source or a small number of non-overlapping sources, although an exception is made for the data set 1.1.4, see later. The first round of challenges concentrates on sources listed (currently) as minimum science requirements, {\em i.e.} galactic binaries, including verification binaries, and massive black hole binary systems. Data sets containing EMRIs will also be made available, in order to facilitate the development of data analysis tool for this particular demanding class of sources. However, the results of the challenge are due in June 2007 (the date for the round 2 of the MLDC) and not 1 December 2006.
 
-\section{Training data sets}
+For each of the challange data sets a corresponding `training data set will also be released (the so-called ``Open Challenge''): the training data set is just a different instance of the mock data with a signal generated with the same properties (but different parameters) of that present in the (blind) challenge data set for which all the parameters are made public. The training data sets, as well as the challange data sets are posted at:
 
-Training data sets containing signals with the same features of those in the challenge are distributed where all the parameters are known. This is aimed at facilitating the validation of the codes used by the participants and provides an additional level of testing.
+{\tt http://astrogravs.gsfc.nasa.gov/docs/mldc/round1.html}
 
-The training data sets are as follows:
+The link ``Open Challenge'' points to the xml file used for the signal generation and contain full information about the source(s).
 
-\begin{description}
-
-\item{{\bf T1 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. 
-
-\begin{center}
-\begin{tabular}{l|c}
-\hline \hline
-\multicolumn{2}{c}{{\bf Challenge T1 -- Source(s): galactic binary}} \\
-\hline
-Parameters & Value or range \\
-\hline
-$\theta$ & \\
-$\phi$   & \\ 
-$\iota$  & \\ 
-$\psi$   & \\
-${\cal A}$ & \\
-$f_0$    & \\ 
-$\phi_0$ & \\
-noise    & \\
-\hline \hline
-\end{tabular} \\
-\end{center}
-
-
-
-
-\item{{\bf T2 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a mid frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
-
-\begin{center}
-\begin{tabular}{l|c}
-\hline \hline
-\multicolumn{2}{c}{{\bf Challenge T2 -- Source(s): galactic binary}} \\
-\hline
-Parameters & Value or range \\
-\hline
-$\theta$ & \\
-$\phi$   & \\ 
-$\iota$  & \\ 
-$\psi$   & \\
-${\cal A}$ & \\
-$f_0$    & \\ 
-$\phi_0$ & \\
-noise    & \\
-\hline \hline
-\end{tabular} \\
-\end{center}
-
-\item{{\bf T3 -- Galactic binaries}} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) and a high frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame and producing a SNR $\approx 20$. The parameters are:
-
-\begin{center}
-\begin{tabular}{l|c}
-\hline \hline
-\multicolumn{2}{c}{{\bf Challenge T2 -- Source(s): galactic binary}} \\
-\hline
-Parameters & Value or range \\
-\hline
-$\theta$ & \\
-$\phi$   & \\ 
-$\iota$  & \\ 
-$\psi$   & \\
-${\cal A}$ & \\
-$f_0$    & \\ 
-$\phi_0$ & \\
-noise    & \\
-\hline \hline
-\end{tabular} \\
-\end{center}
-
-\item{T4 -- ``Massive black holes''} A 1-yr long data set consisting of Gassian and stationary instrumental noise and a signal produced by the inspiral of a massive binary system lasting several ($\le 6$) months. The SNR produced by the signal is several hundreds. The in-spiral waveform is cmputed according to the Eq(xx) (``restricted post-Newtonian'' approximation, whith phase at the 2PN order). The inspiral is tapered at $r = xx\,M$ according to the following model:
-\be
-this is the expression
-\ee
-The parameters of the signal are:
-
-\item{{\bf T5 -- Massive black holes}} Same kind of data set as T4, but with a different set of source parameters. In this case they are: ....
-
-
-\item{{\bf T6 -- Extreme Mass Ratio Inspirals''}} A set of 1 year of Gaussian and stationary noise (instrumental only) with superimposed on EMRI (with $e \approx 0.2$ at plunge) and SNR = 100 (for signle IFO). [Results are actually expected in June 2007, as part of challenge 2]
-Comment on e=0.20: of course we have to say "when" it's 0.2; I'd suggest e=0.2 at very end of inspiral, or maybe
-e=0.3  when the m=2 harmonic sweeps thru 3mHz (which amounts to pretty much the same thing, for a $10/10^6$ pair) (CC). The parameters are:
-\bea
-m_1 & = & 10^6\,\M_\odot \\
-m_2 & = & 10\,\M_\odot \\
-e & = & 0.3 \quad\mathrm{at} f_{m = 2} = 3\,\mathrm{mHz}\\
-.... & = & ...
-\eea
-
-
-\end{description}
-
+In the following we provide details on each of the Challenge data sets for round 1.
 
 
 \section{Challenge 1.1 -- Galactic binaries}
