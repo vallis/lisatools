@@ -2677,13 +2677,13 @@ The simulators used for the MLDC are available at:
 
 \chapter{Challenge 1}
 
-The goal of Challenge-1 is to enable the development of the necessary data analysis infrastructure of and building blocks for LISA data analysis. It focuses on the analysis of data sets that contain a single source or a small number of non-overlapping sources, although an exception is made for the data set 1.1.4, see later. The first round of challenges concentrates on sources listed (currently) as minimum science requirements, {\em i.e.} galactic binaries, including verification binaries, and massive black hole binary systems. Data sets containing EMRIs will also be made available, in order to facilitate the development of data analysis tool for this particular demanding class of sources. However, the results of the challenge are due in June 2007 (the date for the round 2 of the MLDC) and not 1 December 2006.
+The goal of Challenge-1 is to enable the development of the necessary data analysis infrastructure of and building blocks for LISA data analysis. It focuses on the analysis of data sets that contain a single source or a small number of non-overlapping sources, although an exception is made for the data sets 1.1.4 and 1.1.5; see later. The first round of challenges concentrates on sources listed (currently) as minimum science requirements, {\em i.e.} galactic binaries, including verification binaries, and massive black hole binary systems. Data sets containing EMRIs will also be made available, in order to facilitate the development of data analysis tool for this particular demanding class of sources. However, the results of the challenge are due in June 2007 (the date for the round 2 of the MLDC) and not 1 December 2006.
 
-For each of the challenge data sets a corresponding `training data set will also be released (the so-called ``Open Challenge''): the training data set is just a different instance of the mock data with a signal generated with the same properties (but different parameters) of that present in the (blind) challenge data set for which all the parameters are made public. The training data sets, as well as the challenge data sets are posted at:
+For each of the challenge data sets a corresponding `training data set will also be released the training data set is just a different instance of the mock data with a signal generated with the same properties (but different parameters) of that present in the (blind) challenge data set for which all the parameters are made public. The training data sets, as well as the challenge data sets are posted at:
 
 {\tt http://astrogravs.gsfc.nasa.gov/docs/mldc/round1.html}
 
-The link ``Open Challenge'' points to the xml file used for the signal generation and contain full information about the source(s).
+The link ``key'' points to the xml file used for the signal generation and contain full information about the source(s).
 
 In the following we provide details on each of the Challenge data sets for round 1.
 
@@ -2709,7 +2709,7 @@ $\varphi$         & U$[0,2\pi]$ \\
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
 ${\cal A}$        & random, but such that SNR $> 10$ \\
-$f_0$             & U[XXX mHz, XXX mHz] \\ 
+$f_0$             & U[0.9 mHz, 1.1 mHz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
@@ -2732,7 +2732,7 @@ $\varphi$         & U$[0,2\pi]$ \\
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
 ${\cal A}$        & random, but such that SNR $> 10$ \\
-$f_0$             & U[XXX Hz, XXX Hz] \\ 
+$f_0$             & U[2.9 Hz, 3.1 Hz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
@@ -2754,7 +2754,7 @@ $\varphi$         & U$[0,2\pi]$ \\
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
 ${\cal A}$        & random, but such that SNR $> 10$ \\
-$f_0$             & U[XXX Hz, XXX Hz] \\ 
+$f_0$             & U[9 mHz, 11 mHz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
@@ -2768,37 +2768,38 @@ $\phi_0$          & U$[0,2\pi]$ \\
 
 \begin{center}
 \begin{table}
-\begin{tabular}{|l|c|c|c|}
-\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
-Longitude (rad)} & $f_{gw} ({\rm Hz})$  \\
-\hline 
-RXJ0806   & 0.2697997832   &  2.100953649   &   0.006220276603  \\
-V407Vul   & 0.4353820782   &  5.147481878   &   0.00351250011   \\
-ESCet   & -0.1642146356   & 0.4258413339   &   0.003220611916   \\
-AMCVn   & 0.6567450961   &   2.97249322   &   0.001944144722   \\
-HPLib   & -0.2481858196   &  4.101821899   &  0.001813236627   \\
-EIPsc   & 0.1129174697   &  6.205956271   &  0.0005194805195   \\
+\begin{tabular}{|l|c|c|c|c|}
+\hline \textbf{Name} & {\bf ecl. lat. (rad)} & {\bf ecl.
+long. (rad)} & $f_{gw} ({\rm Hz})$  Training  & $f_{gw} ({\rm Hz})$ Blind Chal.  \\
+RXJ0806         & 0.2697997832          & 2.100953649   & 0.006220276603        &       0.005907385444\\
+V407Vul         & 0.4353820782          & 5.147481878   & 0.00351250011         &       0.00367987089\\
+ESCet           & -0.1642146356         & 0.4258413339  & 0.003220611916        &       0.00332835297\\
+AMCVn           & 0.6567450961          & 2.97249322    & 0.001944144722        &       0.00198757488\\
+HPLib           & -0.2481858196         & 4.101821899   & 0.001813236627        &       0.001777716317\\
+EIPsc           & 0.1129174697          & 6.205956271   & 0.0005194805195       &       0.0005211327983\\
 \hline
-bltOPEN7 & & & \\
-bltOPEN8 & & & \\
-bltOPEN9 & & & \\
-bltOPEN10 & & & \\
-bltOPEN11 & & & \\
-bltOPEN12 & & & \\
-bltOPEN13 & & & \\
-bltOPEN14 & & & \\
-bltOPEN15 & & & \\
-bltOPEN16 & & & \\
-bltOPEN17 & & & \\
-bltOPEN18 & & & \\
-bltOPEN19 & & & \\
-bltOPEN20 & & & \\
+bltOPEN7        & 0.1996953268          & 4.757415      & 0.002095374315        &       0.002004086634\\
+bltOPEN8        & -0.6154346732         & 4.13981       & 0.001839178549        &       0.001767880534\\
+bltOPEN9        & -0.1422176732         & 4.649333      & 0.001910351046        &       0.001874145362\\
+bltOPEN10       & 0.01476832679         & 4.756822      & 0.006334684838        &       0.006544361142\\
+bltOPEN11       & 0.7497998268          & 5.174382      & 0.003208731343        &       0.003250185775\\
+bltOPEN12       & 0.1200253268          & 4.780427      & 0.003502950886        &       0.00329556522\\
+bltOPEN13       & -0.7670126732         & 4.047208      & 0.002926858537        &       0.003062759803\\
+bltOPEN14       & -0.3583376732         & 4.46843       & 0.002706457364        &       0.002489978296\\
+bltOPEN15       & -0.2166256732         & 4.607265      & 0.002506720518        &       0.002355954312\\
+bltOPEN16       & -0.2676646732         & 4.50488       & 0.004841122821        &       0.004974343896\\
+bltOPEN17       & -0.06588667321        & 4.663938      & 0.003375130955        &       0.003190094085\\
+bltOPEN18       & 0.04105132679         & 4.748964      & 0.004139974183        &       0.004146559486\\
+bltOPEN19       & -0.04352567321        & 4.749986      & 0.007870408994        &       0.008505086786\\
+bltOPEN20       & -0.01221367321        & 4.728495      & 0.002455096892        &       0.002351154304\\
 \hline
 \end{tabular}
     \caption{LISA Verification Binaries (Challenge 1.1.2.  
     These data are the exact numbers
     used to produce the input data streams for the Challenge 1.1.2
-    (Verification Binaries).  Note that of this list, only the first six
+    (Verification Binaries).  The two frequency columns indicate the 
+    slightly different values use in the training data set, and the blind 
+    challenge data.  Note that of this list, only the first six
     binaries are known verification binaries at the current time.  The
     values for their parameters are derived from a list maintained by
     Nelemans\cite{NelemansWiki}.  The observer dependent parameters
@@ -2834,12 +2835,36 @@ $\phi_0$          & U$[0,2\pi]$ \\
 \end{tabular} \\
 \end{center}
 
-\item {\bf C1.1.4 -- Overlapping binaries} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from $\approx 50$ unknown strongly overlapping galactic binaries. The sources located in a frequency region centered at 3 mHz over a $\pm 1.5 \mu$Hz band. The signal of all the binaries is {\em exactly} monochromatic in the source reference. The SNR of each signal is $> 5$. Note that the total number of signals $N$ is unknown, randomly chosen in the range $40 \le N \le 60$.
+\item {\bf C1.1.4 -- Overlapping binaries} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from $\approx 50$ unknown overlapping galactic binaries. The sources located in a frequency region centered at 3 mHz over a $15 \mu$Hz band. The signal of each binary is {\em exactly} monochromatic in the source reference. The SNR of each signal is $> 5$. Note that the total number of signals $N$ is unknown, randomly chosen in the range $40 \le N \le 60$.
 
 \begin{center}
 \begin{tabular}{l|c}
 \hline \hline
-\multicolumn{2}{c}{{\bf Challenge 1.1.4 -- Source(s): $\approx 50$ galactic binary}} \\
+\multicolumn{2}{c}{{\bf Challenge 1.1.4 -- Source(s): $\approx 50$ galactic binaries}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+${\cal A}$        & random such that SNR $> 5$  \\
+$f_0$             & U[3.000 mHz, 3.015 mHz] \\ 
+$\dot{f}_0$       & 0 \\ 
+$\ddot{f}_0$      & 0\\ 
+$\phi_0$          & U$[0,2\pi]$ \\
+number of sources & U[40,60] \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
+
+\item {\bf C1.1.5 -- Strongly Overlapping binaries} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from $\approx 40$ unknown strongly overlapping galactic binaries. The sources located in a frequency region centered at 3 mHz over a $\pm 1.5 \mu$Hz band. The signal of each binary is {\em exactly} monochromatic in the source reference. The SNR of each signal is $> 5$. Note that the total number of signals $N$ is unknown, randomly chosen in the range $30 \le N \le 50$.
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.1.5 -- Source(s): $\approx 40$ galactic binaries}} \\
 \hline
 Parameters & Value or range \\
 \hline
@@ -2852,7 +2877,7 @@ $f_0$             & U[2.9985 mHz, 3.0015 mHz] \\
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
-number of sources & U[40,60] \\
+number of sources & U[30,50] \\
 \hline \hline
 \end{tabular} \\
 \end{center}
@@ -2906,7 +2931,7 @@ $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\
 $\psi$            & U$[0,2\pi]$ \\
 $D$               & random, but such that SNR $\approx 20-100$ \\
 $\phi_0$          & U$[0,2\pi]$ \\
-$t_c$\footnote{Here we adopt the convention that $t = 0$ corresponds to the beginning of the observation}             & U[400 -20, 400 + 20] days \\
+$t_c$\footnote{Here we adopt the convention that $t = 0$ corresponds to the beginning of the observation}             & U[400 -40, 400 + 40] days \\
 \hline \hline
 \end{tabular} \\
 \end{center}
