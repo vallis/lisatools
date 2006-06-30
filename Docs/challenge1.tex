@@ -2178,7 +2178,7 @@ See table.... for the exact parameter ranges used for the EMRI Challenge-1 data 
 %
 %%%%%%%%%%%%%%%%%%%%
 
-\chapter{Data formats and relevant software}
+\chapter{Data formats and software}
 
 The Mock LISA Data Challenge Task Force has developed
 a single file format to describe the challenges (i.e., the year-long time series of TDI observables) \emph{and} all the ingredients
@@ -2514,6 +2514,108 @@ obs = fread(readfile,[4,inf],'double');
 %
 where \texttt{'n'} specifies that the data are to be read in native format (i.e., with the enddianness of the local platform); it could also be \texttt{'l'} or \texttt{'b'} to specify little- or big-endian explicitly. Also, 4 is the number of records in the array. The TDI observables then become available as \texttt{obs(1,:)}, \texttt{obs(2,:)}, etc.
 
+\section{The Galactic Binary Pipeline}
+
+Software for the generation of data streams containing galactic binary systems are available at:
+
+{\tt http://sourceforge.net/projects/lisatools}
+
+\noindent
+in the directory {\tt lisatools/MLDCpipelines/pipeline-gb}.
+
+The scripts and codes presented in this pipeline were cut from the
+v2.1.1 distribution of \texttt{The LISA Simulator}.  The pipeline will
+create time series files and lisaXML files which will be suitable for
+input into either \texttt{The LISA Simulator} or \texttt{Synthetic
+LISA}.
+
+\subsection{Pipeline input files}
+To run the MLDC binary pipeline, you must create two base files which
+will serve as the initial data for the pipeline: {\bf gb.txt} and {\bf
+sources.txt}.
+
+{\bf gb.txt}: This is a file which enumerates the parameters of the galactic
+binaries of interest.  The columns in the file should be:
+
+\begin{itemize}
+   \item[$\triangleright$] Col 1: Binary identifier (name or other
+   identifying tag for the binary)
+   
+   \item[$\triangleright$] Col 2: ecliptic LATITUDE (in radians)
+   
+   \item[$\triangleright$] Col 3: ecliptic LONGITUDE (in radians)
+   
+   \item[$\triangleright$] Col 4: principle polarization angle (in radians)
+   
+   \item[$\triangleright$] Col 5: binary amplitude
+   
+   \item[$\triangleright$] Col 6: inclination angle (in radians)
+   
+   \item[$\triangleright$] Col 7: GW frequency of the binary (in Hz)
+   
+   \item[$\triangleright$] Col 8: orbital phase (in radians)
+\end{itemize}
+Several caveats to note with this file's preparation:
+\begin{itemize}
+   \item Column 2 is \emph{ecliptic latitude}, ranging from
+   $+90^{\circ}$ at the north ecliptic pole to $-90^{\circ}$ at the
+   ecliptic south pole.
+
+   \item The amplitude in Column 5 can be computed from standard binary
+   parameters such as masses $m_{1}$ and $m_{2}$, the orbital
+   separation $r$ between binary components\footnote{In some instances 
+   the orbital period $P$ is known rather than the orbital separation 
+   $r$.  In these instances, an application of Kepler's Third Law is
+   in order: $G M_{tot} = (2 \pi/P)^{2} r^{3}$.}, and the distance $D$
+   to the binary as ${\cal A} = 2 (G^{2}/c^{4}) m_{1}m_{2}/(r\cdot D)$.
+\end{itemize}
+
+{\bf sources.txt}: This is a file which simply has a list of the binary
+names which should be processed from "gb.txt".
+
+Col 1: Binary identifier (name or other identifying tag for the binary)
+
+The column in this file is identical to column 1 in "gb.txt" if you
+want all the sources to be processed.
+
+\subsection{Pipeline codes}
+There are two codes included in this pipeline, along with two scripts 
+to compile and run the pipeline\footnote{A third script is included,
+but it is called from the second script and simply processes the list 
+of binaries being churned through the pipeline.}.  To use the
+pipeline, you simply have to run the two scripts.  The two scripts
+are:
+\begin{itemize}
+    \item \texttt{gbPipelineCompile}: Compiles the two codes in
+    preparation for processing the list of binaries.
+    
+    \item \texttt{gbPipelineRun}: Runs the two codes to process the
+    list of binaries into barycenter waveforms and lisaXML files.
+\end{itemize}
+
+Note that if you are creating data streams which have altered cadences
+or observation times, those elements will need to be changed in the
+\texttt{LISAconstants.h} file and the pipeline will need to be
+recompiled.  Similar changes will also need to be made in the
+simulator you choose to use for creating the LISA signal output.
+
+\subsection{Pipeline output}
+This pipeline produces h+ and hx for each
+source at the Solar Barycenter and saves the time-series in
+the Binary subdirectory. The xml wrapper for each time-series
+is written to the XML subdirectory.  These files will need to be
+provided to the LISA simulation software to produce a final LISA
+signal output suitable for data analysis research.
+
+\section{The massive black hole binary inspiral pipeline}
+
+Software for the generation of data streams containing in-spirals from massive black hole binary systems are available at:
+
+{\tt http://sourceforge.net/projects/lisatools}
+
+\noindent
+in the directory {\tt lisatools/MLDCpipelines/pipeline-bbh}.
+
 %%%%%%%%%%%
 
 \chapter{Challenge 1}
@@ -2676,34 +2778,60 @@ number of sources & U[40,60] \\
 
 \section{Challenge 1.2 -- Massive black hole binary systems}
 
-In the following the notation $U[a,b]$ stands is short-hand for a uniform distribution over the range $a,b$.
+In the following the notation $U[a,b]$ stands is short-hand for a uniform distribution over the range $a,b$. 
 
 
 \begin{description}
 
-\item {\bf C1.2. -- } A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and {\em one} low frequency galactic binary whose frequency is {\em exactly} monochromatic in the source reference frame. The SNR is in the range $\approx 10-20$. 
+\item {\bf C1.2.1 -- MBH binary inspiral} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and {\em one} signal produced by a massive black hole binary inspiral -- according to the model described in Section~\ref{smbh-ch1}, restricted 2PN waveform -- with coalescence taking place during the observation. The signal to noise ratio is $\approx 500$. 
 
 \begin{center}
 \begin{tabular}{l|c}
 \hline \hline
-\multicolumn{2}{c}{{\bf Challenge 1.1.1a -- Source(s): 1 galactic binary}} \\
+\multicolumn{2}{c}{{\bf Challenge 1.2.1 -- Source(s): 1 MBH binary inspiral}} \\
 \hline
 Parameters & Value or range \\
 \hline
+$m_1$             & U[1,5] $\times 10^6\,\M_\odot$ \\
+$m_1/m_2$         & U[1,4] \\
 $\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
 $\varphi$         & U$[0,2\pi]$ \\ 
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
-${\cal A}$        & unknown \\
-$f_0$             & U[0.95 mHz, 1.05 mHz] \\ 
-$\dot{f}_0$       & 0 \\ 
-$\ddot{f}_0$      & 0\\ 
+$D$        & random, but such that SNR $\approx 500$ \\
 $\phi_0$          & U$[0,2\pi]$ \\
+$t_c$\footnote{Here we adopt the convention that $t = 0$ correponds to the beginning of the observation}             & U[178 -20, 178 + 20] days \\
+\hline \hline
+\end{tabular} \\
+\end{center}
+
+\item {\bf C1.2.2 -- MBH binary inspiral} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and {\em one} signal produced by a massive black hole binary inspiral -- according to the model described in Section~\ref{smbh-ch1}, restricted 2PN waveform -- with coalescence taking place during the observation. The signal to noise ratio is $\approx 20-100$. 
+
+\begin{center}
+\begin{tabular}{l|c}
+\hline \hline
+\multicolumn{2}{c}{{\bf Challenge 1.2.2 -- Source(s): 1 MBH binary inspiral}} \\
+\hline
+Parameters & Value or range \\
+\hline
+$m_1$             & U[1,5] $\times 10^6\,\M_\odot$ \\
+$m_1/m_2$         & U[1,4] \\
+$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
+$\varphi$         & U$[0,2\pi]$ \\ 
+$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
+$\psi$            & U$[0,2\pi]$ \\
+$D$               & random, but such that SNR $\approx 20-100$ \\
+$\phi_0$          & U$[0,2\pi]$ \\
+$t_c$\footnote{Here we adopt the convention that $t = 0$ correponds to the beginning of the observation}             & U[400 -20, 400 + 20] days \\
 \hline \hline
 \end{tabular} \\
 \end{center}
 
 \end{description}
+
+\section{Challenge 1.3 -- Exteme mass ratio inspirals}
+
+Coming very soon......
 
 \begin{thebibliography}{}
 \input{biblio_ch1}
