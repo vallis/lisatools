@@ -309,7 +309,7 @@ orbits were used.\footnote{However: the LISA Simulator and Synthetic LISA actual
 accurate to order $e^2$ for the positions. Synthetic LISA uses approximate armlengths
 accurate to order $e$ plus the effects of rotation (i.e., pointing ahead), while the LISA Simulator
 uses armlengths accurate to order $e^2$
-plus the effects of pointing ahead. [[{\bf This is confusing to me: is Synthetic LISA accurate to $e$ or $e^2$?}]]} 
+plus the effects of pointing ahead.} 
 The reason for this truncation is twofold. First,
 it makes very little difference to the instrument response, and second, there are
 periodic and secular effects on the orbits from other solar system bodies (notably
@@ -722,7 +722,7 @@ ${\cal A}$ & overall signal amplitude\\
 $(\theta, phi)$ & source position on the sky\\
 $(i,\psi)$ & inclination angle and polarization\\
 $f_0$    & GW frequency at time $t=0$ \\ 
-$\varphi_0$ &  waveform phase [[{\bf with respect to what? --what defines the zero??}]] at $t=0$\\
+$\varphi_0$ &  waveform phase $t=0$ (beginning of data set)\\
 $\dot{f}_0$ & time-derivative of GW frequency at $t=0$\\
 $\ddot{f}_0$ & second time-derivative of GW frequency at $t=0$ \\
 \hline \hline
@@ -2131,11 +2131,10 @@ To use Synthetic LISA, though, we want to choose some fixed $\psi$-- call it $\p
 set $\psi_0$ equal to $0$, but we'll allow it to be arbitrary here.) With respect to this new
 basis, $h_{+,\times}(t)$ are given by
 \begin{eqnarray}\label{final}
-h_+(t) = A^+(t) cos(2\psi_0 - 2\psi_{SL}(t) ) + A^{\times}(t) sin(2\psi_0 - 2\psi_{SL}(t) ) \nonumber \\
-h_{\times}(t) = A^{\times}(t) cos(2\psi_0 - 2\psi_{SL}(t) ) - A^+(t) sin(2\psi_0 - 2\psi_{SL}(t) )
+h_+(t) = A^+(t) cos(2\psi_0 - 2\psi_{SL}(t) ) - A^{\times}(t) sin(2\psi_0 - 2\psi_{SL}(t) ) \nonumber \\
+h_{\times}(t) = A^{\times}(t) cos(2\psi_0 - 2\psi_{SL}(t) ) + A^+(t) sin(2\psi_0 - 2\psi_{SL}(t) )
 \end{eqnarray}
-[[{\bf Michele:  as a check, with your Synth LISA definitions and sign conventions, can you tell me how the $h_{+.x}$ transform when
-you change polarization angle??}]] 
+[[{\bf Michele:  double check}]] 
 
 \subsection{Putting the pieces together}
 
@@ -2662,6 +2661,8 @@ Software for the generation of data streams containing in-spirals from massive b
 
 \noindent
 in the directory {\tt lisatools/MLDCpipelines/pipeline-bbh}.
+
+Waveform generation codes are available in {\tt lisatools/MLDCpipelines/Waveforms}.
 
 \section{Simulators}
 
