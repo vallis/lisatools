@@ -899,9 +899,9 @@ and neglecting terms of cubic order or higher in the spins, one arrives at the f
 \right. \nonumber\\
 \left. \frac5{64}\left( 1 - \frac3{8}\eta\right) (M\omega)^{1/3} \frac{\delta m}{M}
 \chi_1\chi_2\left[ 1 + \frac{743 + 924\eta}{336}(M\omega)^{2/3}\right]
-(\bSo\times\bSt)\bL \right. \nonumber \\
+(\bSo\times\bSt)\bL +\right. \nonumber \\
 \left. \frac{1}{8}(-81 + 57\eta -\eta^2)(M\omega)^{4/3} + \frac{3\eta}{4}
-\chi_1\chi_2 \left[ (\bSo.\bSt) - 3(\bL.\bSo)(\bL.\bSt) \right](M\omega)^{4/3}
+\chi_1\chi_2 \left[ (\bSo.\bSt) - 3(\bL.\bSo)(\bL.\bSt) \right](M\omega)^{4/3} +
 \right. \nonumber \\
 \left. 4\left[ -\frac{675}{64} + \left( \frac{34445}{576} - \frac{205}{96}\pi^2
 \right)\eta -\frac{155}{96}\eta^2 - \frac{35}{5184}\eta^3 \right](M\omega)^{2}
@@ -925,7 +925,7 @@ up to 1PN. In the radiation coordinate frame (see \cite{FC} eqns.(3.1-3.3),
 the waveform is given by
 \begin{eqnarray}
 h_{TT}^{ij} = h_+T^{ij}_+ + h_{\times}T^{ij}_{\times}\\
-{\bf T}_{\times} = {\bf e}_x^R\otimes{\bf e}_x^R - {\bf e}_y^R\otimes{\bf e}_y^R\\
+{\bf T}_{+} = {\bf e}_x^R\otimes{\bf e}_x^R - {\bf e}_y^R\otimes{\bf e}_y^R\\
 {\bf T}_{\times} = {\bf e}_x^R\otimes{\bf e}_y^R + {\bf e}_y^R\otimes{\bf e}_x^R\\
 h_+ = \frac1{2}h^{ij}(T_+)_{ij}, \,\,\, 
 h_{\times} = \frac1{2}h^{ij}(T_{\times})_{ij}
@@ -973,7 +973,7 @@ Q^{ij} &=&  2({\hat v}^i{\hat v}^j - {\hat r}^i{\hat r}^j), \\
 (Q^1)^{ij} &=& \frac{\delta m}{m}\left\{ 6({\bf \hat{N}\cdot{\hat r}}){\hat r}^{(i}{\hat v}^{j)} +
 ({\bf \hat{N}\cdot{\hat v}})({\hat r}^i{\hat r}^j - 2{\hat v}^i{\hat v}^j) \right\}\\
 (Q^2)^{ij} &=& \frac2{3}(1-3\eta)\left\{ ({\bf \hat{N}\cdot{\hat r}})^2(5{\hat r}^i{\hat r}^j -
-7{\hat v}^i{\hat v}^j) - 16 ({\bf \hat{N}\cdot{\hat r}})({\bf \hat{N}\cdot{\hat v}}){\hat r}^{(i}{\hat v}^{j)}
+7{\hat v}^i{\hat v}^j) - 16 ({\bf \hat{N}\cdot{\hat r}})({\bf \hat{N}\cdot{\hat v}}){\hat r}^{(i}{\hat v}^{j)} +
 ({\bf \hat{N}\cdot{\hat v}})^2(3{\hat v}^i{\hat v}^j - {\hat r}^i{\hat r}^j)\right\} \nonumber \\
 & &\frac1{3}(19-3\eta)({\hat r}^i{\hat r}^j - {\hat v}^i{\hat v}^j) + \frac2{M^2}n^{(i}
  ({\bf \Delta \times \hat{N}})^{j)},
@@ -986,8 +986,8 @@ ${\bf \hat{N}}$ is the unit vector that points from source to observer, and
 \ee
 In the source coordinate frame:
 \bea
-{\bf {\hat r}} &=& \{ -\sin(\alpha)\sin(\Phi)-\cos(\alpha)\cos(i)\cos(\Phi), 
--\cos(\alpha)\sin(\Phi)-\sin(\alpha)\cos(i)\cos(\Phi), \sin(i)\cos(\Phi) \} \nonumber \\
+{\bf {\hat r}} &=& \{ -\sin(\alpha)\cos(\Phi)-\cos(\alpha)\cos(i)\sin(\Phi), 
+\cos(\alpha)\cos(\Phi)-\sin(\alpha)\cos(i)\sin(\Phi), \sin(i)\sin(\Phi) \} \nonumber \\
 {\bf {\hat v}} &=& \{  \sin(\alpha)\sin(\Phi)-\cos(\alpha)\cos(i)\cos(\Phi), 
 -\cos(\alpha)\sin(\Phi)-\sin(\alpha)\cos(i)\cos(\Phi), \sin(i)\cos(\Phi) \},  \nonumber \\
 {\bf \hat{N}} &=& \{ \sin(\theta), 0, \cos(\theta) \}.
@@ -1005,7 +1005,8 @@ So that
 {\bf \hat{e}_x^S}\otimes{\bf \hat{e}_z^S}\sin(\theta)\cos(\theta) - 
 {\bf \hat{e}_z^S}\otimes {\bf \hat{e}_x^S}\sin(\theta)\cos(\theta) -
 {\bf \hat{e}_y^S}\otimes{\bf \hat{e}_y^S} +
-{\bf \hat{e}_y^S}\otimes{\bf \hat{e}_y^S}\sin^2(\theta)\\
+{\bf \hat{e}_z^S}\otimes{\bf \hat{e}_z^S}\sin^2(\theta)\nonumber\\
+\\
 {\bf T_x} &=& ({\bf \hat{e}_x^S}\otimes{\bf \hat{e}_y^S} +
  {\bf \hat{e}_y^S}\otimes{\bf \hat{e}_x^S})\cos(\theta) - 
  ({\bf \hat{e}_y^S}\otimes{\bf \hat{e}_z^S} +
@@ -1074,54 +1075,54 @@ In order to generate waveform using the inspiralling trajectory
 described in the previous subsection one need to specify 
 distance between observer and the source, and the direction $\theta$
 to the observer in the source frame. (Again, we can always choose $\phi=0$.)
-[[Stas: did I express this correctly?]]
 
 
-\subsection{Transformation to SSB}
-\label{SSB}
 
-The transformation to Solar-System-Baricentric ecliptic coordinates 
-(or equivalently, for the idealization adopted in these notes, to HEC coordinates)
-is achieved by the $O_1$ rotation matrix given in \cite{KTV} eqn.7-9.
-Transformation to the LISA frame is given by Eqs.6,9 of \cite{KTV}.
-For completeness we will write the result here explicitly. 
-At the origin of the SSB frame, the transverse-traceless metric perturbation due 
-to a source located at ecliptic latitude $\beta$ and longitude $\lambda$ can be written as
-\be
-H(t) = O_1 H^S(t)O_1^{-1}
-\en
-where the metric perturbation in the source frame is taken to be
-\be
-H^S(t) = \left( \begin{array}{ccc}
-h_{+}(t) & h_{\times}(t) & 0 \\
-h_{\times}(t) & -h_{+}(t) & 0 \\
-0 & 0 & 0 \end{array} \right),
-\en
-The two polarizations are given by eqn.(\ref{hom}) and the rotation matrix
-$O_1$:
-\be
-O_1 =\left( \begin{array}{ccc}
-\sin(\lambda)\cos(\psi) - \cos(\lambda)\sin(\beta)\sin(\psi) &  
--\sin(\lambda)\sin(\psi) - \cos(\lambda)\sin(\beta)\cos(\psi) & 
--\cos(\lambda)\cos(\beta) \\  
--\cos(\lambda)\cos(\psi)  - \sin(\lambda)\sin(\beta)\sin(\psi) &
-\cos(\lambda)\sin(\psi) - \sin(\lambda)\sin(\beta)\cos(\psi) &
- -\sin(\lambda)\cos(\beta) \\  
-\cos(\beta)\sin(\psi) &  \cos(\beta)\cos(\psi) & -\sin(\beta)  
- \end{array} 
-\right).
-\en 
-These equations describe the plane waves, which are
-propagating from a source located in the direction
-\be
-{\bf \hat{n}} = \{ \cos(\lambda)\cos(\beta), \sin(\lambda)\cos(\beta), 
-\sin(\beta)\}.
-\en
-The polarization angle $\psi$ encodes a rotation around the direction of wave propagation, $-{\bf \hat{n}}$, 
-setting the convention used to define the two polarizations, "$+$" and "$\times$".
+%\subsection{Transformation to SSB}
+%\label{SSB}
 
-So in order to describe the gravitational wave signal in SBB  one requires 
-3 more parameters determining the position of the source and the polarization angle: $\lambda, \beta, \psi$
+%The transformation to Solar-System-Baricentric ecliptic coordinates 
+%(or equivalently, for the idealization adopted in these notes, to HEC %coordinates)
+%is achieved by the $O_1$ rotation matrix given in \cite{KTV} eqn.7-9.
+%Transformation to the LISA frame is given by Eqs.6,9 of \cite{KTV}.
+%For completeness we will write the result here explicitly. 
+%At the origin of the SSB frame, the transverse-traceless metric perturbation due 
+%to a source located at ecliptic latitude $\beta$ and longitude $\lambda$ can be written as
+%\be
+%H(t) = O_1 H^S(t)O_1^{-1}
+%\en
+%where the metric perturbation in the source frame is taken to be
+%\be
+%H^S(t) = \left( \begin{array}{ccc}
+%h_{+}(t) & h_{\times}(t) & 0 \\
+%h_{\times}(t) & -h_{+}(t) & 0 \\
+%0 & 0 & 0 \end{array} \right),
+%\en
+%The two polarizations are given by eqn.(\ref{hom}) and the rotation matrix
+%$O_1$:
+%\be
+%O_1 =\left( \begin{array}{ccc}
+%\sin(\lambda)\cos(\psi) - \cos(\lambda)\sin(\beta)\sin(\psi) &  
+%-\sin(\lambda)\sin(\psi) - \cos(\lambda)\sin(\beta)\cos(\psi) & 
+%-\cos(\lambda)\cos(\beta) \\  
+%-\cos(\lambda)\cos(\psi)  - \sin(\lambda)\sin(\beta)\sin(\psi) &
+%\cos(\lambda)\sin(\psi) - \sin(\lambda)\sin(\beta)\cos(\psi) &
+% -\sin(\lambda)\cos(\beta) \\  
+%\cos(\beta)\sin(\psi) &  \cos(\beta)\cos(\psi) & -\sin(\beta)  
+% \end{array} 
+%\right).
+%\en 
+%These equations describe the plane waves, which are
+%propagating from a source located in the direction
+%\be
+%{\bf \hat{n}} = \{ \cos(\lambda)\cos(\beta), \sin(\lambda)\cos(\beta), 
+%\sin(\beta)\}.
+%\en
+%The polarization angle $\psi$ encodes a rotation around the direction of wave propagation, $-{\bf \hat{n}}$, 
+%setting the convention used to define the two polarizations, "$+$" and "$\times$".
+
+%So in order to describe the gravitational wave signal in SBB  one requires 
+%3 more parameters determining the position of the source and the polarization angle: $\lambda, \beta, \psi$
 %\begin{equation}
 %\lambda, \beta, \psi
 %\end{equation}
@@ -1138,71 +1139,71 @@ So in order to describe the gravitational wave signal in SBB  one requires
  
 %Check if the above approximation is reasonable and expand ${\bf p}_i$
 
-\subsection{Implementation}
+%\subsection{Implementation}
 
-The computation of GW from the spinning binary (in the source frame)
-is implemented as  C++ class. It has the following methods:
-\begin{itemize}
-\item {\tt SpinBBHWaveform(float mass1, float mass2)}, Constructor, the
-input are two masses in units of solar mass.
+%The computation of GW from the spinning binary (in the source frame)
+%is implemented as  C++ class. It has the following methods:
+%\begin{itemize}
+%\item {\tt SpinBBHWaveform(float mass1, float mass2)}, Constructor, the
+%input are two masses in units of solar mass.
 
-\item {\tt SetInitialSpins(float chi1, float S1z0, float phiS10, float chi2, float S2z0,
-		   float phiS20)}. Here user specifies the initial value for spins.
-The spins are specified by its amplitude {\tt chi1, chi2}, and the orientation
-is defined 
-\be
-\bSo = \{ \sqrt{1-(S1z0)^2}\cos(phiS10), \sqrt{1-(S1z0)^2}\sin(phiS10),
-S1z0\}
-\ee
-(and similarly for $\bSt$). 
-This parametrization was chosen as the most convenient for generating the 
-random signal, since {\tt S1z0, S2z0} are distributed uniformly on $[-1,1]$ and
-{\tt phiS10, phiS20} are distributed uniformly on $[0, 2\pi)$. 
+%\item {\tt SetInitialSpins(float chi1, float S1z0, float phiS10, float chi2, float S2z0,
+%		   float phiS20)}. Here user specifies the initial value for spins.
+%The spins are specified by its amplitude {\tt chi1, chi2}, and the orientation
+%is defined 
+%\be
+%\bSo = \{ \sqrt{1-(S1z0)^2}\cos(phiS10), \sqrt{1-(S1z0)^2}\sin(phiS10),
+%S1z0\}
+%\ee
+%(and similarly for $\bSt$). 
+%This parametrization was chosen as the most convenient for generating the 
+%random signal, since {\tt S1z0, S2z0} are distributed uniformly on $[-1,1]$ and
+%{\tt phiS10, phiS20} are distributed uniformly on $[0, 2\pi)$. 
 
-\item {\tt void SetInitialOrbit(float omega0, float phi0, float iota0, float alpha0)}
-Here user specifies initial orbit: initial frequency {\tt omega0}, initial
- phase {\tt phi0}, and initial direction of the orbital angular momentum 
- {\tt iota0, alpha0} (corresponding to $i,\alpha$). 
+%\item {\tt void SetInitialOrbit(float omega0, float phi0, float iota0, float alpha0)}
+%Here user specifies initial orbit: initial frequency {\tt omega0}, initial
+% phase {\tt phi0}, and initial direction of the orbital angular momentum 
+% {\tt iota0, alpha0} (corresponding to $i,\alpha$). 
  
-\item {\tt void ComputeInspiral(float timeStep, std::string order, std::string route)}. This method integrates 
-equations of motion and as a result produces the inspiralling trajectory.
-User must specify sampling step {\tt timeStep} in seconds.
-The parameter {\tt order} specifies the PPN order of phase
-and orbital frequency, and parameter {\tt route} specifies
-for non-spinniung binaries method to compute orbit 
-(analytic or numerical integration).
+%\item {\tt void ComputeInspiral(float timeStep, std::string order, std::string route)}. This method integrates 
+%equations of motion and as a result produces the inspiralling trajectory.
+%User must specify sampling step {\tt timeStep} in seconds.
+%The parameter {\tt order} specifies the PPN order of phase
+%and orbital frequency, and parameter {\tt route} specifies
+%for non-spinniung binaries method to compute orbit 
+%(analytic or numerical integration).
 
-\item {\tt void SetObserver(float thetaD, double D)}. Here user specifies direction
-{\tt thetaD} and distance {\tt D} (in pc) to the observer.
+%\item {\tt void SetObserver(float thetaD, double D)}. Here user specifies direction
+%{\tt thetaD} and distance {\tt D} (in pc) to the observer.
 
-\item {\tt EstimateTc(double omega0, std::string order)}.
-This method returns estimated value of coalescence time
-using orbital evolution of non-spinning binary up to
-PPN order specified by {\tt order} and with initial frequency
-{\tt omega0}.
+%\item {\tt EstimateTc(double omega0, std::string order)}.
+%This method returns estimated value of coalescence time
+%using orbital evolution of non-spinning binary up to
+%PPN order specified by {\tt order} and with initial frequency
+%{\tt omega0}.
 
-\item {\tt void ComputeWaveform(int order, float truncateTime, \\ 
-Matrix<double>\& hPlus, Matrix<double>\& hCross)}. This method computes the waveform $h_+, h_{\times}$ for observer 
-described in {\tt SetObserver} and trajectory computed in {\tt ComputeInspiral}.
-This can be called multiple number of times for different observers without 
-re-computing inspiral. The parameter {\tt order} allows user to get only leading
-order amplitude (0), only 0.5PN amplitude (1), only 1PN amplitude or all of them
-together (default). User can also truncate the waveform at the time
-$\Delta T = $  {\tt truncateTime} (in sec) before coalescence. 
+%\item {\tt void ComputeWaveform(int order, float truncateTime, \\ 
+%Matrix<double>\& hPlus, Matrix<double>\& hCross)}. This method computes the waveform $h_+, h_{\times}$ for observer 
+%described in {\tt SetObserver} and trajectory computed in {\tt ComputeInspiral}.
+%This can be called multiple number of times for different observers without 
+%re-computing inspiral. The parameter {\tt order} allows user to get only leading
+%order amplitude (0), only 0.5PN amplitude (1), only 1PN amplitude or all of them
+%together (default). User can also truncate the waveform at the time
+%$\Delta T = $  {\tt truncateTime} (in sec) before coalescence. 
 
-\end{itemize}
+%\end{itemize}
 
-In the figure below one can see an example of the waveform.
-[[{\bf Stas's figure should be inserted here.}]]
-\begin{figure}[ht]
-%\includegraphics[height=8cm,width=14cm]{SpinBBHWave.pdf}
-\caption{Gravitational waveform in the source frame for the 
-following parameters: $m_1 = 2.0M_{\odot}, m_2=4.0M_{\odot}, 
-\chi_1 = 0.7, \chi_2=0.9, \hat{S}_1^z(t_0) = 0.4, \hat{S}_2^z(t_0) = 0.7,
-\phi_{S1}(t_0) = \pi/7, \phi_{S2}(t_0) = \pi/3.5, \omega(t_0) = 40\pi, 
-\Phi(t_0)=0, i(t_0) = \pi/7, \alpha(t_0) = \pi/3, \theta=\pi/2.2, D=10^6(pc)$}
-\label{fig:waveforms}
-\end{figure}
+%In the figure below one can see an example of the waveform.
+%[[{\bf Stas's figure should be inserted here.}]]
+%\begin{figure}[ht]
+%%\includegraphics[height=8cm,width=14cm]{SpinBBHWave.pdf}
+%\caption{Gravitational waveform in the source frame for the 
+%following parameters: $m_1 = 2.0M_{\odot}, m_2=4.0M_{\odot}, 
+%\chi_1 = 0.7, \chi_2=0.9, \hat{S}_1^z(t_0) = 0.4, \hat{S}_2^z(t_0) = 0.7,
+%\phi_{S1}(t_0) = \pi/7, \phi_{S2}(t_0) = \pi/3.5, \omega(t_0) = 40\pi, 
+%\Phi(t_0)=0, i(t_0) = \pi/7, \alpha(t_0) = \pi/3, \theta=\pi/2.2, D=10^6(pc)$}
+%\label{fig:waveforms}
+%\end{figure}
 
 
 \subsection{Reduction to the non-spinning case}
@@ -1223,7 +1224,7 @@ x = v^2 = (M\omega)^{2/3}
 \ena
 Then 
 \bea
-(M\omega)^{2/3} &=& \frac1{4}\tau^{-1/4}\left\{ 1 + \left(\frac{743}{4032} + \frac{11}{48}\eta\right)
+(M\omega)^{2/3}&=&\frac1{4}\tau^{-1/4}\left\{ 1 + \left(\frac{743}{4032} + \frac{11}{48}\eta\right)
 \tau^{-1/4} - \frac1{5}\pi \tau^{-3/8} + \right.\nonumber \\
 & &\left. \left( \frac{19583}{254016} + \frac{24401}{193536}\eta + \frac{31}{288}\eta^2\right)
 \tau^{-1/2} + \left(-\frac{11891}{53760} + \frac{109}{1920}\eta\right)\pi \tau^{-5/8} -
@@ -1231,10 +1232,12 @@ Then
 & & \left. \left[ -\frac{10052469856691}{6008596070400} + \frac1{6}\pi^2 + 
 \frac{107}{420}\gamma_E - \frac{107}{3360}\ln\left(\frac{\tau}{256}\right) 
 + \left(\frac{15335597827}{3901685760} - \frac{451}{3072}\pi^2 - 
-\frac{77}{72}\lambda + \frac{11}{24}\theta \right)\eta - \right. \right. \nonumber \\
-& & \left. \left. \frac{15211}{442368}\eta^2 + \frac{25565}{331776}\eta^3 \right]
+ \right. \right. \right. \nonumber \\
+& & \left. \left. \left. \frac{77}{72}\lambda + \frac{11}{24}\theta \right)\eta -
+ \frac{15211}{442368}\eta^2 + \frac{25565}{331776}\eta^3 \right]
 \tau^{-3/4} + \left(-\frac{113868647}{433520640} - \frac{31821}{143360}\eta + 
-\frac{294941}{3870720}\eta^2\right)\pi\tau^{-7/8}  \right\}
+\right. \right. \nonumber \\
+& & \left. \left. \frac{294941}{3870720}\eta^2\right)\pi\tau^{-7/8}  \right\}
 \ena
 where $\lambda = -\frac{1987}{3080}, \theta=-\frac{11831}{9240}$.
 Or taking the power $3/2$:
@@ -1381,8 +1384,7 @@ and/or condition the condition.
 $$
 \dot{\omega} > 0.
 $$
-In practice we use whichever is smaller (i.e., we terminate the signal as soon as one of those
-conditions is met). [[Stas: that's what you mean, right?]]
+In practice we use whichever is smaller (i.e., we terminate the signal as soon as one of those conditions is met). 
 
 We also note that for some Challenge data sets we artificially terminate the signal 
 a week or so before the coalescence time $t_c$. The goal there is to approximately reproduce a situation
@@ -1415,46 +1417,82 @@ for $R$ in range $[7M, 9M]$.
 
 The transformation to the SSB system is given in the subsection~\ref{non-precbin}:
 \bea
-h_{+}^{SSB}(\xi) &=& \cos (2\psi) \, h_+(\xi)  + \sin (2 \psi) \, h_\times(\xi), \\
-h_\times^{SSB}(\xi) &=& \cos (2\psi) \, h_\times(\xi)  - \sin (2 \psi) \, h_+(\xi).
+h_{+}^{SSB}(\xi) &=& \cos (2\psi) \, h_+(\xi)  + \sin (2 \psi) \, h_\times(\xi), \label{hps}\\
+h_\times^{SSB}(\xi) &=& \cos (2\psi) \, h_\times(\xi)  - \sin (2 \psi) \, h_+(\xi).\label{hcs}
 \ena
  This is finalizes the time domain description of the 
 waveform, which is the input to {\it Synthetic LISA} and/or the {\it LISA Simulator}.
 
-\subsection{Parameter distribution}
-[[This must be updated for the actual Challenge-1, or we just point to a Table.]]
+%\subsection{Parameter distribution}
+%[[This must be updated for the actual Challenge-1, or we just point to a Table.]]
 
-Here I will try to define the distribution of the parameter for injections.
+%Here I will try to define the distribution of the parameter for injections.
+%\begin{itemize}
+
+%\item {\it Masses}. Individual masses are uniformly distributed in the range
+%$[10^5 - 10^{7}]M_{\odot}$. For first challenges we can reduce upper bound to
+%$10^6M_{\odot}$ as this will increase duration of the waveform in the LISA band.
+
+%\item {\it Spins}. Initial conditions for spins. 
+%For spinning binaries $\chi_1,\chi_2$ are uniformly distributed
+%on $[0,1]$, $\hat{S}_i^z$ are uniformly distributed on $[-1,1]$, and angles
+%$\phi_{S_i}$ are uniformly distributed on $[0,2\pi]$
+
+%\item {\it Initial orbit} Initial orbit is defined by initial direction
+%of the orbital angular momentum $\bL$, initial phase and initial orbital frequency.
+%$\bL^z = \cos(i)$ is uniformly distributed on $[-1,1]$, $\alpha$ and $\Phi_0$ are uniformly
+%distributed on $[0,2\pi]$. The initial orbital angular frequency $\omega_0$ 
+%will be defined by the length of the duration of the signal $t_{cut}$. User should define 
+%$\Delta t = t_c - t_{cut}$ (say 1 week before $t_c$).
+
+%\item {\it Direction to the observer}. As mentioned in the text $\phi=0$ and
+%$\cos(\theta)$ is distributed uniformly on $[-1,1]$
+
+%\item {\it Distance to the observer}. Distance to the source should be defined
+%by SNR for a given direction. Here there is an option: 1. try to estimate actual
+%SNR for a given parameters 2. estimate SNR for non-spinning binary for the same
+%location on the sky, the same masses 3. Restricted SPA waveform for moving or
+%static LISA
+
+%\item {\it Location on the sky in SSB}. In SSB we need to set the direction to the source
+%and polarization angle: $\sin(\beta)$ is distributed uniformly on $[-1,1]$, and
+%$\lambda, \psi$ are uniformly distributed on $[0,2\pi]$
+
+%\end{itemize}
+
+
+\subsection{Implementation}
+
+The waveform generation is implemented as C++ class {\tt BBHChallenge1}
+
 \begin{itemize}
+\item {\tt SpinBBHWaveform(float mass1, float mass2)}, constructor, the
+input are two masses in units of solar mass.
+\item {\tt SetInitialOrbit(float omega0, float phi0)}, defines initial orbit:
+{\tt omega0} is initial angular orbital frequency and {\tt phi0} is initial
+orbital phase
+\item {\tt double EstimateTc(float omega0)}, this method is used to estimate
+coalescence time $t_c$ for a given initial angular orbital frequency. It
+is done by numerical solution of eqn.(\ref{fr}).
+\item {\tt double EstimateFreq0(float tc)}, this method computes initial
+angular orbital frequency for a given coalescence time.
+\item {\tt ComputeInspiral(float timeStep, float maxDuration)}
+this method computes orbital evolution. Method {\tt SetInitialOrbit}
+should be called beforehand.
+\item {\tt SetObserver(float thetaD, double D)} this method initializes
+position of the observer with respect to the source frame: 
+{\tt thetaD} is $\theta$ (see, eqns.(\ref{hp}, \ref{hc})) and {\tt D} is luminosity distance (in pc).
+\item {\tt ComputeWaveform(float truncateTime, float taper, std::vector<double>\& hPlus, \\std::vector<double>\& hCross)}. This method computes waveform in the
+radiation frame, eqns.(\ref{hp},\ref{hc}). The variable {\tt truncateTime}
+was introduced to truncate the waveform before coalescence ("early warning")
+but it is not used in the current challenge (always set to $0$), {\tt taper}
+is used to terminate waveform smoothly (see explanations in the previous
+subsection), and it is hardcoded to $8M$ in the first round of challenges.
+\item {\tt ComputeWaveformSSB(float truncateTime, float taper, float psi, 
+		       std::vector<double>\& hPlus, std::vector<double>\& hCross)}.
+The same as above, but computes waveform in the SSB frame according to
+eqn.(\ref{hps}, \ref{hcs}).
 
-\item {\it Masses}. Individual masses are uniformly distributed in the range
-$[10^5 - 10^{7}]M_{\odot}$. For first challenges we can reduce upper bound to
-$10^6M_{\odot}$ as this will increase duration of the waveform in the LISA band.
-
-\item {\it Spins}. Initial conditions for spins. 
-For spinning binaries $\chi_1,\chi_2$ are uniformly distributed
-on $[0,1]$, $\hat{S}_i^z$ are uniformly distributed on $[-1,1]$, and angles
-$\phi_{S_i}$ are uniformly distributed on $[0,2\pi]$
-
-\item {\it Initial orbit} Initial orbit is defined by initial direction
-of the orbital angular momentum $\bL$, initial phase and initial orbital frequency.
-$\bL^z = \cos(i)$ is uniformly distributed on $[-1,1]$, $\alpha$ and $\Phi_0$ are uniformly
-distributed on $[0,2\pi]$. The initial orbital angular frequency $\omega_0$ 
-will be defined by the length of the duration of the signal $t_{cut}$. User should define 
-$\Delta t = t_c - t_{cut}$ (say 1 week before $t_c$).
-
-\item {\it Direction to the observer}. As mentioned in the text $\phi=0$ and
-$\cos(\theta)$ is distributed uniformly on $[-1,1]$
-
-\item {\it Distance to the observer}. Distance to the source should be defined
-by SNR for a given direction. Here there is an option: 1. try to estimate actual
-SNR for a given parameters 2. estimate SNR for non-spinning binary for the same
-location on the sky, the same masses 3. Restricted SPA waveform for moving or
-static LISA
-
-\item {\it Location on the sky in SSB}. In SSB we need to set the direction to the source
-and polarization angle: $\sin(\beta)$ is distributed uniformly on $[-1,1]$, and
-$\lambda, \psi$ are uniformly distributed on $[0,2\pi]$
 
 \end{itemize}
 
@@ -1482,7 +1520,7 @@ if given as
 F_j^{+} &=& u_j(t)\cos(2\psi) + v_j(t)\sin(2\psi),\\
 F_j^{\times} &=& v_j(t)\cos(2\psi) - u_j(t)\sin(2\psi)
 \ena
-where $\psi$ is polarization angle introduced in Section~\ref{SSB}. 
+where $\psi$ is polarization angle used in eqn.(\ref{hps},\ref{hcs}). 
 The functions $u_j(t), v_j(t)$ depend on the rotation matrix $O_1$
 and on LISA-to-SSB transformation, thus, they depend on time through  motion of the guiding center and cartwheelng motion of the spacecrafts, and on the position of the source in the sky,
 given by the ecliptic coordinates $\beta,\lambda$. The explicit 
@@ -1682,7 +1720,8 @@ in our parameterization.
 %------------------------------    FIGURE   -------------------------------
 \begin{figure}[htb]
 \input{epsf}
-\centerline{\epsfysize 6cm \epsfbox{./system.eps}}
+\centerline{\includegraphics[height=6cm]{system}}
+%\centerline{\epsfysize 6cm \epsfbox{./system.eps}}
 \caption{\protect\footnotesize
 The MBH-CO system: setup and notation.
 $M$ and $\mu$ are the masses of the MBH and the CO, respectively.
@@ -2126,13 +2165,11 @@ $h_{+,\times}(t)$ via Eqs.~(\ref{final}).
 
 \subsection{Implementation}
 
-First of all we should mention that some parameters in the code 
-were fixed to the following values:
-(i) the initial LISA's phase $\bar{\phi}_0$ was taken to be zero 
-and (ii) $1yr$ is sidedreal year $= 31556925.2 (sec)$.
+First of all we should mention that we have fixed the initial LISA's 
+phase: $\bar{\phi}_0$ was taken to be zero.
 
-The waveform described here was implemented as C++ class with 
-the following methods:
+The waveform described here was implemented as C++ class 
+{\tt AKWaveform} with the following methods:
 \begin{itemize}
 \item {\tt AKWaveform(float spin, float mu, float MBHmass, float tfin, float timestep)}. This is constructor with parameters: {\tt spin}  is dimensional (reduced) spin of MBH (between 0 and 1), {\tt mu} is the mass of CO in $M_{\odot}$, {\tt MBHmass} is the mass of MBH
 in $M_{\odot}$, {\tt tfin} is the duration time in sec (inital time is assumed to be zero), and {\tt timestep} defines sampling interval 
@@ -2156,6 +2193,11 @@ to evolve the orbit with initial conditions specified by
 $= \lambda$ 
 
 \item {\tt GetOrbitalEvolution(Matrix<float>\& time, Matrix<float>\& Phit, Matrix<float>\& nut,  Matrix<float>\& gammat, Matrix<float>\& et, Matrix<float>\& alt)}. Using this function user can have a look at the result of integration of eqns. (\ref{Phidot} - \ref{alphadot})
+
+\item {\tt GetFinalOrbitalParams(float\& t, float\& eend, float\& nuend)}.
+This method returns parameter at plunge: {\tt t} the final time (sec),
+{\tt eend} final eccentricity, {\tt nuend} final orbital azimuthal frequency.
+User should compute orbital motion before calling this function. 
 
 \item {\tt GetWaveform(float ps0, Matrix<float>\& time, Matrix<float>\& hplus,  Matrix<float>\& hcross)}. Finally this function will 
 fill up 1-d matrices (vectors) with waveforms with initial 
