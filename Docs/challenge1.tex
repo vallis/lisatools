@@ -685,20 +685,25 @@ useful to consider the distribution from which the individual binaries are chose
 In constructing Challenge data sets, Galactic binary parameters are
 chosen at random based on our model Galactic population density (and
 subject to constraints on signal strength and frequency range
-described below). Here is the population model we used.
-[[{\bf The Galactic model we actually use should be inserted next}]]
+described below). 
 
-The bulk properties of the Galaxy can be broken down into morphology and composition. The morphology of a Galaxy is best described in terms of a population density function. For the purposes of the MLDC, it is probably best to use the two population densities currently in the literature. The double exponential used by Hils, Bender \& Webbink (1990) and Timpano, Rubbo \& Cornish (2005) is described entirely by central density, $\rho_0$, radial scale, $R_0$, and scale height, $z_0$, and has the form (in Galactocentric cylindrical coordinates):
+The bulk properties of the Galaxy can be broken down into morphology and composition. The morphology of a Galaxy is best described in terms of a population density function. Two population densities are currently considered in the literature. The double exponential used by Hils, Bender \& Webbink (1990) and Timpano, Rubbo \& Cornish (2005) is described entirely by central density, $\rho_0$, radial scale, $R_0$, and scale height, $z_0$, and has the form (in Galactocentric cylindrical coordinates):
 \begin{equation}
 \rho({\bf r}) = \rho_0 e^{-R/R_0} e^{-z/z_0}. 
 \end{equation}
 The ``cuspy'' exponential-${\rm sech}^2$ used by Nelemans {\it et al.} (2001), Benacquista, DeGoes \& Lunder (2004), and Edlund {\it et al.} (2005) includes the possibility for a central cusp and so has an additional parameter $c$:
-$$
-\rho({\bf r}) = \rho_0 r^{-c} e^{-R/R_0} {\rm sech}^2(-z/z_0). \eqno(2)
-$$
+\be
+\rho({\bf r}) = \rho_0 r^{-c} e^{-R/R_0} {\rm sech}^2(-z/z_0).
+\label{e:rho_BLT}
+\ee
 In the current usage, $c = 0,~1$, although any real number within this range is acceptable. The total number of binaries $N$ is related to $\rho_0$ and can be found by integrating the density over all space.
 
 The composition of the Galaxy is best described by the separate binary sub-types (e.g.: WD-WD, WD-NS, WD-BH, etc.) which make up the total population of binaries. Since it is quite likely that different sub-types will also have different population density descriptions, the most extensible and efficient way to describe the bulk properties of the Galaxy will be a list of parameters for each sub-type. The parameters will include the sub-type, a flag for the density distribution used, and the values of $N$ (or $\rho_0$), $c$, $R_0$, and $z_0$.
+
+The model of the Galaxy that is used for the MLDC is corresponds to Eq.~(\ref{e:rho_BLT}) with $c = 1$, $R_0 = 2.5~{\rm  kpc}$, and $z_0 = 200~{\rm pc}$. We have restricted  our population to detached double white dwarf binaries. The total number of binaries in the  
+population is $N = 3 \times 10^7$.
+
+
 
 \subsection{Stellar-mass binaries}
 Challenge-1 data sets include only signals from circular-orbit (i.e., eccentricity $= 0$) binaries, so we will concentrate on those. 
@@ -2178,7 +2183,7 @@ See table.... for the exact parameter ranges used for the EMRI Challenge-1 data 
 %
 %%%%%%%%%%%%%%%%%%%%
 
-\chapter{Data formats and software}
+\chapter{Data formats, software and simulators}
 
 The Mock LISA Data Challenge Task Force has developed
 a single file format to describe the challenges (i.e., the year-long time series of TDI observables) \emph{and} all the ingredients
@@ -2616,6 +2621,15 @@ Software for the generation of data streams containing in-spirals from massive b
 \noindent
 in the directory {\tt lisatools/MLDCpipelines/pipeline-bbh}.
 
+\section{Simulators}
+
+The simulators used for the MLDC are available at:
+
+\begin{itemize}
+\item The LISA Simulator: {\tt http://www.physics.montana.edu/lisa} -- the challenge version is 2.1.1
+\item Synthetic LISA: {\tt http://www.vallis.org/syntheticlisa} -- the challenge version is 1.3.1
+\end{itemize}
+
 %%%%%%%%%%%
 
 \chapter{Challenge 1}
@@ -2651,8 +2665,8 @@ $\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
 $\varphi$         & U$[0,2\pi]$ \\ 
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
-${\cal A}$        & unknown \\
-$f_0$             & U[0.95 mHz, 1.05 mHz] \\ 
+${\cal A}$        & random, but such that SNR $> 10$ \\
+$f_0$             & U[XXX mHz, XXX mHz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
@@ -2674,8 +2688,8 @@ $\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
 $\varphi$         & U$[0,2\pi]$ \\ 
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
-${\cal A}$        & unknown \\
-$f_0$             & U[0.0095 Hz, 0015 Hz] ?????\\ 
+${\cal A}$        & random, but such that SNR $> 10$ \\
+$f_0$             & U[XXX Hz, XXX Hz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
@@ -2696,8 +2710,8 @@ $\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
 $\varphi$         & U$[0,2\pi]$ \\ 
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
-${\cal A}$        & unknown \\
-$f_0$             & U[0.0095 Hz, 0015 Hz] ?????\\ 
+${\cal A}$        & random, but such that SNR $> 10$ \\
+$f_0$             & U[XXX Hz, XXX Hz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
@@ -2706,26 +2720,53 @@ $\phi_0$          & U$[0,2\pi]$ \\
 \end{center}
 
 
-\item {\bf C1.1.2 -- Verification binaries} We define ``verification binaries'' systems for which the GW frequency $f_0$ and source position in the sky $\theta$ and $\varphi$ are exactly known. The data stream for this challenge is 1-yr long and contains instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from {\em 20} verification binaries (5 ``real'' and 15 mock). The ``name'' and known parameters of each source are reported in the table below. The signal of all the binaries is {\em exactly} monochromatic in the source reference frame ($\dot{f}_0 = \ddot{f}_0 = 0$). The remaning parameters are chosen randomly according to $\cos\iota\in$ U[-1,1], $\psi \in$ U$[0,2\pi]$ and $\cos\iota\in$ U[-1,1]. The amplitude is selected randomly subject to the contraint that the SNR is $> 10$.
+\item {\bf C1.1.2 -- Verification binaries} We define ``verification binaries'' systems for which the GW frequency $f_0$ and source position in the sky $\theta$ and $\varphi$ are exactly known. The data stream for this challenge is 1-yr long and contains instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from {\em 20} verification binaries (6 ``real'' and 14 mock). The ``name'' and known parameters of each source are reported in Table~\ref{tbl.LISAbinaries1.1.2}. The signal of all the binaries is {\em exactly} monochromatic in the source reference frame ($\dot{f}_0 = \ddot{f}_0 = 0$). The remaning parameters are chosen randomly according to $\cos\iota\in$ U[-1,1], $\psi \in$ U$[0,2\pi]$ and $\cos\iota\in$ U[-1,1]. The amplitude is selected randomly subject to the contraint that the SNR is $> 10$.
+
 
 \begin{center}
-\begin{tabular}{l|c}
-\hline \hline
-\multicolumn{2}{c}{{\bf Challenge 1.1.1a -- Source(s): 1 galactic binary}} \\
+\begin{table}
+\begin{tabular}{|l|c|c|c|}
+\hline \textbf{Name} & {\bf ecliptic Latitude (rad)} & {\bf ecliptic
+Longitude (rad)} & $f_{gw} ({\rm Hz})$  \\
+\hline 
+RXJ0806   & 0.2697997832   &  2.100953649   &   0.006220276603  \\
+V407Vul   & 0.4353820782   &  5.147481878   &   0.00351250011   \\
+ESCet   & -0.1642146356   & 0.4258413339   &   0.003220611916   \\
+AMCVn   & 0.6567450961   &   2.97249322   &   0.001944144722   \\
+HPLib   & -0.2481858196   &  4.101821899   &  0.001813236627   \\
+EIPsc   & 0.1129174697   &  6.205956271   &  0.0005194805195   \\
 \hline
-Parameters & Value or range \\
+bltOPEN7 & & & \\
+bltOPEN8 & & & \\
+bltOPEN9 & & & \\
+bltOPEN10 & & & \\
+bltOPEN11 & & & \\
+bltOPEN12 & & & \\
+bltOPEN13 & & & \\
+bltOPEN14 & & & \\
+bltOPEN15 & & & \\
+bltOPEN16 & & & \\
+bltOPEN17 & & & \\
+bltOPEN18 & & & \\
+bltOPEN19 & & & \\
+bltOPEN20 & & & \\
 \hline
-$\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
-$\varphi$         & U$[0,2\pi]$ \\ 
-$\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
-$\psi$            & U$[0,2\pi]$ \\
-${\cal A}$        & unknown \\
-$f_0$             & U[0.0095 Hz, 0015 Hz] ?????\\ 
-$\dot{f}_0$       & 0 \\ 
-$\ddot{f}_0$      & 0\\ 
-$\phi_0$          & U$[0,2\pi]$ \\
-\hline \hline
-\end{tabular} \\
+\end{tabular}
+    \caption{LISA Verification Binaries (Challenge 1.1.2.  
+    These data are the exact numbers
+    used to produce the input data streams for the Challenge 1.1.2
+    (Verification Binaries).  Note that of this list, only the first six
+    binaries are known verification binaries at the current time.  The
+    values for their parameters are derived from a list maintained by
+    Nelemans\cite{NelemansWiki}.  The observer dependent parameters
+    ($\psi, \iota, \phi_{o}$) for these six binaries are poorly known, and
+    were assigned random values for this Challenge.
+     The remaining binaries are included to mimic
+    verification binaries which might be known before the LISA flight era;
+    their parameter values are drawn from a population synthesis galaxy by
+    Matt Benacquista.}
+\label{tbl.LISAbinaries1.1.2}
+\end{table}
 \end{center}
 
 \item {\bf C1.1.3 -- Resolvable binaries} A 1-yr long data stream consisting of instrumental noise (Gaussian and stationary) according to the model reported in Section~\ref{s:noise} and GW signals from {\em 20} unknown resolvable galactic binaries. The signal of all the binaries is {\em exactly} monochromatic in the source reference. The SNR of each signal is $> 10$.
@@ -2742,7 +2783,7 @@ $\varphi$         & U$[0,2\pi]$ \\
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
 ${\cal A}$        & random such that SNR $> 10$  \\
-$f_0$             & U[0.0001 Hz, 0.010 Hz] \\ 
+$f_0$             & U[0.1 mHz, 10.0 mHz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
 $\phi_0$          & U$[0,2\pi]$ \\
@@ -2755,7 +2796,7 @@ $\phi_0$          & U$[0,2\pi]$ \\
 \begin{center}
 \begin{tabular}{l|c}
 \hline \hline
-\multicolumn{2}{c}{{\bf Challenge 1.1.5 -- Source(s): $\approx 50$ galactic binary}} \\
+\multicolumn{2}{c}{{\bf Challenge 1.1.4 -- Source(s): $\approx 50$ galactic binary}} \\
 \hline
 Parameters & Value or range \\
 \hline
@@ -2763,7 +2804,7 @@ $\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
 $\varphi$         & U$[0,2\pi]$ \\ 
 $\iota$           & with $\cos\iota$ chosen from U[-1,1]\\ 
 $\psi$            & U$[0,2\pi]$ \\
-${\cal A}$        & random such that SNR $> 10$  \\
+${\cal A}$        & random such that SNR $> 5$  \\
 $f_0$             & U[2.9985 mHz, 3.0015 mHz] \\ 
 $\dot{f}_0$       & 0 \\ 
 $\ddot{f}_0$      & 0\\ 
@@ -2792,7 +2833,7 @@ In the following the notation $U[a,b]$ stands is short-hand for a uniform distri
 \hline
 Parameters & Value or range \\
 \hline
-$m_1$             & U[1,5] $\times 10^6\,\M_\odot$ \\
+$m_1$             & U[1,5] $\times 10^6\,M_\odot$ \\
 $m_1/m_2$         & U[1,4] \\
 $\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
 $\varphi$         & U$[0,2\pi]$ \\ 
@@ -2814,7 +2855,7 @@ $t_c$\footnote{Here we adopt the convention that $t = 0$ correponds to the begin
 \hline
 Parameters & Value or range \\
 \hline
-$m_1$             & U[1,5] $\times 10^6\,\M_\odot$ \\
+$m_1$             & U[1,5] $\times 10^6\,M_\odot$ \\
 $m_1/m_2$         & U[1,4] \\
 $\theta$          & with $\cos\theta$ chosen from U[-1,1]\\
 $\varphi$         & U$[0,2\pi]$ \\ 
