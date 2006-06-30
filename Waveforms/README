@@ -1,0 +1,29 @@
+  This software is distrubuted under GNU Genearl Public License, for details see
+LICENSE.
+
+  The basic installation is described in INSTALL file.
+However you need to link gsl library (compulsory)
+and any other library you want to use:
+
+LDFLAGS="-L/directory/lib/"
+CPPFLAGS="-I/directory/include/"
+
+To install I run:
+
+./00boot 
+(some vesions of automake/autoconfig might require you to run 
+.00boot twice, I'd suggest to run it twice for safety)
+
+./configure --prefix=/username/LISAWP/ LDFLAGS="-L/path_to_gsl_lib/lib/" CPPFLAGS="-I/path_to_gsl_includes/include/"
+
+make
+
+make check
+
+"make check" will create executables in subdirectory "examples/" abd execute them
+
+All codes are documented using doxygen, please run doxygen to create documentation.
+
+If you have problems installing/running please contact
+Stas Babak: stba'at'aei.mpg.de
+
