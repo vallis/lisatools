@@ -3,7 +3,7 @@
 from synthlisa import *
 from Numeric import *
 
-import sys, opt
+import sys, getopt
 import re
 
 import math

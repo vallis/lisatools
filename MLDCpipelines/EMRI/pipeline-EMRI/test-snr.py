@@ -64,6 +64,6 @@ for filename in sys.argv[1:]:
         
         totalsn = math.sqrt(sn(signalA,noiseA,stime,patches)**2 + 
                             sn(signalE,noiseE,stime,patches)**2 + 
-                            sn(signalT,noiseT,stime,patches)**2)/math.snr(2.0)
+                            sn(signalT,noiseT,stime,patches)**2)/math.sqrt(2.0)
         
         print "For source %s in sourcefile %s, S/N = %s" % (source.name,filename,totalsn)
