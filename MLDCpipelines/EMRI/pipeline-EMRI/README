@@ -1,0 +1,112 @@
+
+Here are instructions for running EMRI signal generation
+
+In this directory you will find 4 scripts, to find the argument list 
+you can run EMRI python scripts with --help option.
+
+1. EMRI_xml.py
+
+This scripts generates xml file with source parameters.
+User must specify the following parameters:
+
+Usage: EMRI_xml [options]
+
+ -h, --help        dislpay this message
+ -s, --seed        seed for the random number generator
+ -d, --distance    distance at which source to be placed in pc: [1e9(loud), 4e9(quite)]/(2years)
+ -s, --sourceType  should be "loud" or "quiet", specifies whether we use 
+                   narrow or not parameter range
+ -t, --time        observation time (years), must be more than 1 year
+ -c, --cadence     cadence (1/"sampling rate"), choose it so that together with time, the 
+                   total number of points is power of 2 and 2/cadence >= max. frequency of
+                   GW signal. Note, 1 year = 2^21 * 15 (sec).
+ -f, --outXMLfile  name of the output xml file
+
+
+For challenge 1.3 we should use **ONLY** "quiet" option for signal generation.
+
+example
+
+./EMRI_xml.py --seed 3 --distance 1.e9 --sourceType quiet --time 2 --cadence 15 --outXMLfile data/EMRIa.xml
+
+Distance should be adjusted to get required SNR (see below)
+If you do not see the line:
+
+*** we reached plunge at t = ....
+
+it means that plunge occurs beyond the end of data (>2years). Please make sure
+that it doesn't happen with every signal (unlikely, but ....) 
+
+
+2. EMRI_p.py
+
+This script generates data in binary format and xml file for data simulators.
+User must specify the following parameters:
+
+ Usage: EMRI_p.py [options]
+
+  -h, --help       display this message
+  -f, --xmlFile    input XML file with source parameters
+
+example:
+
+./EMRI_p.py --xmlFile data/EMRIa.xml
+
+!!! The duration: 2 years is hardcoded. !!!
+(Need to be changed, duration should be read from xml file).
+
+
+3. test_snr.py
+
+Estimates SNR for the source specified by xmlfile(s)
+It estimates a combined coherent SNR and then converts
+it to one-ifo SNR by dividing combined SNR by sqrt(2)
+This code works slowly, so if you need to estimate 
+SNR for many source, run for all sources at once.
+!!! Duration of data set is assumed (hardcoded) to be 2 year !!!
+
+Usage:
+
+  ./test_snr.py xmlfile(s)
+
+example:
+
+./test_snr.py data/EMRIa.xml data/EMRIb.xml
+
+
+4. EstimeateEMRI_SNR 
+
+This script combines ./EMRI_xml.py and ./test_snr.py
+It runs first ./EMRI_xml.py for 5 different seeds then 
+estimates SNR for resulting sources using ./test_snr.py.
+
+Feel free to modify it (parameters, ....)
+
+For the current choice you will have SNR ~ 24 (EMRIa.xml),
+38.4, 66.4, 81.7, 106.6 (EMRIe.xml).   
+
+It runs very slowly! It also requires significant amount of 
+RAM: I think it needs about 1GB for running EstimateEMRI_SNR
+with only 3 signals (so you'll need >1.5 GB for 5 signals).
+It took me about 110 minutes to run EstimateEMRI_SNR
+on 3GHz Intel CPU with 1 GB RAM for 3 signals (a,b,c).
+
+5. emri_script
+
+This is the master script which produces the source data
+for EMRI chalenges. It runs first ./EMRI_xml.py for given 
+seed and other params and then it runs ./EMRI_p.py to generate 
+source data and xml files required by LISA Simulator and synthetic LISA.
+
+You need to modify it according to challenge definition.
+Use ./EstimateEMRI_SNR to estimate distance.
+
+
+Have fun.
+
+
+
+
+
+
+
