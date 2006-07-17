@@ -224,7 +224,7 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
     timeseries->Length = strtol(length,NULL,10);
     timeseries->Records = strtol(records,NULL,10);
         
-    printf("Allocating %d bytes for read buffer...\n",timeseries->Length * timeseries->Records * sizeof(double));
+    fprintf(stderr,"Allocating %d bytes for read buffer...\n",timeseries->Length * timeseries->Records * sizeof(double));
     buffer = malloc(timeseries->Length * timeseries->Records * sizeof(double));
     assert(buffer != 0);
 
@@ -234,8 +234,8 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
         char *pathbinfile;
      
         pathbinfile = basename(xmlname,timeseries->FileName);
-        printf("...can't find %s in the working directory, trying %s...\n",timeseries->FileName,
-                                                                        pathbinfile);
+        fprintf(stderr,"...can't find %s in the working directory, trying %s...\n",timeseries->FileName,
+                                                                                   pathbinfile);
                                                                         
         binfile = fopen(pathbinfile,"r");
         assert(binfile != 0);
@@ -249,7 +249,7 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
 
     if( (strstr(encoding,"LittleEndian") && testbyteorder() == BIGENDIAN) ||
         (strstr(encoding,"BigEndian")    && testbyteorder() == LITTLEENDIAN) ) {
-        printf("Converting endianness of binary data!\n");
+        fprintf(stderr,"Converting endianness of binary data!\n");
         
         for(i=0;i<timeseries->Length * timeseries->Records;i++)
             convertendianness(&buffer[i]);
