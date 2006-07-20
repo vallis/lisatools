@@ -2121,7 +2121,7 @@ LISA Simulator, it is useful to re-express Eq.~(\ref{hab}) in terms of fixed pol
 How do we do this? First note that at any instant, within the Synthetic LISA conventions, the
 polarization angle is given by 
 \begin{equation}\label{psiSL}
-\psi_{SL} = -arctan\bigl(\frac{\cos \theta_S \sin \theta_L \cos(\phi_S - \phi_L) - \cos\theta_L \sin\theta_S}{\sin\theta_L \sin(\phi_S-\phi_L)}\bigr) \,.
+\psi_{SL} = arctan\bigl(\frac{\sin\theta_L \sin(\phi_S-\phi_L)}{\cos \theta_S \sin \theta_L \cos(\phi_S - \phi_L) - \cos\theta_L \sin\theta_S}\bigr) \,.
 \end{equation}
 
 I.e., for this polarization angle, $h_+ = A^+$  and  $h_{\times} = 
@@ -2131,10 +2131,9 @@ To use Synthetic LISA, though, we want to choose some fixed $\psi$-- call it $\p
 set $\psi_0$ equal to $0$, but we'll allow it to be arbitrary here.) With respect to this new
 basis, $h_{+,\times}(t)$ are given by
 \begin{eqnarray}\label{final}
-h_+(t) = A^+(t) cos(2\psi_0 - 2\psi_{SL}(t) ) - A^{\times}(t) sin(2\psi_0 - 2\psi_{SL}(t) ) \nonumber \\
-h_{\times}(t) = A^{\times}(t) cos(2\psi_0 - 2\psi_{SL}(t) ) + A^+(t) sin(2\psi_0 - 2\psi_{SL}(t) )
+h_+(t) = A^+(t) cos(2\psi_0 - 2\psi_{SL}(t) ) + A^{\times}(t) sin(2\psi_0 - 2\psi_{SL}(t) ) \nonumber \\
+h_{\times}(t) = A^{\times}(t) cos(2\psi_0 - 2\psi_{SL}(t) ) - A^+(t) sin(2\psi_0 - 2\psi_{SL}(t) )
 \end{eqnarray}
-[[{\bf Michele:  double check}]] 
 
 \subsection{Putting the pieces together}
 
