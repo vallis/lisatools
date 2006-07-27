@@ -69,6 +69,8 @@ for 1.2.2 then estimates SNR for resulting sources
 using ./test_snr.py.
 
 Feel free to modify it (parameters, ....)
+For a given parameters it produces S/N=506 for first challenge and
+ S/N = 
 
 5. bbh_script
 
