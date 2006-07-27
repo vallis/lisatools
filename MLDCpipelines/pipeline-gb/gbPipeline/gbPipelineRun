@@ -1,9 +1,0 @@
-# Reads in and processes all entries in gb.txt
-
-./galactic_params
-
-# Reads in and processes all entries in sources.txt
-
-sh gb_process.sh
-
-
