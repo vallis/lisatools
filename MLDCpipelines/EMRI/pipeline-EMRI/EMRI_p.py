@@ -75,7 +75,7 @@ inittime = -900.0
 prebuffer = -inittime
 
 # 2 years of data
-samples = 2*2**21 + 2*int(prebuffer/stime)
+samples = 2**22 + 2*int(prebuffer/stime)
 
 hp = getobsc(samples,stime,mysystem.hp,inittime)
 hc = getobsc(samples,stime,mysystem.hc,inittime)
