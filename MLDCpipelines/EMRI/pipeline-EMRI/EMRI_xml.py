@@ -101,8 +101,6 @@ if (sType not in ("loud", "quiet")):
 #dt = 15.0 
 oneyear = 2**21*15.0
 random.seed(seed)
-years = duration
-duration = duration*oneyear
 dist = D 
 timeoffset = -900.0
 
@@ -133,7 +131,8 @@ phK = random.uniform(0.0, math.pi*2.0)    #phiK
 pol = random.uniform(0.0, math.pi*2.0)    #polarization
 Phi0 = random.uniform(0.0, math.pi*2.0)   #initial orbital phase
 Tend = random.uniform(1.6, 1.8)          #estimated Tend            
-Tend = Tend*oneyear - timeoffset
+Tend = Tend*oneyear
+duration = Tend - timeoffset
 
 nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*4.92549095e-6)
 #ein = lisawp_emri.floatp()

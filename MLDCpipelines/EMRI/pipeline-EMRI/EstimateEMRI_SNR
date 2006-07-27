@@ -4,7 +4,7 @@
 ./EMRI_xml.py --seed 5 --distance 4.e9 --sourceType quiet --time 2 --cadence 15 --outXMLfile data/EMRIb.xml
 ./EMRI_xml.py --seed 4 --distance 2.e9 --sourceType quiet --time 2 --cadence 15 --outXMLfile data/EMRIc.xml
 ./EMRI_xml.py --seed 7 --distance 1.e9 --sourceType quiet --time 2 --cadence 15 --outXMLfile data/EMRId.xml
-./EMRI_xml.py --seed 6 --distance 1.e9 --sourceType quiet --time 2 --cadence 15 --outXMLfile data/EMRIe.xml
+./EMRI_xml.py --seed 6 --distance 7.5e8 --sourceType quiet --time 2 --cadence 15 --outXMLfile data/EMRIe.xml
 
 ./test-snr.py data/EMRIa.xml
 ./test-snr.py data/EMRIb.xml
