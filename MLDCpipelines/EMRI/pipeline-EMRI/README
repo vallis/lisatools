@@ -83,7 +83,7 @@ estimates SNR for resulting sources using ./test_snr.py.
 Feel free to modify it (parameters, ....)
 
 For the current choice you will have SNR ~ 24 (EMRIa.xml),
-38.4, 66.4, 81.7, 106.6 (EMRIe.xml).   
+38, 66, 81, 140 (EMRIe.xml).   
 
 It runs very slowly! It also requires significant amount of 
 RAM: I think it needs about 1GB for running EstimateEMRI_SNR
