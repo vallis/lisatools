@@ -86,7 +86,7 @@ class AKWaveform:public BaseIntegr{
      * @param lam angle between L and S
      */
 
-    void EvolveOrbit(float nu0, float eccen, float gamma0, \
+    void EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
 		    float Phi0, float al0, float lam);
 
 
@@ -105,14 +105,9 @@ class AKWaveform:public BaseIntegr{
     void GetFinalOrbitalParams(float& t, float& e_end, float& nu_end);
    		    
 
-    /** returns feducial time at which nu=nu0True ~1mHz*/
-    double GetTruet0();
+    /** returns orbital elements at time t */
+    void GetOrbitalParams(float t, float& nut, float& et, float& gt, float& pht, float& alt);
     
-    /** returns feducial frequency nu0True ~1mHz*/
-    double GetTruenu0();
-    
-    /** returns feducial eccentricity e0 at nuTrue ~1mHz*/
-    double GetTruee0();
 
     /** Returns waveform 
      *@param ps0 initial polarization angle

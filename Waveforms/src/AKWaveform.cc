@@ -107,7 +107,7 @@ void AKWaveform::EstimateInitialParams(double Tin, float e_lso, float nu_lso, fl
 	
 }
 
-void AKWaveform::EvolveOrbit(float nu0, float eccen, float gamma0, \
+void AKWaveform::EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
 		    float Phi0, float al0, float lam){
 
    int stab;	
@@ -136,7 +136,7 @@ void AKWaveform::EvolveOrbit(float nu0, float eccen, float gamma0, \
    gamma = coord0(2);
    e = coord0(3);
    alpha = coord0(4);
-   t= 0.0;
+   t= t0;
    
    double err = fabs(nu - 1.e-3);
    while(t <= tEnd){
@@ -146,12 +146,12 @@ void AKWaveform::EvolveOrbit(float nu0, float eccen, float gamma0, \
       gamma_t.push_back(gamma);
       e_t.push_back(e);
       al_t.push_back(alpha);
-      if( fabs(nu - 1.e-3) <= err ){
+    /*  if( fabs(nu - 1.e-3) <= err ){
 	      err = fabs(nu - 1.e-3);
 	      nu0True = nu;
 	      e0True = e;
 	      t0 = t;
-      }
+      }*/
 
       Derivs(t, coord0, rhs, 5);
     /*  std::cout << "*****************************" << std::endl;
@@ -182,17 +182,21 @@ void AKWaveform::EvolveOrbit(float nu0, float eccen, float gamma0, \
 
 }
 
-double AKWaveform::GetTruet0(){
+void AKWaveform::GetOrbitalParams(float t, float& nut, float& et, float& gt, float& pht, float& alt){
 	LISAWPAssert(runDone, "Need to compute orbit first");
-	return(t0);
-}
-double AKWaveform::GetTruee0(){
-	LISAWPAssert(runDone, "Need to compute orbit first");
-	return(e0True);
-}
-double AKWaveform::GetTruenu0(){
-	LISAWPAssert(runDone, "Need to compute orbit first");
-	return(nu0True);
+	int k = -1;
+	for (int i=0; i<tt.size()-1; i++){
+              if (tt[i]<= t && tt[i+1]>t){
+		  std::cout << "recroding inst. orbit at t= " << tt[i] << std::endl;
+		  nut = nu_t[i];
+		  et = e_t[i];
+		  gt = gamma_t[i];
+		  pht = phi_t[i];
+		  alt = al_t[i];
+		  k = i;
+	      }
+	}
+	LISAWPAssert(k != -1, "wrong instance of time");
 }
 
 int AKWaveform::CheckPlunge(double fr, double ec){
@@ -327,16 +331,16 @@ void AKWaveform::GetWaveform(float ps0, std::vector<float>& time, \
         if(e <0.136) N=4;	
 	Waveform(N);
 
-	if (sin(phiS-phiL) != 0.0){
-  	   psiSL = -ArcTan( (cos(thetaS)*sin(thetaL)*cos(phiS-phiL) - cos(thetaL)*sin(thetaS)),\
-		    (sin(thetaL)*sin(phiS-phiL)) );
+	double dw = (cos(thetaS)*sin(thetaL)*cos(phiS-phiL) - cos(thetaL)*sin(thetaS));
+	if ( dw != 0.0){
+  	   psiSL = ArcTan( (sin(thetaL)*sin(phiS-phiL)) , dw);
 	}else{
            psiSL = LISAWP_PI/2.0;
 	}
 	
         time[i] = t;
 	hplus[i] = Aplus*cos(2.*ps0 - 2.*psiSL) + Across*sin(2*ps0 - 2*psiSL);
-	hcross[i] = Aplus*cos(2.*ps0 - 2.*psiSL) - Across*sin(2*ps0 - 2*psiSL);
+	hcross[i] = Across*cos(2.*ps0 - 2.*psiSL) - Aplus*sin(2*ps0 - 2*psiSL);
 
    }// end of for loop
 
