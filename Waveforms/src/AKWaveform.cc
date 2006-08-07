@@ -136,10 +136,68 @@ void AKWaveform::EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
    gamma = coord0(2);
    e = coord0(3);
    alpha = coord0(4);
-   t= t0;
    
    double err = fabs(nu - 1.e-3);
-   while(t <= tEnd){
+  
+   std::vector<double> t_n;
+   std::vector<double> phi_n;
+   std::vector<double> nu_n;
+   std::vector<double> gamma_n;
+   std::vector<double> e_n;
+   std::vector<double> alpha_n;
+   if (t0 < 0.0){               // backwards integration
+      t = -dt;
+      while (t >= t0){ 
+         Derivs(t, coord0, rhs, 5);
+         advstep =  IntegratorCKRK(coord0, rhs, coordn, t, dt, 5);
+         phi = coordn(0);
+         nu = coordn(1);
+         gamma = coordn(2);
+         e = coordn(3);
+         alpha = coordn(4);
+         coord0 = coordn;
+
+         t_n.push_back(t);
+         phi_n.push_back(phi);
+         nu_n.push_back(nu);
+         gamma_n.push_back(gamma);
+         e_n.push_back(e);
+	 alpha_n.push_back(alpha);
+         t = t - dt;
+      }
+   }
+
+   for(int i = 0; i < t_n.size(); i++){\
+      int k = t_n.size() - i -1;
+      tt.push_back(t_n[k]);
+      phi_t.push_back(phi_n[k]);
+      nu_t.push_back(nu_n[k]);
+      gamma_t.push_back(gamma_n[k]);
+      e_t.push_back(e_n[k]);
+      al_t.push_back(alpha_n[k]);
+   }
+   t_n.resize(0);
+   phi_n.resize(0);
+   nu_n.resize(0);
+   gamma_n.resize(0);
+   e_n.resize(0);
+   alpha_n.resize(0);
+
+   t = 0.0;
+   phi = (double)Phi0;
+   nu = (double)nu0;
+   gamma = (double)gamma0;
+   e = (double)eccen;
+   alpha = (double)al0;
+   lambda = (double) lam;
+   coord0(0) = (double)Phi0;
+   coord0(1) = (double)nu0;
+   coord0(2) = (double)gamma0;
+   coord0(3) = (double)eccen;
+   coord0(4) = (double)al0;
+
+
+   while(t <= tEnd){  // forward integration
       tt.push_back(t);
       phi_t.push_back(phi);
       nu_t.push_back(nu);
@@ -244,6 +302,11 @@ void AKWaveform::Derivs(double x, Matrix<double> y, Matrix<double>& dydx, int n)
 	       5032./15.*e2 + 26.3*e4 );
     // d alpha/dt
     dydx(4) = 4.*LISAWP_PI*nu*aa*fr*siome*iome;
+
+    if (x < 0.0){
+	 dydx *= (-1.);
+    }
+	   
 }
 
 
