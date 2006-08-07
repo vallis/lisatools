@@ -76,7 +76,7 @@ double BBHChallenge1::EstimateTc(float omega0){
    double yb = omega0 - PPNfreq(b);
    if (fabs(yb) <= 1.e-10) return(b*5.*M/eta);
 
-   std::cout << "Stas: ya = " << ya << "  yb = " << yb << std::endl;
+//   std::cout << "Stas: ya = " << ya << "  yb = " << yb << std::endl;
    LISAWPAssert(ya<0. && yb>0., "Function doesn't change sign.");
 
    // Find the root (tau_c) of omega_0 = omega(tau_c) 
