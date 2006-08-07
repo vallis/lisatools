@@ -54,7 +54,7 @@ float phK = 1.3*LISAWP_PI;	// phiK
 float pol = 0.0;                // initial polarization angle
 float Tend = 0.6*oneyear;       // estimated duration of the signal
 float t_end, e_end, nu_end;
-
+float t0 = -1500.0;                 // initial time 
 
 AKWaveform ak(spin, mu, MBHmass, Tmax, (float)dt);
 
@@ -65,7 +65,7 @@ nu_lso =  pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(LISAWP_TWOPI*MBHmass*LISA
 
 ak.EstimateInitialParams((double)Tend, e_lso, nu_lso, &e_in, &nu_in);
 
-ak.EvolveOrbit(nu_in, e_in, gamma0, Phi0, al0, lam);
+ak.EvolveOrbit(t0, nu_in, e_in, gamma0, Phi0, al0, lam);
 
 std::cout << "Orbit is computed" << std::endl;
 
@@ -97,6 +97,30 @@ for (int i=0; i<time.size(); i++){
       fout <<  time[i]/oneyear  << spr << hplus[i] << spr << hcross[i] << std::endl;
 }
 fout.close();
+
+
+std::vector<float> t_o;
+std::vector<float> phit;
+std::vector<float> nut;
+std::vector<float> gammat;
+std::vector<float> et;
+std::vector<float> alt;
+
+ak.GetOrbitalEvolution(t_o, phit, nut, gammat, et, alt);
+
+std::ofstream fout2("EMRIorbit.dat");
+fout2 << " # time(sec)   phi, nu, gamma, e, alpha " << std::endl;
+
+for (int i = 0; i < 1000; i++){
+
+     fout2 << t_o[i] << spr << phit[i] << spr << nut[i] << spr << gammat[i] <<\
+	     spr << et[i]  << spr << alt[i] << std::endl;
+}
+
+fout2.close();
+
+
+
 
 
 }

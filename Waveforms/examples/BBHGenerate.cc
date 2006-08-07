@@ -41,16 +41,16 @@ float psi = 0.0;                // polarization
 float maxDuration = 31457280.0; // max. Duration = ~1year (sec)
 float dt = 15.0;		// timestep
 double Dist = 1.e10; 		// lum. distance (pc)
-float taper = 8.0;		// Sapplyin window after 8M
-	
+float taper = 8.0;		// applying window after 8
+float t0 = 0.0;                 // initial time
 
 BBHChallenge1 bbh(m1, m2);
 
-double omega0 = bbh.EstimateFreq0(tc);
+//double omega0 = bbh.EstimateFreq0(tc);   // Initial orbital angular frequency
 
-bbh.SetInitialOrbit(omega0, Phi0);
+bbh.SetInitialOrbit(tc, Phi0);
 
-bbh.ComputeInspiral(dt, maxDuration);
+bbh.ComputeInspiral(t0, dt, maxDuration);
 
 std::cout << "Orbit was computed" << std::endl;
 
