@@ -1328,7 +1328,7 @@ which is in agreement with the result derived by a number of authors.
 %\lambda^0 & t_0\nu_0      & \text{$t_0$ is instant at which orbital frequency
 \lambda^0 & M_1     & \text{first mass}   \\
 \lambda^1 & M_2        & \text{second mass}\\
-\lambda^2 & \omega_0        & \text {orbital angular frequency}\\
+\lambda^2 & t_c        & \text {instance of coalescence}\\
 \lambda^3 & \Phi_0         & \text{orbital initial phase} \\
 \lambda^4 & \theta          & \text{inclination of $L$ (orbital 
 angular momentum) to the direction to the 
@@ -1409,10 +1409,12 @@ which causes exponential damping of the signal in time domain
 after time $t_R = t(R)$, time when radius of orbit is $R$:
 \be
 w(t) = \frac1{2}\left( 1 + \tanh\left[A(t_{k} - t)\right]  \right)
+\label{wnd}
 \en
 where $t_k = (t_c + t_R)/2$ and coefficient $A = 0.1\left(\frac{7M}{R}
 \right)^{7.5}$ was found empirically to produce smooth damping 
-for $R$ in range $[7M, 9M]$.
+for $R$ in range $[7M, 9M]$. For more details on implementation of
+the taper see next subsection.
 
 
 The transformation to the SSB system is given in the subsection~\ref{non-precbin}:
@@ -1466,35 +1468,105 @@ waveform, which is the input to {\it Synthetic LISA} and/or the {\it LISA Simula
 The waveform generation is implemented as C++ class {\tt BBHChallenge1}
 
 \begin{itemize}
-\item {\tt SpinBBHWaveform(float mass1, float mass2)}, constructor, the
-input are two masses in units of solar mass.
-\item {\tt SetInitialOrbit(float omega0, float phi0)}, defines initial orbit:
-{\tt omega0} is initial angular orbital frequency and {\tt phi0} is initial
-orbital phase
-\item {\tt double EstimateTc(float omega0)}, this method is used to estimate
-coalescence time $t_c$ for a given initial angular orbital frequency. It
-is done by numerical solution of eqn.(\ref{fr}).
-\item {\tt double EstimateFreq0(float tc)}, this method computes initial
-angular orbital frequency for a given coalescence time.
-\item {\tt ComputeInspiral(float timeStep, float maxDuration)}
+
+\item {\tt BBHChallenge1(float mass1, float mass2)} constructor,
+the input are two masses in units of solar mass.
+
+\item {\tt SetInitialOrbit(float coalTime, float phi0)}, defines initial 
+orbit, initial orbital angular frequency $\omega_0$ can be found from 
+coalescence time (``{\tt coalTime}''), $t_c$, using eqn.~(\ref{fr}).
+Second parameter defines initial orbital phase.
+
+\item {\tt ComputeInspiral(float t0, float timeStep, float maxDuration)}:
 this method computes orbital evolution. Method {\tt SetInitialOrbit}
-should be called beforehand.
-\item {\tt SetObserver(float thetaD, double D)} this method initializes
+should be called beforehand. It takes initial time {\tt t0} (could be 
+negative), {\tt timeStep} of evolution (cadence), and maximal duration
+{\tt maxDuration}. The last parameter is used in the challenge 1.2.2, where
+the coalescence occurs outside the time of observation.
+
+
+\item {\tt SetObserver(float thetaD, double D)}: this method initializes
 position of the observer with respect to the source frame: 
 {\tt thetaD} is $\theta$ (see, eqns.(\ref{hp}, \ref{hc})) and {\tt D} is luminosity distance (in pc).
-\item {\tt ComputeWaveform(float truncateTime, float taper, std::vector<double>\& hPlus, \\std::vector<double>\& hCross)}. This method computes waveform in the
+
+\item {\tt ComputeWaveform(float truncateTime, float taper,  std::vector<double>\& hPlus,\\
+                             std::vector<double>\& hCross)}:
+ This method computes waveform in the
 radiation frame, eqns.(\ref{hp},\ref{hc}). The variable {\tt truncateTime}
 was introduced to truncate the waveform before coalescence ("early warning")
 but it is not used in the current challenge (always set to $0$), {\tt taper}
 is used to terminate waveform smoothly (see explanations in the previous
-subsection), and it is hardcoded to $8M$ in the first round of challenges.
-\item {\tt ComputeWaveformSSB(float truncateTime, float taper, float psi, 
-		       std::vector<double>\& hPlus, std::vector<double>\& hCross)}.
-The same as above, but computes waveform in the SSB frame according to
+subsection), and it is hardcoded to $8M$ in the first round of challenges.                             
+
+\item {\tt ComputeWaveformSSB(float truncateTime, float taper, float psi, \\
+		       std::vector<double>\& hPlus, std::vector<double>\& hCross)}:
+this method is the same as above, but computes waveform in the SSB frame according to
 eqn.(\ref{hps}, \ref{hcs}).
 
+\item {\tt double EstimateTc(float omega0)} and {\tt double EstimateFreq0(float tc)} 
+are two auxiliary methods used to compute time of coalescence for given 
+initial orbital angular frequency and inverse, computing initial orbital angular 
+frequency for a given coalescence time. 
+                           
+
+%\item {\tt SpinBBHWaveform(float mass1, float mass2)}, constructor, the
+%input are two masses in units of solar mass.
+%\item {\tt SetInitialOrbit(float omega0, float phi0)}, defines initial orbit:
+%{\tt omega0} is initial angular orbital frequency and {\tt phi0} is initial
+%orbital phase
+%\item {\tt double EstimateTc(float omega0)}, this method is used to estimate
+%coalescence time $t_c$ for a given initial angular orbital frequency. It
+%is done by numerical solution of eqn.(\ref{fr}).
+%\item {\tt double EstimateFreq0(float tc)}, this method computes initial
+%angular orbital frequency for a given coalescence time.
+%\item {\tt ComputeInspiral(float timeStep, float maxDuration)}
+%this method computes orbital evolution. Method {\tt SetInitialOrbit}
+%should be called beforehand.
+%\item {\tt SetObserver(float thetaD, double D)} this method initializes
+%position of the observer with respect to the source frame: 
+%{\tt thetaD} is $\theta$ (see, eqns.(\ref{hp}, \ref{hc})) and {\tt D} is luminosity distance (in pc).
+%\item {\tt ComputeWaveform(float truncateTime, float taper, std::vector<double>\& hPlus, \\std::vector<double>\& hCross)}. This method computes waveform in the
+%radiation frame, eqns.(\ref{hp},\ref{hc}). The variable {\tt truncateTime}
+%was introduced to truncate the waveform before coalescence ("early warning")
+%but it is not used in the current challenge (always set to $0$), {\tt taper}
+%is used to terminate waveform smoothly (see explanations in the previous
+%subsection), and it is hardcoded to $8M$ in the first round of challenges.
+%\item {\tt ComputeWaveformSSB(float truncateTime, float taper, float psi, 
+%		       std::vector<double>\& hPlus, std::vector<double>\& hCross)}.
+%The same as above, but computes waveform in the SSB frame according to
+%eqn.(\ref{hps}, \ref{hcs}).
 
 \end{itemize}
+
+As promised we should give some more details of the implementation 
+of the taper. 
+\begin{enumerate}
+\item first we need to find orbital angular frequency $\omega_{R_t}$ which 
+corresponds the orbital separation $r = R_t$, where $R_t$ radius defined by 
+parameter $\tt taper$ and is taken to be $8M$ for the first challenge.
+Here we use the lowest order relation between orbital radius and
+frequency $M/r \approx \left(M\omega\right)^{2/3}$.
+\item next is constructing and applying the taper. Isn the method
+{\tt ComputeInspiral} we have computed angular orbital frequency and phase
+sampled at the instances of time defined by cadence. Due to this sampling we 
+project $\omega_{R_t}$ to the nearest discrete value.
+Then we use sampled version of the eqn.~(\ref{wnd}) and multiply 
+it with sampled waveform. 
+
+\item all together is something like that:
+
+{\tt -loop over angular orbital frequencies (sampled with cadence dt)\\
+     -if we need to apply taper and if $1/(M\omega_k)^{2/3} \le taper$, then
+     remember $ind = k$ and break \\
+     -define $tk = 0.5*(size + ind)$ where $size$ is the size of the waveform\\
+     -loop over orbital phase (sampled with cadence dt)\\
+     -compute sampled taper $ wk = 0.5( 1.0 + tanh(0.1\left(7./taper\right)^{7.5}(tk-k)))$\\
+     -apply the taper $hp(k)*wk$
+     }
+     
+
+\end{enumerate}
+
 
 \subsection{Stationary phase approximation}
 
@@ -2184,11 +2256,15 @@ This function estimates inital frequency {\tt nuin} and initial
 eccentricity {\tt ein} for values given at plunge {\tt elso}
 by integrating simplified evolution equations backwards.
 
-\item {\tt EvolveOrbit(float nu0, float eccen, float gamma0, \
+\item {\tt EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
 		    float Phi0, float al0, float lam)}. This method is used 
 to evolve the orbit with initial conditions specified by 
 {\tt nu0, eccen, gamma0, Phi0, al0} and for a given {\tt lam} 
-$= \lambda$ 
+$= \lambda$. NOTE that initial conditions are specified at $t=0$
+which corresponds to the beginning of the observed time. The first 
+parameter {\tt t0} is usually taken to be less than zero (required for TDI),
+therefore orbit is evolved backwards to the time {\tt t0} and then forward
+from the instance $t=0$. 
 
 \item {\tt GetOrbitalEvolution(Matrix<float>\& time, Matrix<float>\& Phit, Matrix<float>\& nut,  Matrix<float>\& gammat, Matrix<float>\& et, Matrix<float>\& alt)}. Using this function user can have a look at the result of integration of eqns. (\ref{Phidot} - \ref{alphadot})
 
