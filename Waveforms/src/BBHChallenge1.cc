@@ -47,11 +47,11 @@ BBHChallenge1::BBHChallenge1(float mass1, float mass2){
 }
   
 
-void BBHChallenge1::SetInitialOrbit(float omega0, float phi0){
+void BBHChallenge1::SetInitialOrbit(float coalTime, float phi0){
 
    Phi = (double) phi0;
-   om = (double) omega0;
-   om_prev = om;
+   tc = coalTime;
+   omega0 = EstimateFreq0(0.2*eta/M*tc);
 
    orbitSet = true;
 }
@@ -76,6 +76,7 @@ double BBHChallenge1::EstimateTc(float omega0){
    double yb = omega0 - PPNfreq(b);
    if (fabs(yb) <= 1.e-10) return(b*5.*M/eta);
 
+   std::cout << "Stas: ya = " << ya << "  yb = " << yb << std::endl;
    LISAWPAssert(ya<0. && yb>0., "Function doesn't change sign.");
 
    // Find the root (tau_c) of omega_0 = omega(tau_c) 
@@ -117,30 +118,35 @@ double BBHChallenge1::EstimateTc(float omega0){
   
  }
 
- void BBHChallenge1::ComputeInspiral(float timeStep, float maxDuration){
+ void BBHChallenge1::ComputeInspiral(float t0, float timeStep, float maxDuration){
  
    LISAWPAssert(orbitSet, "You need to first set the initial orbit!");
-   double nu, tau;
-   stab = CheckStab(om);
+   double tau, nu;
 
+   dt = timeStep;
+   
+   tau = 0.2*eta/M*(tc-t0);
+   om = PPNfreq(tau);
+   stab = CheckStab(om);
    if(!stab){
        std::cerr << "MECO/LSO reached with initial conditions!" << std::endl;
        exit(1);   
    }
-   dt = timeStep;
-   double t = 0.0;
-   double tc = EstimateTc(om);
-   double ph_res = PPNphase(om, om);
+   om_prev = om;
+   
+   double ph_res = PPNphase(omega0);
    double Phi_diff = Phi - ph_res;  // need to bring initial phase to Phi0
-   double om0 = om;
-   tau = 0.2*eta/M*tc;
-   nu = PPNfreq(tau);
-   double om_Diff = om0 - nu;    // need to bring initial freq. to omega0
+
+//   double om0 = om;
+//   tau = 0.2*eta/M*tc;
+//   nu = PPNfreq(tau);
+//   double om_Diff = om0 - nu;    // need to bring initial freq. to omega0
 
    time.resize(0);
    Phase.resize(0);
    freq.resize(0);
 	   
+   double t = t0;
    while(stab){
 
       time.push_back(t);
@@ -149,9 +155,9 @@ double BBHChallenge1::EstimateTc(float omega0){
       t = t + dt;   // advance time
       LISAWPAssert(t<tc, "Attempt to go beyond coalescence time!");
       tau = 0.2*eta/M*(tc - t);
-      om = PPNfreq(tau)  + om_Diff;
+      om = PPNfreq(tau);
       
-      Phi = PPNphase(om, om0) + Phi_diff;
+      Phi = PPNphase(om) + Phi_diff;
       stab = CheckStab(om);
       om_prev = om;
       if(t >(double)maxDuration){
@@ -303,7 +309,7 @@ double BBHChallenge1::PPNfreq(double tau){
 
 }
 
-double BBHChallenge1::PPNphase(double omeg, double om0){
+double BBHChallenge1::PPNphase(double omeg){
 
    double v = pow(M*omeg, 2./3.);
    double fr = M*omeg;
