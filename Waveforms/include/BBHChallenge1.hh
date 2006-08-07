@@ -55,11 +55,11 @@ class BBHChallenge1{
       BBHChallenge1(float mass1, float mass2);
       
      /*** initial orbital arameters
-      * @param omega0 initial orbital frequency
+      * @param coalTime time of coalescence
       * @param phi0 initial orbital phase
       */
       
-      void SetInitialOrbit(float omega0, float phi0);
+      void SetInitialOrbit(float coalTime, float phi0);
 
       /** Estimates (returns) coalescence time (in sec) 
        * @param omega0 initial orbital angular frequency (in Hz)
@@ -79,7 +79,7 @@ class BBHChallenge1{
        * @maxDuration maximum duaration (in sec).
        * */
       
-      void ComputeInspiral(float timeStep, float maxDuration);
+      void ComputeInspiral(float t0, float timeStep, float maxDuration);
 
      /** define direction to the detector/baricenter 
       * @param thetaD theta direction to the BSS/detector in rad.
@@ -129,6 +129,7 @@ class BBHChallenge1{
        double M;
        double eta;
        double theta, dist;
+       double tc, omega0;
        std::vector<double> time;
        std::vector<double> Phase;
        std::vector<double> freq;
@@ -150,9 +151,8 @@ class BBHChallenge1{
       double PPNfreq(double tau);
       /** Computes PPN orbital phase (no spin, analyt.)
        * @param om instanteneous orbital frequecy
-       * @param om0 initial frequency
        */
-       double PPNphase(double omeg, double om0);
+       double PPNphase(double omeg);
 
        /** Checks termination point of the orbital evolution
 	* returns true if we still can evolve 
