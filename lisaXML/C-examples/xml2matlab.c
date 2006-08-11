@@ -38,6 +38,7 @@
  
 static mxArray *parsefile(char *filename) {
     TimeSeries *timeseries;
+    LISASource *firstsource = 0;
     
     mxArray *newmatrix;
     double *newdata;
@@ -45,6 +46,11 @@ static mxArray *parsefile(char *filename) {
     int i,j;
 
     timeseries = getTDIdata(filename);
+
+    if(timeseries == 0) {
+        firstsource = getLISASources(filename);
+        timeseries = firstsource->TimeSeries;
+    }
 
     mexPrintf("Reading TimeSeries '%s' from file '%s':\n",timeseries->Name,timeseries->FileName);
     mexPrintf("-> %d x %d values\n",timeseries->Length,timeseries->Records);
@@ -68,8 +74,12 @@ static mxArray *parsefile(char *filename) {
             newdata[i*(timeseries->Length)+j] = timeseries->Data[i]->data[j];
         }
     }
-        
-    freeTimeSeries(timeseries);
+    
+    if(firstsource == 0) {
+        freeTimeSeries(timeseries);
+    } else {
+        freeLISASources(firstsource);
+    }
     
     return newmatrix;
 }
