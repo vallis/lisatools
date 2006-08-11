@@ -396,7 +396,7 @@ LISASource *getLISASources(char *filename) {
 TimeSeries *getTDIdata(char *filename) {
     ezxml_t tree, section, obs, series;
     const char *type;
-    TimeSeries *timeseries;
+    TimeSeries *timeseries = 0;
 
     tree = ezxml_parse_file(filename);
     assert(tree);
