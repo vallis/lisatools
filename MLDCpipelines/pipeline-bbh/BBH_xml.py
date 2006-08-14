@@ -2,7 +2,6 @@
 
 import sys, getopt
 from synthlisa import *
-from Numeric import *
 import lisawp
 
 import math
@@ -92,11 +91,10 @@ Phi0 = random.uniform(0.0, math.pi*2.0)   # initial orbital phase
 u    = random.uniform(-20., 20.)
 tc   = (Tc + u)*24.*3600.                 # coalescence time in sec
 
-#print "otput file = ", outXMLfile
+#print "output file = ", outXMLfile
 #print "TC =  %f (days)" % Tc
 #print "distance = ", D
 #print "seed = ", seed
-
 
 # estimate initial orbital angular freq
 #omega0 = lisawp.PNBinaryInitialFrequency(m1, m2, tc) # initial orb. ang. freq.
@@ -104,7 +102,8 @@ tc   = (Tc + u)*24.*3600.                 # coalescence time in sec
 #f0 = omega0/math.pi    # initial freq of GW signal
 
 theta = math.acos(ci)
-elat = math.acos(cS)
+elat  = 0.5*math.pi - math.acos(cS)
+
 elon = phS
 pol = psi
 mysystem = lisawp.PNBinary(m1,m2,tc,Phi0,D,theta,elat,elon,pol,
