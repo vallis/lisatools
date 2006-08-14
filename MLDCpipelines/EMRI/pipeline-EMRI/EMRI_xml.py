@@ -2,7 +2,6 @@
 
 import sys, getopt
 from synthlisa import *
-from Numeric import *
 import lisawp_emri
 
 import math
@@ -124,7 +123,7 @@ al0 = random.uniform(0.0, math.pi*2.0);
 lam = math.acos(random.uniform(-1.0, 1.0))            
 e_lso = random.uniform(0.15, 0.25)                #estimated eccentricity at plunge
 
-elat = math.acos(random.uniform(-1.0, 1.0))           #thetaS
+elat = 0.5 * math.pi - math.acos(random.uniform(-1.0, 1.0))           #thetaS
 elon = random.uniform(0.0, math.pi*2.0)   	      #phiS
 thK = math.acos(random.uniform(-1.0, 1.0))            #thetaK
 phK = random.uniform(0.0, math.pi*2.0)    #phiK
