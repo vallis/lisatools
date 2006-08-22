@@ -391,7 +391,7 @@ LISASource *getLISASources(char *filename) {
 }
 
 
-/* For the moment, support only one TDIObservable section per file */
+/* For the moment, support only the first TDIObservable/TimeSeries section per file */
 
 TimeSeries *getTDIdata(char *filename) {
     ezxml_t tree, section, obs, series;
@@ -405,20 +405,20 @@ TimeSeries *getTDIdata(char *filename) {
         type = ezxml_attr(section, "Type");
         
         if(!strcmp(type,"TDIData")) {
-            obs = ezxml_child(section,"XSIL");
-            assert(!strcmp(ezxml_attr(obs,"Type"),"TDIObservable"));
-            /* Expected TDIObservable here... */
+            for(obs = ezxml_child(section,"XSIL"); obs; obs = obs->next) {
+                assert(!strcmp(ezxml_attr(obs,"Type"),"TDIObservable"));
             
-            series = ezxml_child(obs,"XSIL");
-            assert(!strcmp(ezxml_attr(series,"Type"),"TimeSeries"));
-            /* Expected TDIObservable here... */
-
-            timeseries = dotimeseries(series,filename);
+                series = ezxml_child(obs,"XSIL");
+                if(!strcmp(ezxml_attr(series,"Type"),"TimeSeries")) {
+                    timeseries = dotimeseries(series,filename);
+                    break;
+                }
+            }
         }
     }
 
     ezxml_free(tree);
-    
+
     return timeseries;
 }
 
