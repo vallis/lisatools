@@ -1,5 +1,7 @@
 /* lisatools/lisaXML/C-examples/xml2matlab.c --- Copyright (c) 2006 Michele Vallisneri
 
+   Compile with: mex xml2matlab.c ../io-C/readxml.c ../io-C/ezxml.c -I..
+
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
    "Software"), to deal in the Software without restriction, including
@@ -24,7 +26,6 @@
 #include "io-C/readxml.h"
 
 /* MATLAB syntax: array = xml2matlab('file.xml')
-   Compile with: mex xml2matlab.c ../io-C/readxml.c ../io-C/ezxml.c -I..
 
    This little MEX program will retrieve the first TDIObservable section in a lisaXML file
    as a MATLAB n x m array, where m is the number of observables on each column, and n
@@ -43,7 +44,7 @@ static mxArray *parsefile(char *filename) {
     mxArray *newmatrix;
     double *newdata;
 
-    int i,j;
+    long i,j;
 
     timeseries = getTDIdata(filename);
 
@@ -74,7 +75,7 @@ static mxArray *parsefile(char *filename) {
             newdata[i*(timeseries->Length)+j] = timeseries->Data[i]->data[j];
         }
     }
-    
+        
     if(firstsource == 0) {
         freeTimeSeries(timeseries);
     } else {
