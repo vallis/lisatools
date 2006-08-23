@@ -162,6 +162,8 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
 
     TimeSeries *timeseries;
     double *buffer;
+    
+    char *pathbinfile;
     FILE *binfile;
 
     int i,j,k;
@@ -228,20 +230,18 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
     buffer = malloc(timeseries->Length * timeseries->Records * sizeof(double));
     assert(buffer != 0);
 
-    binfile = fopen(timeseries->FileName,"r");
+    pathbinfile = basename(xmlname,timeseries->FileName);
 
-    if(binfile == 0) {        
-        char *pathbinfile;
-     
-        pathbinfile = basename(xmlname,timeseries->FileName);
-        fprintf(stderr,"...can't find %s in the working directory, trying %s...\n",timeseries->FileName,
-                                                                                   pathbinfile);
-                                                                        
-        binfile = fopen(pathbinfile,"r");
-        assert(binfile != 0);
+    binfile = fopen(pathbinfile,"r");
+
+    if(binfile == 0) {             
+        fprintf(stderr,"...can't find %s, trying in the working directory...\n",pathbinfile);                                                                    
         
-        free(pathbinfile);
+        binfile = fopen(timeseries->FileName,"r");
+        assert(binfile != 0);
     }
+    
+    free(pathbinfile);
     
     fread(buffer,sizeof(double),timeseries->Length * timeseries->Records,binfile);
 
@@ -411,7 +411,7 @@ TimeSeries *getTDIdata(char *filename) {
                 series = ezxml_child(obs,"XSIL");
                 if(!strcmp(ezxml_attr(series,"Type"),"TimeSeries")) {
                     timeseries = dotimeseries(series,filename);
-                    break;
+                    return timeseries;
                 }
             }
         }
@@ -419,6 +419,6 @@ TimeSeries *getTDIdata(char *filename) {
 
     ezxml_free(tree);
 
-    return timeseries;
+    return 0;
 }
 
