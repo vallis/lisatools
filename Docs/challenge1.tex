@@ -1220,7 +1220,7 @@ The analytic expressions for frequency and phase are given in \cite{Blanchet};
 we also give them here. First introduce 
 \bea
 \tau = \frac{\eta}{5M}(t_c - t)\\
-x = v^2 = (M\omega)^{2/3}
+x = v^2 = (M\omega)^{2/3}\label{x}
 \ena
 Then 
 \bea
@@ -1406,15 +1406,19 @@ Since we terminate waveform suddenly in time domain and signal spectrum has a la
 frequency domain, which we deal with by applying window
 (tapering) in the time domain. We have chosen the following taper,
 which causes exponential damping of the signal in time domain 
-after time $t_R = t(R)$, time when radius of orbit is $R$:
+after time $t = t(R_{taper})$, time when radius of orbit is 
+$R_{taper}$.
 \be
-w(t) = \frac1{2}\left( 1 + \tanh\left[A(t_{k} - t)\right]  \right)
-\label{wnd}
+w(t) = \frac1{2}\left( 1 - \tanh\left[A(x(t) - x_{max})\right]\right),
 \en
-where $t_k = (t_c + t_R)/2$ and coefficient $A = 0.1\left(\frac{7M}{R}
-\right)^{7.5}$ was found empirically to produce smooth damping 
-for $R$ in range $[7M, 9M]$. For more details on implementation of
-the taper see next subsection.
+where $x$ is defined by eqn. (\ref{x}) and for $x_{max}$ we use lowest order approximation:
+$$
+x_{max} = \frac{M}{R_{taper}} 
+$$
+and coefficient $A = 150$ was found empirically to produce smooth damping 
+for $R$ in range $[6M, 8M]$. 
+%For more details on implementation of
+%the taper see next subsection.
 
 
 The transformation to the SSB system is given in the subsection~\ref{non-precbin}:
@@ -1538,34 +1542,32 @@ frequency for a given coalescence time.
 
 \end{itemize}
 
-As promised we should give some more details of the implementation 
-of the taper. 
-\begin{enumerate}
-\item first we need to find orbital angular frequency $\omega_{R_t}$ which 
-corresponds the orbital separation $r = R_t$, where $R_t$ radius defined by 
-parameter $\tt taper$ and is taken to be $8M$ for the first challenge.
-Here we use the lowest order relation between orbital radius and
-frequency $M/r \approx \left(M\omega\right)^{2/3}$.
-\item next is constructing and applying the taper. Isn the method
-{\tt ComputeInspiral} we have computed angular orbital frequency and phase
-sampled at the instances of time defined by cadence. Due to this sampling we 
-project $\omega_{R_t}$ to the nearest discrete value.
-Then we use sampled version of the eqn.~(\ref{wnd}) and multiply 
-it with sampled waveform. 
+%As promised we should give some more details of the implementation 
+%of the taper. 
+%\begin{enumerate}
+%\item first we need to find orbital angular frequency $\omega_{R_t}$ which 
+%corresponds the orbital separation $r = R_t$, where $R_t$ radius defined by 
+%parameter $\tt taper$ and is taken to be $8M$ for the first challenge.
+%Here we use the lowest order relation between orbital radius and
+%frequency $M/r \approx \left(M\omega\right)^{2/3}$.
+%\item next is constructing and applying the taper. Isn the method
+%{\tt ComputeInspiral} we have computed angular orbital frequency and phase
+%sampled at the instances of time defined by cadence. Due to this sampling we 
+%project $\omega_{R_t}$ to the nearest discrete value.
+%Then we use sampled version of the eqn.~(\ref{wnd}) and multiply 
+%it with sampled waveform. 
 
-\item all together is something like that:
+%\item all together is something like that:
 
-{\tt -loop over angular orbital frequencies (sampled with cadence dt)\\
-     -if we need to apply taper and if $1/(M\omega_k)^{2/3} \le taper$, then
-     remember $ind = k$ and break \\
-     -define $tk = 0.5*(size + ind)$ where $size$ is the size of the waveform\\
-     -loop over orbital phase (sampled with cadence dt)\\
-     -compute sampled taper $ wk = 0.5( 1.0 + tanh(0.1\left(7./taper\right)^{7.5}(tk-k)))$\\
-     -apply the taper $hp(k)*wk$
-     }
-     
-
-\end{enumerate}
+%{\tt -loop over angular orbital frequencies (sampled with cadence dt)\\
+%     -if we need to apply taper and if $1/(M\omega_k)^{2/3} \le taper$, then
+%     remember $ind = k$ and break \\
+%     -define $tk = 0.5*(size + ind)$ where $size$ is the size of the waveform\\
+%     -loop over orbital phase (sampled with cadence dt)\\
+%     -compute sampled taper $ wk = 0.5( 1.0 + tanh(0.1\left(7./taper\right)^{7.5}(tk-k)))$\\
+%     -apply the taper $hp(k)*wk$
+%     }     
+%\end{enumerate}
 
 
 \subsection{Stationary phase approximation}
