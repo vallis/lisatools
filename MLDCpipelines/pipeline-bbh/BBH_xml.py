@@ -74,7 +74,7 @@ if ( not outXMLfile):
 	
 
 random.seed(seed)
-taper = 8.0
+taper = 7.0
 dt = 15.0               # time step seconds
 truncateTime = 0.0
 timeoffset = -900       # Defines t0
