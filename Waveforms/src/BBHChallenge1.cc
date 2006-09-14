@@ -76,7 +76,7 @@ double BBHChallenge1::EstimateTc(float omega0){
    double yb = omega0 - PPNfreq(b);
    if (fabs(yb) <= 1.e-10) return(b*5.*M/eta);
 
-//   std::cout << "Stas: ya = " << ya << "  yb = " << yb << std::endl;
+   std::cout << "Stas: ya = " << ya << "  yb = " << yb << std::endl;
    LISAWPAssert(ya<0. && yb>0., "Function doesn't change sign.");
 
    // Find the root (tau_c) of omega_0 = omega(tau_c) 
@@ -200,24 +200,16 @@ double BBHChallenge1::EstimateTc(float omega0){
     
     double Ampl = (M*eta/dist);
     double wk = 1.0;
-    double ind = 0.0;
-
-   for(int k=0; k<size; k++){
-       Mom23 = pow(M*freq[k], 2./3.);
-       if ( taper != 0.0  && 1.0/Mom23 <= taper){
-	       ind = (double)k;
-	       break;
-       }
-   }
-   if (ind == 0.0){
-       ind = 2.*(double)size;
-   }    
-   //std::ofstream fout32("BBHtest.dat");   
-   double tk = 0.5*(size + ind);
+    double xmax;
+    if (taper != 0.0)
+	 xmax = 1./taper;
+    double Ataper = 150;   // this parameter regulates steepnes of the taper
+    
+    //std::ofstream fout32("BBHtest.dat");   
    for(int k=0; k<size; k++){
        Mom23 = pow(M*freq[k], 2./3.);
        if (taper != 0.0) 
-           wk = 0.5*( 1.0 + tanh((0.7/taper)*pow(7./taper, 6.5)*(tk-k)) );
+           wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
        hp = Ampl * Mom23 * 2.0*(1. + cs*cs)*cos(2.0*Phase[k]);
        hc = Ampl * Mom23 *4.0*cs*sin(2.*Phase[k]); 
      //  fout32 << k << "      "  << time[k] <<  "       " << 1./Mom23 << "      " << 
@@ -252,26 +244,18 @@ void BBHChallenge1::ComputeWaveformSSB(float truncateTime, float taper, float ps
     
     double Ampl = (M*eta/dist);
     double wk = 1.0;
-    double ind = 0.0;
+    double xmax;
+    if (taper != 0.0)
+	 xmax = 1./taper;
+    double Ataper = 150;   // this parameter regulates steepnes of the taper
 
-   for(int k=0; k<size; k++){
-       Mom23 = pow(M*freq[k], 2./3.);
-       if ( taper != 0.0  && 1.0/Mom23 <= taper){
-	       ind = (double)k;
-	       break;
-       }
-   }
-   if (ind == 0.0){
-       ind = 2.*(double)size;
-   }    
    //std::ofstream fout32("BBHtest.dat");   
-   double tk = 0.5*(size + ind);
    double cpsi = cos(2.*psi);
    double spsi = sin(2.*psi);
    for(int k=0; k<size; k++){
        Mom23 = pow(M*freq[k], 2./3.);
        if (taper != 0.0) 
-           wk = 0.5*( 1.0 + tanh((0.7/taper)*pow(7./taper, 6.5)*(tk-k)) );
+           wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
        hp = wk*Ampl * Mom23 * 2.0*(1. + cs*cs)*cos(2.0*Phase[k]);
        hc = wk*Ampl * Mom23 *4.0*cs*sin(2.*Phase[k]); 
      //  fout32 << k << "      "  << time[k] <<  "       " << 1./Mom23 << "      " << 
