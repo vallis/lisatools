@@ -55,7 +55,7 @@ static mxArray *parsefile(char *filename) {
 
     mexPrintf("Reading TimeSeries '%s' from file '%s':\n",timeseries->Name,timeseries->FileName);
     mexPrintf("-> %d x %d values\n",timeseries->Length,timeseries->Records);
-    mexPrintf("-> cadence = %g s, time offset = %g s\n",timeseries->TimeOffset,timeseries->Cadence);
+    mexPrintf("-> cadence = %g s, time offset = %g s\n",timeseries->Cadence,timeseries->TimeOffset);
 
     mexPrintf("-> columns = ");
     for(i=0;i<timeseries->Records;i++) {
