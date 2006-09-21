@@ -1,6 +1,9 @@
 /* lisatools/lisaXML/C-examples/xml2matlab.c --- Copyright (c) 2006 Michele Vallisneri
 
-   Compile with: mex xml2matlab.c ../io-C/readxml.c ../io-C/ezxml.c -I..
+   After making sure that mex is in you path (on OS X, something like
+   /Applications/MATLAB72/bin), compile with:
+   
+   mex xml2matlab.c ../io-C/readxml.c ../io-C/ezxml.c -I..
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
