@@ -261,7 +261,7 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
     assert(timeseries->Data != 0);
     
     for(i=0;i<timeseries->Records;i++) {
-        timeseries->Data[i] = malloc(timeseries->Records * sizeof(DataColumn));
+        timeseries->Data[i] = malloc(sizeof(DataColumn));
         assert(timeseries->Data[i] != 0);
         
         timeseries->Data[i]->Name = splitcopy(timeseries->Name,i);
