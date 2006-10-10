@@ -1,5 +1,7 @@
 /* lisatools/lisaXML/C-examples/xml2matlab.c --- Copyright (c) 2006 Michele Vallisneri
 
+   $Id $
+
    After making sure that mex is in you path (on OS X, something like
    /Applications/MATLAB72/bin), compile with:
    
@@ -49,10 +51,20 @@ static mxArray *parsefile(char *filename) {
 
     long i,j;
 
+    mexPrintf("Opening file '%s'...\n",filename);
+
     timeseries = getTDIdata(filename);
 
     if(timeseries == 0) {
+        mexPrintf("...no TDI observables. Looking for first source...\n");
+
         firstsource = getLISASources(filename);
+
+        if(firstsource == 0) {
+            mexPrintf("...can't find it!\n");
+            return 0;
+        }
+
         timeseries = firstsource->TimeSeries;
     }
 
