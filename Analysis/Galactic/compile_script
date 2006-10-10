@@ -1,0 +1,6 @@
+#!/bin/sh
+
+XMLINC="../../lisaXML"
+XMLLIB="../../lisaXML/io-C/lisaxml.c ../../lisaXML/io-C/ezxml.c ../../lisaXML/io-C/xmlbinary.c ../../lisaXML/io-C/readxml.c"
+
+gcc -O3 MLDC_galactic.c nrutil.c $XMLLIB -I$XMLINC -lm -o MLDC_galactic

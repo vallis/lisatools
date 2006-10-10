@@ -1,0 +1,47 @@
+This code bundle provides a very fast template
+matching code for galactic binaries that can be
+used on the MLDC data files.
+
+The templates describe circular, monochromatic binaries
+using the low frequency approximation to the LISA instrument
+response. I would not recommend using the code for sources
+with frequencies greater than 4 mHz. The code generates
+the templates for the independent A and E channels directly
+in the frequency domain.
+
+To compile the code using the gcc compiler type 
+
+./compile_script
+
+To test the code, go to the MLDC website and download the
+LISA Simulator "download" files for Challenge 1.1.1.b
+Unpacking the tar file will produce the directory
+Training-1.1.1b_LISAsim. Move the .xml and .bin files
+from this directory and place them in the same directory as
+the executable "MLDC_galactic"
+
+Run the code by typing
+
+./MLDC_galactic Training-1.1.1b.xml 0.0029 0.00292
+
+The first argument tells the code which data set you want
+to search. The second two arguments fix the lower and upper
+limits on the frequency range that you want your search to
+cover.
+
+The code loads in the data and computes a template using
+the actual source parameters. It outputs the SNR and the
+change in the log likelihood associated with using this
+template.
+
+To show how the code might be used in practice, it then
+performs a grid search in the neighborhood of the actual
+source parameters. The best fit will be different from the
+actual parameters due to the instrument noise.
+
+You will probably want to do something smarter than a
+7 parameter grid search....
+
+
+
+
