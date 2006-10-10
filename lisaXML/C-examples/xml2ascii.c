@@ -1,4 +1,8 @@
-/* In the directory lisatools/lisaXML/C-examples, compile with
+/* lisatools/lisaXML/C-examples/xml2ascii.c --- Copyright (c) 2006 Michele Vallisneri
+
+   $Id$
+
+   In the directory lisatools/lisaXML/C-examples, compile with
    gcc xml2ascii.c ../io-C/readxml.c ../io-C/ezxml.c -I.. -o xml2ascii */
 
 #include <stdio.h>
