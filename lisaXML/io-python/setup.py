@@ -4,7 +4,7 @@ from distutils.core import setup, Extension
 
 setup(name = 'BBH',
       version = '$Id $',
-#     description = '', 
+#     description = '',
       author = 'Stas Babak',
       author_email = 'stba@aei.mpg.de>',
 #     url = '',
