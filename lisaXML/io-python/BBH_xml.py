@@ -12,7 +12,7 @@ import random
 from optparse import OptionParser
 
 parser = OptionParser(usage="usage: %prog [options] OUTPUT.xml",
-                      version="$Id: $")
+                      version="$Id$")
 
 # remember that default action is "store", default type is "string"
 # actions "store_true" and "store_false" handle boolean options
