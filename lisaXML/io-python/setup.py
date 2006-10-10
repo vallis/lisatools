@@ -3,7 +3,7 @@
 from distutils.core import setup, Extension
 
 setup(name = 'BBH',
-      version = '$Id $',
+      version = '$Id$',
 #     description = '',
       author = 'Stas Babak',
       author_email = 'stba@aei.mpg.de>',
