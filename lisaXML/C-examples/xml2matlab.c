@@ -1,6 +1,6 @@
 /* lisatools/lisaXML/C-examples/xml2matlab.c --- Copyright (c) 2006 Michele Vallisneri
 
-   $Id $
+   $Id$
 
    After making sure that mex is in you path (on OS X, something like
    /Applications/MATLAB72/bin), compile with:
