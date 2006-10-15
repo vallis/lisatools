@@ -206,18 +206,18 @@ def convertParameters(param,sourceparams):
 
 def convertParam(obj,arg):
     # remember, args in outputlist are tuples (argname,unit,defaultvalue)
-
+    
     if not arg[0] in conversionRules:
         return None
-
+    
     rules = conversionRules[arg[0]] 
-
+    
     # we can handle a list of possible rules for the same argument
     # each rule is a tuple (see above)
-
+    
     if isinstance(rules,tuple):
         rules = [rules]
-
+    
     for rule in rules:
         try:
             args = []
@@ -225,21 +225,24 @@ def convertParam(obj,arg):
             for rulearg in rule[0]:
                 thearg = getattr(obj,rulearg[0])
                 
-                # use the global default unit if it's not specified here
-                if not isinstance(thearg,tuple):
-                    thearg = (thearg,defaultUnits[rulearg[1]])
-
+                if hasattr(obj,rulearg[0] + '_Unit'):
+                    thearg = (thearg,getattr(obj,rulearg[0] + '_Unit'))
+                else:
+                    # ??? use the global default unit if it's not specified here
+                    if not isinstance(thearg,tuple):
+                        thearg = (thearg,defaultUnits[rulearg[1]])
+                
                 # convert the argument to the unit needed by the rule...
                 args.append(convertUnit(thearg[0],thearg[1],rulearg[1],rulearg[0]))
-
+            
             # have all the arguments, can apply the rule!
             return rule[1](*args)
         except:
             # if anything goes wrong, try another rule        
             pass
-
+    
     # nope, we don't know how to
-
+    
     return None
 
     

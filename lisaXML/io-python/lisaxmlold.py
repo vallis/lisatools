@@ -1,7 +1,10 @@
-# $Id: lisaxml.py 363 2006-08-28 18:41:45Z vallis $
-# $Date: 2006-08-28 11:41:45 -0700 (Mon, 28 Aug 2006) $
-# $Author: vallis $
-# $Revision: 363 $
+# $Id: $
+
+# eventually, lisaxml will become its own package, probably automatically
+# installing pyRXP...
+
+# even better, it could be installed as part of the waveforms package...
+# but how to enforce modularity there?
 
 # import synthlisa
 
@@ -1285,7 +1288,26 @@ class readXML:
 
         return result
 
-    def getLISASources(self,returnFactory=False):
+    # new for stand-alone lisaXML
+
+    def getLISASources(self):
+        result = []
+
+        for node in self.tw:
+            if node.tagName == 'XSIL':
+                if node.Type == 'SourceData':
+
+                    for node2 in node:
+                        if node2.tagName == 'XSIL':
+                            # do not do 'SampledPlaneWave' yet
+                            if node2.Type == 'PlaneWave':
+                                r = self.processObject(node2)
+
+                                result.append(r)
+
+        return result
+
+    def OLDgetLISASources(self,returnFactory=False):
         result = []
 
         for node in self.tw:
@@ -1399,6 +1421,105 @@ class readXML:
                 # should handle local data here...
 
     def processObject(self,node):
+        # get the name of the object
+
+        try:
+            objectname = node.Name
+        except AttributeError:
+            objectname = ''
+
+        objectparams = {}
+
+        # get the type and all other parameters
+
+        for node2 in node:
+            if node2.tagName == 'Param':
+                if node2.Name = 'SourceType':
+                    objecttype = self.getParam(node2)
+                else:
+                    objectparams[node2.Name] = self.getParam(node2)
+
+        # remember that getParam returns a 2-tuple (unit may be None)
+
+        
+
+
+        if not objecttype in minimumParameterSet:
+            raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (objecttype,objectname)
+
+        # check that minimum parameter set is included
+
+        for test in minimumParameterSet[objecttype]:
+            if test(objectparams) != True:
+                raise KeyError, 'readXML.processObject(): need parameter(s) %s for object %s of type %s' % (test(objectparams),objectname,objecttype)
+
+        # add the default units if not included and if defined
+
+        for param in objectparams:
+            if (not param[1]) and (param[0] in defaultUnits):
+                param[1] = defaultUnits[param[0]]
+
+        # add default value of optional parameters if not defined
+
+        for test in optionalParameterSet[objecttype]:
+            t = test(objectparams)
+
+            if t != True:
+                objectparams[t[0]] = t[1]
+
+        # now convert to a synthlisa object; see if we have it defined
+
+        if not objecttype in XMLToObject:
+            raise NotImplementedError, 'readXML.processObject(): unknown object %s of type %s' % (objectname,objecttype)
+
+        synthlisatype = XMLToObject[objecttype][0]
+
+        # assemble the argument list
+
+        arglist = []
+
+        for param in argumentList[synthlisatype]:
+            # first, see if we have the parameter...
+
+            if not param[0] in objectparams:
+                # try obtaining the parameter from the other ones
+
+                try:
+                    thisparam = convertParameters(param,objectparams)
+                except AttributeError:
+                    if param[2]:
+                        thisparam = (param[2],param[1])
+                    else:
+                        raise AttributeError, 'readXML.processObject(): need parameter(s) %s in object %s of type %s' % (param[0],objectname,objecttype)
+            else:
+                thisparam = objectparams[param[0]]
+
+            # convert to the correct units (if we know how to)
+
+            thisparam = convertUnit(thisparam[0],thisparam[1],param[1],param[0])
+
+            if param[1] == 'String' or param[1] == 'Numeric':
+                evalparam = thisparam[0]
+            else:
+                try:
+                    # first try converting to an int...
+
+                    evalparam = int(thisparam[0])
+                except ValueError:
+                    # if it doesn't work, try a float...
+
+                    try:
+                        evalparam = float(thisparam[0])
+                    except ValueError:
+                        # if the float does not work, try calling Python...
+
+                        evalparam = eval(thisparam[0])
+
+            arglist.append(evalparam)
+
+        return (XMLToObject[objecttype][1],arglist,objectname,objectparams)
+
+    def OLDprocessObject(self,node):
         objectparams = {}
 
         try:
