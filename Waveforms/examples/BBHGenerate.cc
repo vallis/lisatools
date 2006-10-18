@@ -36,7 +36,7 @@ float m1 = 2.0e6;               // mass1 (solar Mass)
 float m2 = 1.0e6;               // mass2 (solar Mass)
 float thS =  LISAWP_PI/5.;      // inclination angle (rad)
 float Phi0 = LISAWP_PI/12.;     // initial orbital phase
-float tc = 180.*24.*3600,;      // duration: 180 days
+float tc = 180.*24.*3600.;      // duration: 180 days
 float psi = 0.0;                // polarization
 float maxDuration = 31457280.0; // max. Duration = ~1year (sec)
 float dt = 15.0;		// timestep
