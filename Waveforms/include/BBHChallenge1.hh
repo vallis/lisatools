@@ -158,7 +158,7 @@ class BBHChallenge1{
 	* returns true if we still can evolve 
 	* @param freq orbital angular frequency
 	*/ 
-       bool BBHChallenge1::CheckStab(double freq);
+       bool CheckStab(double freq);
 
 };
 
