@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+__date__='$LastChangeDate$'
+__version__='$Rev$'
+
 # some definitions...
 
 import sys
@@ -117,15 +120,15 @@ run('rm -f Dataset/*.xml Dataset/*.bin')
 
 # improve dataset metadata here
 
-nonoisefile = 'DataSet/' + args[0] + '-frequency-nonoise.xml'
+nonoisefile = 'Dataset/' + args[0] + '-frequency-nonoise.xml'
 nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (synthlisa version)')
 nonoise.close()
 
-withnoisefile = 'DataSet/' + args[0] + '-frequency.xml'
+withnoisefile = 'Dataset/' + args[0] + '-frequency.xml'
 withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (synthlisa version)')
 withnoise.close()
 
-keyfile = 'DataSet/' + args[0] + '-key.xml'
+keyfile = 'Dataset/' + args[0] + '-key.xml'
 key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2')
 key.close()
 
