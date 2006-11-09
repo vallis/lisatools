@@ -41,6 +41,7 @@ class XMLobject(object):
         
         if (not attr in self.parameters) and (not '_Unit' in attr):
             self.parameters.append(attr)
+    
 
 class TimeSeries(XMLobject):
     def __init__(self,arrays,name='',unit=''):
@@ -71,7 +72,7 @@ class TimeSeries(XMLobject):
             
             Stream = ('Stream',
                       {'Type': 'Remote', 'Encoding': sys.byteorder == 'big' and 'Binary,BigEndian' or 'Binary,LittleEndian'},
-                      [filename] )
+                      [os.path.basename(filename)])
         else:
             textdata = ''
             linepattern = '%le ' * self.Records + '\n'
@@ -98,6 +99,34 @@ class TimeSeries(XMLobject):
                         Array ] )
         
         return TimeSeries
+    
+
+class Observable(XMLobject):
+    def __init__(self,name=''):
+        super(Observable,self).__init__()
+
+        self.__dict__['name'] = name
+    
+    def XML(self,xmlfile,name=None,comments=''):
+        """Add a TDI observable section to an XML output file."""
+        
+        xsildict = {}
+        params = []
+        
+        xsildict['Type'] = 'TDIObservable'
+        xsildict['Name'] = name and name or self.name
+        
+        if hasattr(self,'DataType'):
+            params.append( ('Param',{'Name': 'DataType'},[self.DataType]) )
+        
+        # handle TimeSeries
+        
+        if hasattr(self,'TimeSeries'):
+            params.append(self.TimeSeries.XML(re.sub('\.xml$','',xmlfile.filename) + '-' + str(xmlfile.binaryfiles) + '.bin'))
+            
+            xmlfile.binaryfiles += 1
+        
+        return ('XSIL', xsildict, params)
     
 
 class Source(XMLobject):
@@ -128,7 +157,6 @@ class Source(XMLobject):
         # name passed as argument, if any, will override constructor name
         
         xsildict['Type'] = 'PlaneWave'
-        
         xsildict['Name'] = name and name or self.name
         
         params.append( ('Param',{'Name': 'SourceType'},[self.xmltype]) )
@@ -186,7 +214,7 @@ class Source(XMLobject):
         
         # we're done...
         
-        return ('XSIL', xsildict, params)        
+        return ('XSIL', xsildict, params)
     
 
 class writeXML(object):
@@ -335,6 +363,11 @@ class lisaXML(writeXML):
         
         self.theSourceData.append(source.XML(self,name,comments))
     
+    def TDIData(self,observable,name='',comments=''):
+        """Add a TDIData entry describing a set of TDI observables."""
+        
+        self.theTDIData.append(observable.XML(self,name,comments))
+    
     def close(self):
         """Write the XML file to disk. This happens also on destruction of
         the lisaXML object."""
@@ -358,7 +391,7 @@ class lisaXML(writeXML):
         if self.comments:
             self.comments += '\n\n'
         
-        self.comments += 'lisaXML 1.0 [M. Vallisneri, 06/2006]'
+        self.comments += 'lisaXML 1.0 [M. Vallisneri, June 2006]'
                 
         self.outputrxp(self.doComment(self.comments))
         
@@ -387,23 +420,12 @@ class lisaXML(writeXML):
             self.closetag('XSIL')
         
         # do the TDIdata objects (first supported)
-        
-        if len(self.theTDIData) > 0:
+
+        if self.theTDIData:
             self.opentag('XSIL',{'Type': 'TDIData'})
             
             for object in self.theTDIData:
-                if isinstance(object,typeTimeSeries):
-                    self.opentag('XSIL',{'Type': 'TDIObservable',
-                                 'Name': object.description})
-                    self.coupletag('Param',{'Name': 'DataType'},'FractionalFrequency')
-                    self.writeTimeSeries(object)
-                    self.closetag('XSIL')
-                elif isinstance(object,typeFrequencySeries):
-                    self.opentag('XSIL',{'Type': 'TDIObservable',
-                                 'Name': object.description})
-                    self.coupletag('Param',{'Name': 'DataType'},'FractionalFrequency')
-                    self.writeFrequencySeries(object)
-                    self.closetag('XSIL')                
+                self.outputrxp(object)
             
             self.closetag('XSIL')
         
@@ -489,6 +511,20 @@ class readXML:
         
         return result
     
+    def getTDIObservables(self):
+        result = []
+        
+        for node in self.tw:
+            if node.tagName == 'XSIL':
+                if node.Type == 'TDIData':
+                    for node2 in node:
+                        if node2.tagName == 'XSIL' and node2.Type == 'TDIObservable':
+                            r = self.processObject(node2)
+                            
+                            result.append(r)
+        
+        return result
+    
     def reprvalue(self,param):
         """Turn a string into something we can work with!"""
         if param[1] == 'String':
@@ -562,6 +598,11 @@ class readXML:
         except AttributeError:
             objectname = ''
         
+        try:
+            objecttype = node.Type
+        except AttributeError:
+            objecttype = None
+        
         objectparams = {}
         
         # get the type and all other parameters
@@ -569,16 +610,21 @@ class readXML:
         for node2 in node:
             if node2.tagName == 'Param':
                 if node2.Name == 'SourceType':
-                    objecttype = self.getParam(node2)[0]
+                    sourcetype = self.getParam(node2)[0]
                 else:
                     objectparams[node2.Name] = self.getParam(node2)
         
         # create the object, importing the right module
         
-        try:
-            module = __import__(SourceClassModules[objecttype])
-            retobj = getattr(module,objecttype)(objectname)
-        except KeyError:
+        if objecttype in ('PlaneWave','SampledPlaneWave'):
+            try:
+                module = __import__(SourceClassModules[sourcetype])
+                retobj = getattr(module,sourcetype)(objectname)
+            except KeyError:
+                raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (sourcetype,objectname)                                
+        elif objecttype == 'TDIObservable':
+            retobj = Observable(objectname)
+        else:
             raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (objecttype,objectname)
         
         # now assign attributes
@@ -603,6 +649,21 @@ class readXML:
                             
                         setattr(retobj.TimeSeries,node3.Name,self.reprvalue(objectparam))
                         setattr(retobj.TimeSeries,node3.Name + '_Unit',objectparam[1])
+
+                # if TimeSeries name is understandable (comma-separated, etc.) and names
+                # do not conflict with existing attributes, assign aliases to array columns
+        
+                columnnames = list(s.strip(' ') for s in retobj.TimeSeries.name.split(','))
+        
+                if ( len(columnnames) == retobj.TimeSeries.Records and
+                     len(columnnames) == len(retobj.TimeSeries.Arrays) ):
+
+                    for col in range(len(columnnames)):
+                        if not hasattr(retobj,columnnames[col]):
+                            retobj.__dict__[columnnames[col]] = retobj.TimeSeries.Arrays[col]
+                        
+                        if not hasattr(retobj.TimeSeries,columnnames[col]):
+                            retobj.TimeSeries.__dict__[columnnames[col]] = retobj.TimeSeries.Arrays[col]
         
         return retobj
     
