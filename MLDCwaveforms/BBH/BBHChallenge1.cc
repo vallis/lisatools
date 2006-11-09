@@ -49,7 +49,6 @@ BBHChallenge1::BBHChallenge1(float mass1, float mass2){
 void BBHChallenge1::SetInitialOrbit(float coalTime, float phi0){
    Phi = (double) phi0;
    tc = coalTime;
-   omega0 = EstimateFreq0(0.2*eta/M*tc);
    omega0 = EstimateFreq0(tc); // MV 20061103
 
    orbitSet = true;
@@ -132,7 +131,6 @@ double BBHChallenge1::EstimateTc(float omega0){
        std::cerr << "MECO/LSO reached with initial conditions!" << std::endl;
        exit(1);   
    }
-   om_prev = om;
    
    double ph_res = PPNphase(omega0);
    double Phi_diff = Phi - ph_res;  // need to bring initial phase to Phi0
