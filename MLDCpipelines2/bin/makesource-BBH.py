@@ -3,7 +3,7 @@
 # keep it clean!
 
 import lisaxml
-import BBH
+import BBH     # later may be MLDC/BBH?
 
 import sys
 import getopt
