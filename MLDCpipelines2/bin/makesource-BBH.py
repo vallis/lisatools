@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 
-__date__='$Date:  $'
-__version__="$Revision: $"
+__date__='$LastChangeDate$'
+__version__='$Rev$'
 
 # keep it clean!
 
