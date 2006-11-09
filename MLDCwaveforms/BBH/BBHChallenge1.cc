@@ -25,7 +25,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 namespace LISAWP{
 
 BBHChallenge1::BBHChallenge1(float mass1, float mass2){
-
    m1 = (double) mass1;
    m2 = (double) mass2;
    M = m1 + m2;
@@ -48,10 +47,10 @@ BBHChallenge1::BBHChallenge1(float mass1, float mass2){
   
 
 void BBHChallenge1::SetInitialOrbit(float coalTime, float phi0){
-
    Phi = (double) phi0;
    tc = coalTime;
    omega0 = EstimateFreq0(0.2*eta/M*tc);
+   omega0 = EstimateFreq0(tc); // MV 20061103
 
    orbitSet = true;
 }
@@ -76,7 +75,7 @@ double BBHChallenge1::EstimateTc(float omega0){
    double yb = omega0 - PPNfreq(b);
    if (fabs(yb) <= 1.e-10) return(b*5.*M/eta);
 
-   std::cout << "Stas: ya = " << ya << "  yb = " << yb << std::endl;
+   // std::cout << "Stas: ya = " << ya << "  yb = " << yb << std::endl;
    LISAWPAssert(ya<0. && yb>0., "Function doesn't change sign.");
 
    // Find the root (tau_c) of omega_0 = omega(tau_c) 
@@ -119,14 +118,15 @@ double BBHChallenge1::EstimateTc(float omega0){
  }
 
  void BBHChallenge1::ComputeInspiral(float t0, float timeStep, float maxDuration){
- 
    LISAWPAssert(orbitSet, "You need to first set the initial orbit!");
    double tau, nu;
 
    dt = timeStep;
-   
+
    tau = 0.2*eta/M*(tc-t0);
    om = PPNfreq(tau);
+
+   om_prev = om; /* MV 20061017 BUGFIX, was uninitialized */
    stab = CheckStab(om);
    if(!stab){
        std::cerr << "MECO/LSO reached with initial conditions!" << std::endl;
@@ -142,29 +142,34 @@ double BBHChallenge1::EstimateTc(float omega0){
 //   nu = PPNfreq(tau);
 //   double om_Diff = om0 - nu;    // need to bring initial freq. to omega0
 
+   int expectlen = int((maxDuration - t0) / timeStep); /* MV 20061017, see below */
+
    time.resize(0);
    Phase.resize(0);
    freq.resize(0);
-	   
+
+   time.reserve(expectlen);  // MV 20061017 should improve performance by 
+   Phase.reserve(expectlen); // avoiding multiple allocations
+   freq.reserve(expectlen);
+
    double t = t0;
    std::cout << "initial time =  " <<  t << "  s (dt = " << dt << " s)"<< std::endl; 
 
    while(stab){
+       LISAWPAssert(t<tc, "Attempt to go beyond coalescence time!");
+       tau = 0.2*eta/M*(tc - t);
+       om = PPNfreq(tau);
 
-      time.push_back(t);
-      Phase.push_back(Phi);
-      freq.push_back(om);
-      t = t + dt;   // advance time
-      LISAWPAssert(t<tc, "Attempt to go beyond coalescence time!");
-      tau = 0.2*eta/M*(tc - t);
-      om = PPNfreq(tau);
-      
-      Phi = PPNphase(om) + Phi_diff;
-      stab = CheckStab(om);
-      om_prev = om;
-      if(t >(double)maxDuration){
-	      break;
-      }
+       Phi = PPNphase(om) + Phi_diff;
+       stab = CheckStab(om);
+       om_prev = om;
+       time.push_back(t);
+       Phase.push_back(Phi);
+       freq.push_back(om);
+       t = t + dt;   // advance time
+       if(t >(double)maxDuration){
+ 	      break;
+       }
    }  // end of while loop
    runDone = true;
    std::cout << "final time =  " <<  t << " s" << std::endl; 
@@ -180,9 +185,13 @@ double BBHChallenge1::EstimateTc(float omega0){
  }
 
 
- void BBHChallenge1::ComputeWaveform(float truncateTime,  float taper,  \
-		 std::vector<double>& hPlus, std::vector<double>& hCross){
+/* MV 20061017: This was Stas's version, instead we take C arrays and return length
 
+void BBHChallenge1::ComputeWaveform(float truncateTime,  float taper,  \
+		 std::vector<double>& hPlus, std::vector<double>& hCross){                  */
+
+ int BBHChallenge1::ComputeWaveform(float truncateTime,  float taper,  \
+         double *hPlus,long hPlusLength,double *hCross,long hCrossLength){ /* MV 20061017 */
     LISAWPAssert(observerSet, "You must specify direction to observer!");
     LISAWPAssert(runDone, "You must compute inspiraling trajectory first!");
 
@@ -193,99 +202,40 @@ double BBHChallenge1::EstimateTc(float omega0){
     int size = time.size();
     LISAWPAssert((int)Phase.size() == size, "Sizes do not match!");
 
+    LISAWPAssert(size <= hPlusLength && size <= hCrossLength, "Buffer insufficient!"); /* MV 20061017 */
+
     int subtractN = (int) floor(truncateTime/dt);
     LISAWPAssert(subtractN < size, "Truncation time is larger than the waveform duration!");
     size  = size - subtractN;
 
-    hCross.resize(0);
-    hPlus.resize(0);
+    /* hCross.resize(0);
+       hPlus.resize(0);  MV 20061017 */
     
     double Ampl = (M*eta/dist);
     double wk = 1.0;
-    double ind = 0.0;
+
+    double xmax;
+    if (taper != 0.0) xmax = 1./taper;
+    double Ataper = 150;   // this parameter regulates steepness of the taper
 
    for(int k=0; k<size; k++){
        Mom23 = pow(M*freq[k], 2./3.);
-       if ( taper != 0.0  && 1.0/Mom23 <= taper){
-	       ind = (double)k;
-	       break;
-       }
-   }
-   if (ind == 0.0){
-       ind = 2.*(double)size;
-   }    
-   //std::ofstream fout32("BBHtest.dat");   
-   double tk = 0.5*(size + ind);
-   for(int k=0; k<size; k++){
-       Mom23 = pow(M*freq[k], 2./3.);
+
        if (taper != 0.0) 
-           wk = 0.5*( 1.0 + tanh((0.7/taper)*pow(7./taper, 6.5)*(tk-k)) );
+           wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
+
        hp = Ampl * Mom23 * 2.0*(1. + cs*cs)*cos(2.0*Phase[k]);
        hc = Ampl * Mom23 *4.0*cs*sin(2.*Phase[k]); 
-     //  fout32 << k << "      "  << time[k] <<  "       " << 1./Mom23 << "      " << 
-//	       hPlus(k)   << "       " << wk*hPlus(k) << std::endl;
-       hPlus.push_back(hp*wk);
-       hCross.push_back(hc*wk);
+
+       *hPlus = hp*wk;  /* MV 20061017: replace vector<double> assignment with C array */
+       *hCross = hc*wk;
+       
+       hPlus++;         /* MV 20061017 */
+       hCross++;
     }
-  // fout32.close();
+  
+  return size; /* MV 20061017 */
  }
-
- 
-
-void BBHChallenge1::ComputeWaveformSSB(float truncateTime, float taper, float psi, \
-		       std::vector<double>& hPlus, std::vector<double>& hCross){
-
-    LISAWPAssert(observerSet, "You must specify direction to observer!");
-    LISAWPAssert(runDone, "You must compute inspiraling trajectory first!");
-
-    double cs = cos(theta);
-    double Mom23;
-    double hp, hc;
-
-    int size = time.size();
-    LISAWPAssert((int)Phase.size() == size, "Sizes do not match!");
-
-    int subtractN = (int) floor(truncateTime/dt);
-    LISAWPAssert(subtractN < size, "Truncation time is larger than the waveform duration!");
-    size  = size - subtractN;
-
-    hCross.resize(0);
-    hPlus.resize(0);
-    
-    double Ampl = (M*eta/dist);
-    double wk = 1.0;
-    double ind = 0.0;
-
-   for(int k=0; k<size; k++){
-       Mom23 = pow(M*freq[k], 2./3.);
-       if ( taper != 0.0  && 1.0/Mom23 <= taper){
-	       ind = (double)k;
-	       break;
-       }
-   }
-   if (ind == 0.0){
-       ind = 2.*(double)size;
-   }    
-   //std::ofstream fout32("BBHtest.dat");   
-   double tk = 0.5*(size + ind);
-   double cpsi = cos(2.*psi);
-   double spsi = sin(2.*psi);
-   for(int k=0; k<size; k++){
-       Mom23 = pow(M*freq[k], 2./3.);
-       if (taper != 0.0) 
-           wk = 0.5*( 1.0 + tanh((0.7/taper)*pow(7./taper, 6.5)*(tk-k)) );
-       hp = wk*Ampl * Mom23 * 2.0*(1. + cs*cs)*cos(2.0*Phase[k]);
-       hc = wk*Ampl * Mom23 *4.0*cs*sin(2.*Phase[k]); 
-     //  fout32 << k << "      "  << time[k] <<  "       " << 1./Mom23 << "      " << 
-//	       hPlus(k)   << "       " << wk*hPlus(k) << std::endl;
-       hPlus.push_back(hp*cpsi + hc*spsi);
-       hCross.push_back(hc*cpsi - hp*spsi);
-    }
-  // fout32.close();
-
-}
-
-
 
 
  void BBHChallenge1::GetOrbit(std::vector<double>& frequency, std::vector<double>& phase){
@@ -324,15 +274,17 @@ double BBHChallenge1::PPNphase(double omeg){
 }
 
 
-bool BBHChallenge1::CheckStab(double freq){
+/* MV 20061017: replace freq with om throughout this function */
 
+bool BBHChallenge1::CheckStab(double om){
+    
   bool valid = true;
-  if( freq >= omegaMECO){
+  if( om >= omegaMECO){
 	 std::cout << "Instability condition is met at MECO: orb. ang. freq. =  " << om << std::endl;
 	 valid = false;
 //	 return(false);
   }
-  if( freq >= omegaLSO ){
+  if( om >= omegaLSO ){
 	 std::cout << "Instability condition is met at LSO: orb. ang. freq. = " << om << std::endl;
 	 valid = false;
 //	 return(false);

@@ -23,6 +23,12 @@ class swig_build(build):
     # we assume build_py is the first in the sequence
     sub_commands = build.sub_commands[1:] + [build.sub_commands[0]]
 
+# get the numpy installation dir so we know where to find the header
+# (an interesting approach)
+
+from numpy import __path__ as numpypath
+numpyinclude = numpypath[0] + '/core/include'
+
 # now run the setup
 
 setup(name = modulename,
@@ -32,12 +38,11 @@ setup(name = modulename,
       author_email = email,
       url = url,
 
-      package_dir = {'MLDC': '.'},
+      py_modules = [modulename],
       
-      py_modules = ['MLDC.' + modulename],
-      
-      ext_modules = [Extension('MLDC._' + modulename,
+      ext_modules = [Extension('_' + modulename,
                                sourcefiles,
+                               include_dirs = [numpyinclude],
                                depends = headers)],
                                
       cmdclass = {'build': swig_build}

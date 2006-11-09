@@ -97,22 +97,13 @@ class BBHChallenge1{
        *  @param hCross to be filled up with hx in rad. frame
        */
 
-       void ComputeWaveform(float truncateTime, float taper,  std::vector<double>& hPlus,\
-                             std::vector<double>& hCross);
+       /* See BBHChallenge1.cc, this version takes C arrays, not vector<double>
+       
+          void ComputeWaveform(float truncateTime, float taper,  std::vector<double>& hPlus,\
+                               std::vector<double>& hCross);                                   */
 
-       /** Computes and returns two polarizations in the SSB frame (polarization axis 
-	* are defiend in the "Convension" document and in the documentation to "LISA
-	* Simulator").
-	* @param truncateTime waveform truncation time as time left to
-        *  t_MECO or t_LSO (in sec)
-        *  @param taper if non-zero aplies window (tanh) function starting from 
-        *  r = taper(M), for instance tape=7, means window the waveform starting at 7M. 
-	*  @param psi polarization angle
-        *  @param hPlus to be filled up with h+ in rad. frame
-        *  @param hCross to be filled up with hx in rad. frame
-        */
-       void ComputeWaveformSSB(float truncateTime, float taper, float psi, \
-		       std::vector<double>& hPlus, std::vector<double>& hCross);
+       int ComputeWaveform(float truncateTime,  float taper,  \
+                                 double *hPlus,long hPlusLength,double *hCross,long hCrossLength);
 
       /**  Returns to the user  orbital evolution 
        * @param frequency vector with omega_orb(t)
@@ -152,13 +143,13 @@ class BBHChallenge1{
       /** Computes PPN orbital phase (no spin, analyt.)
        * @param om instanteneous orbital frequecy
        */
-       double PPNphase(double omeg);
+      double PPNphase(double omeg);
 
        /** Checks termination point of the orbital evolution
 	* returns true if we still can evolve 
 	* @param freq orbital angular frequency
 	*/ 
-       bool BBHChallenge1::CheckStab(double freq);
+       bool CheckStab(double freq);
 
 };
 

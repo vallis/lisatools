@@ -1,32 +1,66 @@
-// BBH.i, file required for swig
-
 %module BBH
 %{
-#include "Macros.hh"
-#include "Constants.hh"
 #include "BBHChallenge1.hh"
 %}
 
+// the following three lines allow the automatic conversion of a numpy array
+// into a pointer to an array of doubles and the long length of the array
+// each pair of these that appears in the library header file (e.g., BBHChallenge1.hh)
+// needs to be named explicitly
+
+%include numpy_typemaps.i
+%typemap(in) (double *hPlus ,long hPlusLength ) = (double *numpyarray,long numpyarraysize);
+%typemap(in) (double *hCross,long hCrossLength) = (double *numpyarray,long numpyarraysize);
+
+// the following include defines all the calls that need to be wrapped by SWIG
+// the include at the top serves only to provide definitions for this one;
+// since it is between braces %{ %}, its content goes straight into
+// the CPP wrapper file
+
 %include "BBHChallenge1.hh"
 
-// Mapping std::vector<double> to DVector
-
-%include "std_vector.i"
-namespace std {
-    %template(DVector) vector<double>;
-}
-
-// Python interface...
+// and here we can add some Python to the interface code
 
 %pythoncode %{
 import lisaxml
 import numpy
-
 import math
 
 SourceClassModules = {}
-
 SourceClassModules['BlackHoleBinary'] = 'BBH'
+
+lisaxml.SourceClassModules['BlackHoleBinary'] = 'BBH'
+
+# these two classes originally defined in lisaxml;
+# but here we do not wish to depend on that
+
+class XMLobject(object):
+    def __init__(self):
+        self.__dict__['parameters'] = []
+
+    def __setattr__(self,attr,value):
+        self.__dict__[attr] = value
+
+        if (not attr in self.parameters) and (not '_Unit' in attr):
+            self.parameters.append(attr)
+
+class Source(XMLobject):
+    def __init__(self,sourcetype,name=''):
+        super(Source,self).__init__()
+
+        # avoid calling setattr
+        self.__dict__['xmltype'] = sourcetype
+        self.__dict__['name'] = name
+
+    def parstr(self,attr):
+        value = getattr(self,attr)
+
+        try:
+            unit = getattr(self,attr+'_Unit')
+        except AttributeError:
+            unit = 'default'
+
+        return "%s (%s)" % (value,unit)
 
 class BlackHoleBinary(lisaxml.Source):
     """Returns a MLDC source that models the waveform emitted by the
@@ -55,32 +89,23 @@ class BlackHoleBinary(lisaxml.Source):
         
         bbh.SetInitialOrbit(self.CoalescenceTime,self.InitialAngularOrbitalPhase)
 
-        bbh.ComputeInspiral(inittime,deltat,deltat*samples)
-        bbh.SetObserver(-self.Inclination,self.Distance)
+        # note that the last parameter ComputeInspiral is the final time...
+        # so to get "samples" values we need to step back one deltat
+         
+        bbh.ComputeInspiral(inittime,deltat,inittime + deltat*(samples-1))
+
+        # note that BBHChallenge uses a "ThetaInclination", not a "IotaInclination"
+
+        bbh.SetObserver(math.pi-self.Inclination,self.Distance)
         
-        hPlus  = DVector()
-        hCross = DVector()
-        
-        bbh.ComputeWaveform(self.TruncationTime,self.TaperApplied,hPlus,hCross)
-        
-        hp = numpy.zeros(samples,'d')
-        hc = numpy.zeros(samples,'d')
-        
-        wavelen = len(hPlus)
-        
-        # copy into numpy arrays; pad with zeros
-        
-        hp[0:wavelen] = hPlus[0:wavelen]
-        hc[0:wavelen] = hCross[0:wavelen]
-        
-        hp[wavelen:samples] = 0.0
-        hc[wavelen:samples] = 0.0        
-        
-        # free temporary array storage
-        
-        hPlus.resize(0)
-        hCross.resize(0)
-        
+        hp = numpy.empty(samples,'d')
+        hc = numpy.empty(samples,'d')
+
+        wavelen = bbh.ComputeWaveform(self.TruncationTime,self.TaperApplied,hp,hc)
+
+        hp[wavelen:] = 0.0
+        hc[wavelen:] = 0.0
+
         return (hp,hc)
 
     # utility functions
