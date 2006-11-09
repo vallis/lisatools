@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+
+__date__='$Date:  $'
+__version__="$Revision: $"
+
 # keep it clean!
 
 import lisaxml
@@ -89,7 +93,7 @@ mysystem.InitialAngularOrbitalPhase = random.uniform(0.0,2.0*math.pi)           
 # integration parameters
 
 mysystem.IntegrationStep            = 15.0                                              # integration timestep in seconds
-mysystem.TruncationTime             = 0.0                                               # truncation time removed from end of waveform (???)
+mysystem.TruncationTime             = 0.0                                               # truncation time removed from end of waveform (in sec)
 mysystem.TaperApplied               = 7.0                                               # tapering radius (total masses)
 
 if options.verbose:
