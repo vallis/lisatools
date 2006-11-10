@@ -137,7 +137,7 @@ void AKWaveform::EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
    e = coord0(3);
    alpha = coord0(4);
    
-   double err = fabs(nu - 1.e-3);
+   //double err = fabs(nu - 1.e-3);
   
    std::vector<double> t_n;
    std::vector<double> phi_n;
@@ -167,7 +167,7 @@ void AKWaveform::EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
       }
    }
 
-   for(int i = 0; i < t_n.size(); i++){\
+   for(int i = 0; i < (int)t_n.size(); i++){\
       int k = t_n.size() - i -1;
       tt.push_back(t_n[k]);
       phi_t.push_back(phi_n[k]);
@@ -243,7 +243,7 @@ void AKWaveform::EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
 void AKWaveform::GetOrbitalParams(float t, float& nut, float& et, float& gt, float& pht, float& alt){
 	LISAWPAssert(runDone, "Need to compute orbit first");
 	int k = -1;
-	for (int i=0; i<tt.size()-1; i++){
+	for (int i=0; i<(int)tt.size()-1; i++){
               if (tt[i]<= t && tt[i+1]>t){
 		  std::cout << "recroding inst. orbit at t= " << tt[i] << std::endl;
 		  nut = nu_t[i];
@@ -403,7 +403,7 @@ int AKWaveform::GetWaveform(float ps0, double* hplus, long hPlusLength, double* 
 	*hcross = Across*cos(2.*ps0 - 2.*psiSL) - Aplus*sin(2*ps0 - 2*psiSL);
 
 	hplus++;
-	hcros++;
+	hcross++;
 	
 	return(theSize);
 

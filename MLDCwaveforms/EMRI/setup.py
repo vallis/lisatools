@@ -1,25 +1,5 @@
 #!/usr/bin/env python
 
-import sys
-import os
-
-
-
-gsl_prefix = ''
-argv_replace = []
-for arg in sys.argv:
-    if arg.startswith('--prefix='):
-        emri_prefix = arg.split('=', 1)[1]
-	argv_replace.append(arg)
-    elif arg.startswith('--with-gsl='):
-        gsl_prefix = arg.split('=', 1)[1]
-
-#sys.argv = argv_replace
-
-#if gsl_prefix == '':   
-#    print >> sys.stderr, "You must specify gsl location --with-gsl=<gsl_path>"
-#    sys.exit(1)
-
 
 modulename  = 'EMRI'
 version     = '$Id: setup.py 91 2006-10-10 21:01:15Z vallisneri $'
@@ -30,6 +10,8 @@ url         = 'http://svn.sourceforge.net/viewvc/lisatools'
 
 sourcefiles = ['AKWaveform.cc', 'BaseIntegr.cc', 'Constants.cc', 'IndexSet.cc', 'Matrix.cc', 'EMRI.i']
 headers     = ['AKWaveform.hh', 'BaseIntegr.hh', 'Constants.hh', 'IndexSet.hh', 'Matrix.hh', 'Macros.hh']
+
+gsl_prefix = '/Users/stanislavbabak/tools/'
 
 # please don't change anything below without contacting vallis@vallis.org
 

@@ -62,22 +62,22 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
     # give ParameterName, DefaultUnit, DefaultValue (a string), Description
 
 
-outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
-              ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
-              ('Polarization',                     'Radian',        None, 'standard source polarization'),
-              ('PolarAngleOfSpin',                 'Radian',        None, 'polar angle of MBH spin'),
-              ('AzimuthalAngleOfSpin',             'Radian',        None, 'azimuthal direction of MBH spin'),
-              ('Spin',                             'MassSquared',   None, 'magnitude of (specific) spin (S) of MBH'),
-              ('MassOfCompactObject',              'SolarMass',     None, 'mass of the compact object'),
-              ('MassOfSMBH',                       'SolarMass',     None, 'mass of the MBH'),
-              ('InitialAzimuthalOrbitalFrequency', 'Hertz',         None, 'initial value of orbital azimuthal frequency'),
-              ('InitialAzimuthalOrbitalPhase',     'Radian',        None, 'initial azimuthal orbital phase'),
-              ('InitialEccentricity',              'Unit',          None, 'initial orbital eccentricity'),
-              ('InitialTildeGamma',                'Radian',        None, 'nital position of pericenter, as angle between LxS and pericenter'),
-              ('InitialAlphaAngle',                'Radian',        None, 'nitial azimuthal direction of L (in the orbital plane)'),
-              ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
-              ('Distance',                         'Parsec',        None, 'standard source distance')
-            )
+    outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
+                  ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
+                  ('Polarization',                     'Radian',        None, 'standard source polarization'),
+                  ('PolarAngleOfSpin',                 'Radian',        None, 'polar angle of MBH spin'),
+                  ('AzimuthalAngleOfSpin',             'Radian',        None, 'azimuthal direction of MBH spin'),
+                  ('Spin',                             'MassSquared',   None, 'magnitude of (specific) spin (S) of MBH'),
+                  ('MassOfCompactObject',              'SolarMass',     None, 'mass of the compact object'),
+                  ('MassOfSMBH',                       'SolarMass',     None, 'mass of the MBH'),
+                  ('InitialAzimuthalOrbitalFrequency', 'Hertz',         None, 'initial value of orbital azimuthal frequency'),
+                  ('InitialAzimuthalOrbitalPhase',     'Radian',        None, 'initial azimuthal orbital phase'),
+                  ('InitialEccentricity',              'Unit',          None, 'initial orbital eccentricity'),
+                  ('InitialTildeGamma',                'Radian',        None, 'nital position of pericenter, as angle between LxS and pericenter'),
+                  ('InitialAlphaAngle',                'Radian',        None, 'nitial azimuthal direction of L (in the orbital plane)'),
+                  ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
+                  ('Distance',                         'Parsec',        None, 'standard source distance')
+                 )
 
     def  __init__(self,name=''):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
