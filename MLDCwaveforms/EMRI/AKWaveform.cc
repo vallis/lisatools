@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 /******************  CVS info ************************ 
 */
-#define SVNIDAKWAVEFORMCC "$Id:  $"
+#define SVNIDAKWAVEFORMCC "$Id$"
 
 #include "AKWaveform.hh"
 

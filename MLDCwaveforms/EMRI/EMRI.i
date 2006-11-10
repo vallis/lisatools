@@ -1,6 +1,8 @@
 // EMRI.i, required by swig
 // requires GSL
 
+//  SVN_VERSION = $Id$ 
+
 %module EMRI
 %{
 #include "AKWaveform.hh"
