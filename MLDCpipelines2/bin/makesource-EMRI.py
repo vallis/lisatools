@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__version__='$Id:  $'
+__version__='$Id$'
 
 import lisaxml
 import EMRI  # should be changed to MLDC
@@ -18,7 +18,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] OUTPUT.xml",
-                      version="$Id: makesource-BBH.py 112 2006-11-10 08:12:35Z stasbabak $")
+                      version="$Id$")
 
 # remember that default action is "store", default type is "string"
 # actions "store_true" and "store_false" handle boolean options
