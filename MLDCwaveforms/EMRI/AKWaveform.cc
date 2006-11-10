@@ -16,9 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 /******************  CVS info ************************ 
-#define CVSTAG "$Name:  $"
-#define CVSHEADER "$Header: /afs/.aei-potsdam.mpg.de/u/stba/cvs/LISA/LISAWP/waveforms/src/AKWaveform.cc,v 1.3 2006/05/22 14:31:32 stba Exp $" 
 */
+#define SVNIDAKWAVEFORMCC "$Id:  $"
 
 #include "AKWaveform.hh"
 
