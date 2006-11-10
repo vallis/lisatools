@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-__date__='$LastChangeDate$'
-__version__='$Rev$'
+__version__='$Id$'
 
 # some definitions...
 
@@ -30,7 +29,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME",
-                      version="$Id: $")
+                      version="$Id$")
 
 parser.add_option("-t", "--training",
                   action="store_true", dest="istraining", default=False,

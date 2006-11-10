@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-
-__date__='$LastChangeDate$'
-__version__='$Rev$'
+__version__='$Id$'
 
 # keep it clean!
 
@@ -22,7 +20,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] OUTPUT.xml",
-                      version="$Id: BBH_xml.py 87 2006-10-10 20:29:25Z vallisneri $")
+                      version="$Id$")
 
 # remember that default action is "store", default type is "string"
 # actions "store_true" and "store_false" handle boolean options

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+__version__='$Id$'
+
 import lisaxml
 from lisaxml.convertunit import convertUnit
 
@@ -14,7 +16,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] SOURCEDEF.xml BARYCENTRIC.xml",
-                      version="$Id: $")
+                      version="$Id$")
 
 parser.add_option("-b", "--preBuffer",
                   type="float", dest="prebuffer", default=900.0,

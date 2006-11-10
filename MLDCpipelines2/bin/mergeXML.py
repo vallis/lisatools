@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+__version__='$Id$'
+
 import lisaxml
 import sys
 
@@ -11,7 +13,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] MERGED.xml TDIFILE-1.xml TDIFILE-2.xml ...",
-                      version="$Id: $")
+                      version="$Id$")
 
 parser.add_option("-k", "--keyOnly",
                   action="store_true", dest="keyonly", default=False,

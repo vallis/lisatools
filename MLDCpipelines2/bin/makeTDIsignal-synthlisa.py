@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+__version__='$Id$'
+
 import lisaxml
 from lisaxml.convertunit import convertUnit
 
@@ -18,7 +20,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] BARYCENTRIC.xml OUTPUT.xml",
-                      version="$Id: $")
+                      version="$Id$")
 
 parser.add_option("-t", "--initialTime",
                   type="float", dest="inittime", default=0.0,
