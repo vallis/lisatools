@@ -1,3 +1,5 @@
+__version__='$Id$'
+
 import pyRXP
 import xmlutils
 
@@ -27,6 +29,7 @@ import re
 SourceClassModules = {}
 
 SourceClassModules['BlackHoleBinary'] = 'BBH'
+SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
 
 # could use something here to return a default unit if it is not set...
 # but we would have to look in the source-specific list as well as
