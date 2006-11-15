@@ -101,25 +101,31 @@ char *splitcopy(const char *orig,int i) {
     return ret;
 }
 
+/* Return string "bin" prepended with the path of string "xml" */
 
 static char *basename(const char *xml, const char *bin) {
     int pos, i, lenbin;
     char *ret;
-    
+
+    /* Start at the end of string "xml", and go looking for a slash */
     pos = strlen(xml) - 1;
     while(pos >= 0 && xml[pos] != '/') pos--;
 
+    /* If no slash is found, return 0 */
     if(pos < 0) return 0;
     pos++;
-    
+
+    /* Now prepare a char array to contain xml (without the last slash
+       and whatever comes after it) */
     lenbin = strlen(bin);
     
     ret = malloc( (lenbin + pos + 1) * sizeof(char) );
     assert(ret != 0);
-        
+
+    /* Copy the first part of xml and bin into ret */
     for(i=0;i<pos;i++) ret[i] = xml[i];
     for(i=0;i<lenbin;i++) ret[i+pos] = bin[i];
-    ret[lenbin + pos + 1] = 0;
+    ret[lenbin + pos] = 0;
 
     return ret;
 }
@@ -230,6 +236,8 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
     buffer = malloc(timeseries->Length * timeseries->Records * sizeof(double));
     assert(buffer != 0);
 
+    /* Note: pathbinfile may return zero if xmlname has no path; in this case
+       fopen should safely return zero also, no harm done. */
     pathbinfile = basename(xmlname,timeseries->FileName);
 
     binfile = fopen(pathbinfile,"r");
