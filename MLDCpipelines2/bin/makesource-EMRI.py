@@ -107,5 +107,5 @@ if options.verbose:
 # write out the XML file
 
 outputXML = lisaxml.lisaXML(outXMLfile,author='Stas Babak')
-outputXML.SourceData(mysystem,name='2PN BBH binary')
+outputXML.SourceData(mysystem,name='Analytical kludge EMRI')
 outputXML.close()
