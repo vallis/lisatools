@@ -348,10 +348,12 @@ void AKWaveform::GetFinalOrbitalParams(float& t, float& e_end, float& nu_end){
 
 }
 
-int AKWaveform::GetWaveform(float ps0, double* hplus, long hPlusLength, double* hcross, long hCrossLength){
+int AKWaveform::GetWaveform(float ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength){
 
     LISAWPAssert(runDone, "you must Run first");
     LISAWPAssert(sourceSet, "you must set source location");
+   
+
 
     int theSize = tt.size();
 
@@ -365,6 +367,7 @@ int AKWaveform::GetWaveform(float ps0, double* hplus, long hPlusLength, double* 
    double t;
    double psiSL;
    double cs;
+
    for (int i=0; i<theSize; i++){
 
 	t = tt[i];
@@ -398,15 +401,16 @@ int AKWaveform::GetWaveform(float ps0, double* hplus, long hPlusLength, double* 
            psiSL = LISAWP_PI/2.0;
 	}
 	
-	*hplus = Aplus*cos(2.*ps0 - 2.*psiSL) + Across*sin(2*ps0 - 2*psiSL);
-	*hcross = Across*cos(2.*ps0 - 2.*psiSL) - Aplus*sin(2*ps0 - 2*psiSL);
+	*hPlus = Aplus*cos(2.*ps0 - 2.*psiSL) + Across*sin(2*ps0 - 2*psiSL);
+	*hCross = Across*cos(2.*ps0 - 2.*psiSL) - Aplus*sin(2*ps0 - 2*psiSL);
 
-	hplus++;
-	hcross++;
+	hPlus++;
+	hCross++;
 	
-	return(theSize);
 
    }// end of for loop
+   
+   return(theSize);
 
 }
 

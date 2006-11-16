@@ -21,7 +21,7 @@ if gsl_prefix == '':
 
 
 modulename  = 'EMRI'
-version     = '$Id: setup.py 91 2006-10-10 21:01:15Z vallisneri $'
+version     = '$Id$'
 description = 'A MLDC plugin to create EMRI AK waveforms'
 author      = 'Stas Babak'
 email       = 'stba@aei.mpg.de'

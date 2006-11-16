@@ -1,7 +1,6 @@
 // EMRI.i, required by swig
 // requires GSL
-
-//  SVN_VERSION = $Id$ 
+// SVN_ID = "$Id$"
 
 %module EMRI
 %{
@@ -79,7 +78,7 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
                   ('InitialAlphaAngle',                'Radian',        None, 'nitial azimuthal direction of L (in the orbital plane)'),
                   ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
                   ('Distance',                         'Parsec',        None, 'standard source distance')
-                 )
+            )
 
     def  __init__(self,name=''):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
@@ -88,10 +87,11 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
        
        emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
 
-       emri.SetSourceLocation(self.EclipticLatitutde, self.EclipticLongitude, self.PolarAngleOfSpin, \
+       emri.SetSourceLocation(self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
                               self.AzimuthalAngleOfSpin, self.Distance)
-       emri.EvolveOrbit(self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
-                        self.InitialAzimuthalOrbitalPhase, self.LambdaAngle)
+			      
+       emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
+                        self.InitialAzimuthalOrbitalPhase, self.InitialAlphaAngle, self.LambdaAngle)
 
        hp = numpy.empty(samples,'d')
        hc = numpy.empty(samples,'d')
