@@ -1,0 +1,10 @@
+gcc -O2 -o Galaxy_Maker Galaxy_Maker.c nrutil2.c ran2.c indexx.c -lm
+
+gcc -O2 -o Galaxy_key Galaxy_key.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm
+
+gcc -O2 -o Fast_XML_LS Fast_XML_LS.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm
+
+gcc -O2 -o Fast_XML_SL Fast_XML_SL.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm
+
+gcc -O2 -o DataImport DataImport.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm
+

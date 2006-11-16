@@ -1,0 +1,87 @@
+This code bundle generates noise free galaxy data sets for
+Challenge 2 of the MLDC series.
+
+After unpacking, the first thing you should do is copy one of the
+Fast_Response_XXX executables over to Fast_Response. Currently there
+are only executables for 32 Bit Linux (Compiled on a RedHat system with
+XEON N series 32 bit processors) and Mac OSX on a G4 and a G5. More
+chipsets will be added as they become available.
+
+Next, type 
+
+./Compile
+
+Hopefully this will compile all the open source codes. After
+compilation you can test the package by typing
+
+./Galaxy_Test.csh 1 Test
+
+This will read in the Galaxy data file /Data/Galaxy_1.dat, which
+contains the three sources from Training_1.1.1 of Challenge 1, and
+produce noise free responses for the LISA Simulator and Synthetic
+LISA. The data sets are for ~2 years (2^22 points at 15 second cadence).
+
+After about 5 minutes the package should have produced the files
+
+XML/Test_LISAsim_noisefree.xml 
+XML/Test_synthLISA_noisefree.xml
+XML/Test_key.xml
+
+Binary/Test_LISAsim_noisefree.bin
+Binary/Test_synthLISA_noisefree.bin
+
+You can produce the fourier spectrum by typing
+
+./DataImport XML/Test_LISAsim_noisefree.xml 1.0e-5 2.0e-2
+
+which creates the files
+
+Data/X_FFT.dat
+Data/Y_FFT.dat
+Data/Z_FFT.dat
+Data/A_FFT.dat
+Data/E_FFT.dat
+
+(The fuzz down at log10(hf) = -35 is numerical noise in the FFT).
+
+If all of this works you can now go ahead and make a full galaxy.
+First you will need to visit http://www.physics.montana.edu/faculty/cornish/LISA
+and download the base Nelemans galaxy (388M). Gunzip this file and put
+it in the /Data sub-directory.
+
+Then type
+
+./Galaxy.csh 12345 Training_2.1
+
+and come back in about an hour. You should find a collection of new xml and
+bin files in the XML and Binary subdirectories. For the example given above
+you will find
+
+XML/Training_2.1_LISAsim_noisefree.xml 
+XML/Training_2.1_synthLISA_noisefree.xml
+XML/Training_2.1_key.xml
+Binary/Training_2.1_LISAsim_noisefree.bin
+Binary/Training_2.1_synthLISA_noisefree.bin
+Data/Galaxy_12345.dat
+Data/Galaxy_Bright_12345.dat
+
+
+The key file points to two data files, Galaxy_12345.dat (1G) and
+Galaxy_Bright_12345.dat (3M). The first is a complete list of all the sources
+that were simulated. The second is a list of about 40,000 bright sources.
+The bright sources are sorted in frequency, but the full list is not.
+The first 20 entries in the full list are the verification binaries.
+(the call ./Galaxy_Maker Training_2.1 1 in the Galaxy.csh flags that
+the verification binaries in Data/Verification.dat should be included)
+
+For the MLDC postings we will probably post the bright file and make the
+full files available on CD or DVD. Note: The key file will not display
+properly using the old version of the LISA xsl file. Michele is working
+on a new version that supports the TABLE format. When the new xsl file
+is available the key file should be readable.
+
+
+
+
+
+
