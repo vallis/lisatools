@@ -77,6 +77,10 @@ run('bin/makesource-BBH.py --seed=%(BBHseed)s --distance=1e6 --coalescTime=150 S
 BBHseed = options.seed + 2
 run('bin/makesource-BBH.py --seed=%(BBHseed)s --distance=2e6 --coalescTime=120 Source/BH-2.xml')
 
+# standard EMRI source at 1 Gpc
+EMRIseed = options.seed +1
+run('bin/makesource-EMRI.py --seed=%(EMRIseed)s --distance=1e6 Source/EMRI-1.xml')
+
 # ---------------------------------------
 # STEP 2: create barycentric strain files
 # ---------------------------------------

@@ -72,7 +72,6 @@ if ( hasattr(mysystem,'IntegrationStep') and
     print >> sys.stderr, "Overriding source IntegrationStep (%s) with our own timestep (%s s)" % (mysystem.parstr('IntegrationStep'),
                                                                                                   options.timestep)
 
-print "Stas: ", mysystem.name
 
 initialtime = options.inittime - options.prebuffer
 samples = int( (options.duration + options.prebuffer + options.postbuffer) / options.timestep + 0.1 )
