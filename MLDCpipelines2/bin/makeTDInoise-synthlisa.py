@@ -85,5 +85,7 @@ tdiobs.TimeSeries.Cadence = options.timestep
 tdiobs.TimeSeries.TimeOffset = options.inittime
 
 outputXML = lisaxml.lisaXML(outputfile)
+outputXML.TDIData(tdiobs)
+outputXML.close()
 
 sys.exit(0)
