@@ -47,6 +47,12 @@ parser.add_option("-s", "--seed",
                   type="int", dest="seed", default=None,
                   help="seed for random number generator (int) [required]")
 
+parser.add_option("-S", "--synthlisa",
+                  action="store_true", dest="synthlisaonly", default=False,
+                  help="run only Synthetic LISA")
+
+# add options to disable the LISA Simulator or Synthetic LISA
+
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
@@ -56,6 +62,18 @@ challengename = args[0]
 
 if options.seed == None:
     parser.error("You must specify the seed!")
+
+if options.synthlisaonly:
+    lisasimdir = None
+else:
+    import lisasimulator
+
+    if options.duration == 31457280:
+        lisasimdir = lisasimulator.lisasim1yr
+    elif options.duration == 62914560:
+        lisasimdir = lisasimulator.lisasim2yr
+    else:
+        parser.error("I can only run the LISA Simulator for one or two years (2^21 or 2^22 s)!")
 
 seed = options.seed
 timestep = options.timestep
@@ -112,6 +130,71 @@ run('bin/makeTDInoise-synthlisa.py --seed=%(noiseseed)s --duration=%(duration)s 
 # STEP 4: run LISA Simulator
 # --------------------------
 
+if lisasimdir:
+    here = os.getcwd()
+    
+    # signal generation
+    
+    for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
+        xmlname = re.sub('\-barycentric.xml','',os.path.basename(xmlfile))
+
+        tdifile = 'TDI/' + xmlname + 'tdi-strain.xml'
+        
+        xmldest = lisasimdir + '/XML/' + xmlname + '_Barycenter.xml'
+
+        # this is not perfect; it would be better to read the binary filename from the XML...
+        binfile = xmlname + '-0.bin'
+        bindest = lisasimdir + '/XML/' + binfile
+
+        run('cp %s %s' % ('Barycentric/' + xmlfile,xmldest))
+        run('cp %s %s' % (binfile,bindest))
+
+        os.chdir(lisasimdir)
+
+        # run LISA simulator...
+
+        run('./GWconverter %s' % xmlname)
+        run('./Vertex1Signals')
+        run('./Vertex2Signals')
+        run('./Vertex3Signals')
+
+        run('echo "%s" > sources.txt' % xmlname)
+        run('./Package %s sources.txt 0' % xmlname)
+
+        outxml = 'XML/' + xmlname + '.xml'
+        outbin = 'Binary/' + xmlname + '.bin'
+
+        run('%s/bin/mergeXML.py %s %s' % (here,here + '/' + tdifile,outxml))
+
+        # what other temporary files to remove?
+
+        run('rm %s' % outxml)
+        run('rm %s' % outbin)
+
+        run('rm %s' % xmldest)
+        run('rm %s' % bindest)
+    
+        os.chdir(here)
+    
+    # noise generation
+
+    os.chdir(lisasimdir)
+
+    noiseseed = options.seed
+    run('./Noise_Maker %(noiseseed)s')
+
+    run('echo > sources.txt')
+    run('./Package noise-only sources.txt %(noiseseed)s')
+    
+    run('%s/bin/mergeXML.py %s %s' % (here,'TDI/tdi-frequency-noise.xml',lisasimdir + '/XML/tdi-strain-noise.xml'))
+
+    # what other temporary files to remove?
+
+    run('rm %s' % (lisasimdir + '/XML/noise-only.xml'))
+    run('rm %s' % (lisasimdir + '/Binary/noise-only.bin'))
+    
+    os.chdir(here)
+    
 # -----------------------
 # STEP 5: run Fast Galaxy
 # -----------------------
