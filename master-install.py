@@ -36,7 +36,7 @@ if gsldir == None:
 # change version of LISA Simulator here...
 
 if lisasim == None:
-    lisasim = libdir + '/Simulator2.1.1.tar.gz'    
+    lisasim = libdir + '/Simulator2.1.1.tgz'    
 
 if synthlisatar == None:
     synthlisatar = libdir + '/synthLISA-1.3.2.tar.gz'
@@ -156,7 +156,7 @@ if platform.system() == 'Darwin' and platform.processor() == 'powerpc':
     # let's use the G5. I'm sure it will run on G4s...
     assert(0 == os.system('cp Fast_Response_OSX_G5 Fast_Response'))
 elif platform.system() == 'Linux':
-    assert(0 == os.system('cp+ Fast_Response_LINUX_X86_32 Fast_Response'))
+    assert(0 == os.system('cp Fast_Response_LINUX_X86_32 Fast_Response'))
 else:
     print "!!! Can't determine platform/processor, or don't have Fast_Response executable!" 
     sys.exit(1)
