@@ -9,6 +9,9 @@ import os
 import glob
 import re
 
+import lisaxml
+import numpy
+
 def run(command):
     commandline = command % globals()
     print "--> %s" % commandline
@@ -28,7 +31,7 @@ from optparse import OptionParser
 # note that correct management of the Id string requires issuing the command
 # svn propset svn:keywords Id FILENAME
 
-parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME...]",
+parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME...",
                       version="$Id$")
 
 parser.add_option("-t", "--training",
@@ -36,7 +39,8 @@ parser.add_option("-t", "--training",
                   help="include source information in output file [off by default]")
 
 parser.add_option("-T", "--duration",
-                  type="float", dest="duration", default=62914560.0,
+#                  type="float", dest="duration", default=62914560.0,
+                  type="float", dest="duration", default=3932160.0,
                   help="total time for TDI observables (s) [default 62914560 = 2^22 * 15]")
 
 parser.add_option("-d", "--timeStep",
@@ -50,6 +54,10 @@ parser.add_option("-s", "--seed",
 parser.add_option("-S", "--synthlisa",
                   action="store_true", dest="synthlisaonly", default=False,
                   help="run only Synthetic LISA")
+
+parser.add_option("-L", "--lisasim",
+                action="store_true", dest="lisasimonly", default=False,
+                help="run only the LISA Simulator")
 
 # add options to disable the LISA Simulator or Synthetic LISA
 
@@ -68,12 +76,18 @@ if options.synthlisaonly:
 else:
     import lisasimulator
 
-    if options.duration == 31457280:
+    # if options.duration == 31457280:
+    if options.duration == 3932160:
         lisasimdir = lisasimulator.lisasim1yr
     elif options.duration == 62914560:
         lisasimdir = lisasimulator.lisasim2yr
     else:
         parser.error("I can only run the LISA Simulator for one or two years (2^21 or 2^22 s)!")
+
+if options.lisasimonly:
+    dosynthlisa = False
+else:
+    dosynthlisa = True
 
 seed = options.seed
 timestep = options.timestep
@@ -115,16 +129,17 @@ for xmlfile in glob.glob('Source/*.xml'):
 # first empty the TDI directory
 run('rm -f TDI/*.xml TDI/*.bin TDI/Binary')
 
-# then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
-# the results are files of TDI time series that include 
-for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
-    tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-    run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+if dosynthlisa:
+    # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
+    # the results are files of TDI time series that include 
+    for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
+        tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+        run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-# now run noise generation...
-noiseseed = options.seed
-noisefile = 'TDI/tdi-frequency-noise.xml'
-run('bin/makeTDInoise-synthlisa.py --seed=%(noiseseed)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
+    # now run noise generation...
+    noiseseed = options.seed
+    noisefile = 'TDI/tdi-frequency-noise.xml'
+    run('bin/makeTDInoise-synthlisa.py --seed=%(noiseseed)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
 
 # --------------------------
 # STEP 4: run LISA Simulator
@@ -138,15 +153,15 @@ if lisasimdir:
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
         xmlname = re.sub('\-barycentric.xml','',os.path.basename(xmlfile))
 
-        tdifile = 'TDI/' + xmlname + 'tdi-strain.xml'
+        tdifile = 'TDI/' + xmlname + '-tdi-strain.xml'
         
         xmldest = lisasimdir + '/XML/' + xmlname + '_Barycenter.xml'
 
         # this is not perfect; it would be better to read the binary filename from the XML...
-        binfile = xmlname + '-0.bin'
-        bindest = lisasimdir + '/XML/' + binfile
+        binfile = 'Barycentric/' + xmlname + '-barycentric-0.bin'
+        bindest = lisasimdir + '/XML/' + xmlname + '-barycentric-0.bin'
 
-        run('cp %s %s' % ('Barycentric/' + xmlfile,xmldest))
+        run('cp %s %s' % (xmlfile,xmldest))
         run('cp %s %s' % (binfile,bindest))
 
         os.chdir(lisasimdir)
@@ -164,7 +179,11 @@ if lisasimdir:
         outxml = 'XML/' + xmlname + '.xml'
         outbin = 'Binary/' + xmlname + '.bin'
 
-        run('%s/bin/mergeXML.py %s %s' % (here,here + '/' + tdifile,outxml))
+        srcfile = 'Source/' + xmlname + '.xml'
+
+        sourcefileobj = lisaxml.lisaXML(here + '/' + tdifile)
+        sourcefileobj.close()
+        run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/' + tdifile,here + '/' + srcfile,outxml))
 
         # what other temporary files to remove?
 
@@ -185,16 +204,22 @@ if lisasimdir:
 
     run('echo > sources.txt')
     run('./Package noise-only sources.txt %(noiseseed)s')
-    
-    run('%s/bin/mergeXML.py %s %s' % (here,'TDI/tdi-frequency-noise.xml',lisasimdir + '/XML/tdi-strain-noise.xml'))
 
-    # what other temporary files to remove?
+    # remove temporary files
+    run('rm Binary/AccNoise*.dat Binary/ShotNoise*.dat Binary/XNoise*.bin Binary/YNoise*.bin Binary/ZNoise*.bin')
+    run('rm Binary/M1Noise*.bin Binary/M2Noise*.bin Binary/M3Noise*.bin')
 
-    run('rm %s' % (lisasimdir + '/XML/noise-only.xml'))
-    run('rm %s' % (lisasimdir + '/Binary/noise-only.bin'))
-    
+    slnoisefile = 'TDI/tdi-strain-noise.xml'
+        
+    noisefileobj = lisaxml.lisaXML(here + '/' + slnoisefile)
+    noisefileobj.close()
+    run('%s/bin/mergeXML.py %s %s' % (here,here + '/' + slnoisefile,lisasimdir + '/XML/noise-only.xml'))
+
+    run('rm XML/noise-only.xml')
+    run('rm Binary/noise-only.bin')
+
     os.chdir(here)
-    
+
 # -----------------------
 # STEP 5: run Fast Galaxy
 # -----------------------
@@ -210,34 +235,71 @@ if galaxyxml:
 # STEP 6: assemble datasets
 # -------------------------
 
-import lisaxml
-import numpy
-
 # first empty the Dataset directory
 run('rm -f Dataset/*.xml Dataset/*.bin')
 
 # improve dataset metadata here
 
-nonoisefile = 'Dataset/' + challengename + '-frequency-nonoise.xml'
-nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (synthlisa version)')
-nonoise.close()
+# do synthlisa first
 
-withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
-withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (synthlisa version)')
-withnoise.close()
+if dosynthlisa:
+    nonoisefile = 'Dataset/' + challengename + '-frequency-nonoise.xml'
+    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (synthlisa version)')
+    nonoise.close()
 
-keyfile = 'Dataset/' + challengename + '-key.xml'
-key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2')
-key.close()
+    withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
+    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (synthlisa version)')
+    withnoise.close()
 
-if options.istraining:
-    run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-frequency.xml')
-    run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
-else:
-    run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-frequency.xml')
-    run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+    keyfile = 'Dataset/' + challengename + '-key.xml'
+    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2')
+    key.close()
 
-run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
+    if options.istraining:
+        if glob.glob('TDI/*-tdi-frequency.xml'):
+            run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-frequency.xml')
+        run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+    else:
+        if glob.glob('TDI/*-tdi-frequency.xml'):
+            run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-frequency.xml')
+        run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+
+    # need to add noise data here
+
+    if glob.glob('TDI/*-tdi-frequency.xml'):
+        run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
+
+# next do LISA Simulator
+
+if lisasimdir:
+    nonoisefile = 'Dataset/' + challengename + '-strain-nonoise.xml'
+    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (lisasim version)')
+    nonoise.close()
+
+    withnoisefile = 'Dataset/' + challengename + '-strain.xml'
+    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (lisasim version)')
+    withnoise.close()
+
+    keyfile = 'Dataset/' + challengename + '-key.xml'
+    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2')
+    key.close()
+
+    if options.istraining:
+        if glob.glob('TDI/*-tdi-strain.xml'):
+            run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-strain.xml')
+        run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+    else:
+        if glob.glob('TDI/*-tdi-strain.xml'):
+            run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-strain.xml')
+        run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+
+    if not dosynthlisa:
+        if glob.glob('TDI/*-tdi-strain.xml'):
+            run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
+
+# ------------------------
+# STEP 7: package datasets
+# ------------------------
 
 # exit with success code
 sys.exit(0)

@@ -58,38 +58,41 @@ for inputfile in inputfiles:
         sources = sources + inputtdifile.getLISASources()
 
     if not options.keyonly:
-        thistdi = inputtdifile.getTDIObservables()[0]
+        try:
+            thistdi = inputtdifile.getTDIObservables()[0]
 
-        if tdi == None:
-            tdi = thistdi
-        else:
-            try:
-                assert tdi.DataType == thistdi.DataType
-                assert tdi.TimeSeries.Length     == thistdi.TimeSeries.Length
-                assert tdi.TimeSeries.Cadence    == thistdi.TimeSeries.Cadence
-                assert tdi.TimeSeries.TimeOffset == thistdi.TimeSeries.TimeOffset
-            except:
-                print "Script %s finds mismatched DataType, Length, or Cadence for TDI TimeSeries in file %s." % (sys.argv[0],inputfile)
-                sys.exit(1)
+            if tdi == None:
+                tdi = thistdi
+            else:
+                try:
+                    assert tdi.DataType == thistdi.DataType
+                    assert tdi.TimeSeries.Length     == thistdi.TimeSeries.Length
+                    assert tdi.TimeSeries.Cadence    == thistdi.TimeSeries.Cadence
+                    assert tdi.TimeSeries.TimeOffset == thistdi.TimeSeries.TimeOffset
+                except:
+                    print "Script %s finds mismatched DataType, Length, or Cadence for TDI TimeSeries in file %s." % (sys.argv[0],inputfile)
+                    sys.exit(1)
 
-            # add tdi observables to accumulator arrays
+                # add tdi observables to accumulator arrays
 
-            try:
-                if tdi.DataType == 'FractionalFrequency':
-                    tdi.t  += thistdi.t
-                    tdi.Xf += thistdi.Xf
-                    tdi.Yf += thistdi.Yf
-                    tdi.Zf += thistdi.Zf
-                elif tdi.DataType == 'EquivalentStrain':
-                    tdi.t  += thistdi.t
-                    tdi.Xs += thistdi.Xs
-                    tdi.Ys += thistdi.Ys
-                    tdi.Zs += thistdi.Zs
-                else:
-                    raise
-            except:
-                print "Script %s can't find standard TDI observables in file %s." % (sys.argv[0],xmlfile)
-                sys.exit(1)
+                try:
+                    if tdi.DataType == 'FractionalFrequency':
+                        tdi.t  += thistdi.t
+                        tdi.Xf += thistdi.Xf
+                        tdi.Yf += thistdi.Yf
+                        tdi.Zf += thistdi.Zf
+                    elif tdi.DataType == 'EquivalentStrain':
+                        tdi.t  += thistdi.t
+                        tdi.Xs += thistdi.Xs
+                        tdi.Ys += thistdi.Ys
+                        tdi.Zs += thistdi.Zs
+                    else:
+                        raise
+                except:
+                    print "Script %s can't find standard TDI observables in file %s." % (sys.argv[0],xmlfile)
+                    sys.exit(1)
+        except:
+            pass
 
 newmergedtdifile = lisaxml.lisaXML(mergedfile)
 
@@ -97,7 +100,7 @@ if not options.nokey:
     for source in sources:
         newmergedtdifile.SourceData(source)
 
-if not options.keyonly:
+if not options.keyonly and tdi:
     newmergedtdifile.TDIData(tdi)
     
 mergedtdifile.close()

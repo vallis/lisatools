@@ -55,7 +55,7 @@ if options.seed == None:
     parser.error("You must specify the seed!")
 
 # set the noise seed
-synthlisa.setglobalseed
+synthlisa.setglobalseed(options.seed)
 
 # hardcode LISA and Noise to the MLDC standards
 lisa = synthlisa.EccentricInclined(0.0,1.5*math.pi,-1)
