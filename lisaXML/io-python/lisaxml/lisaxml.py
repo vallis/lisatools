@@ -565,7 +565,10 @@ class readXML:
             readlength = 8 * length * records 
         
             if self.directory:
-                binaryfile = open(self.directory + '/' + content,'r')
+                try:
+                    binaryfile = open(self.directory + '/' + content,'r')
+                except:
+                    binaryfile = open(content,'r')
             else:
                 binaryfile = open(content,'r')
         
