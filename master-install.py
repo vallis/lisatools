@@ -219,6 +219,11 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or not os.path.isdir(libdi
         sys.exit(1)
     assert(0 == os.system('mv %s lisasimulator-1year' % lisasimdir))
     assert(0 == os.system('cp %s lisasimulator-1year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-1year.h')))
+    # patching Package.c
+    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Package.c')))
+    # patching IO
+    assert(0 == os.system('cp %s lisasimulator-1year/IO/.' % (here + '/lisaXML/io-C/*.c')))
+    assert(0 == os.system('cp %s lisasimulator-1year/IO/.' % (here + '/lisaXML/io-C/*.h')))
     os.chdir('lisasimulator-1year')
     assert(0 == os.system('./Compile'))
     print "    (setting up 1-year version... this will take a while...)"
@@ -229,6 +234,11 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or not os.path.isdir(libdi
     assert(0 == os.system('tar zxf %s -C .' % lisasim))
     assert(0 == os.system('mv %s lisasimulator-2year' % lisasimdir))
     assert(0 == os.system('cp %s lisasimulator-2year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-2year.h')))
+    # patching Package.c
+    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Package.c')))
+    # patching IO
+    assert(0 == os.system('cp %s lisasimulator-2year/IO/.' % (here + '/lisaXML/io-C/*.c')))
+    assert(0 == os.system('cp %s lisasimulator-2year/IO/.' % (here + '/lisaXML/io-C/*.h')))
     os.chdir('lisasimulator-2year')
     assert(0 == os.system('./Compile'))
     print "    (setting up 2-year version... this will take a while...)"
