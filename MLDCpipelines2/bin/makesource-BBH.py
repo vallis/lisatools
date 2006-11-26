@@ -31,12 +31,20 @@ parser.add_option("-s", "--seed",
                   help="seed for random number generator (int) [required]")
 
 parser.add_option("-d", "--distance",
-                  type="float", dest="D", default=None,
-                  help="distance to source (Pc) [required]")
+                  type="float", dest="D", default=1.0e6,
+                  help="distance to source (Pc)")
+
+parser.add_option("-S", "--requestSN",
+                  type="float", dest="RequestSN", default=None,
+                  help="requested source amplitude SN (satisfied at TDI-generation time)")
 
 parser.add_option("-t", "--coalescTime",
                   type="float", dest="Tc", default=None,
                   help="time of coalescence from t = 0 (days) [required]")
+
+parser.add_option("-r", "--coalescRange",
+                  type="float", dest="deltaTc", default=None,
+                  help="half width of uniform probability distribution for coalescence time around Tc (days) [required]")
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -52,11 +60,11 @@ if len(args) != 1:
 if options.seed == None:
     parser.error("You must specify the seed!")
     
-if options.D == None:
-    parser.error("You must specify the distance!")
-    
 if options.Tc == None:
     parser.error("You must specify the coalescence time!")
+
+if options.deltaTc == None:
+    parser.error("You must specify the coalescence width!")
 
 # get the name of the output file
 
@@ -85,14 +93,19 @@ mysystem.Distance                   = options.D                                 
 
 mysystem.Mass1                      = 1.0e6 * random.uniform(1.0,5.0)                   # m1 in SolarMass
 mysystem.Mass2                      = mysystem.Mass1 / random.uniform(1.0,4.0)          # m2 in SolarMass
-mysystem.CoalescenceTime            = (options.Tc + random.uniform(-20.0,20.0)) * 24 * 3600     # coalescence time in Second (from command-line parameter)
+mysystem.CoalescenceTime            = (options.Tc + random.uniform(-options.deltaTc,options.deltaTc)) * 24 * 3600     # coalescence time in Second (from command-line parameter)
 mysystem.InitialAngularOrbitalPhase = random.uniform(0.0,2.0*math.pi)                   # initial orbital phase in Radian
 
 # integration parameters
 
 mysystem.IntegrationStep            = 15.0                                              # integration timestep in seconds
+
 mysystem.TruncationTime             = 0.0                                               # truncation time removed from end of waveform (in sec)
 mysystem.TaperApplied               = 7.0                                               # tapering radius (total masses)
+
+if options.RequestSN:
+    mysystem.RequestSN = options.RequestSN
+    mysystem.RequestSN_Unit = '1'
 
 if options.verbose:
     for p in mysystem.parameters:

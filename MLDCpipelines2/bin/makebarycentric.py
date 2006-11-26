@@ -68,7 +68,7 @@ if options.verbose:
 # interpolation...
 
 if ( hasattr(mysystem,'IntegrationStep') and
-    convertUnit(mysystem.IntegrationStep,mysystem.IntegrationStep_Unit,'Second') != options.timestep ):
+    convertUnit(mysystem.IntegrationStep,mysystem.IntegrationStep_Unit,'Second') != (options.timestep,'Second') ):
     print >> sys.stderr, "Overriding source IntegrationStep (%s) with our own timestep (%s s)" % (mysystem.parstr('IntegrationStep'),
                                                                                                   options.timestep)
 

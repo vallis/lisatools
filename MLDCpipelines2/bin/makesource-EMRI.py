@@ -85,8 +85,8 @@ mysystem.LambdaAngle			 = math.acos(random.uniform(-1.0, 1.0))                 #
 e_lso 					 = random.uniform(0.15, 0.25)                           # estimated eccentricity at the plunge
 Tend					 = random.uniform(1.6, 1.8)*2**21*15.0                  # estimated plungetime: between 1.6 and 1.8 of a year which is assumed to be 2**21*15 seconds
 
-mysystem.IntegrationStep                 = 15.0                                              # integration timestep in seconds
-
+mysystem.IntegrationStep            = 15.0                                              # integration timestep in seconds
+mysystem.IntegrationStep_Unit       = 'Second'
 
 MBHmass = mysystem.MassOfSMBH
 nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*4.92549095e-6)
