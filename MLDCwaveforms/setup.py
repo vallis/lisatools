@@ -12,3 +12,6 @@ setup(name = 'MLDC',
       url = 'http://svn.sourceforge.net/viewvc/lisatools',
       packages = ['MLDC']
       )
+
+# then we should list all plugins, and run their setups, too
+# passing the same arguments we got (perhaps the entire argv)
