@@ -107,7 +107,7 @@ class TimeSeries(XMLobject):
 class Observable(XMLobject):
     def __init__(self,name=''):
         super(Observable,self).__init__()
-
+        
         self.__dict__['name'] = name
     
     def XML(self,xmlfile,name=None,comments=''):
@@ -200,6 +200,12 @@ class Source(XMLobject):
                 argvalue = (argvalue,arg[1])
             
             params.append(('Param', {'Name': arg[0], 'Unit': argvalue[1]}, [argvalue[0]]))
+        
+        # handle extra parameters (those not in outputlist), but only if Unit was given explicitly!
+        
+        for parname in self.parameters:
+            if not parname in [arg[0] for arg in self.outputlist] and hasattr(self,parname + '_Unit'):
+                params.append(('Param', {'Name': parname, 'Unit': getattr(self,parname + '_Unit')}, [getattr(self,parname)]))
         
         # handle TimeSeries
         
@@ -423,7 +429,7 @@ class lisaXML(writeXML):
             self.closetag('XSIL')
         
         # do the TDIdata objects (first supported)
-
+        
         if self.theTDIData:
             self.opentag('XSIL',{'Type': 'TDIData'})
             
@@ -545,7 +551,7 @@ class readXML:
     
     def processTimeSeries(self,node):
         dim = {}
-
+        
         for node2 in node:
             if node2.tagName == 'Array':
                 for node3 in node2:
@@ -556,7 +562,7 @@ class readXML:
                         stype    = node3.Type
                         
                         content = str(node3)
-
+        
         length  = dim['Length']
         records = dim['Records']
         
@@ -574,16 +580,16 @@ class readXML:
         
             readbuffer = numpy.fromstring(binaryfile.read(readlength),'double')
             binaryfile.close()
-
+            
             if ( ('BigEndian' in encoding and sys.byteorder == 'little') or
                  ('LittleEndian' in encoding and sys.byteorder == 'big') ):
                 readbuffer = readbuffer.byteswap()
         elif stype == 'Local' and 'Text' in encoding: 
             delimiter = node3.Delimiter
-
+            
             for delchar in delimiter:
                 content = string.join(content.split(delchar),' ')
-
+                
                 # there may be a more efficient way to initialize an array
                 readbuffer = numpy.array(map(float,datastring.split()),'d')
         else:
@@ -655,7 +661,7 @@ class readXML:
                             
                         setattr(retobj.TimeSeries,node3.Name,self.reprvalue(objectparam))
                         setattr(retobj.TimeSeries,node3.Name + '_Unit',objectparam[1])
-
+                
                 # if TimeSeries name is understandable (comma-separated, etc.) and names
                 # do not conflict with existing attributes, assign aliases to array columns
         
@@ -663,7 +669,7 @@ class readXML:
         
                 if ( len(columnnames) == retobj.TimeSeries.Records and
                      len(columnnames) == len(retobj.TimeSeries.Arrays) ):
-
+                    
                     for col in range(len(columnnames)):
                         if not hasattr(retobj,columnnames[col]):
                             retobj.__dict__[columnnames[col]] = retobj.TimeSeries.Arrays[col]
