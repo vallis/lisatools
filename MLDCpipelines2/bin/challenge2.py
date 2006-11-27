@@ -103,6 +103,8 @@ run('rm -f Galaxy/*.xml')
 
 # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
 # it must take a single argument (the seed) and put its results in the Source subdirectory
+# if makesource-Galaxy.py is called, it must be with the UNALTERED seed, which is used
+# later to call makeTDIsignals-Galaxy.py
 
 sourcescript = 'bin/' + challengename + '.py'
 if not os.path.isfile(sourcescript):
@@ -144,6 +146,8 @@ if dosynthlisa:
 # --------------------------
 # STEP 4: run LISA Simulator
 # --------------------------
+
+# some of this may later be moved inside makeTDInoise-lisasim.py and makeTDIsignal-lisasim.py
 
 if lisasimdir:
     here = os.getcwd()
@@ -226,9 +230,7 @@ if lisasimdir:
 
 # hmm... are we telling everybody the seed with the filename of the galaxy?
 
-galaxyxml = glob.glob('Galaxy/*.xml')
-
-if galaxyxml:
+if glob.glob('Galaxy/*.xml'):
     run('bin/makeTDIsignals-Galaxy.py %s' % seed)
 
 # -------------------------
