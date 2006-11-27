@@ -600,7 +600,9 @@ class readXML:
             return (readbuffer,)
         else:
             readbuffer = numpy.reshape(readbuffer,(length,records))
-            return tuple(readbuffer[:,i] for i in range(records))
+            # return list for compatibility with Python 2.3
+            return [readbuffer[:,i] for i in range(records)]
+            # previously: return tuple(readbuffer[:,i] for i in range(records))
     
     def processObject(self,node):
         # get the name of the object
@@ -665,8 +667,8 @@ class readXML:
                 # if TimeSeries name is understandable (comma-separated, etc.) and names
                 # do not conflict with existing attributes, assign aliases to array columns
         
-                columnnames = list(s.strip(' ') for s in retobj.TimeSeries.name.split(','))
-        
+                columnnames = [s.strip(' ') for s in retobj.TimeSeries.name.split(',')]
+                
                 if ( len(columnnames) == retobj.TimeSeries.Records and
                      len(columnnames) == len(retobj.TimeSeries.Arrays) ):
                     
