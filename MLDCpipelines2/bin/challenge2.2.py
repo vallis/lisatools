@@ -6,7 +6,7 @@ import sys
 def run(command):
     commandline = command % globals()
     print "----> %s" % commandline
-
+    
     try:
         assert(os.system(commandline) == 0)
     except:
@@ -41,5 +41,6 @@ run('bin/makesource-EMRI.py --seed=%s --distance=1e6 Source/EMRI-1.xml' % (seed+
 
 run('bin/makesource-EMRI.py --seed=%s --distance=1e6 Source/EMRI-2.xml' % (seed+7))
 
-# now the Galaxy!
-# run('bin/makesource-Galaxy.py %s' % seed)
+# now the Galaxy! (for testing, seed must be 1)
+run('bin/makesource-Galaxy.py -t %s' % seed)
+#run('bin/makesource-Galaxy.py %s' % seed)
