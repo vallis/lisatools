@@ -81,7 +81,7 @@ for inputfile in inputfiles:
                         tdi.Xf += thistdi.Xf
                         tdi.Yf += thistdi.Yf
                         tdi.Zf += thistdi.Zf
-                    elif tdi.DataType == 'EquivalentStrain':
+                    elif tdi.DataType == 'Strain':
                         tdi.t  += thistdi.t
                         tdi.Xs += thistdi.Xs
                         tdi.Ys += thistdi.Ys
