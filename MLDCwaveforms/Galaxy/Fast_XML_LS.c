@@ -233,6 +233,8 @@ int main(int argc,char **argv) {
     XMLclosetag(myxml,"XSIL");
 
     XMLclose(myxml);
+    
+    exit(0);
 }
 
 void KILL(char* Message)
