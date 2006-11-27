@@ -132,7 +132,7 @@ int main(int argc,char **argv) {
 
     XMLclose(myxml);
 
-
+    exit(0);
 }
 
 void KILL(char* Message)
