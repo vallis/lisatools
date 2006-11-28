@@ -1,4 +1,4 @@
-/* lisatools/io/readxml.c --- Copyright (c) 2006 Neil Cornish
+/* lisatools/io-C/xmlbinary.c --- Copyright (c) 2006 Neil Cornish
 
    Permission is hereby granted, free of charge, to any person obtaining
    a copy of this software and associated documentation files (the
