@@ -47,43 +47,6 @@ if len(args) != 2:
 
 (inputfile,outputfile) = args
 
-"""pdlen = 100000
-Sx = Numeric.zeros(pdlen+1, dtype='d')
-nyquist = 0.5/options.timestep
-freqs = Numeric.arange(0, pdlen+1, dtype='d')*(nyquist/pdlen)
-Sopt = 1.8e-37
-Spm = 2.5e-48
-L=16.6782
-sn = 0.0
-fout = open("Psd.dat", 'w')
-fst = 1./(2.0*math.pi*L) # remove it after
-for i in xrange(pdlen):
-   fr = freqs[i+1]
-   om = fr*2.0*math.pi
-   factor = 1.1e4*(8.*math.pi*L)**2*fr**4 
-   # instrumental noise
-   Sx[i+1] = 16.*(math.sin(om*L)*fr)**2*Sopt + (32.*math.sin(om*L)*math.sin(om*L) + \
-             8.*math.sin(2.*om*L)*math.sin(2.*om*L))*Spm*(1.0 + 1.e-8/fr**2)/fr**2
-   Sgal = 0.0
-   if (fr>=1.e-4 and fr<1.e-3):
-       Sgal = 10**-44.62*fr**-2.3 
-   elif (fr>1.e-3 and fr<=10.**-2.7):
-       Sgal = 10**-50.92*fr**-4.4
-   elif (fr>10**-2.7 and fr<=10**-2.4):
-       Sgal = 10**-62.8*fr**-8.8
-   elif (fr>10**-2.4 and fr<=0.01):
-       Sgal = 10**-89.68*fr**-20.0
-   Sgal *= factor
- #  Sgal =(1.6e-41 + (1. + math.cos(fr/fst)*math.cos(fr/fst))*4.5e-50/(math.pi*fr)**4)*1.1e4*(8.*math.pi*L)**2*fr**4
-#   Sx[i+1] += Sgal
-   rec = str(fr) + "   " + str(Sx[i+1]) + "    " + str(Sgal) + "\n"
-#   print rec
-   fout.write(rec)
-
-
-fout.close()
-sys.exit(0)
-"""
 
 inputXML = lisaxml.readXML(inputfile)
 waveforms = inputXML.getLISASources()[0]
@@ -145,10 +108,6 @@ hZ = synthlisa.spect(Z,sampling, 0)
 #computing noise+Galaxy spectra
 pdlen = samples/2
 Sx = Numeric.zeros(pdlen+1, dtype='d')
-#print Numeric.shape(hX)
-#print "pdlen = ", pdlen
-#print Numeric.shape(hX)[0]
-#print Numeric.shape(hX)[1]
 Sopt = 1.8e-37
 Spm = 2.5e-48
 L=16.6782
@@ -159,7 +118,8 @@ snZ = 0.0
 for i in xrange(pdlen):
    fr = hX[i+1,0]
    om = fr*2.0*math.pi
-   factor = 1.1e4*(8.*math.pi*L)**2*fr**4 
+   #factor = 1.1e4*(8.*math.pi*L)**2*fr**4 
+   factor = 1.54e4*(8.*math.pi*L)**2*fr**4 
    # instrumental noise
    Sx[i+1] = 16.*(math.sin(om*L)*fr)**2*Sopt + (32.*math.sin(om*L)*math.sin(om*L) + \
              8.*math.sin(2.*om*L)*math.sin(2.*om*L))*Spm*(1.+1.e-8/fr**2)/fr**2
@@ -167,18 +127,23 @@ for i in xrange(pdlen):
    # confusion noise
    if (fr>=1.e-4 and fr<1.e-3):
        Sgal = 10**-44.62*fr**-2.3 
-   elif (fr>1.e-3 and fr<=10.**-2.7):
-       Sgal = 10**-50.92*fr**-4.4
-   elif (fr>10**-2.7 and fr<=10**-2.4):
-       Sgal = 10**-62.8*fr**-8.8
-   elif (fr>10**-2.4 and fr<=0.01):
-       Sgal = 10**-89.68*fr**-20.0
+   elif (fr>1.e-3 and fr<=10**-2.386):
+       Sgal = 10**-47.62*fr**-3.3
+   elif (fr>10**-2.386 and fr <=0.01):
+       Sgal = 10**-69.615*fr**-12.52
+#   elif (fr>1.e-3 and fr<=10.**-2.7):   # old Neil's fit
+#       Sgal = 10**-50.92*fr**-4.4
+#   elif (fr>10**-2.7 and fr<=10**-2.4):
+#       Sgal = 10**-62.8*fr**-8.8
+#   elif (fr>10**-2.4 and fr<=0.01):
+#       Sgal = 10**-89.68*fr**-20.0
    Sgal *= factor
    Sx[i+1] += Sgal
    snX += hX[i+1,1]/Sx[i+1]
    snY += hY[i+1,1]/Sx[i+1]
    snZ += hZ[i+1,1]/Sx[i+1]
-#   rec = str(fr) + "   " + str(Sx[i+1]) + "    " + str(hX[i+1, 1]) + "     " + str(snX) + "\n"
+#   rec = str(fr) + "   " + str(Sx[i+1]) + "     " + str(Sgal) + "     " + str(Sx[i+1]+Sgal) + "\n"
+#"    " + str(hX[i+1, 1]) + "     " + str(snX) + "\n"
 #   fout.write(rec)
 
 #fout.close()
