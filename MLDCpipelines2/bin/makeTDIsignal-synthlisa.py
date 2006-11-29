@@ -47,6 +47,7 @@ if len(args) != 2:
 
 (inputfile,outputfile) = args
 
+outputfile2 = inputfile[:-4]+"New.xml"
 
 inputXML = lisaxml.readXML(inputfile)
 waveforms = inputXML.getLISASources()[0]
@@ -165,8 +166,26 @@ else:
    sys.exit(1)
 
 factor = ReqSN/math.sqrt(SNR)
-sys.stdout.write(str(factor))
+#sys.stdout.write(str(factor))
+print "SNR rescaling factor = ", factor
 hX[:,1] *= factor
+
+#print (ts.Arrays[0])[:2], (ts.Arrays[1])[:2]
+
+ts.Arrays[0] *= factor
+ts.Arrays[1] *= factor
+
+#print (ts.Arrays[0])[:2], (ts.Arrays[1])[:2]
+
+if hasattr(waveforms, 'Distance'):
+   waveforms.Distance = waveforms.Distance/factor
+else:
+    print "Could not find the distance field in xml file"
+    sys.exit(1)
+
+outputXML = lisaxml.lisaXML(outputfile2, author='Michele Vallisneri')
+outputXML.SourceData(waveforms)
+outputXML.close()
 #fout = open("Xcorrected.dat", 'w')
 #for i in xrange(pdlen):
 #   rec = str(hX[i+1,0]) + "    " + str(hX[i+1, 1]) + " \n"
