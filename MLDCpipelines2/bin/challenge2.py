@@ -140,15 +140,15 @@ if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
     # the results are files of TDI time series that include 
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
-#        print "STAS", xmlfile
 	xmlout = xmlfile[:-4]+"New.xml"
-#	print xmlout
         tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-#	print tdifile
 	coma = 'bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s' % globals()
        # run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 	o,i = popen2.popen2(coma)
 	output = o.readlines()
+        if len(output) >1:
+             print "stdout contains too much info"
+             sys.exit(1)
 	factor = float(output[0])
 	print "SNR rescaling factor = ", factor
 	run('bin/rescalebarycentric.py --rescaleFactor=%(factor)s %(xmlfile)s %(xmlout)s')
