@@ -37,9 +37,9 @@ run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=10   --coalescTi
 # challenge 2.2 EMRI sources...
 # TO DO: verify parameter distributions
 
-run('bin/makesource-EMRI.py --seed=%s --distance=1e6 Source/EMRI-1.xml' % (seed+6))
+#run('bin/makesource-EMRI.py --seed=%s --distance=1e6 Source/EMRI-1.xml' % (seed+6))
 
-run('bin/makesource-EMRI.py --seed=%s --distance=1e6 Source/EMRI-2.xml' % (seed+7))
+#run('bin/makesource-EMRI.py --seed=%s --distance=1e6 Source/EMRI-2.xml' % (seed+7))
 
 # now the Galaxy! (for testing, seed must be 1)
 run('bin/makesource-Galaxy.py -t %s' % seed)

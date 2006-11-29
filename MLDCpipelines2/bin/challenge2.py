@@ -12,6 +12,11 @@ import re
 import lisaxml
 import numpy
 
+#Stas added popen module
+
+import popen2
+
+
 def run(command):
     commandline = command % globals()
     print "--> %s" % commandline
@@ -135,8 +140,21 @@ if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
     # the results are files of TDI time series that include 
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
+#        print "STAS", xmlfile
+	xmlout = xmlfile[:-4]+"New.xml"
+#	print xmlout
         tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-        run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+#	print tdifile
+	coma = 'bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s' % globals()
+       # run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+	o,i = popen2.popen2(coma)
+	output = o.readlines()
+	factor = float(output[0])
+	print "SNR rescaling factor = ", factor
+	run('bin/rescalebarycentric.py --rescaleFactor=%(factor)s %(xmlfile)s %(xmlout)s')
+
+   
+	
 
     # now run noise generation...
     noiseseed = options.seed

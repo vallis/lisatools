@@ -52,6 +52,7 @@ inputXML = lisaxml.readXML(inputfile)
 waveforms = inputXML.getLISASources()[0]
 inputXML.close()
 
+
 if options.verbose:
     for p in waveforms.parameters:
         print p, ':', waveforms.parstr(p)
@@ -156,9 +157,16 @@ if(snY >SNR):
 if(snZ >SNR):
    SNR = snZ
 
-#  I rescale  SNR= 500 need to be passed over somehow...
-print "SNR = ", math.sqrt(SNR)
-hX[:,1] *= 500.0/math.sqrt(SNR)
+ReqSN = 0.0
+if hasattr(waveforms,'RequestSN'):
+   ReqSN = waveforms.RequestSN
+else:
+   print "Request SNR was not found in the xml file"
+   sys.exit(1)
+
+factor = ReqSN/math.sqrt(SNR)
+sys.stdout.write(str(factor))
+hX[:,1] *= factor
 #fout = open("Xcorrected.dat", 'w')
 #for i in xrange(pdlen):
 #   rec = str(hX[i+1,0]) + "    " + str(hX[i+1, 1]) + " \n"
