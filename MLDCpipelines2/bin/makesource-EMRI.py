@@ -32,6 +32,10 @@ parser.add_option("-d", "--distance",
                   type="float", dest="D", default=None,
                   help="distance to source (Pc) [required]")
 
+parser.add_option("-S", "--requestSN",
+                  type="float", dest="RequestSN", default=None,
+                  help="requested source amplitude SN (satisfied at TDI-generation time)")
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
@@ -99,6 +103,11 @@ nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*
 
 mysystem.InitialAzimuthalOrbitalFrequency  = nu_in      # initial azimuthal orbital frequecy in Hz
 mysystem.InitialEccentricity		   = e_in       # initial orbital eccentricity
+
+if options.RequestSN:
+    mysystem.RequestSN = options.RequestSN
+    mysystem.RequestSN_Unit = '1'
+
 
 if options.verbose:
     for p in mysystem.parameters:
