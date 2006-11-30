@@ -44,8 +44,8 @@ parser.add_option("-t", "--training",
                   help="include source information in output file [off by default]")
 
 parser.add_option("-T", "--duration",
-#                  type="float", dest="duration", default=62914560.0,
-                  type="float", dest="duration", default=3932160.0,
+                  type="float", dest="duration", default=62914560.0,
+#                 type="float", dest="duration", default=3932160.0,
                   help="total time for TDI observables (s) [default 62914560 = 2^22 * 15]")
 
 parser.add_option("-d", "--timeStep",
@@ -129,6 +129,11 @@ for xmlfile in glob.glob('Source/*.xml'):
     baryfile = 'Barycentric/' + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
     run('bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 
+# check if any of the source files requests an SN; in this case we'll need to run synthlisa!
+
+if os.system('grep -q RequestSN Source/*.xml') == 0 and dosynthlisa == False:
+    print "Ah, at least one of your Source files has a RequestSN field; then I MUST run synthlisa to adjust SNRs."
+
 # --------------------------
 # STEP 3: run Synthetic LISA
 # --------------------------
@@ -138,23 +143,12 @@ run('rm -f TDI/*.xml TDI/*.bin TDI/Binary')
 
 if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
-    # the results are files of TDI time series that include 
+    # the results are files of TDI time series that include the source info
+    # these calls have also the result of rescaling the barycentric files to satisfy any RequestSN that
+    # they may carry
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
-#	xmlout = xmlfile[:-4]+"New.xml"
         tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-#	coma = 'bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s' % globals()
         run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
-#	o,i = popen2.popen2(coma)
-#	output = o.readlines()
-#        if len(output) >1:
-#             print "stdout contains too much info"
-#             sys.exit(1)
-#	factor = float(output[0])
-#	print "SNR rescaling factor = ", factor
-#	run('bin/rescalebarycentric.py --rescaleFactor=%(factor)s %(xmlfile)s %(xmlout)s')
-
-   
-	
 
     # now run noise generation...
     noiseseed = options.seed
@@ -201,11 +195,13 @@ if lisasimdir:
         outxml = 'XML/' + xmlname + '.xml'
         outbin = 'Binary/' + xmlname + '.bin'
 
-        srcfile = 'Source/' + xmlname + '.xml'
-
+        # create an empty XML file...
         sourcefileobj = lisaxml.lisaXML(here + '/' + tdifile)
         sourcefileobj.close()
-        run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/' + tdifile,here + '/' + srcfile,outxml))
+        # then add the TDI data from the LISA Simulator output
+        run('%s/bin/mergeXML.py %s %s' % (here,here + '/' + tdifile,outxml))
+        # then add the modified Source data included in the Barycentric file
+        run('%s/bin/mergeXML.py -k %s %s %s' % (here,here + '/' + tdifile,here + '/' + xmlfile))
 
         # what other temporary files to remove?
 
