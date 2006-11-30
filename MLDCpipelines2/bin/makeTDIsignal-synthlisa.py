@@ -10,7 +10,8 @@ import synthlisa
 import numpy
 import numpy.oldnumeric as Numeric
 import sys
-import math
+
+from math import pi, sin, cos, sqrt
 
 # set ourselves up to parse command-line options
 
@@ -47,12 +48,9 @@ if len(args) != 2:
 
 (inputfile,outputfile) = args
 
-outputfile2 = inputfile[:-4]+"New.xml"
-
 inputXML = lisaxml.readXML(inputfile)
 waveforms = inputXML.getLISASources()[0]
 inputXML.close()
-
 
 if options.verbose:
     for p in waveforms.parameters:
@@ -90,7 +88,7 @@ source = synthlisa.SampledWave(hp,hc,
                                waveforms.EclipticLongitude,0)       # polarization already encoded in hp,hc
 
 # this hardcodes the standard LISA object for the MLDC...
-lisa = synthlisa.CacheLISA(synthlisa.EccentricInclined(0.0,1.5*math.pi,-1))
+lisa = synthlisa.CacheLISA(synthlisa.EccentricInclined(0.0,1.5*pi,-1))
 
 tdi = synthlisa.TDIsignal(lisa,source)
 
@@ -99,99 +97,75 @@ samples = int( options.duration / options.timestep + 0.1 )
 [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
                                               [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm],
                                               options.inittime))
+
 # Computing SNR....
 
 # this is |\tilde{h}|^2 * dt/N
 sampling = ts.Cadence
-hX = synthlisa.spect(X,sampling, 0)
-hY = synthlisa.spect(Y,sampling, 0)
-hZ = synthlisa.spect(Z,sampling, 0)
 
-#computing noise+Galaxy spectra
-pdlen = samples/2
-Sx = Numeric.zeros(pdlen+1, dtype='d')
-Sopt = 1.8e-37
-Spm = 2.5e-48
-L=16.6782
-snX = 0.0
-snY = 0.0
-snZ = 0.0
-#fout = open("Psd.dat", 'w')
-for i in xrange(pdlen):
-   fr = hX[i+1,0]
-   om = fr*2.0*math.pi
-   #factor = 1.1e4*(8.*math.pi*L)**2*fr**4 
-   factor = 1.54e4*(8.*math.pi*L)**2*fr**4 
-   # instrumental noise
-   Sx[i+1] = 16.*(math.sin(om*L)*fr)**2*Sopt + (32.*math.sin(om*L)*math.sin(om*L) + \
-             8.*math.sin(2.*om*L)*math.sin(2.*om*L))*Spm*(1.+1.e-8/fr**2)/fr**2
-   Sgal = 0.0
-   # confusion noise
-   if (fr>=1.e-4 and fr<1.e-3):
-       Sgal = 10**-44.62*fr**-2.3 
-   elif (fr>1.e-3 and fr<=10**-2.386):
-       Sgal = 10**-47.62*fr**-3.3
-   elif (fr>10**-2.386 and fr <=0.01):
-       Sgal = 10**-69.615*fr**-12.52
-#   elif (fr>1.e-3 and fr<=10.**-2.7):   # old Neil's fit
-#       Sgal = 10**-50.92*fr**-4.4
-#   elif (fr>10**-2.7 and fr<=10**-2.4):
-#       Sgal = 10**-62.8*fr**-8.8
-#   elif (fr>10**-2.4 and fr<=0.01):
-#       Sgal = 10**-89.68*fr**-20.0
-   Sgal *= factor
-   Sx[i+1] += Sgal
-   snX += hX[i+1,1]/Sx[i+1]
-   snY += hY[i+1,1]/Sx[i+1]
-   snZ += hZ[i+1,1]/Sx[i+1]
-#   rec = str(fr) + "   " + str(Sx[i+1]) + "     " + str(Sgal) + "     " + str(Sx[i+1]+Sgal) + "\n"
-#"    " + str(hX[i+1, 1]) + "     " + str(snX) + "\n"
-#   fout.write(rec)
+hX = synthlisa.spect(X,sampling,0)
+hY = synthlisa.spect(Y,sampling,0)
+hZ = synthlisa.spect(Z,sampling,0)
 
-#fout.close()
-snX *= 4.0
-snY *= 4.0
-snZ *= 4.0
-SNR = snX
-if(snY >SNR):
-   SNR = snY
-if(snZ >SNR):
-   SNR = snZ
+# get frequencies, skip DC
+fr = hX[1:,0]
 
-ReqSN = 0.0
+om = 2.0 * pi * fr
+L  = 16.6782
+
+# instrument noise
+Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
+Sop = 1.8e-37 * fr**2
+
+Sx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
+
+# galactic noise
+Sgal = 1.54e4 * (8.0*pi*L)**2 * fr**4 * (
+        numpy.piecewise(fr,(fr >= 1.0e-4    ) & (fr < 1.0e-3),    [lambda f: 10**-44.62  * fr**-2.3,   0]) + \
+        numpy.piecewise(fr,(fr >= 1.0e-3    ) & (fr < 10**-2.386),[lambda f: 10**-47.62  * fr**-3.3,   0]) + \
+        numpy.piecewise(fr,(fr >= 10**-2.386) & (fr <= 0.01),     [lambda f: 10**-69.615 * fr**-12.52, 0])
+        )
+
+Sn = Sx + Sgal
+
+# the (S/N)^2 is given by 2T times the integrated ratio
+# of the spectral densities (the factor of 2 because the spectral
+# density is one-sided); notice however that the df is 1/T,
+# so we need only to sum up the array containing the ratio,
+# and multiply by two
+
+snX = sqrt(2.0 * numpy.sum(hX[1:,1] / Sn))
+snY = sqrt(2.0 * numpy.sum(hY[1:,1] / Sn))
+snZ = sqrt(2.0 * numpy.sum(hZ[1:,1] / Sn))
+
+SNR = max(snX,snY,snZ)
+
+print "makeTDIsignal-synthlisa.py: maximum X,Y,Z SNR = %s" % SNR
+
 if hasattr(waveforms,'RequestSN'):
-   ReqSN = waveforms.RequestSN
-else:
-   print "Request SNR was not found in the xml file"
-   sys.exit(1)
+    ReqSN = waveforms.RequestSN
 
-factor = ReqSN/math.sqrt(SNR)
-#sys.stdout.write(str(factor))
-print "SNR rescaling factor = ", factor
-hX[:,1] *= factor
+    factor = ReqSN / SNR
+    print "makeTDIsignal-synthlisa.py: satisfying RequestSN=%s by rescaling by %s" % (ReqSN,factor)
 
-#print (ts.Arrays[0])[:2], (ts.Arrays[1])[:2]
+    ts.Arrays[0] *= factor
+    ts.Arrays[1] *= factor   
 
-ts.Arrays[0] *= factor
-ts.Arrays[1] *= factor
+    if hasattr(waveforms, 'Distance'):
+        waveforms.Distance /= factor
+    elif hasattr(waveforms, 'Amplitude'):
+        waveforms.Amplitude *= factor 
 
-#print (ts.Arrays[0])[:2], (ts.Arrays[1])[:2]
+    # remove the RequestSN param from the source
+    del waveforms.RequestSN
 
-if hasattr(waveforms, 'Distance'):
-   waveforms.Distance = waveforms.Distance/factor
-else:
-    print "Could not find the distance field in xml file"
-    sys.exit(1)
+    outputXML = lisaxml.lisaXML(inputfile, author='makeTDIsignal-synthlisa.py, MV/SB 20061129')
+    outputXML.SourceData(waveforms)
+    outputXML.close()
 
-outputXML = lisaxml.lisaXML(outputfile2, author='Michele Vallisneri')
-outputXML.SourceData(waveforms)
-outputXML.close()
-#fout = open("Xcorrected.dat", 'w')
-#for i in xrange(pdlen):
-#   rec = str(hX[i+1,0]) + "    " + str(hX[i+1, 1]) + " \n"
-#   fout.write(rec)
-#fout.close()
-#sys.exit(0)
+    X *= factor
+    Y *= factor
+    Z *= factor
 
 tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
 
