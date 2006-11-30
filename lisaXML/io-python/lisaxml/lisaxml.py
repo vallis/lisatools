@@ -45,6 +45,11 @@ class XMLobject(object):
         if (not attr in self.parameters) and (not '_Unit' in attr):
             self.parameters.append(attr)
     
+    def __delattr__(self,attr):
+        del self.__dict__[attr]
+        
+        if attr in self.parameters:
+            self.parameters.remove(attr)
 
 class TimeSeries(XMLobject):
     def __init__(self,arrays,name='',unit=''):
