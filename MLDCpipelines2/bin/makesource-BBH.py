@@ -31,7 +31,7 @@ parser.add_option("-s", "--seed",
                   help="seed for random number generator (int) [required]")
 
 parser.add_option("-d", "--distance",
-                  type="float", dest="D", default=1.0e6,
+                  type="float", dest="D", default=1.0e9,
                   help="distance to source (Pc)")
 
 parser.add_option("-S", "--requestSN",
