@@ -55,6 +55,7 @@ if options.istest:
     run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
     run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
 else:
+    # 1 is a switch to include verification binaries
     run('./Galaxy_Maker %s 1' % seed)
 
     run('./Galaxy_key TheGalaxy %s' % seed)    
