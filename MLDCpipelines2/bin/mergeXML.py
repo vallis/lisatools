@@ -17,11 +17,12 @@ parser = OptionParser(usage="usage: %prog [options] MERGED.xml TDIFILE-1.xml TDI
 
 parser.add_option("-k", "--keyOnly",
                   action="store_true", dest="keyonly", default=False,
-                  help="output only SourceData information [off by default]")
+                  help="get only SourceData information from TDIFILE-X.xml [off by default]")
+                  # but preserve and TDIData in MERGED.xml
 
 parser.add_option("-n", "--noKey",
                   action="store_true", dest="nokey", default=False,
-                  help="do not include SourceData information [off by default]")
+                  help="remove all SourceData information [off by default]")
 
 (options, args) = parser.parse_args()
 
@@ -43,11 +44,10 @@ mergedtdifile = lisaxml.readXML(mergedfile)
 if not options.nokey:
     sources = mergedtdifile.getLISASources()
 
-if not options.keyonly:
-    try:
-        tdi = mergedtdifile.getTDIObservables()[0]
-    except IndexError:
-        tdi = None        
+try:
+    tdi = mergedtdifile.getTDIObservables()[0]
+except IndexError:
+    tdi = None        
 
 mergedtdifile.close()
 
@@ -100,7 +100,7 @@ if not options.nokey:
     for source in sources:
         newmergedtdifile.SourceData(source)
 
-if not options.keyonly and tdi:
+if tdi:
     newmergedtdifile.TDIData(tdi)
     
 mergedtdifile.close()
