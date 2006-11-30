@@ -29,8 +29,12 @@ parser.add_option("-s", "--seed",
                   help="seed for random number generator (int) [required]")
 
 parser.add_option("-d", "--distance",
-                  type="float", dest="D", default=None,
+                  type="float", dest="D", default=1.0e9,
                   help="distance to source (Pc) [required]")
+
+parser.add_option("-S", "--requestSN",
+                  type="float", dest="RequestSN", default=None,
+                  help="requested source amplitude SN (satisfied at TDI-generation time)")
 
 parser.add_option("-S", "--requestSN",
                   type="float", dest="RequestSN", default=None,
@@ -50,10 +54,6 @@ if len(args) != 1:
 if options.seed == None:
     parser.error("You must specify the seed!")
     
-if options.D == None:
-    parser.error("You must specify the distance!")
-    
-
 # get the name of the output file
 
 outXMLfile = args[0]
@@ -91,6 +91,10 @@ Tend					 = random.uniform(1.6, 1.8)*2**21*15.0                  # estimated plu
 
 mysystem.IntegrationStep            = 15.0                                              # integration timestep in seconds
 mysystem.IntegrationStep_Unit       = 'Second'
+
+if options.RequestSN:
+    mysystem.RequestSN = options.RequestSN
+    mysystem.RequestSN_Unit = '1'
 
 MBHmass = mysystem.MassOfSMBH
 nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*4.92549095e-6)
