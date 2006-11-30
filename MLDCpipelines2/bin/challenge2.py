@@ -201,7 +201,7 @@ if lisasimdir:
         # then add the TDI data from the LISA Simulator output
         run('%s/bin/mergeXML.py %s %s' % (here,here + '/' + tdifile,outxml))
         # then add the modified Source data included in the Barycentric file
-        run('%s/bin/mergeXML.py -k %s %s %s' % (here,here + '/' + tdifile,here + '/' + xmlfile))
+        run('%s/bin/mergeXML.py -k %s %s' % (here,here + '/' + tdifile,here + '/' + xmlfile))
 
         # what other temporary files to remove?
 
