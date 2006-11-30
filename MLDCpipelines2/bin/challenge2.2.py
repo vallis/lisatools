@@ -18,7 +18,7 @@ seed = int(sys.argv[1])
 
 # challenge 2.2 BBH sources...
 
-# 1 - A loud (SNR ~ 2000) signal (with in-spiral “in band”, that is from f = 0.1 mHz, lasting about 1 week) and coalescing 3 months +/- 1 month after the beginning of the observations
+# 1 - A loud (SNR ~ 2000) signal (with in-spiral "in band", that is from f = 0.1 mHz, lasting about 1 week) and coalescing 3 months +/- 1 month after the beginning of the observations
 # TO DO: verify parameter distribution for "in band" signal; verify mass ratios 
 run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=2000 --coalescTime=90  --coalescRange=30 Source/BH-1.xml' % (seed+1))
 
