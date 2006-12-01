@@ -30,6 +30,7 @@ SourceClassModules = {}
 
 SourceClassModules['BlackHoleBinary'] = 'BBH'
 SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
+SourceClassModules['GalacticBinary'] = 'GalacticBinary'
 
 # could use something here to return a default unit if it is not set...
 # but we would have to look in the source-specific list as well as
@@ -50,6 +51,17 @@ class XMLobject(object):
         
         if attr in self.parameters:
             self.parameters.remove(attr)
+    
+    def parstr(self,attr):
+        value = getattr(self,attr)
+        
+        try:
+            unit = getattr(self,attr+'_Unit')
+        except AttributeError:
+            unit = 'default'
+        
+        return "%s (%s)" % (value,unit)
+    
 
 class TimeSeries(XMLobject):
     def __init__(self,arrays,name='',unit=''):
@@ -145,16 +157,6 @@ class Source(XMLobject):
         self.__dict__['xmltype'] = sourcetype
         self.__dict__['name'] = name
     
-    def parstr(self,attr):
-        value = getattr(self,attr)
-        
-        try:
-            unit = getattr(self,attr+'_Unit')
-        except AttributeError:
-            unit = 'default'
-        
-        return "%s (%s)" % (value,unit)    
-    
     def XML(self,xmlfile,name=None,comments=''):
         """Add a Source-like object to an XML output file."""
         
@@ -229,6 +231,48 @@ class Source(XMLobject):
         # we're done...
         
         return ('XSIL', xsildict, params)
+    
+
+# just a generic XML object...
+class XSILobject(XMLobject):
+    def __init__(self,xmltype,name=''):
+        super(XSILobject,self).__init__()
+        
+        # avoid calling setattr
+        self.__dict__['xmltype'] = xmltype
+        self.__dict__['name'] = name
+    
+    def XML(self,xmlfile,name=None,comments=''):
+        """Add a generic XML object to an XML output file."""
+        
+        xsildict = {}
+        
+        xsildict['Type'] = self.xmltype
+        xsildict['Name'] = name and name or self.name
+        
+        # no unit conversion, nothing!
+        
+        params = []
+        
+        for parname in self.parameters:
+            if hasattr(self,parname + '_Unit'):
+                params.append(('Param', {'Name': parname, 'Unit': getattr(self,parname + '_Unit')}, [getattr(self,parname)]))
+            else:
+                params.append(('Param', {'Name': parname}, [getattr(self,parname)]))
+        
+        # handle comments
+        
+        if comments:
+            params.append(self.doComment(comments))
+        
+        # we're done...
+        
+        return ('XSIL', xsildict, params)
+    
+
+class LISA(XSILobject):
+    def __init__(self,name=''):
+        super(LISA,self).__init__('PseudoLISA',name)
     
 
 class writeXML(object):
@@ -382,6 +426,10 @@ class lisaXML(writeXML):
         
         self.theTDIData.append(observable.XML(self,name,comments))
     
+    def LISAData(self,lisa,name='',comments=''):
+        """Add a LISAData entry describing the LISA geometry."""
+        self.theLISAData.append(lisa.XML(self,name,comments))
+    
     def close(self):
         """Write the XML file to disk. This happens also on destruction of
         the lisaXML object."""
@@ -508,6 +556,17 @@ class readXML:
     
     def getDim(self,node):
         return int(str(node))
+    
+    def getLISAgeometry(self):
+        # use the first LISA found...
+        for node in self.tw:
+            if node.tagName == 'XSIL':
+                if node.Type == 'LISAData':
+                    for node2 in node:
+                        if node2.tagName == 'XSIL' and node2.Type == 'PseudoLISA':
+                                return self.processObject(node2)
+        
+        return None
     
     def getLISASources(self):
         result = []
@@ -643,6 +702,8 @@ class readXML:
                 raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (sourcetype,objectname)                                
         elif objecttype == 'TDIObservable':
             retobj = Observable(objectname)
+        elif objecttype == 'PseudoLISA':
+            retobj = LISA(objectname)
         else:
             raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (objecttype,objectname)
         
