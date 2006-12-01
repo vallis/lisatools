@@ -41,6 +41,8 @@ inputfiles = args[1:]
 
 mergedtdifile = lisaxml.readXML(mergedfile)
 
+lisa = mergedtdifile.getLISAgeometry()
+
 if not options.nokey:
     sources = mergedtdifile.getLISASources()
 
@@ -53,6 +55,11 @@ mergedtdifile.close()
 
 for inputfile in inputfiles:
     inputtdifile = lisaxml.readXML(inputfile)
+
+    # will use the first LISA that it finds anywhere...
+
+    if not lisa:
+        lisa = inputtdifile.getLISAgeometry()
     
     if not options.nokey:
         sources = sources + inputtdifile.getLISASources()
@@ -95,6 +102,9 @@ for inputfile in inputfiles:
             pass
 
 newmergedtdifile = lisaxml.lisaXML(mergedfile)
+
+if lisa:
+    newmergedtdifile.LISAData(lisa)
 
 if not options.nokey:
     for source in sources:
