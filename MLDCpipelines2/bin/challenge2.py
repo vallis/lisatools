@@ -45,7 +45,7 @@ parser.add_option("-t", "--training",
 
 parser.add_option("-T", "--duration",
                   type="float", dest="duration", default=62914560.0,
-#                 type="float", dest="duration", default=3932160.0,
+#                  type="float", dest="duration", default=3932160.0,
                   help="total time for TDI observables (s) [default 62914560 = 2^22 * 15]")
 
 parser.add_option("-d", "--timeStep",
@@ -199,7 +199,7 @@ if lisasimdir:
         sourcefileobj = lisaxml.lisaXML(here + '/' + tdifile)
         sourcefileobj.close()
         # then add the TDI data from the LISA Simulator output
-        run('%s/bin/mergeXML.py %s %s' % (here,here + '/' + tdifile,outxml))
+        run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/Template/StandardLISA.xml',here + '/' + tdifile,outxml))
         # then add the modified Source data included in the Barycentric file
         run('%s/bin/mergeXML.py -k %s %s' % (here,here + '/' + tdifile,here + '/' + xmlfile))
 
@@ -231,7 +231,8 @@ if lisasimdir:
         
     noisefileobj = lisaxml.lisaXML(here + '/' + slnoisefile)
     noisefileobj.close()
-    run('%s/bin/mergeXML.py %s %s' % (here,here + '/' + slnoisefile,lisasimdir + '/XML/noise-only.xml'))
+    run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/Template/StandardLISA.xml',
+                                         here + '/' + slnoisefile,lisasimdir + '/XML/noise-only.xml'))
 
     run('rm XML/noise-only.xml')
     run('rm Binary/noise-only.bin')
