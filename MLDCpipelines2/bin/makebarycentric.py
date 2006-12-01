@@ -72,7 +72,6 @@ if ( hasattr(mysystem,'IntegrationStep') and
     print >> sys.stderr, "Overriding source IntegrationStep (%s) with our own timestep (%s s)" % (mysystem.parstr('IntegrationStep'),
                                                                                                   options.timestep)
 
-
 initialtime = options.inittime - options.prebuffer
 samples = int( (options.duration + options.prebuffer + options.postbuffer) / options.timestep + 0.1 )
 
@@ -80,16 +79,15 @@ samples = int( (options.duration + options.prebuffer + options.postbuffer) / opt
 
 # impose polarization on waveform
 
-if (mysystem.name == '2PN BBH binary'):
-  print "Generating BBH signal..."
-  pol = mysystem.Polarization
-  hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
-  hc = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
-  mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc),'hp,hc')
-elif (mysystem.name == 'Analytical kludge EMRI'):
-  print "Generating EMRI signal..."
-  mysystem.TimeSeries = lisaxml.TimeSeries((hp0,hc0),'hp,hc')
-  
+if (mysystem.xmltype == 'ExtremeMassRatioInspiral'):
+    mysystem.TimeSeries = lisaxml.TimeSeries((hp0,hc0),'hp,hc')
+else:
+    pol = mysystem.Polarization
+
+    hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
+    hc = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
+
+    mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc),'hp,hc')
 
 mysystem.TimeSeries.Cadence = options.timestep
 mysystem.TimeSeries.TimeOffset = initialtime
