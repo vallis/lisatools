@@ -34,6 +34,19 @@ Injfile = args[0]
 Detfiles = args[1:]
 
 
+Injtdifile = lisaxml.readXML(Injfile)
+
+lisa = Injtdifile.getLISAgeometry()
+
+Injsources = Injtdifile.getLISASources()
+
+tdi = Injtdifile.getTDIObservables()[0]
+
+Injtdifile.close()
+
+for userfile in Injfiles:
+    Dettdifile = lisaxml.readXML(userfile)
+    Injtdi =  Dettdifile.getTDIObservables()[0]
 
 
 

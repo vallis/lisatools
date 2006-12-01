@@ -9,6 +9,12 @@ from lisaxml.convertunit import convertUnit
 
 import sys
 import math
+import synthlisa
+
+import numpy
+import numpy.oldnumeric as Numeric
+
+from math import pi, sin, cos, sqrt
 
 # set ourselves up to parse command-line options
 
@@ -88,50 +94,39 @@ samples = int( (options.duration + options.prebuffer + options.postbuffer) / opt
 
 #### Computing Injected Waveform
 
-(hpI0,hcI0) = Injsystem.waveforms(samples,options.timestep,initialtime)
+(hp0,hc0) = Injsystem.waveforms(samples,options.timestep,initialtime)
 
 # impose polarization on waveform
 
-if (Injsystem.SourceType == 'BlackHoleBinary'):
-  print "Generating BBH signal..."
-  pol = Injsystem.Polarization
-  hpI =  math.cos(2*pol) * hpI0 + math.sin(2*pol) * hcI0
-  hcI = -math.sin(2*pol) * hpI0 + math.cos(2*pol) * hcI0
-  Injsystem.TimeSeries = lisaxml.TimeSeries((hpI,hcI),'hp,hc')
-elif (mysystem.SourceType == 'EMRI'):
-  print "Generating EMRI signal..."
-  Injsystem.TimeSeries = lisaxml.TimeSeries((hpI0,hcI0),'hp,hc')
-  hpI = hpI0
-  hcI = hcI0
-elif (Injsystem.SourceiType == 'GalacticBinary'):
-  print "Generating Galactic binary"
-  Injssystem.TimeSeries = lisaxml.TimeSeries((hpI0,hcI0),'hp,hc')
-  hpI = hpI0
-  hcI = hcI0
+if (Injsystem.xmltype == 'ExtremeMassRatioInspiral'):
+    hpI = hp0
+    hcI = hc0
+else:
+    pol = Injsystem.Polarization
+
+    hpI =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
+    hcI = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
+
 
 
 #### Computing Detected Waveform
 
-(hpD0,hcD0) = Detsystem.waveforms(samples,options.timestep,initialtime)
+(hp0,hc0) = Detsystem.waveforms(samples,options.timestep,initialtime)
 
 # impose polarization on waveform
 
-if (Detsystem.SourceType == 'BlackHoleBinary'):
-  print "Generating BBH signal..."
-  pol = Detsystem.Polarization
-  hpD =  math.cos(2*pol) * hpD0 + math.sin(2*pol) * hcD0
-  hcD = -math.sin(2*pol) * hpD0 + math.cos(2*pol) * hcD0
-  Detsystem.TimeSeries = lisaxml.TimeSeries((hpD,hcD),'hp,hc')
-elif (mysystem.SourceType == 'EMRI'):
-  print "Generating EMRI signal..."
-  Detsystem.TimeSeries = lisaxml.TimeSeries((hpD0,hcD0),'hp,hc')
-  hpD = hpD0
-  hcD = hcD0
-elif (Injsystem.SourceType == 'GalacticBinary'):
-  print "Generating Galactic binary"
-  Detssystem.TimeSeries = lisaxml.TimeSeries((hpI0,hcI0),'hp,hc')
-  hpD = hpD0
-  hcD = hcD0
+
+if (Detsystem.xmltype == 'ExtremeMassRatioInspiral'):
+    hpD = hp0
+    hcD = hc0
+else:
+    pol = Detsystem.Polarization
+
+    hpD =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
+    hcD = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
+
+Injsystem.TimeSeries = lisaxml.TimeSeries((hpI,hcI),'hp,hc')
+Detsystem.TimeSeries = lisaxml.TimeSeries((hpD,hcD),'hp,hc')
 
 
 
@@ -142,8 +137,10 @@ lisa = synthlisa.CacheLISA(synthlisa.EccentricInclined(0.0,1.5*pi,-1))
 # Generating TDI
 
 ## for injection
-sourceInj = synthlisa.SampledWave(hpI,hc,
-                               ts.Length,ts.Cadence,-ts.TimeOffset, # synthlisa prebuffer is -TimeOffset
+
+ts = Injsystem.TimeSeries
+sourceInj = synthlisa.SampledWave(hpI,hcI,
+                               ts.Length,options.timestep,-initialtime, # synthlisa prebuffer is -TimeOffset
                                1.0,synthlisa.NoFilter(),2,          # norm = 1.0, no filtering, Lagrange-2 interpolation
                                Injsystem.EclipticLatitude,
                                Injsystem.EclipticLongitude,0)       # polarization already encoded in hp,hc
@@ -158,22 +155,22 @@ samples = int( options.duration / options.timestep + 0.1 )
 
 ## for detected params
 
-sourceDet = synthlisa.SampledWave(hpI,hc,
-                               ts.Length,ts.Cadence,-ts.TimeOffset, # synthlisa prebuffer is -TimeOffset
+ts = Detsystem.TimeSeries
+sourceDet = synthlisa.SampledWave(hpD,hcD,
+                               ts.Length,options.timestep,-initialtime, # synthlisa prebuffer is -TimeOffset
                                1.0,synthlisa.NoFilter(),2,          # norm = 1.0, no filtering, Lagrange-2 interpolation
                                Detsystem.EclipticLatitude,
                                Detsystem.EclipticLongitude,0)       # polarization already encoded in hp,hc
 
 tdiDet = synthlisa.TDIsignal(lisa,sourceDet)
 
-samples = int( options.duration / options.timestep + 0.1 )
 
 [tdet,Xdet,Ydet,Zdet] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
                                               [tdiDet.t,tdiDet.Xm,tdiDet.Ym,tdiDet.Zm],
                                               options.inittime)) 
 
 # computing 
-sampling = ts.Cadence
+sampling = options.timestep
 
 hX = synthlisa.spect(Xinj - Xdet,sampling,0)
 # get frequencies, skip DC
@@ -197,10 +194,10 @@ print snX
 hIx = synthlisa.spect(Xinj,sampling,0)
 hDx = synthlisa.spect(Xdet,sampling,0)
 
-normhI = sqrt(2.0 * numpy.sum(hIX[1:,1] / Sx))
-normhD = sqrt(2.0 * numpy.sum(hDX[1:,1] / Sx))
+normhI = sqrt(2.0 * numpy.sum(hIx[1:,1] / Sx))
+normhD = sqrt(2.0 * numpy.sum(hDx[1:,1] / Sx))
 
-olap = 0.5*(normI/normD + normD/normI - snX*snX/(normI*normD) )
+olap = 0.5*(normhI/normhD + normhD/normhI - snX*snX/(normhI*normhD) )
 
 print olap
 
