@@ -41,10 +41,12 @@ class XMLobject(object):
         self.__dict__['parameters'] = []
     
     def __setattr__(self,attr,value):
-        self.__dict__[attr] = value
-        
-        if (not attr in self.parameters) and (not '_Unit' in attr):
+        # thus, attributes that are initially assigned through the __dict__ interface
+        # will never appear in self.parameters even if they are changed later 
+        if (not attr in self.__dict__) and (not attr in self.parameters) and (not '_Unit' in attr):
             self.parameters.append(attr)
+        
+        self.__dict__[attr] = value
     
     def __delattr__(self,attr):
         del self.__dict__[attr]
