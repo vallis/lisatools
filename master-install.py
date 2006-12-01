@@ -124,6 +124,13 @@ print "--> Installing/refreshing lisaxml"
 assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
 os.chdir(here)
 
+# install/check install for GalacticBinary waveform
+
+os.chdir('MLDCwaveforms/GalacticBinary')
+print "--> Installing/refreshing GalacticBinary"
+assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
+os.chdir(here)
+
 # install/check install for BBH waveform
 
 os.chdir('MLDCwaveforms/BBH')
