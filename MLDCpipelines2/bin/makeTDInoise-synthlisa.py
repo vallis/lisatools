@@ -85,7 +85,17 @@ tdiobs.TimeSeries.Cadence = options.timestep
 tdiobs.TimeSeries.TimeOffset = options.inittime
 
 outputXML = lisaxml.lisaXML(outputfile)
+
+# save the standard LISA...
+lisa = lisaxml.LISA('Standard MLDC PseudoLISA')
+lisa.TimeOffset      = 0; lisa.TimeOffset_Unit      = 'Second'
+lisa.InitialPosition = 0; lisa.InitialPosition_Unit = 'Radian'
+lisa.InitialRotation = 0; lisa.InitialRotation_Unit = 'Radian'
+lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
+outputXML.LISAData(lisa)
+
 outputXML.TDIData(tdiobs)
+
 outputXML.close()
 
 sys.exit(0)
