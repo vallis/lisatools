@@ -120,13 +120,28 @@ Sop = 1.8e-37 * fr**2
 Sx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
 
 # galactic noise
-Sgal = 1.54e4 * (8.0*pi*L)**2 * fr**4 * (
-        numpy.piecewise(fr,(fr >= 1.0e-4    ) & (fr < 1.0e-3),    [lambda f: 10**-44.62  * fr**-2.3,   0]) + \
-        numpy.piecewise(fr,(fr >= 1.0e-3    ) & (fr < 10**-2.386),[lambda f: 10**-47.62  * fr**-3.3,   0]) + \
-        numpy.piecewise(fr,(fr >= 10**-2.386) & (fr <= 0.01),     [lambda f: 10**-69.615 * fr**-12.52, 0])
-        )
+#Sgal = 1.54e4 * (8.0*pi*L)**2 * fr**4 * (
+#        numpy.piecewise(fr,(fr >= 1.0e-4    ) & (fr < 1.0e-3),    [lambda f: 10**-44.62  * fr**-2.3,   0]) + \
+#        numpy.piecewise(fr,(fr >= 1.0e-3    ) & (fr < 10**-2.386),[lambda f: 10**-47.62  * fr**-3.3,   0]) + \
+#        numpy.piecewise(fr,(fr >= 10**-2.386) & (fr <= 0.01),     [lambda f: 10**-69.615 * fr**-12.52, 0])
+#        )
 
+# expression from Phys. Rev. D 73, 122001 (2006)
+Sgal =  8742.84* (4.*pi*L)**2 * fr**2 * numpy.sin(fr*L/(2.*pi))**2 * (
+        numpy.piecewise(fr,(fr >= 1.0e-4    ) & (fr < 1.0e-3),    [lambda f: 10**-44.62  * f**-2.3,   0]) + \
+        numpy.piecewise(fr,(fr >= 1.0e-3    ) & (fr < 10**-2.7),    [lambda f: 10**-50.92  * f**-4.4,   0]) + \
+        numpy.piecewise(fr,(fr >= 10**-2.7    ) & (fr < 10**-2.4),    [lambda f: 10**-62.8  * f**-8.8,   0]) + \
+        numpy.piecewise(fr,(fr >= 10**-2.4    ) & (fr < 10**-2.0),    [lambda f: 10**-89.68  * f**-20.0,   0]) 
+        )
 Sn = Sx + Sgal
+
+#fout = open("PsdN.dat", 'w')
+#spr  = "     "
+#for i in xrange(samples/2):
+#    rec =  str(fr[i]) + spr + str(Sx[i]) + spr + str(Sgal[i]) + spr + str(Sn[i]) + "\n"
+#    fout.write(rec)
+#fout.close()
+
 
 # the (S/N)^2 is given by 2T times the integrated ratio
 # of the spectral densities (the factor of 2 because the spectral
