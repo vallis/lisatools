@@ -98,7 +98,7 @@ for key in xmlKey:
 
 ##### II : creating barycentric for user specified params
 
-sources = "Source/" + challengename + "/*xml"
+sources = "Source/" + challengename + '/' + "/*xml"
 for xmlfile in glob.glob(sources):
     baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
     run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
