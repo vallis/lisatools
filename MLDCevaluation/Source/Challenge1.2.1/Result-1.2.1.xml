@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<?xml-stylesheet type="text/xsl" href="http://www.vallis.org/lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">Michele Vallisneri</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2006-09-18T14:15:51PDT</Param>
+    <Comment>
+        Public lisaXML key for challenge Training-1.2.1
+        
+        This file produced by Synthetic LISA v. 1.3.1
+        (c) 2006 Michele Vallisneri, California Institute of Technology
+        ---------------------------------------------------------------
+        Id: lisasim-lisa.cpp,v 1.30 2006/06/01 01:02:32 vallis Exp 
+        Id: lisasim-signal.cpp,v 1.8 2006/07/27 17:51:26 vallis Exp 
+        Id: lisasim-tdi.cpp,v 1.17 2006/06/14 19:25:52 vallis Exp 
+        Id: lisasim-tdinoise.cpp,v 1.23 2006/06/01 01:09:29 vallis Exp 
+        Id: lisasim-tdisignal.cpp,v 1.11 2005/12/02 02:07:21 vallis Exp 
+        Id: lisasim-tens.cpp,v 1.8 2005/12/02 02:08:20 vallis Exp 
+        Id: lisasim-wave.cpp,v 1.18 2005/11/30 00:23:30 vallis Exp 
+        Id: lisasim-except.h,v 1.2 2006/07/27 17:49:31 vallis Exp 
+        Id: lisasim-lisa.h,v 1.31 2006/07/27 17:50:08 vallis Exp 
+        Id: lisasim-retard.h,v 1.5 2005/11/11 02:44:28 vallis Exp 
+        Id: lisasim-signal.h,v 1.8 2006/07/27 17:51:26 vallis Exp 
+        Id: lisasim-tdi.h,v 1.13 2006/07/27 17:53:31 vallis Exp 
+        Id: lisasim-tdinoise.h,v 1.18 2006/06/01 01:09:29 vallis Exp 
+        Id: 
+        Id: lisasim-tdisignal.h,v 1.8 2005/12/02 02:07:09 vallis Exp 
+        Id: lisasim-tens.h,v 1.6 2005/12/02 02:08:20 vallis Exp 
+        Id: lisasim-wave.h,v 1.15 2005/11/30 00:23:30 vallis Exp 
+        Id: lisasim.h,v 1.11 2005/11/15 21:55:15 vallis Exp 
+        Id: __init__.py,v 1.4 2006/02/14 23:50:20 vallis Exp 
+        Id: convertunit.py,v 1.2 2006/06/14 19:20:43 vallis Exp 
+        Id: lisautils.py,v 1.20 2006/07/27 17:54:22 vallis Exp 
+        Id: lisaxml.py,v 1.9 2006/06/20 00:50:10 vallis Exp 
+    </Comment>
+    <XSIL Type="LISAData">
+        <XSIL Name="LISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0.0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                -4.68958205602e-12
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+            <Comment>
+                LISA
+            </Comment>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="2PN BBH binary" Type="PlaneWave">
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.263115064575
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                3.79454151322
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                5.87145534161
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                -900
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                1951858.50837
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                741393.871458
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                16545493.1477
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.0
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                27000000000.0
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.82496472215
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0.0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7.0
+            </Param>
+            <Param Name="MaxDuration" Unit="Second">
+                31458180
+            </Param>
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>
