@@ -6,6 +6,7 @@ __version__='$Id:  $'
 
 import lisaxml
 import sys
+import re, math
 
 # set ourselves up to parse command-line options
 
@@ -33,6 +34,7 @@ if len(args) < 2:
 Injfile = args[0]
 Detfiles = args[1:]
 
+# To do: Need to read quadrutures as well...
 
 Injtdifile = lisaxml.readXML(Injfile)
 
@@ -44,9 +46,31 @@ tdi = Injtdifile.getTDIObservables()[0]
 
 Injtdifile.close()
 
-for userfile in Injfiles:
-    Dettdifile = lisaxml.readXML(userfile)
-    Injtdi =  Dettdifile.getTDIObservables()[0]
+X = tdi.Xf
+
+A = (2.0*tdi.Xf -tdi.Yf - tdi.Zf)/3.0
+
+E = (tdi.Zf - tdi.Yf)/math.sqrt(3.0) 
+
+
+#To do: here I'll compute noise spectral density
+
+#print Detfiles[0]
+sz = len(Detfiles)
+if (sz > 0):
+   Detfiles[0] = Detfiles[0][1:-1]
+   for i in xrange(sz):
+      if i !=0:
+         Detfiles[i] = Detfiles[0][:-1]
+         
+
+for userfile in Detfiles:
+    print userfile
+#    if ( re.search('Key', userfile) == None): Uncomment thois line later
+       Dettdifile = lisaxml.readXML(userfile)
+       Dettdi =  Dettdifile.getTDIObservables()[0]
+       
+    
 
 
 

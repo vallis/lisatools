@@ -39,7 +39,7 @@ from optparse import OptionParser
 # note that correct management of the Id string requires issuing the command
 # svn propset svn:keywords Id FILENAME
 
-parser = OptionParser(usage="usage: %prog [options] KEYFILE.xml RESULTFILE.xml",
+parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME [Challenge1.1.1 or Challenge1.1.2 or ...]",
                       version="$Id: $")
 
 parser.add_option("-b", "--preBuffer",
@@ -82,9 +82,19 @@ duration = options.duration
 
 ##### I : create barycentric waveforms from the key file
 
-xmlKey = 'Key/'+challengename+"_Key.xml"
-baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
-run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryfile)s')
+## If it is challenge 1.1.1 or 1.2.1 or 1.2.2 we want to do phase maximization
+
+xmlKey = ['Key/'+challengename+"_Key.xml"]
+if(challengename in ['Challenge1.1.1a', 'Challenge1.1.1b', 'Challenge1.1.1c', 'Challenge1.2.1', 'Challenge1.2.2']):
+    print "Creating Keyfile with zero and pi/2 phases"
+    key = xmlKey[0]
+    run("bin/create_quadratures.py %(key)s")
+    xmlKey.append('Key/'+challengename+'_Key_0.xml')
+    xmlKey.append( 'Key/'+challengename+'_Key_piby2.xml')
+
+for key in xmlKey:    
+  baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(key))
+  run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(key)s %(baryfile)s')
 
 ##### II : creating barycentric for user specified params
 
@@ -95,14 +105,15 @@ for xmlfile in glob.glob(sources):
 
 #### III : creating TDI files for all barycentric files
 
-barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
-for xmlfile in glob.glob(barycentric):
-    tdifile = 'TDI/'+challengename + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-    run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+#barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+#for xmlfile in glob.glob(barycentric):
+#    tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+#    run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
 
 #### IV : call evaluation script
 
-tdis = 'TDI/'+challengename+'.xml'
-for xmlfile in glob.glob(tdis):
-    pass
+tdis = glob.glob('TDI/'+challengename+'/*.xml')
+keyTdi = 'TDI/'+challengename+'/'+challengename+'_Key-tdi-frequency.xml'
+#for xmlfile in glob.glob(tdis):
+run('bin/evaluate-syntheticLISA.py --maxPhase %(keyTdi)s %(tdis)s')
