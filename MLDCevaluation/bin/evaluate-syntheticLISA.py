@@ -150,13 +150,28 @@ for userfile in Detfiles:
        print "overlap between E tdis  = ", olapE
 
        if options.phasemax:
-           diffXX0 = synthlisa.spect(X0 - Xd,sampling,0)
-#           diffXXpiby2 = synthlisa.spect(Xpiby2 - Xd,sampling,0)
-#	   SnXdifMax = sqrt( 2.0 * numpy.sum(diffXX0[1:,1] / Sx) + \
-#	                     2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx) )
-#	   SnXdif = sqrt(2.0 * numpy.sum(diffXX[1:,1] / Sx)) 
-#	   print "Non-maximized SNR of dX = ", SnXdif
-#	   print "Maximized over the phase SNR of dX = ", SnXdifMax
+          # XXpiby2 =  synthlisa.spect(Xpiby2,sampling,0) # = XX0
+           XX0 =  synthlisa.spect(X0,sampling,0)
+           XXd =  synthlisa.spect(Xd,sampling,0)
+           normXX0 = 2.0 * numpy.sum(XX0[1:,1] / Sx)
+           normXXd = 2.0 * numpy.sum(XXd[1:,1] / Sx)
+          
+           diffXX0 = 0.5*synthlisa.spect(X0 - Xd,sampling,0)
+           diffXXpiby2 = 0.5*synthlisa.spect(Xpiby2 - Xd,sampling,0)
+          
+           quad0 = 0.5*( normXXd + normXX0 -  2.0 * numpy.sum(diffXX0[1:,1] / Sx))
+           quadpiby2 = 0.5*( normXXd + normXX0 -  2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
+	  
+           SnXdifMin = normXXd + normXX0 - 2.0*sqrt(quad0**2  + quadpiby2**2)
+	   SnXdif = sqrt(2.0 * numpy.sum(diffXX[1:,1] / Sx)) 
+	   print "Non-minimized SNR of dX = ", SnXdif
+	   print "Minimized over the phase SNR of dX = ", sqrt(SnXdifMin)
+           print "diffXX0 = %s , diffXXpiby2  = %s " % (2.0 * numpy.sum(diffXX0[1:,1] / Sx), 2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
+           print "quadr 0 = %s,  quadr pi/2 = %s,  SNR = %s" % (quad0, quadpiby2, sqrt(quad0**2 + quadpiby2**2))
+           print "norm X0 = %s,  norm Xd = %s" % (normXX0, normXXd)
+           print "angle = ", math.atan(quadpiby2/quad0)
+           print "(h0|hpi/2) = ",  0.5*( 2.0*normXX0 - 2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
+           print "(s|h) =  ", 0.5*( normX**2 + normXXd - SnXdif**2)
         
 
 
