@@ -21,9 +21,6 @@ class GalacticBinary(lisaxml.Source):
     
     def __init__(self,name=''):
         super(GalacticBinary, self).__init__('GalacticBinary',name)
-        
-        # for CoherentWave
-        self.lastcomputed = (0,0,0)
     
     def waveforms(self,samples,deltat,inittime):
         t = numpy.arange(inittime,inittime + deltat*samples,deltat,'d')    
