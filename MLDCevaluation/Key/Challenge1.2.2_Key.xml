@@ -4,9 +4,9 @@
 <?xml-stylesheet type="text/xsl" href="http://www.vallis.org/lisa-xml.xsl"?>
 <XSIL>
     <Param Name="Author">Michele Vallisneri</Param>
-    <Param Name="GenerationDate" Type="ISO-8601">2006-09-18T13:31:09PDT</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2006-09-18T14:16:07PDT</Param>
     <Comment>
-        Public lisaXML key for challenge Challenge-1.2.1_blind
+        Public lisaXML key for challenge Challenge-1.2.2_blind
         
         This file produced by Synthetic LISA v. 1.3.1
         (c) 2006 Michele Vallisneri, California Institute of Technology
@@ -56,34 +56,34 @@
     <XSIL Type="SourceData">
         <XSIL Name="2PN BBH binary" Type="PlaneWave">
             <Param Name="EclipticLatitude" Unit="Radian">
-                -0.492288604192
+                -0.123853853085
             </Param>
             <Param Name="EclipticLongitude" Unit="Radian">
-                0.865776910149
+                1.36740619495
             </Param>
             <Param Name="Polarization" Unit="Radian">
-                3.23421975172
+                0.43097376008
             </Param>
             <Param Name="TimeOffset" Unit="Second">
                 -900
             </Param>
             <Param Name="Mass1" Unit="SolarMass">
-                2897164.79667
+                1460618.44285
             </Param>
             <Param Name="Mass2" Unit="SolarMass">
-                727048.270035
+                522465.980876
             </Param>
             <Param Name="CoalescenceTime" Unit="Second">
-                13374027.9811
+                36307592.2688
             </Param>
             <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
-                3.52650977523
+                0.728048048628
             </Param>
             <Param Name="Distance" Unit="Parsec">
-                8000000000.0
+                4000000000.0
             </Param>
             <Param Name="Inclination" Unit="Radian">
-                1.9443881493
+                0.10224926166
             </Param>
             <Param Name="IntegrationStep" Unit="Second">
                 15.0
