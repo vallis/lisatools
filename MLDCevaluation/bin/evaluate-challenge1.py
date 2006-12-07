@@ -105,10 +105,10 @@ for xmlfile in glob.glob(sources):
 
 #### III : creating TDI files for all barycentric files
 
-barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
-for xmlfile in glob.glob(barycentric):
-    tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-    run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+#barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+#for xmlfile in glob.glob(barycentric):
+#    tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+#    run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
 
 #### IV : call evaluation script

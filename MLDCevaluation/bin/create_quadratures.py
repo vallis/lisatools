@@ -46,9 +46,9 @@ outputXML1.close()
 
 Piby2system = mysystem
 if (  re.search('Challenge1.2', xmlInput) != None):
-    Piby2system.InitialAngularOrbitalPhase = math.pi/2.0
+    Piby2system.InitialAngularOrbitalPhase = math.pi/4.0
 elif(  re.search('Challenge1.1.1', xmlInput) != None):
-    Piby2system.InitialPhase = math.pi/2.0
+    Piby2system.InitialPhase = math.pi/4.0
 else:
    print "unknown challenge name", challengename
    sys.exit(1)

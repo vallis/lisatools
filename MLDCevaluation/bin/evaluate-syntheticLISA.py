@@ -12,6 +12,61 @@ import numpy
 import synthlisa
 from math import pi, sin, cos, sqrt
 
+import numpy.oldnumeric as Numeric
+import numpy.fft as FFT
+
+
+## overlap maximized over the phase
+## first argument is a signal second is zero phase template
+def MaxInnerProd(ser1, ser2, PSD):
+  size = Numeric.shape(ser1)[0]
+  pdlen = size/2
+  if(Numeric.shape(ser2)[0] != size):
+     print "size of time series must be the same"
+     sys.exit(1)
+  if(Numeric.shape(PSD)[0] != pdlen):
+     print "wrong size of psd: ", pdlen, Numeric.shape(PSD)
+     sys.exit(1)
+  fourier1 = FFT.fft(ser1)
+  fourier2 = FFT.fft(ser2)
+  prod1 = Numeric.zeros(pdlen+1, dtype='d')
+  prod2 = Numeric.zeros(pdlen+1, dtype='d')
+  prod1[0] = 0.0
+  prod1[1:pdlen] = numpy.multiply(fourier1[1:pdlen],numpy.conjugate(fourier2[1:pdlen])) + numpy.multiply(fourier1[-1:pdlen:-1],numpy.conjugate(fourier2[-1:pdlen:-1]))
+  prod1[pdlen] = fourier1[pdlen]*fourier2[pdlen]
+  prod2[0] = 0.0
+  prod2[1:pdlen] = numpy.multiply(fourier1[1:pdlen],numpy.conjugate(fourier2[1:pdlen]*1.j)) + numpy.multiply((fourier1[-1:pdlen:-1]),numpy.conjugate(fourier2[-1:pdlen:-1]*(-1.j)))
+  prod2[pdlen] = fourier1[pdlen]*fourier2[pdlen]
+  Numeric.divide(prod1[1:], PSD, prod1[1:]) 
+  Numeric.divide(prod2[1:], PSD, prod2[1:]) 
+  olap0 =  2.0*(numpy.sum(prod1[1:]))/float(size) #it must be scaled by dt
+  olappiby2 =  2.0*(numpy.sum(prod2[1:]))/float(size) #it must be scaled by dt
+  print "angle of maxim. = ", math.atan(olappiby2/olap0)
+  return sqrt(olap0**2 + olappiby2**2) 
+
+
+def InnerProd(ser1, ser2, PSD):
+  size = Numeric.shape(ser1)[0]
+  pdlen = size/2
+  if(Numeric.shape(ser2)[0] != size):
+     print "size of time series must be the same"
+     sys.exit(1)
+  if(Numeric.shape(PSD)[0] != pdlen):
+     print "wrong size of psd: ", pdlen, Numeric.shape(PSD)
+     sys.exit(1)
+  fourier1 = FFT.fft(ser1)
+  fourier2 = FFT.fft(ser2)
+  prod1 = Numeric.zeros(pdlen+1, dtype='d')
+  prod1[0] = 0.0
+  prod1[1:pdlen] = numpy.multiply(fourier1[1:pdlen],numpy.conjugate(fourier2[1:pdlen])) + numpy.multiply(fourier1[-1:pdlen:-1],numpy.conjugate(fourier2[-1:pdlen:-1]))
+  prod1[pdlen] = fourier1[pdlen]*fourier2[pdlen]
+  Numeric.divide(prod1[1:], PSD, prod1[1:]) 
+  olap0 =  2.0*(numpy.sum(prod1[1:]))/float(size) #it must be scaled by dt
+  return  olap0
+
+
+
+
 # set ourselves up to parse command-line options
 
 from optparse import OptionParser
@@ -64,6 +119,8 @@ sampling = tdi.TimeSeries.Cadence
 XX = synthlisa.spect(X,sampling,0)
 AA = synthlisa.spect(A,sampling,0)
 EE = synthlisa.spect(E,sampling,0)
+
+
 
 ###  Computing quadratures if needed
 if options.phasemax:
@@ -143,35 +200,39 @@ for userfile in Detfiles:
        EEd = synthlisa.spect(Ed,sampling,0)
        normAd =  sqrt(2.0 * numpy.sum(AAd[1:,1] / Sa))
        normEd =  sqrt(2.0 * numpy.sum(EEd[1:,1] / Se))
-       olapA =  0.5*(normA/normAd + normAd/normA  - SnA/(normA*normAd) )
-       olapE =  0.5*(normE/normEd + normEd/normE  - SnE/(normE*normEd) )
+#       olapA =  0.5*(normA/normAd + normAd/normA  - SnA/(normA*normAd) )
+#       olapE =  0.5*(normE/normEd + normEd/normE  - SnE/(normE*normEd) )
+       olapA = sampling*InnerProd(A,Ad,Sa)
+       olapE = sampling*InnerProd(E,Ed,Sa)
     
        print "overlap between A tdis  = ", olapA
        print "overlap between E tdis  = ", olapE
 
+
        if options.phasemax:
-          # XXpiby2 =  synthlisa.spect(Xpiby2,sampling,0) # = XX0
+#           XXpiby2 =  synthlisa.spect(Xpiby2,sampling,0) # = XX0
            XX0 =  synthlisa.spect(X0,sampling,0)
            XXd =  synthlisa.spect(Xd,sampling,0)
            normXX0 = 2.0 * numpy.sum(XX0[1:,1] / Sx)
            normXXd = 2.0 * numpy.sum(XXd[1:,1] / Sx)
+
+#	   olapTest = sampling*MaxInnerProd(Xpiby2, X0, Sx)/normXX0
+#	   print "max olap between quadratures: ", olapTest, normXX0
+#	   olap1 = sampling*InnerProd(X0, X0, Sx)/normXX0
+#	   olap2 = sampling*InnerProd(X0, Xpiby2, Sx)/normXX0
+#           print "test ;", olap1, olap2
+
+	   quadr = sampling*MaxInnerProd(Xd, X0,  Sx)
+	   
           
-           diffXX0 = 0.5*synthlisa.spect(X0 - Xd,sampling,0)
-           diffXXpiby2 = 0.5*synthlisa.spect(Xpiby2 - Xd,sampling,0)
-          
-           quad0 = 0.5*( normXXd + normXX0 -  2.0 * numpy.sum(diffXX0[1:,1] / Sx))
-           quadpiby2 = 0.5*( normXXd + normXX0 -  2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
-	  
-           SnXdifMin = normXXd + normXX0 - 2.0*sqrt(quad0**2  + quadpiby2**2)
+           SnXdifMin = normXXd + normXX0 - 2.0*quadr
 	   SnXdif = sqrt(2.0 * numpy.sum(diffXX[1:,1] / Sx)) 
-	   print "Non-minimized SNR of dX = ", SnXdif
-	   print "Minimized over the phase SNR of dX = ", sqrt(SnXdifMin)
-           print "diffXX0 = %s , diffXXpiby2  = %s " % (2.0 * numpy.sum(diffXX0[1:,1] / Sx), 2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
-           print "quadr 0 = %s,  quadr pi/2 = %s,  SNR = %s" % (quad0, quadpiby2, sqrt(quad0**2 + quadpiby2**2))
-           print "norm X0 = %s,  norm Xd = %s" % (normXX0, normXXd)
-           print "angle = ", math.atan(quadpiby2/quad0)
-           print "(h0|hpi/2) = ",  0.5*( 2.0*normXX0 - 2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
-           print "(s|h) =  ", 0.5*( normX**2 + normXXd - SnXdif**2)
+	   print "Non-minimized SNR of dX = ", SnXdif**2
+	   print "Minimized over the phase SNR of dX = ", SnXdifMin
+           #print "diffXX0 = %s , diffXXpiby2  = %s " % (2.0 * numpy.sum(diffXX0[1:,1] / Sx), 2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
+          # print "quadr 0 = %s,  quadr pi/2 = %s,  SNR = %s" % (quad0, quadpiby2, sqrt(quad0**2 + quadpiby2**2))
+#	   print "quadr = ", quadr
+#           print "norm X0 = %s,  norm Xd = %s" % (normXX0, normXXd)
         
 
 
