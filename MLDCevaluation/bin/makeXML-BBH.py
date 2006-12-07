@@ -62,10 +62,10 @@ for line in open(inTXTfile,'r'):
         mysystem.Mass2             = pars[4]
         mysystem.CoalescenceTime   = pars[5]
         mysystem.InitialAngularOrbitalPhase = pars[6]
-        mysystem.Distance          = pars[6]
-        mysystem.Inclination       = pars[7]
+        mysystem.Distance          = pars[7]
+        mysystem.Inclination       = pars[8]
 
-        if len(pars) > 8:
+        if len(pars) > 9:
             print "--> Ignoring extra params %s in line \n    %s" % (pars[8:],line),
 
         mysystem.IntegrationStep   = 15.0
