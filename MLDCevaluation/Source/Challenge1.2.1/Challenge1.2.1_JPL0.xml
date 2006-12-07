@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author"></Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2006-12-07T14:10:25CET</Param>
+    <Comment>
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="SourceData">
+        <XSIL Name="BBH binary 0" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.535506166534
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                4.0393395512
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                5.88556718437
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                0.61683108642
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                16811338729.9
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                2965052.61182
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                713030.332882
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                13374072.7268
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.233116718503
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0.0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7.0
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>
