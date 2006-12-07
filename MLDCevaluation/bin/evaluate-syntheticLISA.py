@@ -121,7 +121,7 @@ Edata = (tdiData.Zf - tdiData.Yf)/math.sqrt(3.0)
 
 samples = Numeric.shape(Xdata)[0]
 
-print "data size = ", samples
+#print "data size = ", samples
 
 if (re.search('Challenge1.2', Injfile) != None):
     Dfr = 9.
@@ -195,8 +195,8 @@ chi2 = SnDiff/(samples - Dfr)
 
 #Computing combined SNR
 
-SnA = sampling*InnerProd(Adata, A, Sa)/sqrt(normA)
-SnE = sampling*InnerProd(Edata, E, Se)/sqrt(normE)
+SnA = sampling*InnerProd(Adata, A, Sa)/normA
+SnE = sampling*InnerProd(Edata, E, Se)/normE
 
 Sn = sqrt(SnA**2 + SnE**2)
 print 80*'='
@@ -258,18 +258,17 @@ for userfile in Detfiles:
 
        #Computing combined SNR
 
-       SnA = sampling*InnerProd(Adata, As, Sa)/sqrt(normAs)
-       SnE = sampling*InnerProd(Edata, Es, Se)/sqrt(normEs)
+       SnAs = sampling*InnerProd(Adata, As, Sa)/normAs
+       SnEs = sampling*InnerProd(Edata, Es, Se)/normEs
 
-       Sn = sqrt(SnA**2 + SnE**2)
+       Sns = sqrt(SnAs**2 + SnEs**2)
 
-
-       print "combined SNR  = ", Sn
+       print "combined SNR  = ", Sns
         
        # Computing overlaps
        
-       olapA = sampling*InnerProd(A,As,Sa)/sqrt(normA*normAs)
-       olapE = sampling*InnerProd(E,Es,Se)/sqrt(normE*normEs)
+       olapA = sampling*InnerProd(A,As,Sa)/(normA*normAs)
+       olapE = sampling*InnerProd(E,Es,Se)/(normE*normEs)
     
        print "overlap between A tdis  = ", olapA
        print "overlap between E tdis  = ", olapE
@@ -286,9 +285,9 @@ for userfile in Detfiles:
 #           print "test ;", olap1, olap2
 
 	   quadr = sampling*MaxInnerProd(Xs, X0,  Sx)
-	   SnXdifMin = (normXs + normX0 - 2.0*quadr)/sqrt(normX0 * normXs)
+	   SnXdifMin = (normXs**2 + normX0**2 - 2.0*quadr)/(normX0 * normXs)
 	   
-	   SnXdiff = (normXs + normX - 2.0*sampling*InnerProd(Xs, X, Sx))/sqrt(normX * normXs)
+	   SnXdiff = (normXs**2 + normX**2 - 2.0*sampling*InnerProd(Xs, X, Sx))/(normX * normXs)
 	   
 	   print "Non-minimized SNR of dX = ", SnXdiff
 	   print "Minimized over the phase SNR of dX = ", SnXdifMin
