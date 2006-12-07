@@ -64,6 +64,14 @@ def InnerProd(ser1, ser2, PSD):
   olap0 =  2.0*(numpy.sum(prod1[1:]))/float(size) #it must be scaled by dt
   return  olap0
 
+def ComputeNorm(ser, sampling, PSD):
+     size = Numeric.shape(ser)[0]
+     if(Numeric.shape(PSD)[0] != size/2):
+         print "wrong size of psd: ", pdlen, Numeric.shape(PSD)
+         sys.exit(1)
+     ser2 = synthlisa.spect(ser, sampling,0)
+     norm = sqrt(2.0 *numpy.sum(ser2[1:,1]/PSD))
+     return norm
 
 
 
@@ -74,7 +82,7 @@ from optparse import OptionParser
 # note that correct management of the Id string requires issuing the command
 # svn propset svn:keywords Id FILENAME
 
-parser = OptionParser(usage="usage: %prog [options] ChallengeNTDI_Key.xml Result1TDI.xml Result2TDI.xml ...",
+parser = OptionParser(usage="usage: %prog [options] BlindData.xml ChallengeNTDI_Key.xml Result1TDI.xml Result2TDI.xml ...",
                       version="$Id:  $")
 
 
@@ -87,11 +95,12 @@ parser.add_option("-p", "--maxPhase",
 
 #!!!! currently we support only a single source parameter file  !!!
 
-if len(args) < 2:
+if len(args) < 3:
     parser.error("You must specify at least the output file and one input file!")
 
-Injfile = args[0]
-Detfiles = args[1:]
+Datafile = args[0]
+Injfile = args[1]
+Detfiles = args[2:]
 
 # To do: Need to read quadrutures as well...
 
@@ -102,10 +111,27 @@ if options.phasemax :
 	sys.exit(1)
 
 
+# Reading the data 
+
+Datatdifile = lisaxml.readXML(Datafile)
+tdiData = Datatdifile.getTDIObservables()[0]
+Xdata = tdiData.Xf
+Adata = (2.0*tdiData.Xf -tdiData.Yf - tdiData.Zf)/3.0
+Edata = (tdiData.Zf - tdiData.Yf)/math.sqrt(3.0) 
+
+samples = Numeric.shape(Xdata)[0]
+
+print "data size = ", samples
+
+if (re.search('Challenge1.2', Injfile) != None):
+    Dfr = 9.
+elif (re.search('Challenge1.1', Injfile) != None):
+    Dfr = 7.
+
 # Dealing with key files (injected sources)
 
 Injtdifile = lisaxml.readXML(Injfile)
-lisa = Injtdifile.getLISAgeometry()
+#lisa = Injtdifile.getLISAgeometry()
 Injsources = Injtdifile.getLISASources()
 tdi = Injtdifile.getTDIObservables()[0]
 Injtdifile.close()
@@ -116,25 +142,21 @@ E = (tdi.Zf - tdi.Yf)/math.sqrt(3.0)
 
 sampling = tdi.TimeSeries.Cadence
 
-XX = synthlisa.spect(X,sampling,0)
-AA = synthlisa.spect(A,sampling,0)
-EE = synthlisa.spect(E,sampling,0)
 
 
-
-###  Computing quadratures if needed
+###  Computing quadratures if needed (we do not need pi/2)
 if options.phasemax:
-   injfile =  Injfile[:-18]+'_piby2-tdi-frequency.xml'
-   Injtdifile = lisaxml.readXML(injfile)
-   tdipiby2 = Injtdifile.getTDIObservables()[0]
-   Xpiby2 = tdipiby2.Xf
-   Injtdifile.close()
+#   injfile =  Injfile[:-18]+'_piby2-tdi-frequency.xml'
+#   Injtdifile = lisaxml.readXML(injfile)
+#   tdipiby2 = Injtdifile.getTDIObservables()[0]
+#   Xpiby2 = tdipiby2.Xf
+#   Injtdifile.close()
    injfile =  Injfile[:-18]+'_0-tdi-frequency.xml'
    Injtdifile = lisaxml.readXML(injfile)
    tdi0 = Injtdifile.getTDIObservables()[0]
    X0 = tdi0.Xf
 
-
+XX = synthlisa.spect(X, sampling, 0)
 fr = XX[1:,0]
 
 # Compute noise spectral density
@@ -152,10 +174,43 @@ Sxy = -4.0 * numpy.sin(2.0*om*L)*numpy.sin(om*L) * ( Sop + 4.*Spm )
 Sa = 2.0 * (Sx - Sxy)/3.0
 Se = Sa
 
+normX = ComputeNorm(X,sampling, Sx)
+normA = ComputeNorm(A,sampling, Sa)
+normE = ComputeNorm(E,sampling, Se)
 
-normX = sqrt(2.0 * numpy.sum(XX[1:,1] / Sx))
-normA = sqrt(2.0 * numpy.sum(AA[1:,1] / Sa))
-normE = sqrt(2.0 * numpy.sum(EE[1:,1] / Se))
+
+#############################################
+## Computing chi^2 and SNR witht he key file
+##############################################
+
+diffAkAd = synthlisa.spect(Adata - A,sampling,0) 
+diffEkEd = synthlisa.spect(Edata - E,sampling,0) 
+
+# Computing combined SNR of a difference:
+SnA =  2.0 * numpy.sum(diffAkAd[1:,1] / Sa) # square SNR_Adiff
+SnE =  2.0 * numpy.sum(diffEkEd[1:,1] / Se)
+SnDiff = sqrt( SnA**2 + SnE**2 )
+
+chi2 = SnDiff/(samples - Dfr)
+
+#Computing combined SNR
+
+SnA = sampling*InnerProd(Adata, A, Sa)/sqrt(normA)
+SnE = sampling*InnerProd(Edata, E, Se)/sqrt(normE)
+
+Sn = sqrt(SnA**2 + SnE**2)
+print 80*'='
+print "using key file we get"
+print "chi^2 = ", chi2
+print "combined SNR = ", Sn
+print 80*'='
+
+
+
+###########################################
+##   Dealing with result files
+###########################################
+
 
 #print Detfiles[0]
 sz = len(Detfiles)
@@ -164,6 +219,7 @@ if (sz > 0):
    for i in xrange(sz):
       if i !=0:
          Detfiles[i] = Detfiles[i][:-1]
+
 
 for userfile in Detfiles:
    # print userfile
@@ -177,33 +233,43 @@ for userfile in Detfiles:
        # Nedd to expand it deal with multiple surces...
        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
        Dettdi =  Dettdifile.getTDIObservables()[0]
-       Xd = Dettdi.Xf
-       Ad = (2.0*Dettdi.Xf - Dettdi.Yf - Dettdi.Zf)/3.0
-       Ed = (Dettdi.Zf - Dettdi.Yf)/math.sqrt(3.0) 
-#       diffX = X - Xd
-#       diffA = A - Ad
-#       diffE = E - Ed
-       diffXX = synthlisa.spect(X - Xd,sampling,0) 
-       diffAA = synthlisa.spect(A - Ad,sampling,0) 
-       diffEE = synthlisa.spect(E - Ed,sampling,0) 
 
-       # Computing SNR of a difference:
-       SnA =  2.0 * numpy.sum(diffAA[1:,1] / Sa) # square SNR_Adiff
-       SnE =  2.0 * numpy.sum(diffEE[1:,1] / Se)
-       SnDiff = sqrt( SnA + SnE )
+       Xs = Dettdi.Xf
+       As = (2.0*Dettdi.Xf - Dettdi.Yf - Dettdi.Zf)/3.0
+       Es = (Dettdi.Zf - Dettdi.Yf)/math.sqrt(3.0) 
 
-       print "combined SNR of difference = ", SnDiff
+       normXs = ComputeNorm(Xs, sampling, Sx)
+       normAs = ComputeNorm(As, sampling, Sa)
+       normEs = ComputeNorm(Es, sampling, Se)
+      
+       ### computing chi^2
+
+       diffAsAd = synthlisa.spect(Adata - As,sampling,0) 
+       diffEsEd = synthlisa.spect(Edata - Es,sampling,0) 
+
+       # Computing combined SNR of a difference:
+       SnA =  2.0 * numpy.sum(diffAsAd[1:,1] / Sa) # square SNR_Adiff
+       SnE =  2.0 * numpy.sum(diffEsEd[1:,1] / Se)
+       SnDiff = sqrt( SnA**2 + SnE**2 )
+
+       chi2 = SnDiff/(samples - Dfr)
+
+       print "chi^2 = ", chi2
+
+       #Computing combined SNR
+
+       SnA = sampling*InnerProd(Adata, As, Sa)/sqrt(normAs)
+       SnE = sampling*InnerProd(Edata, Es, Se)/sqrt(normEs)
+
+       Sn = sqrt(SnA**2 + SnE**2)
+
+
+       print "combined SNR  = ", Sn
         
        # Computing overlaps
        
-       AAd = synthlisa.spect(Ad,sampling,0)
-       EEd = synthlisa.spect(Ed,sampling,0)
-       normAd =  sqrt(2.0 * numpy.sum(AAd[1:,1] / Sa))
-       normEd =  sqrt(2.0 * numpy.sum(EEd[1:,1] / Se))
-#       olapA =  0.5*(normA/normAd + normAd/normA  - SnA/(normA*normAd) )
-#       olapE =  0.5*(normE/normEd + normEd/normE  - SnE/(normE*normEd) )
-       olapA = sampling*InnerProd(A,Ad,Sa)
-       olapE = sampling*InnerProd(E,Ed,Sa)
+       olapA = sampling*InnerProd(A,As,Sa)/sqrt(normA*normAs)
+       olapE = sampling*InnerProd(E,Es,Se)/sqrt(normE*normEs)
     
        print "overlap between A tdis  = ", olapA
        print "overlap between E tdis  = ", olapE
@@ -211,10 +277,7 @@ for userfile in Detfiles:
 
        if options.phasemax:
 #           XXpiby2 =  synthlisa.spect(Xpiby2,sampling,0) # = XX0
-           XX0 =  synthlisa.spect(X0,sampling,0)
-           XXd =  synthlisa.spect(Xd,sampling,0)
-           normXX0 = 2.0 * numpy.sum(XX0[1:,1] / Sx)
-           normXXd = 2.0 * numpy.sum(XXd[1:,1] / Sx)
+           normX0 = ComputeNorm(X0, sampling, Sx)
 
 #	   olapTest = sampling*MaxInnerProd(Xpiby2, X0, Sx)/normXX0
 #	   print "max olap between quadratures: ", olapTest, normXX0
@@ -222,13 +285,14 @@ for userfile in Detfiles:
 #	   olap2 = sampling*InnerProd(X0, Xpiby2, Sx)/normXX0
 #           print "test ;", olap1, olap2
 
-	   quadr = sampling*MaxInnerProd(Xd, X0,  Sx)
+	   quadr = sampling*MaxInnerProd(Xs, X0,  Sx)
+	   SnXdifMin = (normXs + normX0 - 2.0*quadr)/sqrt(normX0 * normXs)
 	   
-          
-           SnXdifMin = normXXd + normXX0 - 2.0*quadr
-	   SnXdif = sqrt(2.0 * numpy.sum(diffXX[1:,1] / Sx)) 
-	   print "Non-minimized SNR of dX = ", SnXdif**2
+	   SnXdiff = (normXs + normX - 2.0*sampling*InnerProd(Xs, X, Sx))/sqrt(normX * normXs)
+	   
+	   print "Non-minimized SNR of dX = ", SnXdiff
 	   print "Minimized over the phase SNR of dX = ", SnXdifMin
+	   print "check : ", normX, normX0
            #print "diffXX0 = %s , diffXXpiby2  = %s " % (2.0 * numpy.sum(diffXX0[1:,1] / Sx), 2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
           # print "quadr 0 = %s,  quadr pi/2 = %s,  SNR = %s" % (quad0, quadpiby2, sqrt(quad0**2 + quadpiby2**2))
 #	   print "quadr = ", quadr
