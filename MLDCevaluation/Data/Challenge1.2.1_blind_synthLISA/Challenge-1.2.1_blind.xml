@@ -1,0 +1,595 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<?xml-stylesheet type="text/xsl" href="http://www.vallis.org/lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">Michele Vallisneri</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2006-09-18T13:30:53PDT</Param>
+    <Comment>
+        Public lisaXML for challenge Challenge-1.2.1_blind
+        
+        This file produced by Synthetic LISA v. 1.3.1
+        (c) 2006 Michele Vallisneri, California Institute of Technology
+        ---------------------------------------------------------------
+        Id: lisasim-lisa.cpp,v 1.30 2006/06/01 01:02:32 vallis Exp 
+        Id: lisasim-signal.cpp,v 1.8 2006/07/27 17:51:26 vallis Exp 
+        Id: lisasim-tdi.cpp,v 1.17 2006/06/14 19:25:52 vallis Exp 
+        Id: lisasim-tdinoise.cpp,v 1.23 2006/06/01 01:09:29 vallis Exp 
+        Id: lisasim-tdisignal.cpp,v 1.11 2005/12/02 02:07:21 vallis Exp 
+        Id: lisasim-tens.cpp,v 1.8 2005/12/02 02:08:20 vallis Exp 
+        Id: lisasim-wave.cpp,v 1.18 2005/11/30 00:23:30 vallis Exp 
+        Id: lisasim-except.h,v 1.2 2006/07/27 17:49:31 vallis Exp 
+        Id: lisasim-lisa.h,v 1.31 2006/07/27 17:50:08 vallis Exp 
+        Id: lisasim-retard.h,v 1.5 2005/11/11 02:44:28 vallis Exp 
+        Id: lisasim-signal.h,v 1.8 2006/07/27 17:51:26 vallis Exp 
+        Id: lisasim-tdi.h,v 1.13 2006/07/27 17:53:31 vallis Exp 
+        Id: lisasim-tdinoise.h,v 1.18 2006/06/01 01:09:29 vallis Exp 
+        Id: 
+        Id: lisasim-tdisignal.h,v 1.8 2005/12/02 02:07:09 vallis Exp 
+        Id: lisasim-tens.h,v 1.6 2005/12/02 02:08:20 vallis Exp 
+        Id: lisasim-wave.h,v 1.15 2005/11/30 00:23:30 vallis Exp 
+        Id: lisasim.h,v 1.11 2005/11/15 21:55:15 vallis Exp 
+        Id: __init__.py,v 1.4 2006/02/14 23:50:20 vallis Exp 
+        Id: convertunit.py,v 1.2 2006/06/14 19:20:43 vallis Exp 
+        Id: lisautils.py,v 1.20 2006/07/27 17:54:22 vallis Exp 
+        Id: lisaxml.py,v 1.9 2006/06/20 00:50:10 vallis Exp 
+    </Comment>
+    <XSIL Type="LISAData">
+        <XSIL Name="LISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0.0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                -4.68958205602e-12
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+            <Comment>
+                LISA
+            </Comment>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="NoiseData">
+        <XSIL Name="pm1" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhiteAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                100
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                347.063096135
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-48
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm1" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                RedAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                1000
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                2147.06309613
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-56
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm1s" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhiteAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                100
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                347.063096135
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-48
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm1s" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                RedAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                1000
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                2147.06309613
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-56
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm2" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhiteAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                100
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                347.063096135
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-48
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm2" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                RedAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                1000
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                2147.06309613
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-56
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm2s" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhiteAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                100
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                347.063096135
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-48
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm2s" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                RedAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                1000
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                2147.06309613
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-56
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm3" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhiteAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                100
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                347.063096135
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-48
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm3" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                RedAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                1000
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                2147.06309613
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-56
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm3s" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhiteAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                100
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                347.063096135
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-48
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pm3s" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                RedAcceleration
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                1000
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                2147.06309613
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.5e-56
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                2
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pdm3" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhitePhase
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                15
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                158.680209118
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                1.8e-37
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                4
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pd3" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhitePhase
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                15
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                158.680209118
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                1.8e-37
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                4
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pdm1" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhitePhase
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                15
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                158.680209118
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                1.8e-37
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                4
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pd1" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhitePhase
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                15
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                158.680209118
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                1.8e-37
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                4
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pdm2" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhitePhase
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                15
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                158.680209118
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                1.8e-37
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                4
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+        <XSIL Name="pd2" Type="PseudoRandomNoise">
+            <Param Name="SpectralType" Unit="String">
+                WhitePhase
+            </Param>
+            <Param Name="Cadence" Unit="Second">
+                15
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                158.680209118
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                1.8e-37
+            </Param>
+            <Param Name="PseudoRandomGenerator" Unit="String">
+                taus2-gsl1.4
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                0
+            </Param>
+            <Param Name="Interpolator" Unit="String">
+                Lagrange
+            </Param>
+            <Param Name="InterpolatorWindow" Unit="1">
+                4
+            </Param>
+            <Comment>
+                (part of TDI noises) 
+            </Comment>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="TDIData">
+        <XSIL Name="t,Xf,Yf,Zf" Type="TDIObservable">
+            <Param Name="DataType">FractionalFrequency</Param>
+            <XSIL Name="t,Xf,Yf,Zf" Type="TimeSeries">
+                <Param Name="TimeOffset" Type="Second">0</Param>
+                <Param Name="Cadence" Unit="Second">15</Param>
+                <Param Name="Duration" Unit="Second">31457280</Param>
+                <Array Name="t,Xf,Yf,Zf" Type="double">
+                    <Dim Name="Length">2097152</Dim>
+                    <Dim Name="Records">4</Dim>
+                    <Stream Type="Remote" Encoding="Binary,LittleEndian">Challenge-1.2.1_blind-0.bin</Stream>
+                </Array>
+            </XSIL>
+        </XSIL>
+    </XSIL>
+</XSIL>
