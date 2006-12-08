@@ -21,6 +21,8 @@ import numpy.fft as FFT
 def MaxInnerProd(ser1, ser2, PSD):
   size = Numeric.shape(ser1)[0]
   pdlen = size/2
+  nyquistf = 0.5/15.0   #   !!! hardcoded !!!!
+  freqs = Numeric.arange(0,pdlen+1,dtype='d') * (nyquistf / pdlen)
   if(Numeric.shape(ser2)[0] != size):
      print "size of time series must be the same"
      sys.exit(1)
@@ -39,8 +41,16 @@ def MaxInnerProd(ser1, ser2, PSD):
   prod2[pdlen] = fourier1[pdlen]*fourier2[pdlen]
   Numeric.divide(prod1[1:], PSD, prod1[1:]) 
   Numeric.divide(prod2[1:], PSD, prod2[1:]) 
-  olap0 =  2.0*(numpy.sum(prod1[1:]))/float(size) #it must be scaled by dt
-  olappiby2 =  2.0*(numpy.sum(prod2[1:]))/float(size) #it must be scaled by dt
+  olap0 = 0.0
+  olappiby2 = 0.0
+  for i in xrange(pdlen):
+      if (freqs[i] > 1.e-5 and freqs[i]<0.01):
+           olap0 += prod1[i]
+	   olappiby2 += prod2[i]
+  olap0 = 2.0*olap0/float(size)
+  olappiby2 = 2.0*olappiby2/float(size)
+#  olap0 =  2.0*(numpy.sum(prod1[1:]))/float(size) #it must be scaled by dt
+#  olappiby2 =  2.0*(numpy.sum(prod2[1:]))/float(size) #it must be scaled by dt
   print "angle of maxim. = ", math.atan(olappiby2/olap0)
   return sqrt(olap0**2 + olappiby2**2) 
 
@@ -48,6 +58,8 @@ def MaxInnerProd(ser1, ser2, PSD):
 def InnerProd(ser1, ser2, PSD):
   size = Numeric.shape(ser1)[0]
   pdlen = size/2
+  nyquistf = 0.5/15.0   #   !!! hardcoded !!!!
+  freqs = Numeric.arange(0,pdlen+1,dtype='d') * (nyquistf / pdlen)
   if(Numeric.shape(ser2)[0] != size):
      print "size of time series must be the same"
      sys.exit(1)
@@ -56,12 +68,17 @@ def InnerProd(ser1, ser2, PSD):
      sys.exit(1)
   fourier1 = FFT.fft(ser1)
   fourier2 = FFT.fft(ser2)
-  prod1 = Numeric.zeros(pdlen+1, dtype='d')
-  prod1[0] = 0.0
-  prod1[1:pdlen] = numpy.multiply(fourier1[1:pdlen],numpy.conjugate(fourier2[1:pdlen])) + numpy.multiply(fourier1[-1:pdlen:-1],numpy.conjugate(fourier2[-1:pdlen:-1]))
-  prod1[pdlen] = fourier1[pdlen]*fourier2[pdlen]
-  Numeric.divide(prod1[1:], PSD, prod1[1:]) 
-  olap0 =  2.0*(numpy.sum(prod1[1:]))/float(size) #it must be scaled by dt
+  prod = Numeric.zeros(pdlen+1, dtype='d')
+  prod[0] = 0.0
+  prod[1:pdlen] = numpy.multiply(fourier1[1:pdlen],numpy.conjugate(fourier2[1:pdlen])) + numpy.multiply(fourier1[-1:pdlen:-1],numpy.conjugate(fourier2[-1:pdlen:-1]))
+  prod[pdlen] = fourier1[pdlen]*fourier2[pdlen]
+  Numeric.divide(prod[1:], PSD, prod[1:]) 
+  olap0 = 0.0
+  for i in xrange(pdlen):
+      if (freqs[i] > 1.e-5 and freqs[i]<0.01):
+           olap0 += prod[i]
+  olap0 = 2.0*olap0/float(size)
+ # olap0 =  2.0*(numpy.sum(prod[1:]))/float(size) #it must be scaled by dt
   return  olap0
 
 def ComputeNorm(ser, sampling, PSD):
@@ -70,7 +87,12 @@ def ComputeNorm(ser, sampling, PSD):
          print "wrong size of psd: ", pdlen, Numeric.shape(PSD)
          sys.exit(1)
      ser2 = synthlisa.spect(ser, sampling,0)
-     norm = sqrt(2.0 *numpy.sum(ser2[1:,1]/PSD))
+     norm = 0.0
+     for i in xrange(size/2-1):
+        if (ser2[i][0] > 1.e-5 and ser2[i][0]<0.01):
+	    norm += ser2[i][1]/PSD[i]
+     norm = sqrt(2.0*norm)
+     #norm = sqrt(2.0 *numpy.sum(ser2[1:,1]/PSD))
      return norm
 
 
@@ -189,6 +211,8 @@ diffEkEd = synthlisa.spect(Edata - E,sampling,0)
 # Computing combined SNR of a difference:
 SnA =  2.0 * numpy.sum(diffAkAd[1:,1] / Sa) # square SNR_Adiff
 SnE =  2.0 * numpy.sum(diffEkEd[1:,1] / Se)
+SnA = ComputeNorm(Adata-A, sampling, Sa)**2
+SnE = ComputeNorm(Edata-E, sampling, Se)**2
 SnDiff = sqrt( SnA**2 + SnE**2 )
 
 chi2 = SnDiff/(samples - Dfr)
@@ -197,7 +221,9 @@ chi2 = SnDiff/(samples - Dfr)
 
 SnA = sampling*InnerProd(Adata, A, Sa)/normA
 SnE = sampling*InnerProd(Edata, E, Se)/normE
-
+print "SnA = ", SnA, "  SnE = ", SnE
+#print "normA = ", normA, "  normE = ", normE
+#print "innerProda = ",  sampling*InnerProd(Adata, A, Sa), "innerProde = ",  sampling*InnerProd(Edata, E, Se)
 Sn = sqrt(SnA**2 + SnE**2)
 print 80*'='
 print "using key file we get"
@@ -250,6 +276,8 @@ for userfile in Detfiles:
        # Computing combined SNR of a difference:
        SnA =  2.0 * numpy.sum(diffAsAd[1:,1] / Sa) # square SNR_Adiff
        SnE =  2.0 * numpy.sum(diffEsEd[1:,1] / Se)
+       SnA = ComputeNorm(Adata-As, sampling, Sa)**2
+       SnE = ComputeNorm(Edata-Es, sampling, Se)**2
        SnDiff = sqrt( SnA**2 + SnE**2 )
 
        chi2 = SnDiff/(samples - Dfr)
@@ -291,7 +319,7 @@ for userfile in Detfiles:
 	   
 	   print "Non-minimized SNR of dX = ", SnXdiff
 	   print "Minimized over the phase SNR of dX = ", SnXdifMin
-	   print "check : ", normX, normX0
+#	   print "check : ", normX, normX0
            #print "diffXX0 = %s , diffXXpiby2  = %s " % (2.0 * numpy.sum(diffXX0[1:,1] / Sx), 2.0 * numpy.sum(diffXXpiby2[1:,1] / Sx))
           # print "quadr 0 = %s,  quadr pi/2 = %s,  SNR = %s" % (quad0, quadpiby2, sqrt(quad0**2 + quadpiby2**2))
 #	   print "quadr = ", quadr
