@@ -220,7 +220,7 @@ if lisasimdir:
     noiseseed = options.seed
     run('./Noise_Maker %(noiseseed)s')
 
-    run('echo > sources.txt')
+    run('rm sources.txt; touch sources.txt')
     run('./Package noise-only sources.txt %(noiseseed)s')
 
     # remove temporary files
