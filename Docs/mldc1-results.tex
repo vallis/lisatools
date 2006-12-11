@@ -1,0 +1,211 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{rotating}
+\usepackage{latexsym}
+%\usepackage{bm}
+%\usepackage{amsbsy}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{url}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\usepackage{alltt}
+
+% some definitions 
+\def\be{\begin{equation}}
+\def\ee{\end{equation}}
+%
+\def\bea{\begin{eqnarray}}
+\def\eea{\end{eqnarray}}
+%
+\def\ltsima{$\; \buildrel < \over \sim \;$}
+\def\simlt{\lower.5ex\hbox{\ltsima}}
+\def\gtsima{$\; \buildrel > \over \sim \;$}
+\def\simgt{\lower.5ex\hbox{\gtsima}}
+%
+\def\Tobs{T_{\textrm{\mbox{\tiny{obs}}}}}
+\def\Tcoh{T_{\textrm{\mbox{\tiny{coh}}}}}
+%
+\newcommand{\m}{\langle}
+\newcommand{\M}{\rangle}
+%
+%%%% Stas defs
+\def\en{\end{equation}}
+\def\ena{\end{eqnarray}}
+\newcommand {\ban} {\begin{eqnarray}} 
+\newcommand {\ean} {\end{eqnarray}}
+\def\di{\partial}
+\def\bSo{{\bf \hat{S}_1}}
+\def\bSt{{\bf \hat{S}_2}}
+\def\bL{{\bf \hat{L}_{N}}}
+\def\bk{{\bf \hat{k}}}
+\def\bp{{\bf p} }
+%%%%%%%
+%
+% definitions for emri's document
+%%%%%%%%
+
+
+\def\etal{{\it et al.}}  \def\ie{{\it i.e.}}  \def\eg{{\it e.g.}}
+\def\lap{\hbox{${_{\displaystyle<}\atop^{\displaystyle\sim}}$}}
+\def\gap{\hbox{${_{\displaystyle>}\atop^{\displaystyle\sim}}$}}
+\def\lesssim{\mathrel{\hbox{\rlap{\hbox{\lower4pt\hbox{$\sim$}}}\hbox{$<$}}}}
+\def\gtrsim{\mathrel{\hbox{\rlap{\hbox{\lower4pt\hbox{$\sim$}}}\hbox{$>$}}}}
+\def\alt{\mathrel{\hbox{\rlap{\hbox{\lower4pt\hbox{$\sim$}}}\hbox{$<$}}}}
+\def\agt{\mathrel{\hbox{\rlap{\hbox{\lower4pt\hbox{$\sim$}}}\hbox{$>$}}}}
+
+
+%define page size
+\setlength{\textheight}{9.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{-0.25in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+
+%set up headers and footers on each page
+%\pagestyle{fancy}
+%\fancyhf{}
+%\lhead{\bf\begin{tabular}{c}Section\\\thesubsection\end{tabular}}
+%\chead{\bf\leftmark}
+%\rhead{\bf\begin{tabular}{c}Page\\\thepage\end{tabular}}
+%\lfoot{\bf\versionnumber}
+%\cfoot{\bf Page~\thepage}
+%\rfoot{\bf\today}
+
+
+
+\begin{document}
+
+\title{\bf Report of the first round of the Mock LISA Data Challenges\\ [10pt]
+\small{ Draft v1.0}}
+
+\author{The \emph{Mock LISA Data Challenge Task Force}: \\ [5pt]
+Keith A. Arnaud$^{(1)}$,
+Stanislav Babak$^{(2)}$,
+John G. Baker$^{(1)}$,
+Matthew J. Benacquista$^{(3)}$, \\
+Neil J. Cornish$^{(4)}$,
+Curt Cutler$^{(5)}$,
+Shane L. Larson$^{(6)}$,
+B. S. Sathyaprakash$^{(7)}$, \\
+Michele Vallisneri$^{(5)}$,
+Alberto Vecchio$^{(8,9)}$
+Jean--Yves Vinet$^{(10)}$\\ [20pt]
+\small $^{(1)}$ Gravitational Astrophysics Laboratory, NA SA Goddard Space Flight Center, \\ 
+\small 8800 Greenbelt Rd., Greenbelt, MD 20771, US \\
+\small $^{(2)}$ Max-Planck-Institut f\"ur Gravitationsphysik (Albert-Einstein-Institut), \\ 
+\small Am M\"uhlenberg 1, D-14476 Golm bei Potsdam, Germany \\
+\small $^{(3)}$ Center for Gravitational Wave Astronomy, University of Texas at Brownsville, \\ 
+\small Brownsville, TX 78520, USA \\
+\small $^{(4)}$ Department of Physics, Montana State University, \\
+\small Bozeman, MT 59717, USA \\ 
+\small $^{(5)}$ Jet Propulsion Laboratory, California Institute of Technology, \\ 
+\small Pasadena, CA 91109, USA \\
+\small $^{(6)}$ Department of Physics, Weber State University \\
+\small 2508 University Circle, Ogden, UT 84408, USA \\ 
+\small $^{(7)}$ School of Physics and Astronomy, Cardiff University, \\ 
+\small Cardiff, CF243YB, UK \\
+\small $^{(8)}$ School of Physics and Astronomy, University of Birmingham, \\ 
+\small Edgbaston, Birmingham B152TT, UK \\
+\small $^{(9)}$ Department of Physics and Astronomy, Northwestern University, \\ 
+\small Evanston, IL 60208, USA \\
+\small $^{(10)}$ Department ARTEMIS, Observatoire de la C\^ote d'Azur, \\ 
+\small BP 429, 06304 Nice, France \\ [20pt]
+}
+
+
+
+
+
+%\author{The taskforce\\
+%{\tt http://www.tapir.caltech.edu/dokuwiki/listwg1b:home}
+%}
+
+\maketitle
+
+\begin{abstract}
+
+We summarise the results of the first round of Mock LISA Data Challenges on galactic binary systems and massive black hole binaries.
+
+\end{abstract}
+
+
+\section{Introduction}
+
+At the LISA International Science Team (LIST) meeting of December 2005, the Working Group on Data Analysis (LIST-WG1B) decided to embark in the organisation of several rounds of Mock Data Challenges (MLDC), with the dual purpose of (i)  fostering the development of LISA data analysis tools and capabilities, and (ii) demonstrating the technical readiness already achieved by the gravitational-wave community in distilling a rich science payoff from the LISA data output. The LISA Mock Data Challenges were also proposed and discussed at meetings organized by the US and European LISA Project that were attended by a broad cross section of the international GW community. These challenges are meant to be blind tests, but not really contests; the greatest scientific benefit stemming from them will come from the quantitative comparison of results, analysis methods, and implementations.
+
+A Mock LISA Data Challenge (MLDC) Task Force was constituted at the beginning of 2006 and has been working since then, to formulate challenge problems of maximum efficacy, to establish criteria for the evaluation of the analyses, to develop standard models of the LISA mission and GW sources, to provide computing tools -- LISA response simulators, source waveform generators, and a Mock Data Challenge file format -- and more generally to provide any technical support necessary to the challengers. The challenges involve the distribution of several data sets, encoded in a simple standard format, and containing combinations of realistic simulated LISA noise with the signals from one or more GW sources of parameters unknown to the challenge participants, who are asked to return the maximum amount of correct information about the sources, and to produce technical notes detailing their work. 
+
+The release of the first round of challenge data sets was announced at the Sixth LISA International Symposium hosted by Goddard in June 2006 with deadline for submission of results on 1st December 2006 -- for organizational ease, the deadline was then moved to 4th December, 2006, 00:00 EST. John Baker (Goddard) -- a member of the Task Force not participating to the first round of MLDCs -- was appointed as MLDC1 coordinator; he has responsibility for generating the challenge data sets, receiving and posting on the web the result from the challenge participants and making the key data files available to the public soon after the submission deadline. 
+
+The challenge data sets were posted on the MLDC website~\cite{mldcweb} a few days after the end of the LISA Symposium. They include a total of 9 data sets -- they are described on the MLDC website, the Task Force wiki~\cite{mldcwiki} and \emph{Omnibus} document for Challenge-1 \cite{omnibus} -- and Training data sets (the key files with the signal parameters are public) containing signals of similar properties to those in the challenge (``blind'') data sets. The training data sets were distributed in two flavours: noisy data sets (containing signal and noise) and noise-free data sets (where only the signal as recorded by LISA was present). The software used to generate the waveforms and data sets is public and maintained under version control, with a link from the MLDC website~\cite{mldcweb}. A summary about the MLDC1 round is also provided in the two Task Force contributions to the proceedings for the Sixth LISA Symposium~\cite{mldcproc1,mldcproc2}. 
+
+Ten groups submitted results by the deadline of 4th December 2006. The key files of the challenge data sets were posted {\em immediately} after the deadline and the reports were also made available to the public. Since then, the Task Force has been analysing the results submitted by the participants and this document provides a preliminary report on MLDC1~\footnote{It is just over a week after the submission deadline and the report is by necessity still incomplete and should be regarded as a rapidly evolving document.}. 
+
+The Task Force and Challenge participants will further meet for a face-to-face meeting in Potsdam on 16th December 2006, just before GWDAW11, to discuss the results of MLDC1 and the ongoing effort. At that stage the Task Force will also take the opportunity to present the second round of MLDCs (due to be released later in December 2006).
+
+MLDC1 results (and other efforts to tackle MLDC data sets that have not yet reached the necessary maturity to produce results) will also be presented in one of the sessions at GWDAW11, including a summary presentation by the TaskForce. This will provide a forum for discussion with the wider GW data analysis community. All MLDC1 participating groups are expected to be present at GWDAW11; in fact, the LISA session (for which the MLDC have been selected as ``hot theme'') is the one that has received the larger number of abstracts of the whole meeting.
+
+\section{Overview of MLDC1 submissions}
+
+Ten groups have submitted results for MLDC1 by the deadline~\footnote{The Task Force is aware of a handful of other groups who have been developing analysis algorithms to tackle the first round of MLDCs, but results were not produced in time for submission. We can therefore be moderately optimistic about having more participating groups to the second round of challenges, although they contain data sets of much more significant complexity}. Results are posted on the MLDC website~\cite{mldc-results} that includes the technical note submitted by the challenge participants and the files with the ``best parameter fits'' for the data sets. The table below provides a summary of participation to the analysis of MLDC1.
+
+\begin{center}
+\begin{tabular}{l|ccccccccc}
+\hline \hline
+Group              &    \multicolumn{9}{c}{Challenge identifies} \\
+\hline
+                   &    \multicolumn{7}{c}{Galactic binaries} & \multicolumn{2}{c}{Massive black holes} \\
+                   &    \multicolumn{3}{c}{Single source} & \multicolumn{4}{c}{Multiple sources} & \multicolumn{2}{c}{Single source} \\
+                   &    1.1.1a & 1.1.1b  & 1.1.1c & 1.1.2 & 1.1.3 & 1.1.4 & 1.1.5 & 1.2.1 & 1.2.2 \\
+
+AEI             & $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  & \\
+Ames              & $\bullet$  &  $\bullet$  &             &  $\bullet$  &  $\bullet$  &   &   &  & \\ 
+APC              & $\bullet$  & & & & & &  \\
+Goddard           & & & & & & & & $\bullet$  &  $\bullet$ \\ 
+GLIG               & & & $\bullet$  & & & & & & \\
+Krolak            & $\bullet$  &  $\bullet$  &  $\bullet$  &  &  $\bullet$  &    &   &  & \\ 
+JPL-Caltech       & & & & & & & & $\bullet$  &  $\bullet$ \\
+MT-AEI            & & & & & & & & $\bullet$  &  $\bullet$ \\ 
+MT-JPL             &  $\bullet$  &    $\bullet$  &    $\bullet$  &    $\bullet$  &    $\bullet$  &    $\bullet$  &  $\bullet$  &  \\
+UTB               & $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  & \\
+\hline
+\end{tabular} \\
+\end{center}
+
+An important point to note is that each Challenge data set, including the two data sets containing an unknown number of overlapping sources (1.1.4 and 1.1.5) was analysed by at least three groups. It is also reassuring that at this early stage of the programme several techniques are being pursued: challenge data sets were tackled with matched-filtering, Markov Chain Monte Carlo methods, Hilbert transform, tomographic reconstruction and time-frequency methods, in cases in combination to produce a multi-stage (or hierarchical) analysis approach. Matched-filtering and MCMC were applied to both galactic binaries data sets and massive black hole data sets. The vast majority of the reports emphasise that the participating groups have just begun the process of implementing these pipelines that are therefore not mature, or even at a very early stage of development. A comparison of the approaches is therefore not yet possible (or wise), but the results of the initial MLDC is reassuring on the fact that for MLDC2 a wealth of information will be available to produce a very first assessment of the different approaches.
+
+
+\section{Challenge 1 results}
+
+\subsection{Galactic binaries}
+
+\subsection{Massive black holes}
+
+
+\section{Conclusions}
+
+Ten groups have submitted results to the first round of MLDCs. The Task-Force is also aware of a few other groups that have been developing analysis pipeline to tackle the MLDCs, although they have not submitted results because the algorithms are not sufficiently mature to produce even preliminary results. It is important to stress that several analysis algorithms have been developed, including matched-filter based searches, MCMCs and time-frequency methods. It is clear that only a handful of analysis pipelines have reached a sufficient degree of maturity at this stage to produce reliable results. Nonetheless, each challenge data set was tackle by more than one group, and for each challenge data set at least one entry (in several cases more than one) produced ``correct'' results, including the most challenging data set containing overlapping sources. A comparison of the performances of different algorithms is clearly premature at this stage, but these initial steps are encouraging for the outcome of MLDC2.
+
+Several conclusion can be drawn from this first round of MLDCs: the MLDCs have made an impact on the community, and  have attracted what can be regarded as a critical mass to successfully carry out this programme; in fact, the number of entries was to some extent even larger than the Task Force had anticipated. The development work for analysis algorithms for MLDC (and LISA data analysis in general) is not concentrating in a single direction but is considering several techniques. Groups other than those traditionally engaged in LISA data analysis have entered the Challenges (in some cases with high quality results), including groups working in the analysis of ground-based data. 
+
+\begin{thebibliography}{6}
+
+\bibitem{mldcproc1} K.~A.~Arnaud et al. \emph{The Mock LISA Data Challenges: An overview}, gr-qc/....
+
+\bibitem{mldcproc2} K.~A.~Arnaud et al. \emph{A Mock LISA Data Challenge How-To}, gr-qc/....
+
+\bibitem{mldcweb} Mock LISA Data Challenge Homepage, \url{astrogravs.nasa.gov/docs/mldc}.
+
+\bibitem{omnibus} Mock LISA Data Challenge Task Force, ``Document for Challenge 1,'' \url{svn.sourceforge.net/viewvc/lisato
+ols/Docs/challenge1.pdf}.
+
+\bibitem{mldcwiki} Mock LISA Data Challenge Task Force wiki, \url{www.tapir.caltech.edu/dokuwiki/listwg1b:home}.
+
+\bibitem{mldc-results} \url{http://astrogravs.nasa.gov/docs/mldc/round1/entries.html}; notice that the website is still password protected (JPL still need to clear their report) but it will be made public in the next week or so (hopefully)
+
+\end{thebibliography}
+
+\end{document}
