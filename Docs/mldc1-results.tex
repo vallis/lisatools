@@ -78,8 +78,7 @@
 
 \begin{document}
 
-\title{\bf Report of the first round of the Mock LISA Data Challenges\\ [10pt]
-\small{ Draft v1.0}}
+\title{\bf Report on the first round of the Mock LISA Data Challenges}
 
 \author{The \emph{Mock LISA Data Challenge Task Force}: \\ [5pt]
 Keith A. Arnaud$^{(1)}$,
@@ -89,7 +88,8 @@ Matthew J. Benacquista$^{(3)}$, \\
 Neil J. Cornish$^{(4)}$,
 Curt Cutler$^{(5)}$,
 Shane L. Larson$^{(6)}$,
-B. S. Sathyaprakash$^{(7)}$, \\
+Edward K.~Porter$^{(2)}$, \\
+B. S. Sathyaprakash$^{(7)}$,
 Michele Vallisneri$^{(5)}$,
 Alberto Vecchio$^{(8,9)}$
 Jean--Yves Vinet$^{(10)}$\\ [20pt]
@@ -127,7 +127,7 @@ Jean--Yves Vinet$^{(10)}$\\ [20pt]
 
 \begin{abstract}
 
-We summarise the results of the first round of Mock LISA Data Challenges on galactic binary systems and massive black hole binaries.
+The Mock Data Challenges (MLDC) have the dual purpose of fostering the development of LISA data analysis tools and capabilities, and demonstrating the technical readiness already achieved by the gravitational-wave community in distilling a rich science payoff from the LISA data output. The first round of MLDCs has just been completed: nine data sets containing simulated gravitational wave signals produced either by galactic binaries or massive black hole binaries embedded in simulated LISA instrumental noise were released in June 2006 with deadline for submission of results at the beginning of December 2006. Ten groups have participated to this first round of challenges. Here we summarise the results and provide a first critical assessment of the entries.
 
 \end{abstract}
 
@@ -167,7 +167,7 @@ APC              & $\bullet$  & & & & & &  \\
 Goddard           & & & & & & & & $\bullet$  &  $\bullet$ \\ 
 GLIG               & & & $\bullet$  & & & & & & \\
 Krolak            & $\bullet$  &  $\bullet$  &  $\bullet$  &  &  $\bullet$  &    &   &  & \\ 
-JPL-Caltech       & & & & & & & & $\bullet$  &  $\bullet$ \\
+JPL-Caltech       & & & & & & & & $\bullet$  & \\
 MT-AEI            & & & & & & & & $\bullet$  &  $\bullet$ \\ 
 MT-JPL             &  $\bullet$  &    $\bullet$  &    $\bullet$  &    $\bullet$  &    $\bullet$  &    $\bullet$  &  $\bullet$  &  \\
 UTB               & $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  & \\
@@ -175,12 +175,290 @@ UTB               & $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bullet$  &  $\bu
 \end{tabular} \\
 \end{center}
 
-An important point to note is that each Challenge data set, including the two data sets containing an unknown number of overlapping sources (1.1.4 and 1.1.5) was analysed by at least three groups. It is also reassuring that at this early stage of the programme several techniques are being pursued: challenge data sets were tackled with matched-filtering, Markov Chain Monte Carlo methods, Hilbert transform, tomographic reconstruction and time-frequency methods, in cases in combination to produce a multi-stage (or hierarchical) analysis approach. Matched-filtering and MCMC were applied to both galactic binaries data sets and massive black hole data sets. The vast majority of the reports emphasise that the participating groups have just begun the process of implementing these pipelines that are therefore not mature, or even at a very early stage of development. A comparison of the approaches is therefore not yet possible (or wise), but the results of the initial MLDC is reassuring on the fact that for MLDC2 a wealth of information will be available to produce a very first assessment of the different approaches.
+An important point to note is that each Challenge data set, including the two data sets containing an unknown number of overlapping sources (1.1.4 and 1.1.5) was analysed by at least two groups. It is also reassuring that at this early stage of the programme several techniques are being pursued: challenge data sets were tackled with matched-filtering, Markov Chain Monte Carlo methods, Hilbert transform, tomographic reconstruction and time-frequency methods, in cases in combination to produce a multi-stage (or hierarchical) analysis approach. Matched-filtering and MCMC were applied to both galactic binaries data sets and massive black hole data sets. The vast majority of the reports emphasise that the participating groups have just begun the process of implementing these pipelines that are therefore not mature, or even at a very early stage of development. A comparison of the approaches is therefore not yet possible (or wise), but the results of the initial MLDC is reassuring on the fact that for MLDC2 a wealth of information will be available to produce a very first assessment of the different approaches.
 
 
 \section{Challenge 1 results}
 
 \subsection{Galactic binaries}
+
+A total of seven collaborations submitted entries related to galactic binaries.
+Most of these entries covered the single source data sets of Challenge 1.1.1.
+Several groups also had entries in the isolated source Challenges, 1.1.2
+and 1.1.3, and two groups tackled the overlapping source Challenges 1.1.4 and
+1.1.5.
+
+The recovered source parameters are used to generate templates that are then
+compared to the challenge data sets. For the single source challenges a comparison
+was also made between the injected and recovered parameters.
+
+The recovered templates were used to compute a number of quantities that
+measure the fidelity of the parameter recovery. The first is the $\chi^2$
+per degree of freedom,
+\begin{equation}
+\chi^2 = \frac{ ( s -h_{\rm rec} | s -h_{\rm rec})}{N -D} \, .
+\end{equation}
+Here $s$ denotes the challenge data, $h_{\rm rec}$ is the recovered template,
+$D$ is the dimension of the model, and $N$ is the number of data points
+used in computing the inner product. The noise weighted inner product, $( | )$, is
+computed using the noise orthogonal pseudo $A$ and $E$ channels:
+\begin{equation}
+A = (2 X - Y -Z)/3, \quad \quad E = (Z-Y)/\sqrt{3} \, .
+\end{equation}
+For the single source data sets 200 frequency bins were used in the
+inner product, so $N=800$ and $D=7$. A second quantity that was calculated
+is the signal-to-noise of the recovered signal, which we define as
+\begin{equation}
+{\rm SNR} = \frac{(s | h_{\rm rec})}{(h_{\rm rec} | h_{\rm rec})^{1/2}} \, .
+\end{equation}
+The final quantity that we compute is the degree of correlation between the
+noise free signal (which we generated using the key file) and the
+recovered template:
+\begin{equation}
+C = \frac{( h_{\rm key} | h_{\rm rec})}{(h_{\rm key} | h_{\rm key})^{1/2}(h_{\rm rec} | h_{\rm rec})^{1/2}} \, .
+\end{equation}
+
+The results of applying these measures to the entries to Challenges 1.1.1a,
+1.1.1b and 1.1.1c are displayed in Tables \ref{Challenge1.1.1a},
+\ref{Challenge1.1.1b} and \ref{Challenge1.1.1c}. The correlation values
+for the entries from Krolak and APC showed obvious signs of misphasing
+of the signal. From the recovered parameter values it was clear that
+the initial phase, and in some cases the polarization angles, were
+out by multiples of $\pi/2$. The starred entries for Krolak and APC indicate that
+the MLDC taskforce rephased the template by adding some multiple of
+$\pi/2$ to the initial phase and the polarization angle (Note: this
+is not the same thing as the overall degeneracy between solutions with
+$\psi \rightarrow \pi/2$ and $\phi_0 \rightarrow \phi_0 - \pi$. The
+recovered parameters are incorrect, and these groups should correct their
+template codes for the next round).
+
+After the re-phasing, most entrants did very well on Challenges 1.1.1a and
+Challenges 1.1.1b. On the other hand, it appears that something went wrong
+for most of the entrants in Challenge 1.1.1c. Challenge 1.1.1c is the
+first one where the transfer functions play a significant role, and clearly
+this impacted most groups. It will be interesting to hear what the various groups
+uncover as the explanation of the problem.
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.1a}Challenge 1.1.1a Evaluation}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\chi^2$ & SNR & $C$ \\
+ \hline
+Key File   & 1.123382 & 51.137 &  1.000000\\
+MT/JPL BAM & 1.119815 & 51.178 &  0.997979 \\
+MT/JPL GA  & 1.122909 & 51.138 &  0.997668 \\
+AEI        & 1.191448 & 50.604 & 0.989346 \\
+Krolak     & 7.789006 & 0.933 & -0.003590 \\
+Krolak*   & 1.138955 & 51.038 & 0.998855 \\
+APC       & 4.830442 & -8.007 & -0.134816 \\
+APC*      & 3.104782 & 50.385 & 0.989665 \\
+Ames      & 1.173324 & 51.032 & 0.996947 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.1b}Challenge 1.1.1b Evaluation}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\chi^2$ & SNR & $C$ \\
+ \hline
+Key File   & 1.011716 & 37.251 & 1.000000 \\
+MT/JPL BAM & 1.049210 & 36.856 & 0.980309 \\
+MT/JPL GA  & 1.053097 & 36.808 & 0.978685 \\
+AEI        & 1.387298 & 33.104 & 0.874413 \\
+Krolak     & 8.433994 & -37.038  & -0.995771 \\
+Krolak*   & 1.039869 & 37.038  & 0.995771 \\
+Ames      & 1.465105 & 32.067 & 0.822034 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.1c}Challenge 1.1.1c Evaluation}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\chi^2$ & SNR & $C$ \\
+ \hline
+Key File   & 0.645849 & 91.579 & 1.000000 \\
+MT/JPL BAM & 7.174122 & 57.250 & 0.622660 \\
+MT/JPL GA  & 10.13152 & 39.348 & 0.423913 \\
+AEI        & 17.41694 & -12.982 & -0.144393 \\
+Krolak     & 22.26911 & -0.464 & -0.000716 \\
+Krolak*   & 1.337515 & 88.630 & 0.967977 \\
+GLIG      & 13.11539 & 13.093 & 0.141656 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+The alert reader will notice that the UTB entries do not appear in the main analysis
+tables. This is because their analysis method only returns the frequency and sky location,
+which is not enough to fully specify a template. The results of the UTB entry appear
+in the parameter error tables,  \ref{Challenge1.1.1a_p}, \ref{Challenge1.1.1b_p},
+and \ref{Challenge1.1.1c_p}. It is interesting to note that the Ames entry for
+1.1.1a locked onto a secondary sky solution, but still provided an excellent
+correlation with the noise free data, $C=0.997$. It is also interesting to note
+that the MT/JPL and AEI entries for Challenge 1.1.1c provide excellent fits to
+the frequency and sky location of the source, despite the fact that the correlation
+with the noise free data is so poor. This suggests there is some subtle phasing
+issue with the waveforms that were used.
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.1a_p}Challenge 1.1.1a Parameter Errors}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\Delta f$ (nHz) & $\Delta \theta$ & $\Delta \phi$ \\
+ \hline
+MT/JPL BAM & -1.367 & -0.0148 &  -0.0083 \\
+MT/JPL GA  & -1.044 & -0.0126 & -0.0027 \\
+AEI        & -1.208 & -0.0179 & 0.0008   \\
+Krolak     &  0.980 &  0.0283 & -0.0077 \\
+APC        &  1.343 &  0.0296 & 0.0106 \\
+Ames       & -1.889 & -1.1594 & 3.1270 \\
+UTB        & -3.209 &  0.1426 & 0.6030 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.1b_p}Challenge 1.1.1b Parameter Errors}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\Delta f$ (nHz) & $\Delta \theta$ & $\Delta \phi$ \\
+ \hline
+MT/JPL BAM & 0.434 & -0.0398 &  0.0030 \\
+MT/JPL GA  & 0.314 & -0.0389 &  0.0035 \\
+AEI        & 0.399 & -0.0494 &  0.0005 \\
+Krolak     & 0.341 &  0.0366 & -0.0039 \\
+Ames       & -21.098 &  -0.6064 &  0.0038 \\
+UTB        & -4.299 & -0.3910 & 0.0074 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.1c_p}Challenge 1.1.1c Parameter Errors}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\Delta f$ (nHz) & $\Delta \theta$ & $\Delta \phi$ \\
+ \hline
+MT/JPL BAM & -0.330 & 0.0084 & -0.0013 \\
+MT/JPL GA  &  0.311 & 0.0134 & -0.0006 \\
+AEI        & -0.405 & 0.0126 & -0.0010 \\
+Krolak     & -5.210 & 0.0586 & -0.0101 \\
+GLIG       &  154.850 &  0.3060 & 0.1785 \\
+UTB        & 8.577 & -0.3604 & 0.0657 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+The analysis of Challenges 1.1.2 and 1.1.3 is reported in Tables \ref{Challenge1.1.2} and \ref{Challenge1.1.3}.
+A closer analysis of the residuals $s-h_{\rm rec}$ showed that fits were better at low frequencies and worse
+at high frequencies. For example, most of the extra $\chi^2$ for the MT/JPL BAM entry for 1.1.3 comes from a
+single mis-phased source with $f=4.634797644$ mHz. This problem is very similar to what was seen with the
+1.1.1c entries. It turns out the the MT/JPL group used different versions of their algorithms on different
+challenges: Challenges 1.1.1a, 1.1.1b, 1.1.4 and 1.1.5 were searched using the low frequency approximation
+to the LISA response, while Challenges 1.1.1c, 1.1.2 and 1.1.3 were searched using the rigid adiabatic approximation.
+The latter code was put together at the last minute, with only minimal testing, and it is now clear that some
+bugs remain.
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.2}Challenge 1.1.2 Evaluation}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\chi^2$ & SNR & $C$ \\
+ \hline
+Key File   & 0.926374 & 529.387 & 1.000000 \\
+MT/JPL BAM & 0.933907 & 523.440 & 0.988549 \\
+MT/JPL GA  & 0.951525 & 505.030 & 0.953926 \\
+AEI        & 1.114532 & 330.420 & 0.624990 \\
+Ames       & 0.956224 & 501.713 & 0.947939 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.3}Challenge 1.1.3 Evaluation}
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Entrant  & $\chi^2$ & SNR & $C$ \\
+ \hline
+Key File   & 0.948490 & 120.726 & 1.000000 \\
+MT/JPL BAM & 0.959345 & 97.086 & 0.796300 \\
+MT/JPL GA  & 0.952557 & 111.731 & 0.913632 \\
+AEI        & 0.962476 & 88.3501 & 0.726209 \\
+Ames       & 0.956552 & 102.179 & 0.839383 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+The results for
+Challenge 1.1.4 and Challenge 1.1.5 are quoted in Tables \ref{Challenge1.1.4} and
+\ref{Challenge1.1.5}. A fourth column has been added to record the number of
+signals recovered, $N_s$. To get a better sense of what the $\chi^2$ is telling us,
+Figure \ref{res1.1.4} shows the residual strain specral density in the A channel
+(scaled in units of the noise spectral density) derived from the AEI and MT/JPL
+entries. The resdiual ``confusion noise'' from the MT/JPL entry is only slightly
+above the instrument noise level, while the residual from the AEI entry is significantly
+larger than the instrument noise level.
+
+
+\begin{figure}[h]
+\includegraphics[angle=0,width=1.0\textwidth]{res_1.1.4.eps}
+\caption{\label{res1.1.4}Residual strain specral density in the A channel
+(scaled in units of the noise spectral density) derived from the AEI and MT/JPL
+entries.}
+\end{figure}
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.4}Challenge 1.1.4 Evaluation}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Entrant  & $\chi^2$ & SNR & $C$ & $N_s$\\
+ \hline
+Key File   & 1.135464 & 201.129 & 1.000000 & 45\\
+MT/JPL BAM & 1.694238 & 197.827 & 0.976334 & 43\\
+AEI        & 7.420979 & 159.893 & 0.791810 & 27\\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}[t]
+\caption{\label{Challenge1.1.5}Challenge 1.1.5 Evaluation}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Entrant  & $\chi^2$ & SNR & $C$ & $N_s$ \\
+ \hline
+Key File   &  1.299494 & 178.262 & 1.000000 & 33 \\
+MT/JPL BAM &  3.276199 & 172.567 & 0.963438 & 27 \\
+AEI        &  17.196080 & 116.758 & 0.654098 & 6 \\
+\hline  
+\end{tabular}
+\end{center}
+\end{table*}
+
 
 \subsection{Massive black holes}
 
@@ -191,7 +469,9 @@ Ten groups have submitted results to the first round of MLDCs. The Task-Force is
 
 Several conclusion can be drawn from this first round of MLDCs: the MLDCs have made an impact on the community, and  have attracted what can be regarded as a critical mass to successfully carry out this programme; in fact, the number of entries was to some extent even larger than the Task Force had anticipated. The development work for analysis algorithms for MLDC (and LISA data analysis in general) is not concentrating in a single direction but is considering several techniques. Groups other than those traditionally engaged in LISA data analysis have entered the Challenges (in some cases with high quality results), including groups working in the analysis of ground-based data. 
 
-\begin{thebibliography}{6}
+
+
+\begin{thebibliography}{99}
 
 \bibitem{mldcproc1} K.~A.~Arnaud et al. \emph{The Mock LISA Data Challenges: An overview}, gr-qc/....
 
