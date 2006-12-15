@@ -65,5 +65,5 @@ requestsn = random.randint(30,100)
 run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s Source/EMRI-5.xml' % (seed+11,requestsn))
 
 # now the Galaxy! (for testing, seed must be 1)
-run('bin/makesource-Galaxy.py -t %s' % seed)
-#run('bin/makesource-Galaxy.py %s' % seed)
+#run('bin/makesource-Galaxy.py -t %s' % seed)
+run('bin/makesource-Galaxy.py %s' % seed)
