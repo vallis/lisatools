@@ -8,7 +8,7 @@ import os
 import glob
 
 from distutils.sysconfig import get_python_lib
-from distutils.dep_util import newer_group
+from distutils.dep_util import newer, newer_group
 
 libdir = None
 lisasim = None
@@ -152,8 +152,9 @@ print "--> Installing/refreshing Galaxy"
 
 sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.c') + glob.glob('../../lisaXML/io-C/*.h')
 
-if ( newer_group(sources,'Galaxy_Maker') or newer_group(sources,'Galaxy_key') or
-     newer_group(sources,'Fast_XML_LS') or newer_group(sources,'DataImport') ):
+if ( newer_group(sources,'Galaxy_Maker') or newer_group(sources,'Galaxy_key')  or
+     newer_group(sources,'Fast_XML_LS')  or newer_group(sources,'Fast_XML_SL') or
+                                            newer_group(sources,'DataImport') ):
      print "    (recompiling Galaxy)"
      assert(0 == os.system('./Compile'))
 
@@ -237,6 +238,14 @@ if not os.path.isdir(libdir + '/lisasimulator-1year'):
     print "    (setting up 1-year version... this will take a while...)"
     assert(0 == os.system('./Setup'))
     os.chdir('..')
+else:
+    # patch Package for more recent changes
+    if newer(here + '/Packages/LISASimulator/Package.c','lisasimulator-1year/Package'):
+        assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Package.c')))
+        print "    (recompiling Package)"
+        os.chdir('lisasimulator-1year')
+        assert(0 == os.system('./Compile'))
+        os.chdir('..')
 
 if not os.path.isdir(libdir + '/lisasimulator-2year'):
     print "    (compiling 2-year version... disregard all warnings, this is Neil's code :]...)"
@@ -253,6 +262,14 @@ if not os.path.isdir(libdir + '/lisasimulator-2year'):
     print "    (setting up 2-year version... this will take a while...)"
     assert(0 == os.system('./Setup'))
     os.chdir('..')
+else:
+    # patch Package for more recent changes
+    if newer(here + '/Packages/LISASimulator/Package.c','lisasimulator-2year/Package'):
+        assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Package.c')))
+        print "    (recompiling Package)"
+        os.chdir('lisasimulator-2year')
+        assert(0 == os.system('./Compile'))
+        os.chdir('..')
 
     # now let's tell the pipeline scripts where to find the LISA Simulator...
 
