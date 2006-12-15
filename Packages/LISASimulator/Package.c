@@ -88,12 +88,11 @@ int main(int argc,char **argv) {
      the Cornish & Hellings convention which also agrees with the JPL
      group and Synthetic LISA */
 
-  while (!feof(sourcefile))
-     {
+  while (!feof(sourcefile)) {
+      *tag = 0;
       fscanf(sourcefile, "%s\n", &tag);
 
-      if(*tag != '\0')
-	{
+      if(*tag != '\0') {
 
       printf("reading in source %s\n", tag);
 
@@ -283,11 +282,11 @@ int main(int argc,char **argv) {
                 XMLparamdouble(myxml,"Cadence","Second",dt);
                 XMLparamdouble(myxml,"Duration","Second",T);
 
-                    if (testbyteorder() == BIGENDIAN) {
-	   	    XMLarray(myxml,"t,Xs,Ys,Zs","double","1",NFFT,4,"Remote","Binary,BigEndian",binaryname);
-                    } else {
-                   XMLarray(myxml,"t,Xs,Ys,Zs","double","1",NFFT,4,"Remote","Binary,LittleEndian",binaryname);
-                    }
+                if (testbyteorder() == BIGENDIAN) {
+	   	            XMLarray(myxml,"t,Xs,Ys,Zs","double","1",NFFT,4,"Remote","Binary,BigEndian",binaryname);
+                } else {
+                    XMLarray(myxml,"t,Xs,Ys,Zs","double","1",NFFT,4,"Remote","Binary,LittleEndian",binaryname);
+                }
 
             XMLclosetag(myxml,"XSIL");
 
