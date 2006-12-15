@@ -8,6 +8,7 @@ import sys
 import os
 import glob
 import re
+from distutils.dep_util import newer, newer_group
 
 import lisaxml
 import numpy
@@ -50,6 +51,10 @@ parser.add_option("-d", "--timeStep",
 parser.add_option("-s", "--seed",
                   type="int", dest="seed", default=None,
                   help="seed for random number generator (int) [required]")
+
+parser.add_option("-m", "--make",
+                  action="store_true", dest="makemode", default=False,
+                  help="run in make mode (use already-generated source key files and intermediate products)")
 
 parser.add_option("-S", "--synthlisa",
                   action="store_true", dest="synthlisaonly", default=False,
@@ -98,31 +103,34 @@ duration = options.duration
 # --------------------------------------------------------------------------------------
 
 # first empty the Source and Galaxy directories
-run('rm -f Source/*.xml')
-run('rm -f Galaxy/*.xml')
+if (not makemode):
+    run('rm -f Source/*.xml')
+    run('rm -f Galaxy/*.xml')
 
-# to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
-# it must take a single argument (the seed) and put its results in the Source subdirectory
-# if makesource-Galaxy.py is called, it must be with the UNALTERED seed, which is used
-# later to call makeTDIsignals-Galaxy.py
+    # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
+    # it must take a single argument (the seed) and put its results in the Source subdirectory
+    # if makesource-Galaxy.py is called, it must be with the UNALTERED seed, which is used
+    # later to call makeTDIsignals-Galaxy.py
 
-sourcescript = 'bin/' + challengename + '.py'
-if not os.path.isfile(sourcescript):
-    parser.error("I need the challenge script %s!" % sourcescript)
-else:
-    run('python %s %s' % (sourcescript,seed))
+    sourcescript = 'bin/' + challengename + '.py'
+    if not os.path.isfile(sourcescript):
+        parser.error("I need the challenge script %s!" % sourcescript)
+    else:
+        run('python %s %s' % (sourcescript,seed))
 
 # ---------------------------------------
 # STEP 2: create barycentric strain files
 # ---------------------------------------
 
 # first empty the Barycentric directory
-run('rm -f Barycentric/*.xml Barycentric/*.bin')
+if (not makemode):
+    run('rm -f Barycentric/*.xml Barycentric/*.bin')
 
 # then run makebarycentric over all the files in the Source directory
 for xmlfile in glob.glob('Source/*.xml'):
     baryfile = 'Barycentric/' + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
-    run('bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
+    if (not makemode) or newer(xmlfile,baryfile):
+        run('bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 
 # check if any of the source files requests an SN; in this case we'll need to run synthlisa!
 
@@ -134,7 +142,8 @@ if os.system('grep -q RequestSN Source/*.xml') == 0 and dosynthlisa == False:
 # --------------------------
 
 # first empty the TDI directory
-run('rm -f TDI/*.xml TDI/*.bin TDI/Binary')
+if (not makemode):
+    run('rm -f TDI/*.xml TDI/*.bin TDI/Binary')
 
 if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
@@ -143,12 +152,15 @@ if dosynthlisa:
     # they may carry
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
         tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-        run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+        if (not makemode) or newer(xmlfile,tdifile):
+            run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
     # now run noise generation...
     noiseseed = options.seed
     noisefile = 'TDI/tdi-frequency-noise.xml'
-    run('bin/makeTDInoise-synthlisa.py --seed=%(noiseseed)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
+    # note that we're not checking whether the seed is the correct one
+    if (not makemode) or (not os.path.isfile(noisefile)):
+        run('bin/makeTDInoise-synthlisa.py --seed=%(noiseseed)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
 
 # --------------------------
 # STEP 4: run LISA Simulator
@@ -165,74 +177,75 @@ if lisasimdir:
         xmlname = re.sub('\-barycentric.xml','',os.path.basename(xmlfile))
 
         tdifile = 'TDI/' + xmlname + '-tdi-strain.xml'
-        
-        xmldest = lisasimdir + '/XML/' + xmlname + '_Barycenter.xml'
-
         # this is not perfect; it would be better to read the binary filename from the XML...
         binfile = 'Barycentric/' + xmlname + '-barycentric-0.bin'
-        bindest = lisasimdir + '/XML/' + xmlname + '-barycentric-0.bin'
 
-        run('cp %s %s' % (xmlfile,xmldest))
-        run('cp %s %s' % (binfile,bindest))
+        if (not makemode) or newer(xmlfile,tdifile):
+            xmldest = lisasimdir + '/XML/' + xmlname + '_Barycenter.xml'
+            bindest = lisasimdir + '/XML/' + xmlname + '-barycentric-0.bin'
 
-        os.chdir(lisasimdir)
+            run('cp %s %s' % (xmlfile,xmldest))
+            run('cp %s %s' % (binfile,bindest))
 
-        # run LISA simulator...
+            os.chdir(lisasimdir)
 
-        run('./GWconverter %s' % xmlname)
-        run('./Vertex1Signals')
-        run('./Vertex2Signals')
-        run('./Vertex3Signals')
+            # run LISA simulator...
 
-        run('echo "%s" > sources.txt' % xmlname)
-        run('./Package %s sources.txt 0' % xmlname)
+            run('./GWconverter %s' % xmlname)
+            run('./Vertex1Signals')
+            run('./Vertex2Signals')
+            run('./Vertex3Signals')
 
-        outxml = 'XML/' + xmlname + '.xml'
-        outbin = 'Binary/' + xmlname + '.bin'
+            run('echo "%s" > sources.txt' % xmlname)
+            run('./Package %s sources.txt 0' % xmlname)
 
-        # create an empty XML file...
-        sourcefileobj = lisaxml.lisaXML(here + '/' + tdifile)
-        sourcefileobj.close()
-        # then add the TDI data from the LISA Simulator output
-        run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/Template/StandardLISA.xml',here + '/' + tdifile,outxml))
-        # then add the modified Source data included in the Barycentric file
-        run('%s/bin/mergeXML.py -k %s %s' % (here,here + '/' + tdifile,here + '/' + xmlfile))
+            outxml = 'XML/' + xmlname + '.xml'
+            outbin = 'Binary/' + xmlname + '.bin'
 
-        # what other temporary files to remove?
+            # create an empty XML file...
+            sourcefileobj = lisaxml.lisaXML(here + '/' + tdifile)
+            sourcefileobj.close()
+            # then add the TDI data from the LISA Simulator output
+            run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/' + tdifile,here + '/Template/StandardLISA.xml',outxml))
+            # then add the modified Source data included in the Barycentric file
+            run('%s/bin/mergeXML.py -k %s %s' % (here,here + '/' + tdifile,here + '/' + xmlfile))
 
-        run('rm %s' % outxml)
-        run('rm %s' % outbin)
+            # what other temporary files to remove?
 
-        run('rm %s' % xmldest)
-        run('rm %s' % bindest)
+            run('rm %s' % outxml)
+            run('rm %s' % outbin)
+
+            run('rm %s' % xmldest)
+            run('rm %s' % bindest)
     
-        os.chdir(here)
+            os.chdir(here)
     
     # noise generation
 
-    os.chdir(lisasimdir)
-
-    noiseseed = options.seed
-    run('./Noise_Maker %(noiseseed)s')
-
-    run('rm sources.txt; touch sources.txt')
-    run('./Package noise-only sources.txt %(noiseseed)s')
-
-    # remove temporary files
-    run('rm Binary/AccNoise*.dat Binary/ShotNoise*.dat Binary/XNoise*.bin Binary/YNoise*.bin Binary/ZNoise*.bin')
-    run('rm Binary/M1Noise*.bin Binary/M2Noise*.bin Binary/M3Noise*.bin')
-
     slnoisefile = 'TDI/tdi-strain-noise.xml'
+
+    if (not makemode) or (not os.path.isfile(slnoisefile))::
+        os.chdir(lisasimdir)
+
+        noiseseed = options.seed
+        run('./Noise_Maker %(noiseseed)s')
+
+        run('rm sources.txt; touch sources.txt')
+        run('./Package noise-only sources.txt %(noiseseed)s')
+
+        # remove temporary files
+        run('rm Binary/AccNoise*.dat Binary/ShotNoise*.dat Binary/XNoise*.bin Binary/YNoise*.bin Binary/ZNoise*.bin')
+        run('rm Binary/M1Noise*.bin Binary/M2Noise*.bin Binary/M3Noise*.bin')
         
-    noisefileobj = lisaxml.lisaXML(here + '/' + slnoisefile)
-    noisefileobj.close()
-    run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/Template/StandardLISA.xml',
-                                         here + '/' + slnoisefile,lisasimdir + '/XML/noise-only.xml'))
+        noisefileobj = lisaxml.lisaXML(here + '/' + slnoisefile)
+        noisefileobj.close()
+        run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/' + slnoisefile,here + '/Template/StandardLISA.xml',
+                                                                           lisasimdir + '/XML/noise-only.xml'))
 
-    run('rm XML/noise-only.xml')
-    run('rm Binary/noise-only.bin')
+        run('rm XML/noise-only.xml')
+        run('rm Binary/noise-only.bin')
 
-    os.chdir(here)
+        os.chdir(here)
 
 # -----------------------
 # STEP 5: run Fast Galaxy
@@ -240,8 +253,9 @@ if lisasimdir:
 
 # hmm... are we telling everybody the seed with the filename of the galaxy?
 
-if glob.glob('Galaxy/*.xml'):
-    run('bin/makeTDIsignals-Galaxy.py %s' % seed)
+if os.path.isfile('Galaxy/Galaxy.xml'):
+    if (not makemode) or ('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-frequency.xml') or newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-strain.xml')):
+        run('bin/makeTDIsignals-Galaxy.py %s' % seed)
 
 # -------------------------
 # STEP 6: assemble datasets
