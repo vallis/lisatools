@@ -32,7 +32,7 @@ random.seed(seed)
 
 # 3 - A loud (SNR ~ 1000) signal coalescing between 6 and 24 months from beginning of observations
 if random.random() > 0.5:
-    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=200 --coalescTime=450 --coalescRange=270 Source/BH-3.xml' % (seed+3))
+    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=1000 --coalescTime=450 --coalescRange=270 Source/BH-3.xml' % (seed+3))
 
 # 4 - A loud (SNR ~ 200) signal coalescing between 6 and 24 months from beginning of observations
 if random.random() > 0.5:
