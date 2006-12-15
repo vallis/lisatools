@@ -12,11 +12,6 @@ import re
 import lisaxml
 import numpy
 
-#Stas added popen module
-
-import popen2
-
-
 def run(command):
     commandline = command % globals()
     print "--> %s" % commandline
@@ -132,7 +127,7 @@ for xmlfile in glob.glob('Source/*.xml'):
 # check if any of the source files requests an SN; in this case we'll need to run synthlisa!
 
 if os.system('grep -q RequestSN Source/*.xml') == 0 and dosynthlisa == False:
-    print "Ah, at least one of your Source files has a RequestSN field; then I MUST run synthlisa to adjust SNRs."
+    parser.error("Ah, at least one of your Source files has a RequestSN field; then I MUST run synthlisa to adjust SNRs.")
 
 # --------------------------
 # STEP 3: run Synthetic LISA
@@ -324,5 +319,3 @@ sys.exit(0)
 # TO DO:
 # - must add noise and geometry specification (do it with files in Template)
 # - must do some instructions
-# - must do "real" galaxy...
-# - must do SNR
