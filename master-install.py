@@ -240,8 +240,8 @@ if not os.path.isdir(libdir + '/lisasimulator-1year'):
     os.chdir('..')
 else:
     # patch Package for more recent changes
-    if newer(here + '/Packages/LISASimulator/Package.c','lisasimulator-1year/Package'):
-        assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Package.c')))
+    if newer(here + '/Packages/LISASimulator/Package.c',libdir + '/lisasimulator-1year/Package'):
+        assert(0 == os.system('cp %s %s/lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Package.c',libdir)))
         print "    (recompiling Package)"
         os.chdir('lisasimulator-1year')
         assert(0 == os.system('./Compile'))
@@ -264,8 +264,8 @@ if not os.path.isdir(libdir + '/lisasimulator-2year'):
     os.chdir('..')
 else:
     # patch Package for more recent changes
-    if newer(here + '/Packages/LISASimulator/Package.c','lisasimulator-2year/Package'):
-        assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Package.c')))
+    if newer(here + '/Packages/LISASimulator/Package.c',libdir + '/lisasimulator-2year/Package'):
+        assert(0 == os.system('cp %s %s/lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Package.c',libdir)))
         print "    (recompiling Package)"
         os.chdir('lisasimulator-2year')
         assert(0 == os.system('./Compile'))
