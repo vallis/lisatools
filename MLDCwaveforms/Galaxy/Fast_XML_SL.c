@@ -213,16 +213,16 @@ int main(int argc,char **argv) {
 	    XMLcontentstring(myxml,"<Param Name=\"DataType\">");
 	    XMLcontentstring(myxml,"FractionalFrequency</Param>");
 
-            XMLopentag(myxml,"XSIL","Name=\"%s\" Type=\"TimeSeries\"","t,Xs,Ys,Zs");
+            XMLopentag(myxml,"XSIL","Name=\"%s\" Type=\"TimeSeries\"","t,Xf,Yf,Zf");
 
                 XMLparamdouble(myxml,"TimeOffset","Second",0.0);
                 XMLparamdouble(myxml,"Cadence","Second",dt);
                 XMLparamdouble(myxml,"Duration","Second",T);
 
                     if (testbyteorder() == BIGENDIAN) {
-	   	    XMLarray(myxml,"t,Xs,Ys,Zs","double","1",NFFT,4,"Remote","Binary,BigEndian",binaryname);
+	   	                XMLarray(myxml,"t,Xf,Yf,Zf","double","1",NFFT,4,"Remote","Binary,BigEndian",binaryname);
                     } else {
-                   XMLarray(myxml,"t,Xs,Ys,Zs","double","1",NFFT,4,"Remote","Binary,LittleEndian",binaryname);
+                        XMLarray(myxml,"t,Xf,Yf,Zf","double","1",NFFT,4,"Remote","Binary,LittleEndian",binaryname);
                     }
 
             XMLclosetag(myxml,"XSIL");
