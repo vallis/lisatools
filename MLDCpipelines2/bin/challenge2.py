@@ -103,7 +103,8 @@ duration = options.duration
 # --------------------------------------------------------------------------------------
 
 # first empty the Source and Galaxy directories
-if (not makemode):
+makemode = options.makemode
+if (not options.makemode):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml')
 
@@ -224,7 +225,7 @@ if lisasimdir:
 
     slnoisefile = 'TDI/tdi-strain-noise.xml'
 
-    if (not makemode) or (not os.path.isfile(slnoisefile))::
+    if (not makemode) or (not os.path.isfile(slnoisefile)):
         os.chdir(lisasimdir)
 
         noiseseed = options.seed
@@ -254,7 +255,7 @@ if lisasimdir:
 # hmm... are we telling everybody the seed with the filename of the galaxy?
 
 if os.path.isfile('Galaxy/Galaxy.xml'):
-    if (not makemode) or ('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-frequency.xml') or newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-strain.xml')):
+    if (not makemode) or ('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-frequency.xml') or newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-strain.xml'):
         run('bin/makeTDIsignals-Galaxy.py %s' % seed)
 
 # -------------------------
