@@ -36,6 +36,10 @@ parser.add_option("-S", "--requestSN",
                   type="float", dest="RequestSN", default=None,
                   help="requested source amplitude SN (satisfied at TDI-generation time)")
 
+parser.add_option("-M", "--massSMBH",
+                  type="float", dest="massSMBH", default=1.0e6,
+                  help="approximate mass of central black hole (defaults to 1.0e6)")
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
@@ -69,24 +73,24 @@ mysystem.EclipticLatitude           = 0.5*math.pi - math.acos(random.uniform(-1.
 mysystem.EclipticLongitude          = random.uniform(0.0,2.0*math.pi)                   # ecliptic longitude in Radian [0,2*pi]
 mysystem.Polarization               = random.uniform(0.0,2.0*math.pi)                   # polarization in Radian [0,2*pi]
 mysystem.Distance                   = options.D                                         # distance in Parsec (from command-line parameter)
-mysystem.PolarAngleOfSpin	    = math.acos(random.uniform(-1.0, 1.0))		# polar angle of the spin in Radian [0,pi]
-mysystem.AzimuthalAngleOfSpin	    = random.uniform(0.0, 2.0*math.pi)		        # polar angle of the spin in Radian [0,2*pi]
-
+mysystem.PolarAngleOfSpin	        = math.acos(random.uniform(-1.0, 1.0))		        # polar angle of the spin in Radian [0,pi]
+mysystem.AzimuthalAngleOfSpin	    = random.uniform(0.0, 2.0*math.pi)		            # polar angle of the spin in Radian [0,2*pi]
 
 # source parameteres
 
-mysystem.Spin			   	 = random.uniform(0.5, 0.7)				# spin magnitude in M^2
-mysystem.MassOfCompactObject             = random.uniform(9.5, 10.5)				# mass of CO in solar mass
-mysystem.MassOfSMBH		         = 1.0e6*random.uniform(0.95,1.05) 		        # mass of SMBH in solar mass
-mysystem.InitialAzimuthalOrbitalPhase    = random.uniform(0.0, math.pi*2.0)			# initial azimuthal orbital phase in Rad
-mysystem.InitialTildeGamma 		 = random.uniform(0.0, math.pi*2.0)                     # nital position of pericenter, as angle between LxS and pericenter
-mysystem.InitialAlphaAngle               = random.uniform(0.0, math.pi*2.0)                     # nitial azimuthal direction of L (in the orbital plane)
-mysystem.LambdaAngle			 = math.acos(random.uniform(-1.0, 1.0))                 # angle between L and S
-e_lso 					 = random.uniform(0.15, 0.25)                           # estimated eccentricity at the plunge
-Tend					 = random.uniform(1.0, 1.8)*2**21*15.0                  # estimated plungetime: between 1.6 and 1.8 of a year which is assumed to be 2**21*15 seconds
+mysystem.Spin			   	          = random.uniform(0.5, 0.7)				     # spin magnitude in M^2
+mysystem.MassOfCompactObject          = random.uniform(9.5, 10.5)				     # mass of CO in solar mass
+mysystem.MassOfSMBH		              = options.massSMBH * random.uniform(0.95,1.05) # mass of SMBH in solar mass
+mysystem.InitialAzimuthalOrbitalPhase = random.uniform(0.0, math.pi*2.0)			 # initial azimuthal orbital phase in Rad
+mysystem.InitialTildeGamma 		      = random.uniform(0.0, math.pi*2.0)             # initial position of pericenter, as angle between LxS and pericenter
+mysystem.InitialAlphaAngle            = random.uniform(0.0, math.pi*2.0)             # initial azimuthal direction of L (in the orbital plane)
+mysystem.LambdaAngle			      = math.acos(random.uniform(-1.0, 1.0))         # angle between L and S
 
-mysystem.IntegrationStep            = 15.0                                              # integration timestep in seconds
-mysystem.IntegrationStep_Unit       = 'Second'
+e_lso = random.uniform(0.15, 0.25)                           # estimated eccentricity at the plunge
+Tend  = random.uniform(1.0, 1.8)*2**21*15.0                  # estimated plungetime: between 1.6 and 1.8 of a year which is assumed to be 2**21*15 seconds
+
+mysystem.IntegrationStep              = 15.0                                         # integration timestep in seconds
+mysystem.IntegrationStep_Unit         = 'Second'
 
 if options.RequestSN:
     mysystem.RequestSN = options.RequestSN
@@ -101,8 +105,8 @@ nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*
 		                              mysystem.MassOfSMBH,Tend,e_lso,nu_lso)
 
 
-mysystem.InitialAzimuthalOrbitalFrequency  = nu_in      # initial azimuthal orbital frequecy in Hz
-mysystem.InitialEccentricity		   = e_in       # initial orbital eccentricity
+mysystem.InitialAzimuthalOrbitalFrequency = nu_in   # initial azimuthal orbital frequecy in Hz
+mysystem.InitialEccentricity		      = e_in    # initial orbital eccentricity
 
 
 if options.verbose:
