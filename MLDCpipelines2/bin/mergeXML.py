@@ -108,6 +108,7 @@ if lisa:
 
 if not options.nokey:
     for source in sources:
+        del source.TimeSeries
         newmergedtdifile.SourceData(source)
 
 if tdi:
