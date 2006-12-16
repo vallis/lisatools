@@ -27,6 +27,9 @@ def run(command):
 # STEP 0: parse parameters, set constants
 # ---------------------------------------
 
+# oneyear = 3932160
+oneyear = 31457280
+
 from optparse import OptionParser
 
 # note that correct management of the Id string requires issuing the command
@@ -40,8 +43,7 @@ parser.add_option("-t", "--training",
                   help="include source information in output file [off by default]")
 
 parser.add_option("-T", "--duration",
-                  type="float", dest="duration", default=62914560.0,
-#                  type="float", dest="duration", default=3932160.0,
+                  type="float", dest="duration", default=2.0*year,
                   help="total time for TDI observables (s) [default 62914560 = 2^22 * 15]")
 
 parser.add_option("-d", "--timeStep",
@@ -81,8 +83,7 @@ if options.synthlisaonly:
 else:
     import lisasimulator
 
-    # if options.duration == 31457280:
-    if options.duration == 3932160:
+    if options.duration == 31457280:
         lisasimdir = lisasimulator.lisasim1yr
     elif options.duration == 62914560:
         lisasimdir = lisasimulator.lisasim2yr
@@ -97,6 +98,7 @@ else:
 seed = options.seed
 timestep = options.timestep
 duration = options.duration
+makemode = options.makemode
 
 # --------------------------------------------------------------------------------------
 # STEP 1: create source XML parameter files, and collect all of them in Source directory
@@ -255,7 +257,7 @@ if lisasimdir:
 # hmm... are we telling everybody the seed with the filename of the galaxy?
 
 if os.path.isfile('Galaxy/Galaxy.xml'):
-    if (not makemode) or ('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-frequency.xml') or newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-strain.xml'):
+    if (not makemode) or (newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-frequency.xml') or newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-strain.xml')):
         run('bin/makeTDIsignals-Galaxy.py %s' % seed)
 
 # -------------------------
@@ -269,17 +271,22 @@ run('rm -f Dataset/*.xml Dataset/*.bin')
 
 # do synthlisa first
 
+if options.istraining:
+    globalseed = ', globalseed = %s' % seed
+else:
+    globalseed = ''
+
 if dosynthlisa:
     nonoisefile = 'Dataset/' + challengename + '-frequency-nonoise.xml'
-    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (synthlisa version)')
+    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (synthlisa version)' + globalseed)
     nonoise.close()
 
     withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
-    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (synthlisa version)')
+    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (synthlisa version)' + globalseed)
     withnoise.close()
 
     keyfile = 'Dataset/' + challengename + '-key.xml'
-    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2')
+    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed)
     key.close()
 
     if options.istraining:
@@ -300,15 +307,15 @@ if dosynthlisa:
 
 if lisasimdir:
     nonoisefile = 'Dataset/' + challengename + '-strain-nonoise.xml'
-    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (lisasim version)')
+    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (lisasim version)' + globalseed)
     nonoise.close()
 
     withnoisefile = 'Dataset/' + challengename + '-strain.xml'
-    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (lisasim version)')
+    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (lisasim version)' + globalseed)
     withnoise.close()
 
     keyfile = 'Dataset/' + challengename + '-key.xml'
-    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2')
+    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed)
     key.close()
 
     if options.istraining:
