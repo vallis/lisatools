@@ -43,7 +43,7 @@ parser.add_option("-t", "--training",
                   help="include source information in output file [off by default]")
 
 parser.add_option("-T", "--duration",
-                  type="float", dest="duration", default=2.0*year,
+                  type="float", dest="duration", default=2.0*oneyear,
                   help="total time for TDI observables (s) [default 62914560 = 2^22 * 15]")
 
 parser.add_option("-d", "--timeStep",
