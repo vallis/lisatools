@@ -47,12 +47,15 @@
  /* Power of 2 that gives the number of data points to be FFTed, 
     i.e. NFFT = 2^n */
 #define npow 21
+/* #define npow 18 */
 
  /* Number of data points to be FFTed */
 #define NFFT 2097152
+/* #define NFFT 262144 */
 
  /* Observation length */
 #define T 31457280.0
+/* #define T 3932160.0 */
 
  /* Increment of time between data sample points for the detector */
 #define dt 15.0
