@@ -36,34 +36,35 @@ if random.random() > 0.5:
 
 # 4 - A loud (SNR ~ 200) signal coalescing between 6 and 24 months from beginning of observations
 if random.random() > 0.5:
-    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=200 --coalescTime=450 --coalescRange=270 Source/BH-4.xml' % (seed+4))
+    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=200  --coalescTime=450 --coalescRange=270 Source/BH-4.xml' % (seed+4))
 
 # 5 - A loud (SNR ~ 100) signal with coalescence taking place between 18 and 21 months from the start of the observations
 if random.random() > 0.5:
-    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=100 --coalescTime=540 --coalescRange=45 Source/BH-5.xml' % (seed+5))
+    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=100  --coalescTime=540 --coalescRange=45  Source/BH-5.xml' % (seed+5))
 
 # 6 - A low SNR (~ 10) signal with coalescence taking place between 27 and 28 months from the beginning of the observations
 if random.random() > 0.5:
-    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=10 --coalescTime=825 --coalescRange=15 Source/BH-6.xml' % (seed+6))
+    run('bin/makesource-BBH.py --seed=%s --distance=1e9 --requestSN=10   --coalescTime=825 --coalescRange=15  Source/BH-6.xml' % (seed+6))
 
 # challenge 2.2 EMRI sources...
-# TO DO: verify parameter distributions
+# 2 with SMBH around 1e6, 2 with SMBH around 5e6, 1 with SMBH around 1e7
 
 requestsn = random.randint(30,100)
-run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s Source/EMRI-1.xml' % (seed+7,requestsn))
+run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s --massSMBH=1e6 Source/EMRI-1.xml' % (seed+7,requestsn))
 
 requestsn = random.randint(30,100)
-run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s Source/EMRI-2.xml' % (seed+8,requestsn))
+run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s --massSMBH=1e6 Source/EMRI-2.xml' % (seed+8,requestsn))
 
 requestsn = random.randint(30,100)
-run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s Source/EMRI-3.xml' % (seed+9,requestsn))
+run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s --massSMBH=5e6 Source/EMRI-3.xml' % (seed+9,requestsn))
 
 requestsn = random.randint(30,100)
-run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s Source/EMRI-4.xml' % (seed+10,requestsn))
+run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s --massSMBH=5e6 Source/EMRI-4.xml' % (seed+10,requestsn))
 
 requestsn = random.randint(30,100)
-run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s Source/EMRI-5.xml' % (seed+11,requestsn))
+run('bin/makesource-EMRI.py --seed=%s --distance=1e6 --requestSN=%s --massSMBH=1e7 Source/EMRI-5.xml' % (seed+11,requestsn))
 
 # now the Galaxy! (for testing, seed must be 1)
-#run('bin/makesource-Galaxy.py -t %s' % seed)
+# run('bin/makesource-Galaxy.py -t %s' % seed)
+
 run('bin/makesource-Galaxy.py %s' % seed)
