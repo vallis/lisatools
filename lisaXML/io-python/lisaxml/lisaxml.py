@@ -9,6 +9,7 @@ import convertunit
 
 import sys
 import os.path
+import shutil
 import time
 import re
 
@@ -43,7 +44,7 @@ class XMLobject(object):
     def __setattr__(self,attr,value):
         # thus, attributes that are initially assigned through the __dict__ interface
         # will never appear in self.parameters even if they are changed later 
-        if (not attr in self.__dict__) and (not attr in self.parameters) and (not '_Unit' in attr):
+        if (not attr in self.__dict__) and (not attr in self.parameters) and (not '_Unit' in attr) and (not '_Type' in attr):
             self.parameters.append(attr)
         
         self.__dict__[attr] = value
@@ -63,6 +64,71 @@ class XMLobject(object):
             unit = 'default'
         
         return "%s (%s)" % (value,unit)
+    
+
+class Table(XMLobject):
+    def __init__(self,streamname,streamlength):
+        super(Table,self).__init__()
+        
+        self.__dict__['StreamName'] = streamname
+        self.__dict__['StreamLength'] = streamlength
+    
+    def XML(self,textfile):
+        columns = []
+        
+        for par in self.parameters:
+            coldict = {'Name': par}
+            
+            if hasattr(self,par + '_Unit'):
+                coldict['Unit'] = getattr(self,par + '_Unit')
+            
+            if hasattr(self,par + '_Type'):
+                coldict['Type'] = getattr(self,par + '_Type')
+            else:
+                coldict['Type'] = 'double'
+            
+            # Column is a singleton element
+            columns.append( ('Column', coldict, None) )
+            
+        dims = [ ('Dim', {'Name': 'Length'},  [self.StreamLength]),
+                 ('Dim', {'Name': 'Records'}, [str(len(self.parameters))]) ]
+        
+        # initially support only Remote/Text
+        # copy StreamName to textfile
+        
+        try:
+            shutil.copy(self.StreamName,textfile)
+        except IOError:
+            raise IOError, 'Table.XML(): I have a problem copying data file %s to %s' % (self.StreamName,textfile)
+            
+        stream = ('Stream', {'Type': 'Remote', 'Encoding': 'Text'}, [textfile])
+        
+        return ('Table', {}, columns + dims + [stream])
+    
+
+class PlaneWaveTable(XMLobject):
+    def __init__(self,name=''):
+        super(PlaneWaveTable,self).__init__()
+        
+        self.__dict__['name'] = name
+    
+    def XML(self,xmlfile,name=None,comments=''):
+        xsildict = {}
+        params = []
+        
+        xsildict['Type'] = 'PlaneWaveTable'
+        xsildict['Name'] = name and name or self.name
+        
+        if hasattr(self,'SourceType'):
+            params.append( ('Param',{'Name': 'SourceType', 'Type': 'String'},[self.SourceType]) )
+        
+        if hasattr(self,'Table'):
+            # need to pass filename for copy
+            params.append(self.Table.XML(re.sub('\.xml$','',xmlfile.filename) + '-' + str(xmlfile.textfiles) + '.txt'))
+            
+            xmlfile.textfiles += 1
+        
+        return ('XSIL', xsildict, params)
     
 
 class TimeSeries(XMLobject):
@@ -410,6 +476,8 @@ class lisaXML(writeXML):
         # for later use
         
         self.binaryfiles = 0
+        self.textfiles = 0
+        
         self.theLISAData = []
         self.theNoiseData = []
         self.theTDIData = []
@@ -578,8 +646,7 @@ class readXML:
                 if node.Type == 'SourceData':
                     for node2 in node:
                         if node2.tagName == 'XSIL':
-                            # do not do 'SampledPlaneWave' yet
-                            if node2.Type == 'PlaneWave' or node2.Type == 'SampledPlaneWave':
+                            if node2.Type in ('PlaneWave','SampledPlaneWave','PlaneWaveTable'):
                                 r = self.processObject(node2)
                                 
                                 result.append(r)
@@ -702,6 +769,9 @@ class readXML:
                 retobj = getattr(module,sourcetype)(objectname)
             except KeyError:
                 raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (sourcetype,objectname)                                
+        elif objecttype == 'PlaneWaveTable':
+            retobj = PlaneWaveTable(objectname)
+            retobj.SourceType = sourcetype
         elif objecttype == 'TDIObservable':
             retobj = Observable(objectname)
         elif objecttype == 'PseudoLISA':
@@ -719,7 +789,7 @@ class readXML:
             except ValueError:
                 raise ValueError, 'readXML.processObject(): cannot interpret value %s for parameter %s in object %s' % (objectparams[param],param,objectname)
         
-        # look for TimeSeries (use only the first one found)
+        # look for TimeSeries (use only the first one found, if any)
         
         for node2 in node:
             if node2.tagName == 'XSIL' and node2.Type == 'TimeSeries':      
@@ -746,6 +816,52 @@ class readXML:
                         
                         if not hasattr(retobj.TimeSeries,columnnames[col]):
                             retobj.TimeSeries.__dict__[columnnames[col]] = retobj.TimeSeries.Arrays[col]
+            
+                break
+        
+        # look for Table (use only the first one found, if any)
+        
+        for node2 in node:
+            if node2.tagName == 'Table':
+                # get Dim and Stream name
+                for node3 in node2:
+                    if node3.tagName == 'Dim':
+                        if node3.Name == 'Length':
+                            streamlength = int(str(node3))
+                        elif node3.Name == 'Records':
+                            tabledim = int(str(node3))
+                    elif node3.tagName == 'Stream':
+                        streamname = str(node3)
+                        
+                        try:
+                            if node3.Type != 'Remote' or node3.Encoding != 'Text':
+                                raise NotImplementedError, 'readXML.processObject(): Stream can only be Remote/Text'
+                        except AttributeError:
+                            raise AttributeError, 'readXML.processObject(): Stream must specify Type and Encoding'
+                
+                try:
+                    retobj.Table = Table(streamname,streamlength)
+                except NameError:
+                    raise AttributeError, 'readXML.processObject(): missing Stream file in %s %s' % (objecttype,objectname)
+                
+                # now get all the columns
+                for node3 in node2:
+                    if node3.tagName == 'Column':
+                        setattr(retobj.Table,node3.Name,None)
+                        
+                        if hasattr(node3,'Unit'):
+                            setattr(retobj.Table,node3.Name + '_Unit',node3.Unit)
+                        
+                        if hasattr(node3,'Type'):
+                            setattr(retobj.Table,node3.Name + '_Type',node3.Type)
+                
+                try:
+                    if len(retobj.Table.parameters) != tabledim:
+                        raise ValueError, 'readXML.processObject(): Table %s declares the wrong number of columns (%s vs %s)' % (objectname,tabledim,len(retobj.parameters))
+                except:
+                    pass
+                    
+                break
         
         return retobj
     
