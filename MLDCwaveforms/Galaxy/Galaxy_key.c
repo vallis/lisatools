@@ -127,7 +127,7 @@ int main(int argc,char **argv) {
                 XMLopentag(myxml,"Column", "Name=\"InitialPhase\" Type=\"double\" Unit=\"Radian\"/");
 
                 XMLdimlong(myxml,"Length",cnt);
-                XMLdimlong(myxml,"Records",7)
+                XMLdimlong(myxml,"Records",7);
 
                 XMLopentag(myxml,"Stream","Type=\"Remote\" Encoding=\"Text\"");
                     XMLcontentstring(myxml,galaxy);
