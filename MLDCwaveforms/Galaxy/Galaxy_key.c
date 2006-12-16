@@ -29,12 +29,12 @@ int main(int argc,char **argv) {
     sprintf(galaxy, "Data/Galaxy_%s.dat", argv[2]);
     sprintf(bright, "Data/Galaxy_Bright_%s.dat", argv[2]);
 
-   sprintf(filename, "Data/count_%s.dat", argv[2]);
-   input = fopen(filename,"r");
-   fscanf(input,"%ld%ld\n", &cnt, &cntb);
-   fclose(input);
+    sprintf(filename, "Data/count_%s.dat", argv[2]);
+    input = fopen(filename,"r");
+    fscanf(input,"%ld%ld\n", &cnt, &cntb);
+    fclose(input);
 
-   sprintf(filename, "XML/%s_key.xml", argv[1]);
+    sprintf(filename, "XML/%s_key.xml", argv[1]);
 
     myxml = XMLopen(filename);
 
@@ -66,65 +66,79 @@ int main(int argc,char **argv) {
 
         XMLopentag(myxml,"XSIL","Type=\"SourceData\"");
 
-            XMLopentag(myxml,"XSIL","Name=\"%s\" Type=\"PlaneWaveTable\"",tag);
+        /* Begin first table */
 
-           XMLopentag(myxml,"Param", "Name=\"SourceType\" Unit=\"String\"");
-            XMLcontentstring(myxml,"GalacticBinary");
-          XMLclosetag(myxml,"Param");
+            XMLopentag(myxml,"XSIL","Name=\"%s-bright\" Type=\"PlaneWaveTable\"",tag);
 
-        XMLopentag(myxml,"Table","");
+                XMLopentag(myxml,"Param", "Name=\"SourceType\" Unit=\"String\"");
+                    XMLcontentstring(myxml,"GalacticBinary");
+                XMLclosetag(myxml,"Param");
 
-           XMLopentag(myxml,"Column", "Name=\"Frequency\" Type=\"double\" Unit=\"Hertz\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"EclipticLatitude\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"EclipticLongitude\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"Amplitude\" Type=\"double\" Unit=\"1\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"Inclination\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"Polarization\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"InitialPhase\" Type=\"double\" Unit=\"Radian\"/");
+                XMLopentag(myxml,"Table","");
 
-        XMLdimlong(myxml,"Length",cntb);
+                    XMLopentag(myxml,"Column", "Name=\"Frequency\" Type=\"double\" Unit=\"Hertz\"/");
+                    myxml->indent -= XMLSTDINDENT;
+                    XMLopentag(myxml,"Column", "Name=\"EclipticLatitude\" Type=\"double\" Unit=\"Radian\"/");
+                    myxml->indent -= XMLSTDINDENT;
+                    XMLopentag(myxml,"Column", "Name=\"EclipticLongitude\" Type=\"double\" Unit=\"Radian\"/");
+                    myxml->indent -= XMLSTDINDENT;
+                    XMLopentag(myxml,"Column", "Name=\"Amplitude\" Type=\"double\" Unit=\"1\"/");
+                    myxml->indent -= XMLSTDINDENT;
+                    XMLopentag(myxml,"Column", "Name=\"Inclination\" Type=\"double\" Unit=\"Radian\"/");
+                    myxml->indent -= XMLSTDINDENT;
+                    XMLopentag(myxml,"Column", "Name=\"Polarization\" Type=\"double\" Unit=\"Radian\"/");
+                    myxml->indent -= XMLSTDINDENT;
+                    XMLopentag(myxml,"Column", "Name=\"InitialPhase\" Type=\"double\" Unit=\"Radian\"/");
 
-        XMLopentag(myxml,"Stream","Type=\"Remote\" Encoding=\"Text\"");
-            XMLcontentstring(myxml,bright);
-        XMLclosetag(myxml,"Stream");
+                    XMLdimlong(myxml,"Length",cntb);
+                    XMLdimlong(myxml,"Records",7);
 
-        myxml->indent -= XMLSTDINDENT;
-        XMLclosetag(myxml,"Table");
+                    XMLopentag(myxml,"Stream","Type=\"Remote\" Encoding=\"Text\"");
+                        XMLcontentstring(myxml,bright);
+                    XMLclosetag(myxml,"Stream");
 
-
-        XMLopentag(myxml,"Table","");
-
-           XMLopentag(myxml,"Column", "Name=\"Frequency\" Type=\"double\" Unit=\"Hertz\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"EclipticLatitude\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"EclipticLongitude\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"Amplitude\" Type=\"double\" Unit=\"1\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"Inclination\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"Polarization\" Type=\"double\" Unit=\"Radian\"/");
-           myxml->indent -= XMLSTDINDENT;
-           XMLopentag(myxml,"Column", "Name=\"InitialPhase\" Type=\"double\" Unit=\"Radian\"/");
-
-        XMLdimlong(myxml,"Length",cnt);
-
-        XMLopentag(myxml,"Stream","Type=\"Remote\" Encoding=\"Text\"");
-            XMLcontentstring(myxml,galaxy);
-        XMLclosetag(myxml,"Stream");
-
-        myxml->indent -= XMLSTDINDENT;
-        XMLclosetag(myxml,"Table");
-
+                myxml->indent -= XMLSTDINDENT;
+                XMLclosetag(myxml,"Table");
 
             XMLclosetag(myxml,"XSIL");
+
+        /* Begin second table */
+
+            XMLopentag(myxml,"XSIL","Name=\"%s\" Type=\"PlaneWaveTable\"",tag);
+
+                XMLopentag(myxml,"Param", "Name=\"SourceType\" Unit=\"String\"");
+                    XMLcontentstring(myxml,"GalacticBinary");
+                XMLclosetag(myxml,"Param");
+
+            XMLopentag(myxml,"Table","");
+
+                XMLopentag(myxml,"Column", "Name=\"Frequency\" Type=\"double\" Unit=\"Hertz\"/");
+                myxml->indent -= XMLSTDINDENT;
+                XMLopentag(myxml,"Column", "Name=\"EclipticLatitude\" Type=\"double\" Unit=\"Radian\"/");
+                myxml->indent -= XMLSTDINDENT;
+                XMLopentag(myxml,"Column", "Name=\"EclipticLongitude\" Type=\"double\" Unit=\"Radian\"/");
+                myxml->indent -= XMLSTDINDENT;
+                XMLopentag(myxml,"Column", "Name=\"Amplitude\" Type=\"double\" Unit=\"1\"/");
+                myxml->indent -= XMLSTDINDENT;
+                XMLopentag(myxml,"Column", "Name=\"Inclination\" Type=\"double\" Unit=\"Radian\"/");
+                myxml->indent -= XMLSTDINDENT;
+                XMLopentag(myxml,"Column", "Name=\"Polarization\" Type=\"double\" Unit=\"Radian\"/");
+                myxml->indent -= XMLSTDINDENT;
+                XMLopentag(myxml,"Column", "Name=\"InitialPhase\" Type=\"double\" Unit=\"Radian\"/");
+
+                XMLdimlong(myxml,"Length",cnt);
+                XMLdimlong(myxml,"Records",7)
+
+                XMLopentag(myxml,"Stream","Type=\"Remote\" Encoding=\"Text\"");
+                    XMLcontentstring(myxml,galaxy);
+                XMLclosetag(myxml,"Stream");
+
+            myxml->indent -= XMLSTDINDENT;
+            XMLclosetag(myxml,"Table");
+
+        XMLclosetag(myxml,"XSIL");
+
+        /* End second table */
             
         XMLclosetag(myxml,"XSIL");
 
@@ -141,7 +155,6 @@ void KILL(char* Message)
   printf(Message);
   printf("Terminating the program.\n\n\n");
   exit(1);
-
  
   return;
 }
