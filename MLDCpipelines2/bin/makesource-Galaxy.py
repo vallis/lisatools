@@ -50,10 +50,11 @@ if options.istest:
     os.chdir(here)
 
     run("sed 's/Data\///g' < ../MLDCwaveforms/Galaxy/XML/Test_key.xml > Galaxy/Galaxy.xml")
-
+    run('rm ../MLDCwaveforms/Galaxy/XML/TheGalaxy_key.xml')
+    
     # we copy, not move, the test galaxy (since that's not generated, but included in the Galaxy tar.gz)
-    run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
-    run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
+    run('mv ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
+    run('mv ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
 else:
     # 1 is a switch to include verification binaries
     run('./Galaxy_Maker %s 1' % seed)
@@ -62,8 +63,14 @@ else:
 
     os.chdir(here)
 
+    # copy over Galaxy XML, normalizing location of dat file
     run("sed 's/Data\///g' < ../MLDCwaveforms/Galaxy/XML/TheGalaxy_key.xml > Galaxy/Galaxy.xml")
+    run('rm ../MLDCwaveforms/Galaxy/XML/TheGalaxy_key.xml')
 
     # these are big files!
     # run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
     # run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
+
+    # link, don't copy
+    run('ln -s ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/Galaxy_%s.dat' % (seed,seed))
+    run('ln -s ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/Galaxy_Bright_%s.dat' % (seed,seed))
