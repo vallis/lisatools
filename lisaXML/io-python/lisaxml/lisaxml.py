@@ -126,7 +126,7 @@ class PlaneWaveTable(XMLobject):
         
         if hasattr(self,'Table'):
             # need to pass filename for copy
-            params.append(self.Table.XML(re.sub('\.xml$','',xmlfile.filename) + '-' + str(xmlfile.textfiles) + '.txt'))
+            params.append(self.Table.XML(re.sub('\.xml$','',os.path.basename(xmlfile.filename)) + '-' + str(xmlfile.textfiles) + '.txt'))
             
             xmlfile.textfiles += 1
         
@@ -833,7 +833,7 @@ class readXML:
                         elif node3.Name == 'Records':
                             tabledim = int(str(node3))
                     elif node3.tagName == 'Stream':
-                        streamname = str(node3)
+                        streamname = os.path.abspath(self.directory) + '/' + str(node3)
                         
                         try:
                             if node3.Type != 'Remote' or node3.Encoding != 'Text':
