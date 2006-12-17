@@ -65,5 +65,5 @@ else:
     run("sed 's/Data\///g' < ../MLDCwaveforms/Galaxy/XML/TheGalaxy_key.xml > Galaxy/Galaxy.xml")
 
     # these are big files!
-    run('mv ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
-    run('mv ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
+    # run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
+    # run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
