@@ -2,6 +2,7 @@
 
 import sys
 import os
+import os.path
 
 def run(command):
     commandline = command % globals()
@@ -72,5 +73,9 @@ else:
     # run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
 
     # link, don't copy
-    run('ln -s ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/Galaxy_%s.dat' % (seed,seed))
-    run('ln -s ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/Galaxy_Bright_%s.dat' % (seed,seed))
+    
+    galaxyfile = os.path.abspath('../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat' % seed)
+    run('ln -s %s Galaxy/Galaxy_%s.dat' % (galaxyfile,seed))
+
+    galaxybrightfile = os.path.abspath('../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat' % seed)
+    run('ln -s %s Galaxy/Galaxy_Bright_%s.dat' % (galaxybrightfile,seed))
