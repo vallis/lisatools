@@ -99,11 +99,17 @@ class Table(XMLobject):
         
         try:
             # shutil.copy(self.StreamName,textfile)
+            
+            try:
+                os.unlink(textfile)
+            except:
+                pass
+            
             os.symlink(self.StreamName,textfile)
         except IOError:
             raise IOError, 'Table.XML(): I have a problem copying data file %s to %s' % (self.StreamName,textfile)
             
-        stream = ('Stream', {'Type': 'Remote', 'Encoding': 'Text'}, [textfile])
+        stream = ('Stream', {'Type': 'Remote', 'Encoding': 'Text'}, [os.path.basename(textfile)])
         
         return ('Table', {}, columns + dims + [stream])
     
@@ -126,7 +132,7 @@ class PlaneWaveTable(XMLobject):
         
         if hasattr(self,'Table'):
             # need to pass filename for copy
-            params.append(self.Table.XML(re.sub('\.xml$','',os.path.basename(xmlfile.filename)) + '-' + str(xmlfile.textfiles) + '.txt'))
+            params.append(self.Table.XML(re.sub('\.xml$','',xmlfile.filename) + '-' + str(xmlfile.textfiles) + '.txt'))
             
             xmlfile.textfiles += 1
         
