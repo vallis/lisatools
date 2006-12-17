@@ -29,22 +29,23 @@ run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=20   --coalescT
 import random
 
 random.seed(seed)
+chosen = random.sample([3,4,5,6],random.randint(2,4))
 
 # 3 - A loud (SNR ~ 1000) signal coalescing between 6 and 24 months from beginning of observations
-if random.random() > 0.5:
+if 3 in chosen:
     run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=1000 --coalescTime=450 --coalescRange=270 Source/BH-3.xml' % (seed+3))
 
 # 4 - A loud (SNR ~ 200) signal coalescing between 6 and 24 months from beginning of observations
-if random.random() > 0.5:
-    run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=200 --coalescTime=450 --coalescRange=270 Source/BH-4.xml' % (seed+4))
+if 4 in chosen:
+    run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=200  --coalescTime=450 --coalescRange=270 Source/BH-4.xml' % (seed+4))
 
 # 5 - A loud (SNR ~ 100) signal with coalescence taking place between 18 and 21 months from the start of the observations
-if random.random() > 0.5:
-    run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=100 --coalescTime=540 --coalescRange=45 Source/BH-5.xml' % (seed+5))
+if 5 in chosen:
+    run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=100  --coalescTime=540 --coalescRange=45  Source/BH-5.xml' % (seed+5))
 
 # 6 - A low SNR (~ 10) signal with coalescence taking place between 27 and 28 months from the beginning of the observations
-if random.random() > 0.5:
-    run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=10 --coalescTime=825 --coalescRange=15 Source/BH-6.xml' % (seed+6))
+if 6 in chosen:
+    run('bin/makesource-BBH.py --seed=%s --distance=1e10 --requestSN=10   --coalescTime=825 --coalescRange=15  Source/BH-6.xml' % (seed+6))
 
 # challenge 2.2 EMRI sources...
 # 2 with SMBH around 1e6, 2 with SMBH around 5e6, 1 with SMBH around 1e7
