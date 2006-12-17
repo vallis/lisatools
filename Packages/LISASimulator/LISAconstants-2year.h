@@ -1,6 +1,6 @@
 /****************************************************************************/
 /*                                                                          */
-/* TITLE: LISA Simulator Preprossesor Definitions                           */
+/* TITLE: LISA Simulator Preprocessor Definitions                           */
 /* AUTHORS: Louis J. Rubbo and Neil J. Cornish                              */
 /* DATE: June 13, 2006                                                      */
 /*                                                                          */
