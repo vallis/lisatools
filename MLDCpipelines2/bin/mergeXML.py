@@ -53,6 +53,8 @@ except IndexError:
 
 mergedtdifile.close()
 
+newmergedtdifile = lisaxml.lisaXML(mergedfile)
+
 for inputfile in inputfiles:
     inputtdifile = lisaxml.readXML(inputfile)
 
@@ -62,8 +64,13 @@ for inputfile in inputfiles:
         lisa = inputtdifile.getLISAgeometry()
     
     if not options.nokey:
-        sources = sources + inputtdifile.getLISASources()
+        sources = inputtdifile.getLISASources()
 
+        for source in sources:
+            if hasattr(source,'TimeSeries'):
+                del source.TimeSeries
+            newmergedtdifile.SourceData(source)
+    
     if not options.keyonly:
         try:
             thistdi = inputtdifile.getTDIObservables()[0]
@@ -101,16 +108,8 @@ for inputfile in inputfiles:
         except:
             pass
 
-newmergedtdifile = lisaxml.lisaXML(mergedfile)
-
 if lisa:
     newmergedtdifile.LISAData(lisa)
-
-if not options.nokey:
-    for source in sources:
-        if hasattr(source,'TimeSeries'):
-            del source.TimeSeries
-        newmergedtdifile.SourceData(source)
 
 if tdi:
     newmergedtdifile.TDIData(tdi)
