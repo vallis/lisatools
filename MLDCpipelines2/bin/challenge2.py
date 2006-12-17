@@ -63,8 +63,8 @@ parser.add_option("-S", "--synthlisa",
                   help="run only Synthetic LISA")
 
 parser.add_option("-L", "--lisasim",
-                action="store_true", dest="lisasimonly", default=False,
-                help="run only the LISA Simulator")
+                  action="store_true", dest="lisasimonly", default=False,
+                  help="run only the LISA Simulator")
 
 # add options to disable the LISA Simulator or Synthetic LISA
 
@@ -278,15 +278,21 @@ else:
 
 if dosynthlisa:
     nonoisefile = 'Dataset/' + challengename + '-frequency-nonoise.xml'
-    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (synthlisa version)' + globalseed)
+    nonoise = lisaxml.lisaXML(nonoisefile,
+                              author="MLDC Task Force",
+                              comments='No-noise dataset for challenge 2 (synthlisa version)' + globalseed)
     nonoise.close()
 
     withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
-    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (synthlisa version)' + globalseed)
+    withnoise = lisaxml.lisaXML(withnoisefile,
+                                author="MLDC Task Force",
+                                comments='Full dataset for challenge 2 (synthlisa version)' + globalseed)
     withnoise.close()
 
     keyfile = 'Dataset/' + challengename + '-key.xml'
-    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed)
+    key = lisaxml.lisaXML(keyfile,
+                          author="MLDC Task Force",
+                          comments='XML key for challenge 2' + globalseed)
     key.close()
 
     if options.istraining:
