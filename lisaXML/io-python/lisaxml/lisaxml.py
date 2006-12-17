@@ -97,7 +97,8 @@ class Table(XMLobject):
         # copy StreamName to textfile
         
         try:
-            shutil.copy(self.StreamName,textfile)
+            # shutil.copy(self.StreamName,textfile)
+            pass
         except IOError:
             raise IOError, 'Table.XML(): I have a problem copying data file %s to %s' % (self.StreamName,textfile)
             
