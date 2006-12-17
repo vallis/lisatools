@@ -110,6 +110,14 @@ if (not options.makemode):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml')
 
+    # remove all previous Galaxy dat files (except for the distributed Galaxies)
+    # (I could use a better regexp rather than this ugly hack...)
+    run('mkdir ../MLDCwaveforms/Galaxy/Data/temp')
+    run('mv ../MLDCwaveforms/Galaxy/Data/*_1.dat ../MLDCwaveforms/Galaxy/Data/temp/.')
+    run('rm -f ../MLDCwaveforms/Galaxy/Data/*[0-9].dat')
+    run('mv ../MLDCwaveforms/Galaxy/Data/temp/*.dat ../MLDCwaveforms/Galaxy/Data/.')
+    run('rmdir ../MLDCwaveforms/Galaxy/Data/temp')
+
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
     # if makesource-Galaxy.py is called, it must be with the UNALTERED seed, which is used
