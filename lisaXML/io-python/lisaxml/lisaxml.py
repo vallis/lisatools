@@ -8,6 +8,7 @@ import numpy
 import convertunit
 
 import sys
+import os
 import os.path
 import shutil
 import time
@@ -98,7 +99,7 @@ class Table(XMLobject):
         
         try:
             # shutil.copy(self.StreamName,textfile)
-            pass
+            os.symlink(self.StreamName,textfile)
         except IOError:
             raise IOError, 'Table.XML(): I have a problem copying data file %s to %s' % (self.StreamName,textfile)
             
