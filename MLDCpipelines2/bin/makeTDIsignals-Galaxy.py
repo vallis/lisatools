@@ -43,6 +43,7 @@ lstdiobj.close()
 
 run('%s/bin/mergeXML.py %s/TDI/Galaxy-tdi-strain.xml XML/TheGalaxy_LISAsim_noisefree.xml %s/Galaxy/Galaxy.xml' % (here,here,here))
 
+run('rm XML/TheGalaxy_*.xml')
 run('rm Binary/TheGalaxy_*.bin')
 # there should be more cleaning to do...
 
