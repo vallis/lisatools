@@ -233,7 +233,10 @@ void AKWaveform::EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
 	   break;
       } 
    }//end of while loop
-   
+   //std::cout << "final azimuthal frequency = " << nu << std::endl;
+   //std::cout << "plunge frequency for e_final = " << e << " n_pl =  " << \
+                 pow( (1.0-e*e)/(6.0+2.0*e), 1.5 )/(LISAWP_TWOPI * M) << std::endl;
+                
    cumulstep = cumulstep/(double)counter;
    runDone = true;
 
@@ -259,7 +262,7 @@ void AKWaveform::GetOrbitalParams(float t, float& nut, float& et, float& gt, flo
 int AKWaveform::CheckPlunge(double fr, double ec){
 	
     double rhs = pow( (1.0-ec*ec)/(6.0+2.0*ec), 1.5 )/(LISAWP_TWOPI * M);
-    if(rhs - fr <= 1.0e-5){
+    if(rhs - fr <= 1.0e-7){
 	    std::cout << "freq at plunge = " <<  rhs << std::endl;
 	    return(-1);
     }else{
