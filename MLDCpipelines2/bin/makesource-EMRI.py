@@ -81,32 +81,35 @@ mysystem.AzimuthalAngleOfSpin	    = random.uniform(0.0, 2.0*math.pi)		          
 mysystem.Spin			   	          = random.uniform(0.5, 0.7)				     # spin magnitude in M^2
 mysystem.MassOfCompactObject          = random.uniform(9.5, 10.5)				     # mass of CO in solar mass
 mysystem.MassOfSMBH		              = options.massSMBH * random.uniform(0.95,1.05) # mass of SMBH in solar mass
-mysystem.InitialAzimuthalOrbitalPhase = random.uniform(0.0, math.pi*2.0)			 # initial azimuthal orbital phase in Rad
-mysystem.InitialTildeGamma 		      = random.uniform(0.0, math.pi*2.0)             # initial position of pericenter, as angle between LxS and pericenter
-mysystem.InitialAlphaAngle            = random.uniform(0.0, math.pi*2.0)             # initial azimuthal direction of L (in the orbital plane)
+mysystem.PlungeAzimuthalOrbitalPhase = random.uniform(0.0, math.pi*2.0)			 # initial azimuthal orbital phase in Rad
+mysystem.PlungeTildeGamma 		      = random.uniform(0.0, math.pi*2.0)             # initial position of pericenter, as angle between LxS and pericenter
+mysystem.PlungeAlphaAngle            = random.uniform(0.0, math.pi*2.0)             # initial azimuthal direction of L (in the orbital plane)
 mysystem.LambdaAngle			      = math.acos(random.uniform(-1.0, 1.0))         # angle between L and S
 
-e_lso = random.uniform(0.15, 0.25)                          # estimated eccentricity at the plunge
-Tend  = random.uniform(1.0, 1.8)*2**21*15.0                 # estimated plungetime: between 1.6 and 1.8 of a year which is assumed to be 2**21*15 seconds
+e_lso = random.uniform(0.15, 0.25)                           # estimated eccentricity at the plunge
+Tend  = random.uniform(1.0, 2.0)*2**21*15.0                  # estimated plungetime: between 1.6 and 1.8 of a year which is assumed to be 2**21*15 seconds
 
-mysystem.IntegrationStep              = 15.0                # integration timestep in seconds
+mysystem.IntegrationStep              = 15.0                                         # integration timestep in seconds
 mysystem.IntegrationStep_Unit         = 'Second'
 
 if options.RequestSN:
     mysystem.RequestSN = options.RequestSN
     mysystem.RequestSN_Unit = '1'
 
-MBHmass = mysystem.MassOfSMBH
-nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*4.92549095e-6)
+mysystem.PlungeTime			      = Tend     # instance of plunge (starting from t=0)
+mysystem.EccentricityAtPlunge		      = e_lso    # orbital eccentricity at plunge
 
+
+#MBHmass = mysystem.MassOfSMBH
+#nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*4.92549095e-6)
+#print "Stas: Estimated elso = %g, nulso = %g" % (e_lso, nu_lso) 
 # estimating initial eccenticity and orbital azimuthal frequency
+#[e_in, nu_in] = EMRI.EMRIEstimateInitialOrbit(mysystem.Spin,mysystem.MassOfCompactObject,\
+#		                              mysystem.MassOfSMBH,Tend,e_lso,nu_lso)
+#print "Stas: initial parameters: e_in = %g, nu_in = %g" % (e_in, nu_in)
+#nu_pl =  math.pow((1.0-e_in*e_in)/(6.0+2.0*e_in), 1.5)/(2.0*math.pi*MBHmass*4.92549095e-6)
+#print "Stas: plunge freq for initial eccentricity, nu_pl = ", nu_pl
 
-[e_in, nu_in] = EMRI.EMRIEstimateInitialOrbit(mysystem.Spin,mysystem.MassOfCompactObject,\
-		                              mysystem.MassOfSMBH,Tend,e_lso,nu_lso)
-
-
-mysystem.InitialAzimuthalOrbitalFrequency = nu_in   # initial azimuthal orbital frequecy in Hz
-mysystem.InitialEccentricity		      = e_in    # initial orbital eccentricity
 
 
 if options.verbose:
