@@ -20,6 +20,7 @@
 import lisaxml
 import numpy
 import math
+import sys
 
 SourceClassModules = {}
 SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
@@ -71,11 +72,11 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
                   ('Spin',                             'MassSquared',   None, 'magnitude of (specific) spin (S) of MBH'),
                   ('MassOfCompactObject',              'SolarMass',     None, 'mass of the compact object'),
                   ('MassOfSMBH',                       'SolarMass',     None, 'mass of the MBH'),
-                  ('InitialAzimuthalOrbitalFrequency', 'Hertz',         None, 'initial value of orbital azimuthal frequency'),
-                  ('InitialAzimuthalOrbitalPhase',     'Radian',        None, 'initial azimuthal orbital phase'),
-                  ('InitialEccentricity',              'Unit',          None, 'initial orbital eccentricity'),
-                  ('InitialTildeGamma',                'Radian',        None, 'nital position of pericenter, as angle between LxS and pericenter'),
-                  ('InitialAlphaAngle',                'Radian',        None, 'nitial azimuthal direction of L (in the orbital plane)'),
+                  ('PlungeTime', 		       'Seconds',       None, 'time of plunge'),
+                  ('PlungeAzimuthalOrbitalPhase',      'Radian',        None, 'azimuthal orbital phase at plunge'),
+                  ('EccentricityAtPlunge',             'Unit',          None, 'orbital eccentricity at plunge'),
+                  ('PlungeTildeGamma',                 'Radian',        None, 'position of pericenter, as angle between LxS and pericenter at plunge'),
+                  ('PlungeAlphaAngle',                 'Radian',        None, 'azimuthal direction of L (in the orbital plane) at plunge'),
                   ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
                   ('Distance',                         'Parsec',        None, 'standard source distance')
             )
@@ -84,14 +85,19 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
     
     def waveforms(self,samples,deltat,inittime):
-       
-       emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
+      
+       duration = self.PlungeTime + inittime
+       if (duration > inittime + deltat*(samples-1)):
+           print "You have requested EMRI plunging beyond observation time. This is not implemented yet. Please contact S.Babak: stba@aei.mpg.de"
+	   sys.exit(1)
+	   
+       emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, duration, deltat)
 
        emri.SetSourceLocation(self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
                               self.AzimuthalAngleOfSpin, self.Distance)
 			      
-       emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
-                        self.InitialAzimuthalOrbitalPhase, self.InitialAlphaAngle, self.LambdaAngle)
+       emri.EvolveOrbit(inittime,  self.EccentricityAtPlunge, self.PlungeTildeGamma,\
+                        self.PlungeAzimuthalOrbitalPhase, self.PlungeAlphaAngle, self.LambdaAngle)
 
        hp = numpy.empty(samples,'d')
        hc = numpy.empty(samples,'d')

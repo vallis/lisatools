@@ -78,15 +78,15 @@ class AKWaveform:public BaseIntegr{
 		    float *nu_in); 
     
     /** Computes orbital evolution
-     * @param nu0 initial value of orbital azimuthal frequency
-     * @param eccen initial value of eccentricity
-     * @param gamma0 inital position of pericenter, as angle between LxS and pericenter
-     * @param Phi0 initial azimuthal orbital phase
-     * @param al0 initial 
+     * @param eccen value of eccentricity at plunge
+     * @param gamma0 position of pericenter, as angle between LxS and pericenter
+     *               at plunge
+     * @param Phi0 azimuthal orbital phase at plunge
+     * @param al0 alpha angle at plunge 
      * @param lam angle between L and S
      */
 
-    void EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
+    void EvolveOrbit(float t0, float eccen, float gamma0, \
 		    float Phi0, float al0, float lam);
 
 
