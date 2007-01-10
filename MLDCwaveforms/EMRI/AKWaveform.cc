@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 namespace LISAWP{
 
   
-AKWaveform::AKWaveform(float spin, float mu, float MBHmass, float tfin, float timestep){
+AKWaveform::AKWaveform(float spin, float mu, float MBHmass, double tfin, float timestep){
 
      aa = (double)spin;
      m = (double)mu;
@@ -35,7 +35,7 @@ AKWaveform::AKWaveform(float spin, float mu, float MBHmass, float tfin, float ti
      M *= LISAWP_MTSUN_SI;
 		
      dt = (double)timestep;
-     tEnd = (double)tfin;
+     tEnd = tfin;
 
  /*    
      
@@ -154,6 +154,29 @@ void AKWaveform::EvolveOrbit(float t0, float eccen, float gamma0, \
    std::vector<double> alpha_n;
    t = tEnd;
    
+   // First step: we integrate to the nearest integer of dt:
+
+   double step0 = fmod(t, dt);
+   if(step0 != 0.0){
+      Derivs(t, coord0, rhs, 5);
+      advstep =  IntegratorCKRK(coord0, rhs, coordn, t, step0, 5);
+      phi = coordn(0);
+      nu = coordn(1);
+      gamma = coordn(2);
+      e = coordn(3);
+      alpha = coordn(4);
+      coord0 = coordn;
+      t = t - step0;
+   }
+   t_n.push_back(t);
+   phi_n.push_back(phi);
+   nu_n.push_back(nu);
+   gamma_n.push_back(gamma);
+   e_n.push_back(e);
+   alpha_n.push_back(alpha);
+
+
+  
    while (t >= t0){ 
        Derivs(t, coord0, rhs, 5);
        advstep =  IntegratorCKRK(coord0, rhs, coordn, t, dt, 5);
@@ -163,6 +186,7 @@ void AKWaveform::EvolveOrbit(float t0, float eccen, float gamma0, \
        e = coordn(3);
        alpha = coordn(4);
        coord0 = coordn;
+       t = t - dt;
 
        t_n.push_back(t);
        phi_n.push_back(phi);
@@ -179,7 +203,6 @@ void AKWaveform::EvolveOrbit(float t0, float eccen, float gamma0, \
 		   << " alpha = " << alpha << std::endl;
 
        }*/
-       t = t - dt;
    }
    
    int szT = t_n.size();

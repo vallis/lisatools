@@ -54,7 +54,7 @@ class AKWaveform:public BaseIntegr{
      * @param MBHmass mass of the MBH (solar mass)
      * @param timestep sampling rate: dt (in sec)
      */
-    AKWaveform(float spin, float mu, float MBHmass, float tfin, float timestep);
+    AKWaveform(float spin, float mu, float MBHmass, double tfin, float timestep);
 
     /** Set the parameters defining source position wrt SSB
      * @param thS the source direction's polar angle (rad)

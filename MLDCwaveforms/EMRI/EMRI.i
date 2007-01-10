@@ -86,8 +86,8 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
     
     def waveforms(self,samples,deltat,inittime):
       
-       duration = self.PlungeTime + inittime
-       if (duration > inittime + deltat*(samples-1)):
+       duration = self.PlungeTime - inittime
+       if (duration > deltat*(samples-1)):
            print "You have requested EMRI plunging beyond observation time. This is not implemented yet. Please contact S.Babak: stba@aei.mpg.de"
 	   sys.exit(1)
 	   
