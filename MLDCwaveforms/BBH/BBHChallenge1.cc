@@ -24,9 +24,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 namespace LISAWP{
 
-BBHChallenge1::BBHChallenge1(float mass1, float mass2){
-   m1 = (double) mass1;
-   m2 = (double) mass2;
+BBHChallenge1::BBHChallenge1(double mass1, double mass2){
+   m1 = mass1;
+   m2 = mass2;
    M = m1 + m2;
    eta = m1*m2/(M*M);
    m1 *= LISAWP_MTSUN_SI; // mass in seconds
@@ -46,15 +46,15 @@ BBHChallenge1::BBHChallenge1(float mass1, float mass2){
 }
   
 
-void BBHChallenge1::SetInitialOrbit(float coalTime, float phi0){
-   Phi = (double) phi0;
+void BBHChallenge1::SetInitialOrbit(double coalTime, double phi0){
+   Phi = phi0;
    tc = coalTime;
    omega0 = EstimateFreq0(tc); // MV 20061103
 
    orbitSet = true;
 }
 
-double BBHChallenge1::EstimateTc(float omega0){
+double BBHChallenge1::EstimateTc(double omega0){
 
    double x, a, b;
    double fr =  pow(M*omega0, -8./3.);
@@ -103,7 +103,7 @@ double BBHChallenge1::EstimateTc(float omega0){
 }
 
 
- double BBHChallenge1::EstimateFreq0(float tc){
+ double BBHChallenge1::EstimateFreq0(double tc){
 
   double tauc = 0.2*eta*tc/M; 
   double t38 = pow(tauc, -3./8.);
@@ -116,9 +116,9 @@ double BBHChallenge1::EstimateTc(float omega0){
   
  }
 
- void BBHChallenge1::ComputeInspiral(float t0, float timeStep, float maxDuration){
+ void BBHChallenge1::ComputeInspiral(double t0, double timeStep, double maxDuration){
    LISAWPAssert(orbitSet, "You need to first set the initial orbit!");
-   double tau, nu;
+   double tau;
 
    dt = timeStep;
 
@@ -174,7 +174,7 @@ double BBHChallenge1::EstimateTc(float omega0){
 
  }
 
- void BBHChallenge1::SetObserver(float thetaD, double D){
+ void BBHChallenge1::SetObserver(double thetaD, double D){
 
     theta = (double)thetaD;
     dist = D*LISAWP_PC_SI/LISAWP_C_SI; //distance in seconds
@@ -188,7 +188,7 @@ double BBHChallenge1::EstimateTc(float omega0){
 void BBHChallenge1::ComputeWaveform(float truncateTime,  float taper,  \
 		 std::vector<double>& hPlus, std::vector<double>& hCross){                  */
 
- int BBHChallenge1::ComputeWaveform(float truncateTime,  float taper,  \
+ int BBHChallenge1::ComputeWaveform(double truncateTime,  double taper,  \
          double *hPlus,long hPlusLength,double *hCross,long hCrossLength){ /* MV 20061017 */
     LISAWPAssert(observerSet, "You must specify direction to observer!");
     LISAWPAssert(runDone, "You must compute inspiraling trajectory first!");

@@ -52,41 +52,41 @@ class BBHChallenge1{
       * @param mass2 mass of the 2nd companion in solar masses
       */
 	  
-      BBHChallenge1(float mass1, float mass2);
+      BBHChallenge1(double mass1, double mass2);
       
      /*** initial orbital arameters
       * @param coalTime time of coalescence
       * @param phi0 initial orbital phase
       */
       
-      void SetInitialOrbit(float coalTime, float phi0);
+      void SetInitialOrbit(double coalTime, double phi0);
 
       /** Estimates (returns) coalescence time (in sec) 
        * @param omega0 initial orbital angular frequency (in Hz)
        */
       
-      double EstimateTc(float omega0);
+      double EstimateTc(double omega0);
 
 
       /** Estimates (returns) initial orbital frequency (in Hz)
        * @param tc time of coalescence (in sec)
        */
       
-      double EstimateFreq0(float tc);
+      double EstimateFreq0(double tc);
 
       /**  Computes inspiralling motion 
        * @param timeStep sampling step (in sec).
        * @maxDuration maximum duaration (in sec).
        * */
       
-      void ComputeInspiral(float t0, float timeStep, float maxDuration);
+      void ComputeInspiral(double t0, double timeStep, double maxDuration);
 
      /** define direction to the detector/baricenter 
       * @param thetaD theta direction to the BSS/detector in rad.
       * @param D distance to the observer (in pc)
       */
     
-      void SetObserver(float thetaD, double D);
+      void SetObserver(double thetaD, double D);
 
       /** Computes and returns two polarizations in the source frame
        * @param truncateTime waveform truncation time as time left to
@@ -102,7 +102,7 @@ class BBHChallenge1{
           void ComputeWaveform(float truncateTime, float taper,  std::vector<double>& hPlus,\
                                std::vector<double>& hCross);                                   */
 
-       int ComputeWaveform(float truncateTime,  float taper,  \
+       int ComputeWaveform(double truncateTime,  double taper,  \
                                  double *hPlus,long hPlusLength,double *hCross,long hCrossLength);
 
       /**  Returns to the user  orbital evolution 
