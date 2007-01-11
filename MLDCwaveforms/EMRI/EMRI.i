@@ -12,6 +12,7 @@
 %typemap(in) (double *hCross,long hCrossLength) = (double *numpyarray,long numpyarraysize);
 
 %include "cpointer.i"
+%pointer_class(double, doublep);
 %pointer_class(float, floatp);
 
 %include "AKWaveform.hh"
@@ -80,6 +81,11 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
                   ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
                   ('Distance',                         'Parsec',        None, 'standard source distance')
             )
+    e0 = 0.0;
+    nu0 = 0.0;
+    gam0 = 0.0;
+    phi0 = 0.0;
+    al0 = 0.0;
 
     def  __init__(self,name=''):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
@@ -104,9 +110,23 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
        wavelen = emri.GetWaveform(self.Polarization, hp, hc)
 
        hp[wavelen:] = 0.0
-       hc[wavelen:] = 0.0
+       hc[wavelen:] = 0.0 
+       
+       nut = doublep()
+       et = doublep()
+       gamt = doublep()
+       pht = doublep()
+       alt = doublep()
+       emri.GetOrbitalParams(0.0, nut, et, gamt, pht, alt)
+
+       [self.nu0, self.e0, self.gam0, self.phi0, self.al0] = [nut.value(), et.value(), gamt.value(), pht.value(), alt.value()]
+
 
        return (hp,hc)
+       
+    def GetOrbitalParameters(self):
+       
+       	return [self.nu0, self.e0, self.gam0, self.phi0, self.al0]
        
 # utility function
 

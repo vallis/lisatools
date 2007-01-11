@@ -54,7 +54,7 @@ class AKWaveform:public BaseIntegr{
      * @param MBHmass mass of the MBH (solar mass)
      * @param timestep sampling rate: dt (in sec)
      */
-    AKWaveform(float spin, float mu, float MBHmass, double tfin, float timestep);
+    AKWaveform(double spin, double mu, double MBHmass, double tfin, double timestep);
 
     /** Set the parameters defining source position wrt SSB
      * @param thS the source direction's polar angle (rad)
@@ -64,7 +64,7 @@ class AKWaveform:public BaseIntegr{
      * @param D distance to the source (in pc)
      */
 
-    void SetSourceLocation(float thS, float phS,  float thK, float phK, float D);
+    void SetSourceLocation(double thS, double phS, double thK, double phK, double D);
 
     /** Estimates initial frequency and eccentricity for eccentricity given at lso
      * @param Tin duration of the backward integration
@@ -74,8 +74,8 @@ class AKWaveform:public BaseIntegr{
      * @param nu_in approx. frequency at t=0 (output)
      */
     
-    void EstimateInitialParams(double Tin, float e_lso, float nu_lso, float *e_in, \
-		    float *nu_in); 
+    void EstimateInitialParams(double Tin, double e_lso, double nu_lso, double *e_in, \
+		    double *nu_in); 
     
     /** Computes orbital evolution
      * @param eccen value of eccentricity at plunge
@@ -86,8 +86,8 @@ class AKWaveform:public BaseIntegr{
      * @param lam angle between L and S
      */
 
-    void EvolveOrbit(float t0, float eccen, float gamma0, \
-		    float Phi0, float al0, float lam);
+    void EvolveOrbit(double t0, double eccen, double gamma0, \
+		    double Phi0, double al0, double lam);
 
 
     /** Returns orbital evolution */
@@ -106,13 +106,13 @@ class AKWaveform:public BaseIntegr{
    		    
 
     /** returns orbital elements at time t */
-    void GetOrbitalParams(float t, float& nut, float& et, float& gt, float& pht, float& alt);
+    void GetOrbitalParams(double t, double& nut, double& et, double& gt, double& pht, double& alt);
     
 
     /** Returns size of waveform and fills up hplus, hcross
      *@param ps0 initial polarization angle
     */
-     int GetWaveform(float ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength);
+     int GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength);
 
 	private:
 

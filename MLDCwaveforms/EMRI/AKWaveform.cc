@@ -24,11 +24,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 namespace LISAWP{
 
   
-AKWaveform::AKWaveform(float spin, float mu, float MBHmass, double tfin, float timestep){
+AKWaveform::AKWaveform(double spin, double mu, double MBHmass, double tfin, double timestep){
 
-     aa = (double)spin;
-     m = (double)mu;
-     M = (double)MBHmass;	
+     aa = spin;
+     m = mu;
+     M = MBHmass;	
 		
      // transform masses in seconds
      m *= LISAWP_MTSUN_SI;
@@ -46,13 +46,13 @@ AKWaveform::AKWaveform(float spin, float mu, float MBHmass, double tfin, float t
 	
 }
 
-void AKWaveform::SetSourceLocation(float thS, float phS,  float thK, float phK, float D){
+void AKWaveform::SetSourceLocation(double thS, double phS, double thK, double phK, double D){
 
-     thetaS = (double) thS;
-     phiS = (double) phS;
-     thetaK = (double) thK;
-     phiK = (double) phK;
-     dist = (double) D;
+     thetaS = thS;
+     phiS = phS;
+     thetaK = thK;
+     phiK = phK;
+     dist = D;
 
      // translate distance in sec
      
@@ -63,7 +63,7 @@ void AKWaveform::SetSourceLocation(float thS, float phS,  float thK, float phK, 
 }
 
 
-void AKWaveform::EstimateInitialParams(double Tin, float e_lso, float nu_lso, float *e_in, float *nu_in){
+void AKWaveform::EstimateInitialParams(double Tin, double e_lso, double nu_lso, double *e_in, double *nu_in){
      
     double tstep = 100.0;
     double Tobs = Tin;
@@ -111,8 +111,8 @@ void AKWaveform::EstimateInitialParams(double Tin, float e_lso, float nu_lso, fl
  * plunge!
  */
 
-void AKWaveform::EvolveOrbit(float t0, float eccen, float gamma0, \
-		    float Phi0, float al0, float lam){
+void AKWaveform::EvolveOrbit(double t0, double eccen, double gamma0, \
+		    double Phi0, double al0, double lam){
 
    int stab;	
    double t;
@@ -127,12 +127,12 @@ void AKWaveform::EvolveOrbit(float t0, float eccen, float gamma0, \
    Matrix<double> coordn(1,5);
    Matrix<double> rhs(1,5);
    rhs = 0.0;
-   coord0(0) = (double)Phi0;
-   coord0(1) = (double)nu0;
-   coord0(2) = (double)gamma0;
-   coord0(3) = (double)eccen;
-   coord0(4) = (double)al0;
-   lambda = (double) lam; 
+   coord0(0) = Phi0;
+   coord0(1) = nu0;
+   coord0(2) = gamma0;
+   coord0(3) = eccen;
+   coord0(4) = al0;
+   lambda = lam; 
 
    int counter = 1;
    newstep = dt;
@@ -194,7 +194,7 @@ void AKWaveform::EvolveOrbit(float t0, float eccen, float gamma0, \
        gamma_n.push_back(gamma);
        e_n.push_back(e);
        alpha_n.push_back(alpha);
-   /*    if (t == 0.0){
+    /*   if (t == 0.0){
             std::cout << " time  = " << t << "\n" \
 		   << " phi = " << phi << "\n" \
 		   << " nu = " << nu << "\n" \
@@ -237,11 +237,11 @@ void AKWaveform::EvolveOrbit(float t0, float eccen, float gamma0, \
 
 }
 
-void AKWaveform::GetOrbitalParams(float t, float& nut, float& et, float& gt, float& pht, float& alt){
+void AKWaveform::GetOrbitalParams(double t, double& nut, double& et, double& gt, double& pht, double& alt){
 	LISAWPAssert(runDone, "Need to compute orbit first");
 	int k = -1;
 	for (int i=0; i<(int)tt.size()-1; i++){
-              if (tt[i]<= t && tt[i+1]>t){
+              if (tt[i] == t){
 		  std::cout << "recroding inst. orbit at t= " << tt[i] << std::endl;
 		  nut = nu_t[i];
 		  et = e_t[i];
@@ -348,7 +348,7 @@ void AKWaveform::GetFinalOrbitalParams(float& t, float& e_end, float& nu_end){
 
 }
 
-int AKWaveform::GetWaveform(float ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength){
+int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength){
 
     LISAWPAssert(runDone, "you must Run first");
     LISAWPAssert(sourceSet, "you must set source location");
