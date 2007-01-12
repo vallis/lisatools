@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__version__='$Id$'
+__version__ = '$Id$'
 
 # some definitions...
 
@@ -8,10 +8,18 @@ import sys
 import os
 import glob
 import re
+import time
 from distutils.dep_util import newer, newer_group
 
 import lisaxml
 import numpy
+
+def timestring(lapse):
+    hrs  = int(lapse/3600)
+    mins = int((lapse - hrs*3600)/60)
+    secs = int((lapse - hrs*3600 - mins*60))
+    
+    return "%sh%sm%ss" % (hrs,mins,secs)
 
 def run(command):
     commandline = command % globals()
@@ -23,11 +31,12 @@ def run(command):
         print 'Script %s failed at command "%s".' % (sys.argv[0],commandline)
         sys.exit(1)
 
+step0time = time.time()
+
 # ---------------------------------------
 # STEP 0: parse parameters, set constants
 # ---------------------------------------
 
-# oneyear = 3932160
 oneyear = 31457280
 
 from optparse import OptionParser
@@ -53,6 +62,10 @@ parser.add_option("-d", "--timeStep",
 parser.add_option("-s", "--seed",
                   type="int", dest="seed", default=None,
                   help="seed for random number generator (int) [required]")
+
+parser.add_option("-n", "--seedNoise",
+                  type="int", dest="seednoise", default=None,
+                  help="noise-specific seed (int) [will use global seed (-s/--seed) if not given]")
 
 parser.add_option("-m", "--make",
                   action="store_true", dest="makemode", default=False,
@@ -96,17 +109,25 @@ else:
     dosynthlisa = True
 
 seed = options.seed
+
+if options.seednoise == None:
+    seednoise = seed
+else:
+    seednoise = options.seednoise
+
 timestep = options.timestep
 duration = options.duration
 makemode = options.makemode
+
+step1time = time.time()
 
 # --------------------------------------------------------------------------------------
 # STEP 1: create source XML parameter files, and collect all of them in Source directory
 # --------------------------------------------------------------------------------------
 
 # first empty the Source and Galaxy directories
-makemode = options.makemode
-if (not options.makemode):
+
+if (not makemode):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml')
 
@@ -129,6 +150,8 @@ if (not options.makemode):
     else:
         run('python %s %s' % (sourcescript,seed))
 
+step2time = time.time()
+
 # ---------------------------------------
 # STEP 2: create barycentric strain files
 # ---------------------------------------
@@ -147,6 +170,8 @@ for xmlfile in glob.glob('Source/*.xml'):
 
 if os.system('grep -q RequestSN Source/*.xml') == 0 and dosynthlisa == False:
     parser.error("Ah, at least one of your Source files has a RequestSN field; then I MUST run synthlisa to adjust SNRs.")
+
+step3time = time.time()
 
 # --------------------------
 # STEP 3: run Synthetic LISA
@@ -167,11 +192,12 @@ if dosynthlisa:
             run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
     # now run noise generation...
-    noiseseed = options.seed
     noisefile = 'TDI/tdi-frequency-noise.xml'
     # note that we're not checking whether the seed is the correct one
     if (not makemode) or (not os.path.isfile(noisefile)):
-        run('bin/makeTDInoise-synthlisa.py --seed=%(noiseseed)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
+        run('bin/makeTDInoise-synthlisa.py --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
+
+step4time = time.time()
 
 # --------------------------
 # STEP 4: run LISA Simulator
@@ -211,7 +237,7 @@ if lisasimdir:
             run('./Package %s sources.txt 0' % xmlname)
 
             outxml = 'XML/' + xmlname + '.xml'
-            outbin = 'Binary/' + xmlname + '.bin'
+            outbin = 'XML/' + xmlname + '.bin'
 
             # create an empty XML file...
             sourcefileobj = lisaxml.lisaXML(here + '/' + tdifile)
@@ -221,13 +247,16 @@ if lisasimdir:
             # then add the modified Source data included in the Barycentric file
             run('%s/bin/mergeXML.py -k %s %s' % (here,here + '/' + tdifile,here + '/' + xmlfile))
 
-            # what other temporary files to remove?
+            run('rm -f %s' % outxml)
+            run('rm -f %s' % outbin)
 
-            run('rm %s' % outxml)
-            run('rm %s' % outbin)
-
-            run('rm %s' % xmldest)
-            run('rm %s' % bindest)
+            run('rm -f %s' % xmldest)
+            run('rm -f %s' % bindest)
+    
+            run('rm -f Binary/*.bin')
+            run('rm -f Binary/GW*.dat')
+            run('rm -f Binary/SourceParameters.dat')
+            run('rm -f Data/*.txt')
     
             os.chdir(here)
     
@@ -238,35 +267,39 @@ if lisasimdir:
     if (not makemode) or (not os.path.isfile(slnoisefile)):
         os.chdir(lisasimdir)
 
-        noiseseed = options.seed
-        run('./Noise_Maker %(noiseseed)s')
+        run('./Noise_Maker %(seednoise)s')
 
-        run('rm sources.txt; touch sources.txt')
-        run('./Package noise-only sources.txt %(noiseseed)s')
+        run('rm -f sources.txt; touch sources.txt')
+        run('./Package noise-only sources.txt %(seednoise)s')
 
         # remove temporary files
-        run('rm Binary/AccNoise*.dat Binary/ShotNoise*.dat Binary/XNoise*.bin Binary/YNoise*.bin Binary/ZNoise*.bin')
-        run('rm Binary/M1Noise*.bin Binary/M2Noise*.bin Binary/M3Noise*.bin')
+        run('rm -f Binary/AccNoise*.dat Binary/ShotNoise*.dat Binary/XNoise*.bin Binary/YNoise*.bin Binary/ZNoise*.bin')
+        run('rm -f Binary/M1Noise*.bin Binary/M2Noise*.bin Binary/M3Noise*.bin')
         
         noisefileobj = lisaxml.lisaXML(here + '/' + slnoisefile)
         noisefileobj.close()
         run('%s/bin/mergeXML.py %s %s %s' % (here,here + '/' + slnoisefile,here + '/Template/StandardLISA.xml',
                                                                            lisasimdir + '/XML/noise-only.xml'))
 
-        run('rm XML/noise-only.xml')
-        run('rm Binary/noise-only.bin')
+        run('rm -f XML/noise-only.xml')
+        run('rm -f XML/noise-only.bin')
 
         os.chdir(here)
+
+step5time = time.time()
 
 # -----------------------
 # STEP 5: run Fast Galaxy
 # -----------------------
 
 # hmm... are we telling everybody the seed with the filename of the galaxy?
+# no, I think lisaxml later changes the name, doesn't it?
 
 if os.path.isfile('Galaxy/Galaxy.xml'):
     if (not makemode) or (newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-frequency.xml') or newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-strain.xml')):
         run('bin/makeTDIsignals-Galaxy.py %s' % seed)
+
+step6time = time.time()
 
 # -------------------------
 # STEP 6: assemble datasets
@@ -283,6 +316,9 @@ if options.istraining:
     globalseed = ', globalseed = %s' % seed
 else:
     globalseed = ''
+
+run('cp Template/lisa-xml.xsl Dataset/.')
+run('cp Template/lisa-xml.css Dataset/.')
 
 if dosynthlisa:
     nonoisefile = 'Dataset/' + challengename + '-frequency-nonoise.xml'
@@ -317,6 +353,17 @@ if dosynthlisa:
     if glob.glob('TDI/*-tdi-frequency.xml'):
         run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
 
+    os.chdir('Dataset')
+
+    if options.istraining:
+        run('tar zcf %s-frequency-training.tar.gz %s-frequency.xml %s-frequency-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
+        run('tar zcf %s-frequency-nonoise-training.tar.gz %s-frequency-nonoise.xml %s-frequency-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)    
+    else:
+        run('tar zcf %s-frequency.tar.gz %s-frequency.xml %s-frequency-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
+        run('tar zcf %s-frequency-nonoise.tar.gz %s-frequency-nonoise.xml %s-frequency-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
+    
+    os.chdir('..')
+
 # next do LISA Simulator
 
 if lisasimdir:
@@ -328,10 +375,6 @@ if lisasimdir:
     withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (lisasim version)' + globalseed)
     withnoise.close()
 
-    keyfile = 'Dataset/' + challengename + '-key.xml'
-    key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed)
-    key.close()
-
     if options.istraining:
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-strain.xml')
@@ -342,12 +385,39 @@ if lisasimdir:
         run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
 
     if not dosynthlisa:
+        keyfile = 'Dataset/' + challengename + '-key.xml'
+        key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed)
+        key.close()
+
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
+
+    os.chdir('Dataset')
+
+    if options.istraining:
+        run('tar zcf %s-strain-training.tar.gz %s-strain.xml %s-strain-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
+        run('tar zcf %s-strain-nonoise-training.tar.gz %s-strain-nonoise.xml %s-strain-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)    
+    else:
+        run('tar zcf %s-strain.tar.gz %s-strain.xml %s-strain-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
+        run('tar zcf %s-strain-nonoise.tar.gz %s-strain-nonoise.xml %s-strain-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
+    
+    os.chdir('..')
+
+step7time = time.time()
 
 # ------------------------
 # STEP 7: package datasets
 # ------------------------
+
+endtime = time.time()
+
+print
+print "--> Completed generating %s" % challengename 
+print "    Total time         : %s" % timestring(endtime   - step0time)
+print "    Sources time       : %s" % timestring(step3time - step1time)
+print "    Synthetic LISA time: %s" % timestring(step4time - step3time)
+print "    LISA Simulator time: %s" % timestring(step5time - step4time)
+print "    Fast Galaxy time   : %s" % timestring(step6time - step5time)
 
 # exit with success code
 sys.exit(0)
