@@ -81,8 +81,6 @@ samples = int( (options.duration + options.prebuffer + options.postbuffer) / opt
 
 if (mysystem.xmltype == 'ExtremeMassRatioInspiral'):
     mysystem.TimeSeries = lisaxml.TimeSeries((hp0,hc0),'hp,hc')
-    [nu0, e0, gam0, ph0, al0] = mysystem.GetOrbitalParameters()
-    print "nu0 = %g, e0 = %g, gam0 = %g, phi0 = %g, al0 = %g" % (nu0, e0, gam0, ph0, al0)
 else:
     pol = mysystem.Polarization
 
