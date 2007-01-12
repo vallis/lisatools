@@ -42,7 +42,7 @@ BBHChallenge1::BBHChallenge1(double mass1, double mass2){
    omegaLSO = 1./(pow(6, 1.5)*M);
 
    omegaMECO = pow(-(54. + 6.*eta - 6.*sqrt(1539. - 1008.*eta + 19.*eta*eta))/\
-		   (81. - 57.*eta + eta*eta),1.5)/(27.*M);
+ 		   (81. - 57.*eta + eta*eta),1.5)/(27.*M);
 }
   
 
@@ -50,6 +50,8 @@ void BBHChallenge1::SetInitialOrbit(double coalTime, double phi0){
    Phi = phi0;
    tc = coalTime;
    omega0 = EstimateFreq0(tc); // MV 20061103
+
+   printf("SetInitialOrbit: omega0 = %g\n",omega0);
 
    orbitSet = true;
 }
@@ -135,10 +137,10 @@ double BBHChallenge1::EstimateTc(double omega0){
    double ph_res = PPNphase(omega0);
    double Phi_diff = Phi - ph_res;  // need to bring initial phase to Phi0
 
-//   double om0 = om;
-//   tau = 0.2*eta/M*tc;
-//   nu = PPNfreq(tau);
-//   double om_Diff = om0 - nu;    // need to bring initial freq. to omega0
+//  double om0 = om;
+//  tau = 0.2*eta/M*tc;
+//  nu = PPNfreq(tau);
+//  double om_Diff = om0 - nu;    // need to bring initial freq. to omega0
 
    int expectlen = int((maxDuration - t0) / timeStep); /* MV 20061017, see below */
 
@@ -152,6 +154,8 @@ double BBHChallenge1::EstimateTc(double omega0){
 
    double t = t0;
    std::cout << "initial time =  " <<  t << "  s (dt = " << dt << " s)"<< std::endl; 
+
+   printf("Phase at t=%g is %g\n",t0,PPNphase(om) + Phi_diff);
 
    while(stab){
        LISAWPAssert(t<tc, "Attempt to go beyond coalescence time!");
@@ -223,7 +227,7 @@ void BBHChallenge1::ComputeWaveform(float truncateTime,  float taper,  \
            wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
 
        hp = Ampl * Mom23 * 2.0*(1. + cs*cs)*cos(2.0*Phase[k]);
-       hc = Ampl * Mom23 *4.0*cs*sin(2.*Phase[k]); 
+       hc = Ampl * Mom23 *4.0*cs*sin(2.0*Phase[k]); 
 
        *hPlus = hp*wk;  /* MV 20061017: replace vector<double> assignment with C array */
        *hCross = hc*wk;
@@ -235,6 +239,91 @@ void BBHChallenge1::ComputeWaveform(float truncateTime,  float taper,  \
   return size; /* MV 20061017 */
  }
 
+int BBHChallenge1::ComputeCoherent(float truncateTime,float taper, \
+                    double *phic,long phicLength,double *fc,long fcLength,double *a,long aLength) {
+    LISAWPAssert(observerSet, "You must specify direction to observer!");
+    LISAWPAssert(runDone, "You must compute inspiraling trajectory first!");
+
+    double cs = cos(theta);
+    double Mom23;
+    double hp, hc;
+
+    int size = time.size();
+    LISAWPAssert((int)Phase.size() == size, "Sizes do not match!");
+    LISAWPAssert(size <= phicLength && size <= fcLength && size <= aLength, "Buffer insufficient!");
+
+    int subtractN = (int) floor(truncateTime/dt);
+    LISAWPAssert(subtractN < size, "Truncation time is larger than the waveform duration!");
+    size  = size - subtractN;
+
+    double Ampl = (M*eta/dist);
+    double wk = 1.0;
+
+    double xmax;
+    if (taper != 0.0) xmax = 1./taper;
+    double Ataper = 150;
+
+    for(int k=0; k<size; k++){
+        Mom23 = pow(M*freq[k], 2./3.);
+
+        if (taper != 0.0) 
+            wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
+
+        *a = 2.0 * Ampl * Mom23 * wk;
+
+        *phic = 2.0 * Phase[k];
+        *fc   = freq[k] / M_PI;
+
+        a++;
+        phic++;
+        fc++;
+    }
+
+    return size;
+}                              
+
+int BBHChallenge1::ComputeCoherent(float truncateTime,float taper, \
+                    float *phic,long phicLength,float *fc,long fcLength,float *a,long aLength) {
+    LISAWPAssert(observerSet, "You must specify direction to observer!");
+    LISAWPAssert(runDone, "You must compute inspiraling trajectory first!");
+
+    double cs = cos(theta);
+    double Mom23;
+    double hp, hc;
+
+    int size = time.size();
+    LISAWPAssert((int)Phase.size() == size, "Sizes do not match!");
+    LISAWPAssert(size <= phicLength && size <= fcLength && size <= aLength, "Buffer insufficient!");
+
+    int subtractN = (int) floor(truncateTime/dt);
+    LISAWPAssert(subtractN < size, "Truncation time is larger than the waveform duration!");
+    size  = size - subtractN;
+
+    double Ampl = (M*eta/dist);
+    double wk = 1.0;
+
+    double xmax;
+    if (taper != 0.0) xmax = 1./taper;
+    double Ataper = 150;
+
+    for(int k=0; k<size; k++){
+        Mom23 = pow(M*freq[k], 2./3.);
+
+        if (taper != 0.0) 
+            wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
+
+        *a = 2.0 * Ampl * Mom23 * wk;
+
+        *phic = 2.0 * Phase[k];
+        *fc   = freq[k] / M_PI;
+
+        a++;
+        phic++;
+        fc++;
+    }
+
+    return size;
+}
 
  void BBHChallenge1::GetOrbit(std::vector<double>& frequency, std::vector<double>& phase){
 

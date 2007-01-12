@@ -102,9 +102,15 @@ class BBHChallenge1{
           void ComputeWaveform(float truncateTime, float taper,  std::vector<double>& hPlus,\
                                std::vector<double>& hCross);                                   */
 
-       int ComputeWaveform(double truncateTime,  double taper,  \
-                                 double *hPlus,long hPlusLength,double *hCross,long hCrossLength);
+       int ComputeWaveform(double truncateTime,double taper, \
+                           double *hPlus,long hPlusLength,double *hCross,long hCrossLength);
+                                 
+       int ComputeCoherent(float truncateTime,float taper, \
+                           double *phic,long phicLength,double *fc,long fcLength,double *a,long aLength);                                 
 
+       int ComputeCoherent(float truncateTime,float taper, \
+                           float *phic,long phicLength,float *fc,long fcLength,float *a,long aLength);
+                       
       /**  Returns to the user  orbital evolution 
        * @param frequency vector with omega_orb(t)
        * @param phase vector with phase_orb(t)
