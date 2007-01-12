@@ -69,7 +69,7 @@ parser.add_option("-n", "--seedNoise",
 
 parser.add_option("-m", "--make",
                   action="store_true", dest="makemode", default=False,
-                  help="run in make mode (use already-generated source key files and intermediate products)")
+                  help="run in make mode (use already-generated source key files and intermediate products; needs same seeds)")
 
 parser.add_option("-S", "--synthlisa",
                   action="store_true", dest="synthlisaonly", default=False,
@@ -126,18 +126,12 @@ step1time = time.time()
 # --------------------------------------------------------------------------------------
 
 # first empty the Source and Galaxy directories
+# makemode won't regenerate sources, so at least step 1 must be completed
+# before running in make mode
 
 if (not makemode):
     run('rm -f Source/*.xml')
-    run('rm -f Galaxy/*.xml')
-
-    # remove all previous Galaxy dat files (except for the distributed Galaxies)
-    # (I could use a better regexp rather than this ugly hack...)
-    run('mkdir ../MLDCwaveforms/Galaxy/Data/temp')
-    run('mv ../MLDCwaveforms/Galaxy/Data/*_1.dat ../MLDCwaveforms/Galaxy/Data/temp/.')
-    run('rm -f ../MLDCwaveforms/Galaxy/Data/*[0-9].dat')
-    run('mv ../MLDCwaveforms/Galaxy/Data/temp/*.dat ../MLDCwaveforms/Galaxy/Data/.')
-    run('rmdir ../MLDCwaveforms/Galaxy/Data/temp')
+    run('rm -f Galaxy/*.xml Galaxy/*.dat')
 
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
@@ -305,8 +299,10 @@ step6time = time.time()
 # STEP 6: assemble datasets
 # -------------------------
 
+# ignore make mode here, we'll always repackage everything
+
 # first empty the Dataset directory
-run('rm -f Dataset/*.xml Dataset/*.bin')
+run('rm -f Dataset/*.xml Dataset/*.bin Dataset/*.txt')
 
 # improve dataset metadata here
 
@@ -376,8 +372,13 @@ if dosynthlisa:
     run('cp Template/lisa-xml.css Dataset/.')
 
     os.chdir('Dataset')
+
+    nonoisefile   = os.path.basename(nonoisefile)
+    withnoisefile = os.path.basename(withnoisefile)
+
     run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-*.bin',nonoisefile  )))
     run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-*.bin',withnoisefile)))    
+
     os.chdir('..')
 
 # next do LISA Simulator
@@ -437,8 +438,13 @@ if lisasimdir:
     run('cp Template/lisa-xml.css Dataset/.')
 
     os.chdir('Dataset')
+
+    nonoisefile   = os.path.basename(nonoisefile)
+    withnoisefile = os.path.basename(withnoisefile)
+
     run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-*.bin',nonoisefile  )))
     run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-*.bin',withnoisefile)))    
+
     os.chdir('..')
 
 step7time = time.time()
