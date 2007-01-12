@@ -1,0 +1,19 @@
++ include simulators in SVN (and get latest version) [done 07/01/11]
+- flags in master-install.py to force re-installation of packages [done for simulators 07/01/11]
+- download big Galaxy data file if not present [done 07/01/11]
+- modified logic of symbolic linking of galaxy dat files [done 07/01/11]
+
+- final tar-gzipping of result files (check seeds are hidden for galaxies)
+- check if BBH in LISA simulator noise file
+- test independent noise and source seeds
+- improve make mode...
+
+- multithreading (with LISA Simulator and Galaxy working in scratch directories)
+
+- cleanup challenge document
+
+- problem: challenge2.2-key.xml has txt files even if there's nothing in it
+  come to think of it, why is there nothing in it? This should be the secret key...
+  (both problems should be solved, key file was being erased by LISAsim packaging...)
+
+- problem: check strange txt file left in galaxy... copied with wrong name?
