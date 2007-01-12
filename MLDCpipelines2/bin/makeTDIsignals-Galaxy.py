@@ -42,10 +42,10 @@ run('rm Binary/*.bin')
 run('rm Data/Sources_LS.txt')
 run('rm Data/Sources_SL.txt')
 
+run('rm Data/TheGalaxy.txt')
+
 run('rm Data/count_%s.dat' % seed)
 run('rm Data/Galaxy_%s.dat' % seed)
 run('rm Data/Galaxy_Bright_%s.dat' % seed)
-
-# there may be more cleaning to do...
 
 os.chdir(here)

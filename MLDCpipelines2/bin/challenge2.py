@@ -277,6 +277,7 @@ if lisasimdir:
 
         run('rm -f XML/noise-only.xml')
         run('rm -f XML/noise-only.bin')
+        run('rm -f Data/*.txt')
 
         os.chdir(here)
 
@@ -301,7 +302,7 @@ step6time = time.time()
 
 # ignore make mode here, we'll always repackage everything
 
-# first empty the Dataset directory
+# first empty the Dataset directory (do not remove tar.gz)
 run('rm -f Dataset/*.xml Dataset/*.bin Dataset/*.txt')
 
 # improve dataset metadata here
@@ -312,6 +313,9 @@ if options.istraining:
     globalseed = ', source seed = %s,  noise seed = %s' % (seed,seednoise)
 else:
     globalseed = ''
+
+run('cp Template/lisa-xml.xsl Dataset/.')
+run('cp Template/lisa-xml.css Dataset/.')
 
 if dosynthlisa:
     # set filenames
@@ -367,9 +371,6 @@ if dosynthlisa:
         run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
 
     # now do some tarring up, including XSL and CSS files from Template
-
-    run('cp Template/lisa-xml.xsl Dataset/.')
-    run('cp Template/lisa-xml.css Dataset/.')
 
     os.chdir('Dataset')
 
@@ -434,9 +435,6 @@ if lisasimdir:
 
     # now do some tarring up, including XSL and CSS files from Template
 
-    run('cp Template/lisa-xml.xsl Dataset/.')
-    run('cp Template/lisa-xml.css Dataset/.')
-
     os.chdir('Dataset')
 
     nonoisefile   = os.path.basename(nonoisefile)
@@ -446,6 +444,9 @@ if lisasimdir:
     run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-*.bin',withnoisefile)))    
 
     os.chdir('..')
+
+run('rm Dataset/lisa-xml.xsl')
+run('rm Dataset/lisa-xml.css')
 
 step7time = time.time()
 
