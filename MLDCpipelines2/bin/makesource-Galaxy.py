@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+__version__ = '$Id$'
+
 import sys
 import os
 import os.path
@@ -19,7 +21,7 @@ def run(command):
 from optparse import OptionParser
 
 parser = OptionParser(usage="usage: %prog [options] SEED...",
-                      version="$Id: $")
+                      version="$Id$")
 
 parser.add_option("-t", "--test",
                   action="store_true", dest="istest", default=False,
@@ -54,10 +56,10 @@ if options.istest:
     run('rm ../MLDCwaveforms/Galaxy/XML/TheGalaxy_key.xml')
     
     # we copy, not move, the test galaxy (since that's not generated, but included in the Galaxy tar.gz)
-    run('mv ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
-    run('mv ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
+    run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
+    run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
 else:
-    # 1 is a switch to include verification binaries
+    # here 1 is a switch to include verification binaries
     run('./Galaxy_Maker %s 1' % seed)
 
     run('./Galaxy_key TheGalaxy %s' % seed)    
@@ -68,14 +70,15 @@ else:
     run("sed 's/Data\///g' < ../MLDCwaveforms/Galaxy/XML/TheGalaxy_key.xml > Galaxy/Galaxy.xml")
     run('rm ../MLDCwaveforms/Galaxy/XML/TheGalaxy_key.xml')
 
-    # these are big files!
-    # run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat Galaxy/.' % seed)
-    # run('cp ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat Galaxy/.' % seed)
+    # move the files to MLDCpipelines2/Galaxy, but create symlinks so they can still 
+    # be used from here (they're needed later to make TDI)
 
-    # link, don't copy
-    
     galaxyfile = os.path.abspath('../MLDCwaveforms/Galaxy/Data/Galaxy_%s.dat' % seed)
-    run('ln -s %s Galaxy/Galaxy_%s.dat' % (galaxyfile,seed))
+    run('mv %s Galaxy/.' % galaxyfile)
+    galaxydest = os.path.abspath('Galaxy/Galaxy_%s.dat' % seed)
+    run('ln -sf %s %s' % (galaxydest,galaxyfile))
 
-    galaxybrightfile = os.path.abspath('../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat' % seed)
-    run('ln -s %s Galaxy/Galaxy_Bright_%s.dat' % (galaxybrightfile,seed))
+    galaxyfile = os.path.abspath('../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%s.dat' % seed)
+    run('mv %s Galaxy/.' % galaxyfile)
+    galaxydest = os.path.abspath('Galaxy/Galaxy_Bright_%s.dat' % seed)
+    run('ln -sf %s %s' % (galaxydest,galaxyfile))
