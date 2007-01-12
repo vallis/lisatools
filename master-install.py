@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+__version__ = '$Id$'
+
 # master install script for challenge 2 
 # re-run after every SVN update
+# see comments below for command-line parameters
 
 import sys
 import os
@@ -11,19 +14,20 @@ from distutils.sysconfig import get_python_lib
 from distutils.dep_util import newer, newer_group
 
 libdir = None
-lisasim = None
-synthlisatar = None
 gsldir = None
 
+newsynthlisa = False
+newlisasim   = False
+
 for arg in sys.argv:
-    if arg.startswith('--prefix='):
+    if arg.startswith('--prefix='):             # main library dir
         libdir = arg.split('=', 1)[1]
-    elif arg.startswith('--lisasim='):
-        lisasim = arg.split('=',1)[1]
-    elif arg.startswith('--synthlisa='):
-        synthlisatar = arg.split('=',1)[1]
-    elif arg.startswith('--gsl='):
+    elif arg.startswith('--gsl='):              # use pre-installed GSL
         gsldir = arg.split('=',1)[1]
+    elif arg.startswith('--newsynthlisa'):      # force synthlisa reinstallation
+        newsynthlisa = True
+    elif arg.startswith('--newlisasim'):        # force lisasim reinstallation
+        newlisasim = True
 
 if libdir == None:
     print "!!! You need to specify a master lib dir with --prefix=<libdir>"
@@ -32,14 +36,6 @@ if libdir == None:
 
 if gsldir == None:
     gsldir = libdir
-
-# change version of LISA Simulator here...
-
-if lisasim == None:
-    lisasim = libdir + '/Simulator2.1.1.tgz'    
-
-if synthlisatar == None:
-    synthlisatar = libdir + '/synthLISA-1.3.2.tar.gz'
 
 pythonlib = get_python_lib(prefix=libdir)
 
@@ -155,13 +151,18 @@ sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.
 if ( newer_group(sources,'Galaxy_Maker') or newer_group(sources,'Galaxy_key')  or
      newer_group(sources,'Fast_XML_LS')  or newer_group(sources,'Fast_XML_SL') or
                                             newer_group(sources,'DataImport') ):
-     print "    (recompiling Galaxy)"
-     assert(0 == os.system('./Compile'))
+    print "    (recompiling Galaxy)"
+    assert(0 == os.system('./Compile'))
+
+# copy every time...
 
 import platform
-if platform.system() == 'Darwin' and platform.processor() == 'powerpc':
-    # unfortunately I'm not sure how to differentiate between G4 and G5...
-    # let's use the G5. I'm sure it will run on G4s...
+
+# notes: on OS X, I'm not sure how to differentiate between G4 and G5, so will use G5...
+#        also I don't have an Intel version, so I will still use G5 and count on Rosetta...
+#        (I could check the processor with platform.processor() == 'powerpc')
+
+if platform.system() == 'Darwin':
     assert(0 == os.system('cp Fast_Response_OSX_G5 Fast_Response'))
 elif platform.system() == 'Linux':
     assert(0 == os.system('cp Fast_Response_LINUX_X86_32 Fast_Response'))
@@ -169,113 +170,77 @@ else:
     print "!!! Can't determine platform/processor, or don't have Fast_Response executable!" 
     sys.exit(1)
 
+if not os.path.isfile('Data/dwd_GWR_all_pars.dat'):
+    print "    (downloading Nelemans galaxy (388M), this will take a while...)"
+    assert(0 == os.system('curl http://www.physics.montana.edu/faculty/cornish/LISA/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
+    assert(0 == os.system('gunzip dwd_GWR_all_pars.dat.gz'))
+
 os.chdir(here)
 
 # install/check install for synthlisa
 
 print "--> Checking synthLISA"
 try:
+    assert(not newsynthlisa)
     import synthlisa
 except:
     print "--> Installing Synthetic LISA"
-    if not os.path.isfile(synthlisatar):
-        print "!!! Can't find the Synthetic LISA archive!"
-        print "    (I'm looking for %s)" % synthlisatar
-        print "!!! Put it there, or please tell me the filename with --synthlisa=SYNTHLISA.TAR.GZ"        
-        sys.exit(1)
-    
-    os.chdir(libdir)
-    
-    assert(0 == os.system('tar zxf %s -C .' % synthlisatar))
-
-    synthlisadir = synthlisatar[:-7]
-    if not os.path.isdir(synthlisadir):
-        print "!!! Can't find Synthetic LISA unpacking directory (I'm trying %s...)" % synthlisadir
-        sys.exit(1)
-    os.chdir(synthlisadir)
-
+    os.chdir('Packages')
+    assert(0 == os.system('tar zxf synthLISA-1.3.3.tar.gz'))
+    os.chdir('synthLISA-1.3.3')
     assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
-    
+    os.chdir('..')
+    assert(0 == os.system('rm -rf synthLISA-1.3.3'))
     os.chdir(here)
 
 # install/check install for LISA Simulator
 
 print "--> Checking LISA Simulator"
 
-if not os.path.isdir(libdir + '/lisasimulator-1year') or not os.path.isdir(libdir + '/lisasimulator-2year'):
-    print "--> Installing LISA Simulator"
-    if not os.path.isfile(lisasim):
-        print "!!! Can't find the LISA Simulator archive!"
-        print "    (I'm looking for %s)" % lisasim
-        print "!!! Put it there, or please tell me the filename with --lisasim=LISASIMULATOR.TAR.GZ"
-        sys.exit(1)
+lisasimtar = os.path.abspath('Packages/Simulator-2.1.1b.tar.gz')
+lisasimdir = 'Simulator2.1.1'
 
+if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
+    print "--> Installing LISA Simulator (1-year version)"
+
+    if newlisasim and os.path.isdir(libdir + '/lisasimulator-1year'):
+        assert(0 == os.system('rm -rf %s' % libdir + '/lisasimulator-1year'))
+
+    # untar
     os.chdir(libdir)
-
-    lisasimfile = os.path.basename(lisasim)
-    if '.tar.gz' in lisasimfile:
-        lisasimdir = lisasimfile[:-7]
-    elif '.tgz' in lisasimfile:
-        lisasimdir = lisasimfile[:-4]
-    else:
-        lisasimdir = lisasimfile
-
-if not os.path.isdir(libdir + '/lisasimulator-1year'):
-    print "    (compiling 1-year version... disregard all warnings, this is Neil's code :]...)"
-    assert(0 == os.system('tar zxf %s -C .' % lisasim))
-    if not os.path.isdir(lisasimdir):
-        print "!!! Can't find LISA Simulator unpacking directory (I'm trying %s...)" % lisasimdir
-        sys.exit(1)
+    assert(0 == os.system('tar zxf %s -C .' % lisasimtar))
     assert(0 == os.system('mv %s lisasimulator-1year' % lisasimdir))
+
+    # copy modified LISAconstants.h file
     assert(0 == os.system('cp %s lisasimulator-1year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-1year.h')))
-    # patching Package.c
-    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Package.c')))
-    # patching IO
-    assert(0 == os.system('cp %s lisasimulator-1year/IO/.' % (here + '/lisaXML/io-C/*.c')))
-    assert(0 == os.system('cp %s lisasimulator-1year/IO/.' % (here + '/lisaXML/io-C/*.h')))
+
+    # compile and setup
     os.chdir('lisasimulator-1year')
     assert(0 == os.system('./Compile'))
-    print "    (setting up 1-year version... this will take a while...)"
     assert(0 == os.system('./Setup'))
-    os.chdir('..')
-else:
-    # patch Package for more recent changes
-    if newer(here + '/Packages/LISASimulator/Package.c',libdir + '/lisasimulator-1year/Package'):
-        assert(0 == os.system('cp %s %s/lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Package.c',libdir)))
-        print "    (recompiling Package)"
-        os.chdir('lisasimulator-1year')
-        assert(0 == os.system('./Compile'))
-        os.chdir('..')
+    os.chdir('../..')
 
-if not os.path.isdir(libdir + '/lisasimulator-2year'):
-    print "    (compiling 2-year version... disregard all warnings, this is Neil's code :]...)"
-    assert(0 == os.system('tar zxf %s -C .' % lisasim))
+if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
+    print "--> Installing LISA Simulator (2-year version)"
+
+    if newlisasim and os.path.isdir(libdir + '/lisasimulator-2year'):
+        assert(0 == os.system('rm -rf %s' % libdir + '/lisasimulator-2year'))
+
+    # untar
+    os.chdir(libdir)
+    assert(0 == os.system('tar zxf %s -C .' % lisasimtar))
     assert(0 == os.system('mv %s lisasimulator-2year' % lisasimdir))
+
+    # copy modified LISAconstants.h file
     assert(0 == os.system('cp %s lisasimulator-2year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-2year.h')))
-    # patching Package.c
-    assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Package.c')))
-    # patching IO
-    assert(0 == os.system('cp %s lisasimulator-2year/IO/.' % (here + '/lisaXML/io-C/*.c')))
-    assert(0 == os.system('cp %s lisasimulator-2year/IO/.' % (here + '/lisaXML/io-C/*.h')))
+
+    # compile and setup
     os.chdir('lisasimulator-2year')
     assert(0 == os.system('./Compile'))
-    print "    (setting up 2-year version... this will take a while...)"
     assert(0 == os.system('./Setup'))
-    os.chdir('..')
-else:
-    # patch Package for more recent changes
-    if newer(here + '/Packages/LISASimulator/Package.c',libdir + '/lisasimulator-2year/Package'):
-        assert(0 == os.system('cp %s %s/lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Package.c',libdir)))
-        print "    (recompiling Package)"
-        os.chdir('lisasimulator-2year')
-        assert(0 == os.system('./Compile'))
-        os.chdir('..')
-
-    # now let's tell the pipeline scripts where to find the LISA Simulator...
+    os.chdir('../..')
 
 os.chdir(here)
 print >> open('MLDCpipelines2/bin/lisasimulator.py','w'), "lisasim1yr = '%s'; lisasim2yr = '%s'" % (libdir + '/lisasimulator-1year',
                                                                                                     libdir + '/lisasimulator-2year')
-    
-
 
