@@ -34,7 +34,7 @@ AKWaveform::AKWaveform(double spin, double mu, double MBHmass, double tfin, doub
      m *= LISAWP_MTSUN_SI;
      M *= LISAWP_MTSUN_SI;
 		
-     dt = (double)timestep;
+     dt = timestep;
      tEnd = tfin;
 
  /*    
@@ -63,64 +63,13 @@ void AKWaveform::SetSourceLocation(double thS, double phS, double thK, double ph
 }
 
 
-void AKWaveform::EstimateInitialParams(double Tin, double e_lso, double nu_lso, double *e_in, double *nu_in){
-     
-    double tstep = 100.0;
-    double Tobs = Tin;
-    double eb, nub;
-    double dedt, dnudt;
-    double e2;
-    double e4;
-    double fr;
-    double iome;      // 1/(1-e^2)
-    double iome25;   // 1/(1-e^2)^2.5
-
-    eb = e_lso;
-    nub = nu_lso;
-  //  nub = pow( (1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5 )/(LISAWP_TWOPI * M);
-   // *nu_lso = nub;
-  //  std::cout << "lso freq = " << nub << std::endl; 
-	    
-    while(Tobs >= 0.0){
-        e2  = eb*eb;
-        e4 =  e2*e2;
-        fr = LISAWP_TWOPI * M * nub;
-	iome = 1.0/(1. - eb*eb);
-	iome25 = pow(iome, 2.5);
-        dnudt = (9.6/LISAWP_PI)*(m/(M*M*M))*pow(fr, 11./3.)* \
-	      (  (1.0 + 73.0/24.0*e2 + 37.0/96.0*e4 )*iome*iome25 + \
-		pow(fr, 2./3.)*( 1273.0/336.0 - 2561.0/224.0*e2 - \
-			3885./128.0*e4 - 13147.0/5376.0*e4*e2)*iome*iome*iome25);
-        dedt = -(eb/15.)*(m/(M*M))*iome25*pow(fr,8./3.)*(304. + 121.*e2);
-	
-	Tobs = Tobs - tstep;
-	eb = eb - dedt*tstep;
-	nub = nub - dnudt*tstep;
-
-    }
-    *e_in = eb;
-    *nu_in = nub;
-
-   // std::cout << "in. freq = " << nub << std::endl; 
-    
-	
-}
-
-/**** Stas 18.12.2006, the initial conditions are given now at the plunge and
- * we perform the backward integration. So that the values below are given at
- * plunge!
- */
-
-void AKWaveform::EvolveOrbit(double t0, double eccen, double gamma0, \
+void AKWaveform::EstimateInitialParams(double Tin, double eccen, double gamma0, \
 		    double Phi0, double al0, double lam){
-
-   int stab;	
+     
    double t;
    double advstep, cumulstep, newstep;
-  // stab = CheckPlunge(nu0, eccen);
-  // LISAWPAssert(stab, "Initial parameters correpsond to plunging orbit"); 
-   
-  // Stas 18.12.2006 we set initial frequency =  frequency at plunge
+ 
+  // Stas: 12.01.07 we do exact backward integration
    double nu0 = pow( (1.0-eccen*eccen)/(6.0+2.0*eccen), 1.5 )/(LISAWP_TWOPI * M);
    
    Matrix<double> coord0(1,5);
@@ -132,7 +81,7 @@ void AKWaveform::EvolveOrbit(double t0, double eccen, double gamma0, \
    coord0(2) = gamma0;
    coord0(3) = eccen;
    coord0(4) = al0;
-   lambda = lam; 
+   lambba = lam; 
 
    int counter = 1;
    newstep = dt;
@@ -144,16 +93,8 @@ void AKWaveform::EvolveOrbit(double t0, double eccen, double gamma0, \
    e = coord0(3);
    alpha = coord0(4);
    
-   //double err = fabs(nu - 1.e-3);
-  
-   std::vector<double> t_n;
-   std::vector<double> phi_n;
-   std::vector<double> nu_n;
-   std::vector<double> gamma_n;
-   std::vector<double> e_n;
-   std::vector<double> alpha_n;
-   t = tEnd;
-   
+   t = Tin;
+   back = true;
    // First step: we integrate to the nearest integer of dt:
 
    double step0 = fmod(t, dt);
@@ -168,16 +109,9 @@ void AKWaveform::EvolveOrbit(double t0, double eccen, double gamma0, \
       coord0 = coordn;
       t = t - step0;
    }
-   t_n.push_back(t);
-   phi_n.push_back(phi);
-   nu_n.push_back(nu);
-   gamma_n.push_back(gamma);
-   e_n.push_back(e);
-   alpha_n.push_back(alpha);
-
-
   
-   while (t >= t0){ 
+  
+   while (t >= 0.0){ 
        Derivs(t, coord0, rhs, 5);
        advstep =  IntegratorCKRK(coord0, rhs, coordn, t, dt, 5);
        phi = coordn(0);
@@ -188,53 +122,166 @@ void AKWaveform::EvolveOrbit(double t0, double eccen, double gamma0, \
        coord0 = coordn;
        t = t - dt;
 
-       t_n.push_back(t);
-       phi_n.push_back(phi);
-       nu_n.push_back(nu);
-       gamma_n.push_back(gamma);
-       e_n.push_back(e);
-       alpha_n.push_back(alpha);
-    /*   if (t == 0.0){
-            std::cout << " time  = " << t << "\n" \
+       if (t == 0.0){
+      /*      std::cout << " time  = " << t << "\n" \
 		   << " phi = " << phi << "\n" \
 		   << " nu = " << nu << "\n" \
 		   << " e = " << e << "\n" \
 		   << " gamma = "<< gamma << "\n" \
-		   << " alpha = " << alpha << std::endl;
-
-       }*/
+		   << " alpha = " << alpha << std::endl; */
+	    phi_at0 = phi;
+            ecc_at0 = e;
+            nu_at0 = nu;
+            gamma_at0 = gamma;
+            alpha_at0 = alpha;
+       }
    }
+ 
+}
+
+/**** Stas 12.01.07 We use again initial conditions at t=0 and doing integreation
+ * back to prebuffer seconda and forward to end time
+ */
+
+void AKWaveform::EvolveOrbit(double t0, double nu0, double eccen, double gamma0, \
+		    double Phi0, double al0, double lam){
+
+  int stab;
+  double t;
+  double advstep, cumulstep, newstep;
+  stab = CheckPlunge(nu0, eccen);
+  LISAWPAssert(stab, "Initial parameters correpsond to plunging orbit");
    
-   int szT = t_n.size();
-   tt.resize(szT);
-   phi_t.resize(szT);
-   nu_t.resize(szT);
-   gamma_t.resize(szT);
-   e_t.resize(szT);
-   al_t.resize(szT);
-   for(int i = 0; i < szT; i++){
-      int k = t_n.size() - i -1;
-      tt[i] =  t_n[k];
-      phi_t[i] = phi_n[k];
-      nu_t[i] = nu_n[k];
-      gamma_t[i] = gamma_n[k];
-      e_t[i] = e_n[k];
-      al_t[i] = alpha_n[k];
-   }
-   t_n.resize(0);
-   phi_n.resize(0);
-   nu_n.resize(0);
-   gamma_n.resize(0);
-   e_n.resize(0);
-   alpha_n.resize(0);
-
-   //std::cout << "final azimuthal frequency = " << nu << std::endl;
-   //std::cout << "plunge frequency for e_final = " << e << " n_pl =  " << \
-                 pow( (1.0-e*e)/(6.0+2.0*e), 1.5 )/(LISAWP_TWOPI * M) << std::endl;
-               
-   cumulstep = cumulstep/(double)counter;
-   runDone = true;
-
+  Matrix<double> coord0(1,5);
+  Matrix<double> coordn(1,5);
+  Matrix<double> rhs(1,5);
+  rhs = 0.0;
+  coord0(0) = Phi0;
+  coord0(1) = nu0;
+  coord0(2) = gamma0;
+  coord0(3) = eccen;
+  coord0(4) = al0;
+  lambba = lam;
+   
+  int counter = 1;
+  newstep = dt;
+  cumulstep = dt;
+   
+  phi = coord0(0);
+  nu = coord0(1);
+  gamma = coord0(2);
+  e = coord0(3);
+  alpha = coord0(4);
+   
+   
+  std::vector<double> t_n;
+  std::vector<double> phi_n;
+  std::vector<double> nu_n;
+  std::vector<double> gamma_n;
+  std::vector<double> e_n;
+  std::vector<double> alpha_n;
+  t = 0.0;
+  /*** NOTE: t0>0 is not implemented. Not needed so far. */
+  if (t0 < 0.0){               // backwards integration
+      back = true;
+      while (t >= t0){
+            Derivs(t, coord0, rhs, 5);
+            advstep =  IntegratorCKRK(coord0, rhs, coordn, t, dt, 5);
+            phi = coordn(0);
+            nu = coordn(1);
+            gamma = coordn(2);
+            e = coordn(3);
+            alpha = coordn(4);
+            coord0 = coordn;
+            t = t - dt;
+            if (t >= t0){
+              t_n.push_back(t);
+              phi_n.push_back(phi);
+              nu_n.push_back(nu);
+              gamma_n.push_back(gamma);
+              e_n.push_back(e);
+              alpha_n.push_back(alpha);
+	    }
+      }
+      for(int i = 0; i < (int)t_n.size(); i++){\
+         int k = t_n.size() - i -1;
+         tt.push_back(t_n[k]);
+         phi_t.push_back(phi_n[k]);
+         nu_t.push_back(nu_n[k]);
+         gamma_t.push_back(gamma_n[k]);
+         e_t.push_back(e_n[k]);
+         al_t.push_back(alpha_n[k]);
+      }
+      t_n.resize(0);
+      phi_n.resize(0);
+      nu_n.resize(0);
+      gamma_n.resize(0);
+      e_n.resize(0);
+      alpha_n.resize(0);
+   
+      t = 0.0;
+      phi = Phi0;
+      nu = nu0;
+      gamma = gamma0;
+      e = eccen;
+      alpha = al0;
+      lambba =  lam;
+      coord0(0) = Phi0;
+      coord0(1) = nu0;
+      coord0(2) = gamma0;
+      coord0(3) = eccen;
+      coord0(4) = al0;
+   
+  }
+  back = false;
+  while(t <= tEnd){  // forward integration
+      tt.push_back(t);
+      phi_t.push_back(phi);
+      nu_t.push_back(nu);
+      gamma_t.push_back(gamma);
+      e_t.push_back(e);
+      al_t.push_back(alpha);
+     /*  if( fabs(nu - 1.e-3) <= err ){
+   	      err = fabs(nu - 1.e-3);
+   	      nu0True = nu;
+   	      e0True = e;
+   	      t0 = t;
+         }*/
+      Derivs(t, coord0, rhs, 5);
+       /*  std::cout << "*****************************" << std::endl;
+         std::cout << rhs;
+         std::cout << "*****************************" << std::endl;*/
+      advstep =  IntegratorCKRK(coord0, rhs, coordn, t, dt, 5);
+      counter ++;
+      cumulstep += advstep;
+      if (advstep < newstep)
+         newstep = advstep;
+      t += dt;
+      phi = coordn(0);
+      nu = coordn(1);
+      gamma = coordn(2);
+      e = coordn(3);
+      alpha = coordn(4);
+      coord0 = coordn;
+   
+      stab = CheckPlunge(nu, e);
+      if (stab < 0){
+   	   std::cout << "*** we reached plunge at t = " << t << std::endl;
+   	   break;
+      }
+  }//end of while loop
+/*  std::cout << "final azimuthal frequency = " << nu << std::endl;
+  std::cout << "plunge frequency for e_final = " << e << " n_pl =  " << \
+                    pow( (1.0-e*e)/(6.0+2.0*e), 1.5 )/(LISAWP_TWOPI * M) << std::endl;
+  std::cout << "final phase = " << phi << std::endl;
+  std::cout << "final alpha = " << alpha << std::endl;
+  std::cout << "final gamma = " << gamma << std::endl;
+  std::cout << "final time = " << t << std::endl; */
+   
+  cumulstep = cumulstep/(double)counter;
+  runDone = true;
+   
+  
 }
 
 void AKWaveform::GetOrbitalParams(double t, double& nut, double& et, double& gt, double& pht, double& alt){
@@ -254,10 +301,38 @@ void AKWaveform::GetOrbitalParams(double t, double& nut, double& et, double& gt,
 	LISAWPAssert(k != -1, "wrong instance of time");
 }
 
+void AKWaveform::GetOrbitalParamsAt0(double& nut, double& et, double& gt, double& pht, double& alt){
+
+   double tmp;
+   nut = nu_at0;
+   if (ecc_at0 >=0.6){
+      std::cout << "WARNING!!!! Initial eccentricity exceeds 0.6!" << std::endl;
+   }
+   
+   et = ecc_at0;
+   tmp = fmod(gamma_at0, LISAWP_TWOPI);
+   gt = tmp;
+   if (tmp < 0.0)
+      gt = tmp + LISAWP_TWOPI;
+   tmp = fmod(phi_at0, LISAWP_TWOPI);
+   pht = tmp;
+   if (tmp < 0.0)
+      pht = tmp + LISAWP_TWOPI;
+   tmp = fmod(alpha_at0, LISAWP_TWOPI);
+   alt = tmp;
+   if (tmp < 0.0)
+      alt = tmp + LISAWP_TWOPI;
+  // gt = gamma_at0;
+  // pht = phi_at0;
+  // alt = alpha_at0;
+
+}
+
+
 int AKWaveform::CheckPlunge(double fr, double ec){
 	
     double rhs = pow( (1.0-ec*ec)/(6.0+2.0*ec), 1.5 )/(LISAWP_TWOPI * M);
-    if(rhs - fr <= 1.0e-7){
+    if(rhs - fr <= 0.0){
 	    std::cout << "freq at plunge = " <<  rhs << std::endl;
 	    return(-1);
     }else{
@@ -287,23 +362,23 @@ void AKWaveform::Derivs(double x, Matrix<double> y, Matrix<double>& dydx, int n)
     // d nu/dt
     dydx(1) = (9.6/LISAWP_PI)*(m/(M*M*M))*pow(fr, 11./3.)*iome2*iome2*siome* \
 	      (  (1.0 + 73.0/24.0*e2 + 37.0/96.0*e4 )*ome + pow(fr, 2./3.)*( 1273.0/336.0 - \
-		2561.0/224.0*e2 - 3885./128.0*e4 - 13147.0/5376.0*e4*e2) - fr*aa*cos(lambda)*siome*\
+		2561.0/224.0*e2 - 3885./128.0*e4 - 13147.0/5376.0*e4*e2) - fr*aa*cos(lambba)*siome*\
 	       (73./12. + 1211./24.*e2 + 3143./96.*e4 + 65./64*e4*e2)  );
     //d gamma/dt
     dydx(2) = 6.*LISAWP_PI*nu *pow(fr, 2./3.) * iome*( 1. + 0.25*pow(fr,2./3.)*iome*(26. - 15.*e2) ) - \
-	      12.*LISAWP_PI*nu*cos(lambda)*aa*fr*iome*siome;
+	      12.*LISAWP_PI*nu*cos(lambba)*aa*fr*iome*siome;
     //de/dt
     dydx(3) = -(e/15.)*(m/(M*M))*siome*iome*iome2*pow(fr,8./3.)*( (304. + 121.*e2)*ome*\
 		    (1. + 12.*pow(fr, 2./3.)) - (1./56.)*pow(fr,2./3.)*(133640. + 108984.*e2 -\
-		25211.*e4) ) +  e*(m/(M*M))*aa*cos(lambda)*pow(fr, 11./3.)*iome2*iome2*( 1364./5. +\
+		25211.*e4) ) +  e*(m/(M*M))*aa*cos(lambba)*pow(fr, 11./3.)*iome2*iome2*( 1364./5. +\
 	       5032./15.*e2 + 26.3*e4 );
     // d alpha/dt
     dydx(4) = 4.*LISAWP_PI*nu*aa*fr*siome*iome;
     
     // in case of backward integration
     //if (x < 0.0){
-    
-    dydx *= (-1.);
+    if (back) 
+      dydx *= (-1.);
     
     //}
 	   
@@ -378,14 +453,14 @@ int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double*
         alpha = al_t[i];
 	gamma = gamma_t[i];
     
-        thetaL = acos(cos(thetaK)*cos(lambda) + sin(thetaK)*sin(lambda)*cos(alpha));
+        thetaL = acos(cos(thetaK)*cos(lambba) + sin(thetaK)*sin(lambba)*cos(alpha));
 	LISAWPAssert(sin(thetaL) != 0.0, "sin(thetaL) = 0, cannot determine phiL");
 
-	cs = ( sin(thetaK)*cos(phiK)*cos(lambda) - \
-	     cos(phiK)*cos(thetaK)*sin(lambda)*cos(alpha) + sin(phiK)*sin(lambda)*sin(alpha));
+	cs = ( sin(thetaK)*cos(phiK)*cos(lambba) - \
+	     cos(phiK)*cos(thetaK)*sin(lambba)*cos(alpha) + sin(phiK)*sin(lambba)*sin(alpha));
 	if (cs != 0){
-	    phiL = ArcTan((sin(thetaK)*sin(phiK)*cos(lambda) - \
-	      sin(phiK)*cos(thetaK)*sin(lambda)*cos(alpha) -cos(phiK)*sin(lambda)*sin(alpha)), cs);
+	    phiL = ArcTan((sin(thetaK)*sin(phiK)*cos(lambba) - \
+	      sin(phiK)*cos(thetaK)*sin(lambba)*cos(alpha) -cos(phiK)*sin(lambba)*sin(alpha)), cs);
 	}else{
 	    phiL = LISAWP_PI/2.0;
 	}
@@ -429,11 +504,11 @@ void AKWaveform::Waveform(int N){
        
    /// !!! the next assert must be removed and replaced by proper solution !!!
    LISAWPAssert(sin(thetaK) != 0.0, "thetaK = pi*n/2, resolve devision on sin (next line)");
-   nSL = sin(thetaS)*sin(phiK - phiS)*sin(lambda)*cos(alpha) + \
-	     (Sn*cos(thetaK) - cos(thetaS))*sin(lambda)*sin(alpha)/sin(thetaK);
+   nSL = sin(thetaS)*sin(phiK - phiS)*sin(lambba)*cos(alpha) + \
+	     (Sn*cos(thetaK) - cos(thetaS))*sin(lambba)*sin(alpha)/sin(thetaK);
 
    if (nSL != 0.0){
-       beta = ArcTan( (cos(lambda)*Ln - Sn),(nSL) );
+       beta = ArcTan( (cos(lambba)*Ln - Sn),(nSL) );
    }else{
        beta = LISAWP_PI/2.0;
    }

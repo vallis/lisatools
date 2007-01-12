@@ -66,16 +66,16 @@ class AKWaveform:public BaseIntegr{
 
     void SetSourceLocation(double thS, double phS, double thK, double phK, double D);
 
-    /** Estimates initial frequency and eccentricity for eccentricity given at lso
+    /** Estimates orbital params at t=0 for eccentricity given at plunge
      * @param Tin duration of the backward integration
-     * @param e_lso eccentricity at lso or at time Tin (input)
-     * @param nu_lso freq at lso or at at time Tin (input)
-     * @param e_in approx. eccentricity at t=0 (output)
-     * @param nu_in approx. frequency at t=0 (output)
+     * @param eccen eccentricity at lso or at time Tin (input)
+     * @param gamma0 gamma angle at plunge
+     * @param Phi0 azimuthal orbital phase at plunge
+     * @param al0 alpha angle at plunge
+     * @param lam lambda angle (const)
      */
-    
-    void EstimateInitialParams(double Tin, double e_lso, double nu_lso, double *e_in, \
-		    double *nu_in); 
+    void EstimateInitialParams(double Tin, double eccen, double gamma0, \
+		    double Phi0, double al0, double lam); 
     
     /** Computes orbital evolution
      * @param eccen value of eccentricity at plunge
@@ -86,7 +86,7 @@ class AKWaveform:public BaseIntegr{
      * @param lam angle between L and S
      */
 
-    void EvolveOrbit(double t0, double eccen, double gamma0, \
+    void EvolveOrbit(double t0, double nu0, double eccen, double gamma0, \
 		    double Phi0, double al0, double lam);
 
 
@@ -107,6 +107,9 @@ class AKWaveform:public BaseIntegr{
 
     /** returns orbital elements at time t */
     void GetOrbitalParams(double t, double& nut, double& et, double& gt, double& pht, double& alt);
+    
+    /** returns orbital elements at time t=0 */
+    void GetOrbitalParamsAt0(double& nut, double& et, double& gt, double& pht, double& alt);
     
 
     /** Returns size of waveform and fills up hplus, hcross
@@ -139,17 +142,25 @@ class AKWaveform:public BaseIntegr{
      double gamma_0;
      double alpha0;
 
+     double phi_at0;
+     double ecc_at0;
+     double nu_at0;
+     double gamma_at0;
+     double alpha_at0;
+    
+
    ///  location
      double thetaS;
      double phiS;
-     double lambda;
+     double lambba;
      double thetaK;
      double phiK;
      double dist;
      
      bool sourceSet;
      bool runDone;
-     
+     bool back;
+    
      /// current coordinates
      double phi;
      double nu;

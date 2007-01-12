@@ -13,7 +13,6 @@
 
 %include "cpointer.i"
 %pointer_class(double, doublep);
-%pointer_class(float, floatp);
 
 %include "AKWaveform.hh"
 
@@ -21,7 +20,6 @@
 import lisaxml
 import numpy
 import math
-import sys
 
 SourceClassModules = {}
 SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
@@ -73,73 +71,55 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
                   ('Spin',                             'MassSquared',   None, 'magnitude of (specific) spin (S) of MBH'),
                   ('MassOfCompactObject',              'SolarMass',     None, 'mass of the compact object'),
                   ('MassOfSMBH',                       'SolarMass',     None, 'mass of the MBH'),
-                  ('PlungeTime', 		       'Seconds',       None, 'time of plunge'),
-                  ('PlungeAzimuthalOrbitalPhase',      'Radian',        None, 'azimuthal orbital phase at plunge'),
-                  ('EccentricityAtPlunge',             'Unit',          None, 'orbital eccentricity at plunge'),
-                  ('PlungeTildeGamma',                 'Radian',        None, 'position of pericenter, as angle between LxS and pericenter at plunge'),
-                  ('PlungeAlphaAngle',                 'Radian',        None, 'azimuthal direction of L (in the orbital plane) at plunge'),
+                  ('InitialAzimuthalOrbitalFrequency', 'Hertz',         None, 'initial value of orbital azimuthal frequency'),
+                  ('InitialAzimuthalOrbitalPhase',     'Radian',        None, 'initial azimuthal orbital phase'),
+                  ('InitialEccentricity',              'Unit',          None, 'initial orbital eccentricity'),
+                  ('InitialTildeGamma',                'Radian',        None, 'nital position of pericenter, as angle between LxS and pericenter'),
+                  ('InitialAlphaAngle',                'Radian',        None, 'nitial azimuthal direction of L (in the orbital plane)'),
                   ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
                   ('Distance',                         'Parsec',        None, 'standard source distance')
             )
-    e0 = 0.0;
-    nu0 = 0.0;
-    gam0 = 0.0;
-    phi0 = 0.0;
-    al0 = 0.0;
 
     def  __init__(self,name=''):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
     
     def waveforms(self,samples,deltat,inittime):
-      
-       duration = self.PlungeTime - inittime
-       if (duration > deltat*(samples-1)):
-           print "You have requested EMRI plunging beyond observation time. This is not implemented yet. Please contact S.Babak: stba@aei.mpg.de"
-	   sys.exit(1)
-	   
-       emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, duration, deltat)
+       
+       emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
 
        emri.SetSourceLocation(self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
                               self.AzimuthalAngleOfSpin, self.Distance)
 			      
-       emri.EvolveOrbit(inittime,  self.EccentricityAtPlunge, self.PlungeTildeGamma,\
-                        self.PlungeAzimuthalOrbitalPhase, self.PlungeAlphaAngle, self.LambdaAngle)
+       emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
+                        self.InitialAzimuthalOrbitalPhase, self.InitialAlphaAngle, self.LambdaAngle)
 
        hp = numpy.empty(samples,'d')
        hc = numpy.empty(samples,'d')
        wavelen = emri.GetWaveform(self.Polarization, hp, hc)
 
        hp[wavelen:] = 0.0
-       hc[wavelen:] = 0.0 
-       
-       nut = doublep()
-       et = doublep()
-       gamt = doublep()
-       pht = doublep()
-       alt = doublep()
-       emri.GetOrbitalParams(0.0, nut, et, gamt, pht, alt)
-
-       [self.nu0, self.e0, self.gam0, self.phi0, self.al0] = [nut.value(), et.value(), gamt.value(), pht.value(), alt.value()]
-
+       hc[wavelen:] = 0.0
 
        return (hp,hc)
        
-    def GetOrbitalParameters(self):
-       
-       	return [self.nu0, self.e0, self.gam0, self.phi0, self.al0]
-       
 # utility function
 
-def EMRIEstimateInitialOrbit(spin,mu,MBHmass,Tend,e_lso,nu_lso): 
-   """Estimates the initial eccentricity and orbital frequency for the orbit
-specified at the plunge by e_lso and nu_lso, of approximate duration Tend."""
+def EMRIEstimateInitialOrbit(spin,mu,MBHmass, Tend,e_lso,gamma_lso,phi_lso,alpha_lso, lam_lso): 
+   """Estimates the initial (t=0) orbital parameters for the orbit
+specified at the plunge by e_lso, gamma_lso, alpha_lso, phi_lso, lambda, duration Tend."""
        
-   ak = AKWaveform(spin, mu, MBHmass, 3.e8, 15.)
+   ak = AKWaveform(spin, mu, MBHmass, 3.e8, 15.0)
 
-   ein = floatp()
-   nuin = floatp()
-   ak.EstimateInitialParams(Tend,e_lso,nu_lso,ein,nuin)
+   ak.EstimateInitialParams(Tend, e_lso, gamma_lso, phi_lso, alpha_lso, lam_lso)
 
-   return[ein.value(), nuin.value()]
+   nut = doublep()
+   et = doublep()
+   gamt = doublep()
+   pht = doublep()
+   alt = doublep()
+
+   ak.GetOrbitalParamsAt0(nut, et, gamt, pht, alt)
+
+   return[nut.value(), et.value(), gamt.value(), pht.value(), alt.value()]
 
 %}
