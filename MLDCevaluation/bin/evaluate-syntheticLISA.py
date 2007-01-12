@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-
 __version__='$Id:  $'
-
 
 import lisaxml
 import sys
@@ -107,11 +105,9 @@ from optparse import OptionParser
 parser = OptionParser(usage="usage: %prog [options] BlindData.xml ChallengeNTDI_Key.xml Result1TDI.xml Result2TDI.xml ...",
                       version="$Id:  $")
 
-
 parser.add_option("-p", "--maxPhase",
                   action="store_true", dest="phasemax", default=False,
                   help="maximizes over the phase on a single channel [off by default]")
-
 
 (options, args) = parser.parse_args()
 
@@ -124,14 +120,13 @@ Datafile = args[0]
 Injfile = args[1]
 Detfiles = args[2:]
 
-# To do: Need to read quadrutures as well...
+# To do: Need to read quadratures as well...
 
 if options.phasemax :
    if ( re.search('Challenge1.2', Injfile) == None and \
         re.search('Challenge1.1.1', Injfile) == None ):
-	print "phase maximization can be done only for 1.2 and 1.1.1 chalenges"
+	print "phase maximization can be done only for 1.2 and 1.1.1 challenges"
 	sys.exit(1)
-
 
 # Reading the data 
 
@@ -200,7 +195,6 @@ normX = ComputeNorm(X,sampling, Sx)
 normA = ComputeNorm(A,sampling, Sa)
 normE = ComputeNorm(E,sampling, Se)
 
-
 #############################################
 ## Computing chi^2 and SNR witht he key file
 ##############################################
@@ -256,7 +250,7 @@ for userfile in Detfiles:
        Dettdifile = lisaxml.readXML(userfile)
        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
        # Here I am dealing with only 1 source!!!!!
-       # Nedd to expand it deal with multiple surces...
+       # Nedd to expand it deal with multiple sources...
        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
        Dettdi =  Dettdifile.getTDIObservables()[0]
 
