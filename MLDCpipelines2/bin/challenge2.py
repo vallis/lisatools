@@ -313,67 +313,106 @@ run('rm -f Dataset/*.xml Dataset/*.bin')
 # do synthlisa first
 
 if options.istraining:
-    globalseed = ', globalseed = %s' % seed
+    globalseed = ', source seed = %s,  noise seed = %s' % (seed,seednoise)
 else:
     globalseed = ''
 
-run('cp Template/lisa-xml.xsl Dataset/.')
-run('cp Template/lisa-xml.css Dataset/.')
-
 if dosynthlisa:
-    nonoisefile = 'Dataset/' + challengename + '-frequency-nonoise.xml'
-    nonoise = lisaxml.lisaXML(nonoisefile,
-                              author="MLDC Task Force",
-                              comments='No-noise dataset for challenge 2 (synthlisa version)' + globalseed)
-    nonoise.close()
+    # set filenames
 
-    withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
-    withnoise = lisaxml.lisaXML(withnoisefile,
-                                author="MLDC Task Force",
-                                comments='Full dataset for challenge 2 (synthlisa version)' + globalseed)
-    withnoise.close()
+    if options.istraining:
+        nonoisefile   = 'Dataset/' + challengename + '-frequency-nonoise-training.xml'
+        withnoisefile = 'Dataset/' + challengename + '-frequency-training.xml'
 
-    keyfile = 'Dataset/' + challengename + '-key.xml'
-    key = lisaxml.lisaXML(keyfile,
-                          author="MLDC Task Force",
-                          comments='XML key for challenge 2' + globalseed)
-    key.close()
+        nonoisetar    = challengename + '-frequency-nonoise-training.tar.gz'
+        withnoisetar  = challengename + '-frequency-training.tar.gz'
+
+        keyfile       = 'Dataset/' + challengename + '-key-training.xml'
+    else:
+        nonoisefile   = 'Dataset/' + challengename + '-frequency-nonoise.xml'
+        withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
+
+        nonoisetar    = challengename + '-frequency-nonoise.tar.gz'
+        withnoisetar  = challengename + '-frequency.tar.gz'
+
+        keyfile       = 'Dataset/' + challengename + '-key.xml'
+
+    # create empty files
+
+    lisaxml.lisaXML(nonoisefile,
+                    author="MLDC Task Force",
+                    comments='No-noise dataset for challenge 2 (synthlisa version)' + globalseed).close()
+
+    lisaxml.lisaXML(withnoisefile,
+                    author="MLDC Task Force",
+                    comments='Full dataset for challenge 2 (synthlisa version)' + globalseed).close()
+
+    lisaxml.lisaXML(keyfile,
+                    author="MLDC Task Force",
+                    comments='XML key for challenge 2' + globalseed).close()
+
+    # add signals and noise to the no-noise and with-noise files
+    # omit keys if we're not doing training
 
     if options.istraining:
         if glob.glob('TDI/*-tdi-frequency.xml'):
             run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-frequency.xml')
+
         run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
     else:
         if glob.glob('TDI/*-tdi-frequency.xml'):
             run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-frequency.xml')
+
         run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
 
-    # need to add noise data here
+    # create the key with all source info
 
     if glob.glob('TDI/*-tdi-frequency.xml'):
         run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
 
-    os.chdir('Dataset')
+    # now do some tarring up, including XSL and CSS files from Template
 
-    if options.istraining:
-        run('tar zcf %s-frequency-training.tar.gz %s-frequency.xml %s-frequency-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
-        run('tar zcf %s-frequency-nonoise-training.tar.gz %s-frequency-nonoise.xml %s-frequency-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)    
-    else:
-        run('tar zcf %s-frequency.tar.gz %s-frequency.xml %s-frequency-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
-        run('tar zcf %s-frequency-nonoise.tar.gz %s-frequency-nonoise.xml %s-frequency-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
-    
+    run('cp Template/lisa-xml.xsl Dataset/.')
+    run('cp Template/lisa-xml.css Dataset/.')
+
+    os.chdir('Dataset')
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-*.bin',nonoisefile  )))
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-*.bin',withnoisefile)))    
     os.chdir('..')
 
 # next do LISA Simulator
 
 if lisasimdir:
-    nonoisefile = 'Dataset/' + challengename + '-strain-nonoise.xml'
-    nonoise = lisaxml.lisaXML(nonoisefile,comments='No-noise dataset for challenge 2 (lisasim version)' + globalseed)
-    nonoise.close()
+    # set filenames
 
-    withnoisefile = 'Dataset/' + challengename + '-strain.xml'
-    withnoise = lisaxml.lisaXML(withnoisefile,comments='Full dataset for challenge 2 (lisasim version)' + globalseed)
-    withnoise.close()
+    if options.istraining:
+        nonoisefile   = 'Dataset/' + challengename + '-strain-nonoise-training.xml'
+        withnoisefile = 'Dataset/' + challengename + '-strain-training.xml'
+
+        nonoisetar    = challengename + '-strain-nonoise-training.tar.gz'
+        withnoisetar  = challengename + '-strain-training.tar.gz'
+
+        keyfile       = 'Dataset/' + challengename + '-key-training.xml'
+    else:
+        nonoisefile   = 'Dataset/' + challengename + '-strain-nonoise.xml'
+        withnoisefile = 'Dataset/' + challengename + '-strain.xml'
+
+        nonoisetar    = challengename + '-strain-nonoise.tar.gz'
+        withnoisetar  = challengename + '-strain.tar.gz'
+
+        keyfile       = 'Dataset/' + challengename + '-key.xml'
+    
+    # create empty files
+    
+    lisaxml.lisaXML(nonoisefile,
+                    author = 'MLDC task force',
+                    comments='No-noise dataset for challenge 2 (lisasim version)' + globalseed).close()
+
+    lisaxml.lisaXML(withnoisefile,
+                    author = 'MLDC task force',
+                    comments='Full dataset for challenge 2 (lisasim version)' + globalseed).close()
+
+    # add signals and noise
 
     if options.istraining:
         if glob.glob('TDI/*-tdi-strain.xml'):
@@ -384,23 +423,22 @@ if lisasimdir:
             run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-strain.xml')
         run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
 
+    # do key file, but only if synthlisa has not run, otherwise it will be erased
+
     if not dosynthlisa:
-        keyfile = 'Dataset/' + challengename + '-key.xml'
-        key = lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed)
-        key.close()
+        lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed).close()
 
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
 
-    os.chdir('Dataset')
+    # now do some tarring up, including XSL and CSS files from Template
 
-    if options.istraining:
-        run('tar zcf %s-strain-training.tar.gz %s-strain.xml %s-strain-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
-        run('tar zcf %s-strain-nonoise-training.tar.gz %s-strain-nonoise.xml %s-strain-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)    
-    else:
-        run('tar zcf %s-strain.tar.gz %s-strain.xml %s-strain-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
-        run('tar zcf %s-strain-nonoise.tar.gz %s-strain-nonoise.xml %s-strain-nonoise-*.bin lisa-xml.xsl lisa-xml.css',(challengename,) * 3)
-    
+    run('cp Template/lisa-xml.xsl Dataset/.')
+    run('cp Template/lisa-xml.css Dataset/.')
+
+    os.chdir('Dataset')
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-*.bin',nonoisefile  )))
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-*.bin',withnoisefile)))    
     os.chdir('..')
 
 step7time = time.time()
