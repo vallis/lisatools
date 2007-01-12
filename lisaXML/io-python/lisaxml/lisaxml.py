@@ -10,6 +10,7 @@ import convertunit
 import sys
 import os
 import os.path
+import stat
 import shutil
 import time
 import re
@@ -95,17 +96,19 @@ class Table(XMLobject):
                  ('Dim', {'Name': 'Records'}, [str(len(self.parameters))]) ]
         
         # initially support only Remote/Text
-        # copy StreamName to textfile
         
         try:
-            # shutil.copy(self.StreamName,textfile)
-            
+            # delete textfile if it exists
             try:
                 os.unlink(textfile)
             except:
                 pass
             
-            os.symlink(self.StreamName,textfile)
+            # copy files below 50M, symlink otherwise
+            if os.stat(self.StreamName)[stat.ST_SIZE] < 50000000:
+                shutil.copy(self.StreamName,textfile)
+            else:
+                os.symlink(self.StreamName,textfile)
         except IOError:
             raise IOError, 'Table.XML(): I have a problem copying data file %s to %s' % (self.StreamName,textfile)
             
