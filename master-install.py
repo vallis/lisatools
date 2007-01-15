@@ -174,6 +174,7 @@ if not os.path.isfile('Data/dwd_GWR_all_pars.dat'):
     print "    (downloading Nelemans galaxy (388M), this will take a while...)"
     assert(0 == os.system('curl http://www.physics.montana.edu/faculty/cornish/LISA/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
     assert(0 == os.system('gunzip dwd_GWR_all_pars.dat.gz'))
+    assert(0 == os.system('mv dwd_GWR_all_pars.dat Data/.'))
 
 os.chdir(here)
 
