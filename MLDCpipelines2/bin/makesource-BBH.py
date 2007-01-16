@@ -46,6 +46,10 @@ parser.add_option("-r", "--coalescRange",
                   type="float", dest="deltaTc", default=None,
                   help="half width of uniform probability distribution for coalescence time around Tc (days) [required]")
 
+parser.add_option("-n", "--sourceName",
+                  type="string", dest="sourceName", default="2PN BBH binary",
+                  help='name of source [defaults to "2PN BBH binary"]')
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
@@ -114,5 +118,5 @@ if options.verbose:
 # write out the XML file
 
 outputXML = lisaxml.lisaXML(outXMLfile,author='Stas Babak')
-outputXML.SourceData(mysystem,name='2PN BBH binary')
+outputXML.SourceData(mysystem,name=options.sourceName)
 outputXML.close()
