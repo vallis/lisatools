@@ -131,6 +131,13 @@ Datafile = args[0]
 Injfile = args[1]
 Detfiles = args[2:]
 
+print "Data file:"
+print Datafile
+print "Key file :"
+print Injfile
+print "Analysis files"
+print Detfiles
+
 # To do: Need to read quadrutures as well...
 
 if options.phasemax :
@@ -144,9 +151,9 @@ if options.phasemax :
 
 Datatdifile = lisaxml.readXML(Datafile)
 tdiData = Datatdifile.getTDIObservables()[0]
-Xdata = tdiData.Xf
-Adata = (2.0*tdiData.Xf -tdiData.Yf - tdiData.Zf)/3.0
-Edata = (tdiData.Zf - tdiData.Yf)/math.sqrt(3.0) 
+Xdata = tdiData.Xs
+Adata = (2.0*tdiData.Xs -tdiData.Ys - tdiData.Zs)/3.0
+Edata = (tdiData.Zs - tdiData.Ys)/math.sqrt(3.0) 
 
 samples = Numeric.shape(Xdata)[0]
 
@@ -178,14 +185,14 @@ Injsources = Injtdifile.getLISASources()
 tdi = Injtdifile.getTDIObservables()[0]
 Injtdifile.close()
 
-X = tdi.Xf
-A = (2.0*tdi.Xf -tdi.Yf - tdi.Zf)/3.0
-E = (tdi.Zf - tdi.Yf)/math.sqrt(3.0) 
+X = tdi.Xs
+A = (2.0*tdi.Xs -tdi.Ys - tdi.Zs)/3.0
+E = (tdi.Zs - tdi.Ys)/math.sqrt(3.0) 
 
 sampling = tdi.TimeSeries.Cadence
 
 spr = "     "
-"""fout1 = open("DataX.dat", 'w')
+fout1 = open("DataX.dat", 'w')
 for i in xrange(samples):
    record = str(float(i)*sampling) + spr + str(Xdata[i]) + "\n"
    fout1.write(record)
@@ -195,7 +202,7 @@ for i in xrange(samples):
    record = str(float(i)*sampling) + spr + str(X[i]) + "\n"
    fout1.write(record)
 fout1.close()
-"""
+
 
 ###  Computing quadratures if needed (we do not need pi/2)
 if options.phasemax:
@@ -204,10 +211,10 @@ if options.phasemax:
 #   tdipiby2 = Injtdifile.getTDIObservables()[0]
 #   Xpiby2 = tdipiby2.Xf
 #   Injtdifile.close()
-   injfile =  Injfile[:-18]+'_0-tdi-frequency.xml'
+   injfile =  Injfile[:-15]+'_0-tdi-strain.xml'
    Injtdifile = lisaxml.readXML(injfile)
    tdi0 = Injtdifile.getTDIObservables()[0]
-   X0 = tdi0.Xf
+   X0 = tdi0.Xs
 
 XX = synthlisa.spect(X, sampling, 0)
 fr = XX[1:,0]
@@ -222,10 +229,17 @@ L  = 16.6782
 Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
 Sop = 1.8e-37 * fr**2
 
-Sx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
-Sxy = -4.0 * numpy.sin(2.0*om*L)*numpy.sin(om*L) * ( Sop + 4.*Spm )
-Sa = 2.0 * (Sx - Sxy)/3.0
+Synx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
+Synxy = -4.0 * numpy.sin(2.0*om*L)*numpy.sin(om*L) * ( Sop + 4.*Spm )
+Syn = 2.0 * (Synx - Synxy)/3.0
+
+## For Lisa simulator:
+
+
+Sx = Synx/(4.0*L*L*om*om)
+Sa = Syn/(4.0*L*L*om*om)
 Se = Sa
+
 
 normX = ComputeNorm(X,sampling, Sx)
 normA = ComputeNorm(A,sampling, Sa)
@@ -264,7 +278,6 @@ print "combined SNR = ", Sn
 print 80*'='
 
 
-
 ###########################################
 ##   Dealing with result files
 ###########################################
@@ -292,9 +305,9 @@ for userfile in Detfiles:
        #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
        Dettdi =  Dettdifile.getTDIObservables()[0]
 
-       Xs = Dettdi.Xf
-       As = (2.0*Dettdi.Xf - Dettdi.Yf - Dettdi.Zf)/3.0
-       Es = (Dettdi.Zf - Dettdi.Yf)/math.sqrt(3.0) 
+       Xs = Dettdi.Xs
+       As = (2.0*Dettdi.Xs - Dettdi.Ys - Dettdi.Zs)/3.0
+       Es = (Dettdi.Zs - Dettdi.Ys)/math.sqrt(3.0) 
 
        name = userfile[:-4]+"X.dat"
 #       print "recording file:", name

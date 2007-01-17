@@ -15,6 +15,7 @@ import re
 
 import synthlisa
 
+
 import numpy
 import numpy.oldnumeric as Numeric
 
@@ -69,17 +70,18 @@ parser.add_option("-v", "--verbose",
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
-    parser.error("I need the challenge name: Challenge1.1.1, Challenge1.1.2, etc...")
+    parser.error("I need the challenge name: Challenge1.1.1/Challenege1.1.2/...")
 
 challengename = args[0]
 timestep = options.timestep
 duration = options.duration
 
+
 ##### 0 : transform all ascii data to xml
 
 # to be added later
 
-#### I : create barycentric waveforms from the key file
+##### I : create barycentric waveforms from the key file
 
 ## If it is challenge 1.1.1 or 1.2.1 or 1.2.2 we want to do phase maximization
 
@@ -89,29 +91,94 @@ if(challengename in ['Challenge1.1.1a', 'Challenge1.1.1b', 'Challenge1.1.1c', 'C
     key = xmlKey[0]
     run("bin/create_quadratures.py %(key)s")
     xmlKey.append('Key/'+challengename+'_Key_0.xml')
-    xmlKey.append('Key/'+challengename+'_Key_piby2.xml')
+    xmlKey.append( 'Key/'+challengename+'_Key_piby2.xml')
 
 for key in xmlKey:    
   baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(key))
   run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(key)s %(baryfile)s')
 
-#### II : creating barycentric for user specified params
+##### II : creating barycentric for user specified params
 
 sources = "Source/" + challengename + '/' + "/*xml"
 for xmlfile in glob.glob(sources):
     baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
     run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 
-#### III : creating TDI files for all barycentric files
+#### III : creating TDI files for all barycentric files using synthetic LISA
 
-#barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
-#for xmlfile in glob.glob(barycentric):
-#    tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-#    run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+for xmlfile in glob.glob(barycentric):
+    tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+    run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-#### IV : call evaluation script
 
-tdis = glob.glob('TDI/'+challengename+'/*.xml')
+#### IV : creating TDI files using LISA simulator
+
+here = os.getcwd()
+
+import lisasimulator
+lisasimdir = lisasimulator.lisasim1yr
+barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+for xmlfile in glob.glob(barycentric):
+    print "working with ", xmlfile
+    xmlname = re.sub('\-barycentric.xml','',os.path.basename(xmlfile))
+    #tdifile = '/TDI/' + xmlname + '-tdi-strain.xml'
+    tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(xmlfile))
+    binfile = 'Barycentric/' + challengename + '/'+ xmlname + '-barycentric-0.bin'
+   
+    xmldest = lisasimdir + '/XML/' + xmlname + '_Barycenter.xml'
+    bindest = lisasimdir + '/XML/' + xmlname + '-barycentric-0.bin'
+
+    run('cp %s %s' % (xmlfile,xmldest))
+    run('cp %s %s' % (binfile,bindest))
+    os.chdir(lisasimdir)
+  
+    # run LISA simulator
+
+    run('./GWconverter %s' % xmlname)
+    run('./Vertex1Signals')
+    run('./Vertex2Signals')
+    run('./Vertex3Signals')
+
+    run('echo "%s" > sources.txt' % xmlname)
+    run('./Package %s sources.txt 0' % xmlname)
+
+    outxml = 'XML/' + xmlname + '.xml'
+    outbin = 'Binary/' + xmlname + '.bin'
+    here2 = here+'/../MLDCpipelines2'
+    # create an empty XML file...
+    sourcefileobj = lisaxml.lisaXML(here + '/' + tdifile)
+    sourcefileobj.close()
+
+    run('%s/bin/mergeXML.py %s %s %s' % (here+'/../MLDCpipelines2',here + '/' + tdifile,\
+                  here + '/../MLDCpipelines2/Template/StandardLISA.xml',outxml))
+            # then add the modified Source data included in the Barycentric file
+   
+    # remove temporary files
+
+    run('rm %s' % outxml)
+    run('rm %s' % outbin)
+
+    run('rm %s' % xmldest)
+    run('rm %s' % bindest)
+    
+    os.chdir(here)
+
+
+#### V : call evaluation script for synthetic LISA data
+
+tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
 keyTdi = 'TDI/'+challengename+'/'+challengename+'_Key-tdi-frequency.xml'
+dataTdi = 'Data/'+challengename+ '_blind_synthLISA/*.xml'
 #for xmlfile in glob.glob(tdis):
-run('bin/evaluate-syntheticLISA.py --maxPhase %(keyTdi)s %(tdis)s')
+run('bin/evaluate-syntheticLISA.py --maxPhase %(dataTdi)s %(keyTdi)s %(tdis)s')
+
+### VI : call evaluation script for LISA simulator
+
+tdis = glob.glob('TDI/'+challengename+'/*strain.xml')
+keyTdi = 'TDI/'+challengename+'/'+challengename+'_Key-tdi-strain.xml'
+dataTdi = 'Data/'+challengename+ '_blind_LISAsim/*.xml'
+#for xmlfile in glob.glob(tdis):
+run('bin/evaluate-LISAsimulator.py --maxPhase %(dataTdi)s %(keyTdi)s %(tdis)s')
+
+
