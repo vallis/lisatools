@@ -36,8 +36,8 @@ parser.add_option("-d", "--timeStep",
                   help="timestep for TDI observable sampling (s) [default 15]")
 
 parser.add_option("-n", "--noiseOnly",
-		  action="store_true", dest="noiseOnly", default=False,
-		  help="compute SNR using instrumental noise only [off by default]")
+                  action="store_true", dest="noiseOnly", default=False,
+                  help="compute SNR using instrumental noise only [off by default]")
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -133,10 +133,10 @@ Sgal = (2.0 * L)**2 * (2*pi*fr)**2 * 4.0 * numpy.sin(om*L)**2 * (
          numpy.piecewise(fr,(fr >= 10**-2.7) & (fr < 10**-2.4),[lambda f: 10**-62.8  * f**-8.8, 0]) + \
          numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )
 
-Sn = Sx + Sgal
 if options.noiseOnly:
-   Sn = Sx
-    
+    Sn = Sx
+else:
+    Sn = Sx + Sgal
 
 #fout = open("PsdN.dat", 'w')
 #spr  = "     "
@@ -144,7 +144,6 @@ if options.noiseOnly:
 #    rec =  str(fr[i]) + spr + str(Sx[i]) + spr + str(Sgal[i]) + spr + str(Sn[i]) + "\n"
 #    fout.write(rec)
 #fout.close()
-
 
 # the (S/N)^2 is given by 2T times the integrated ratio
 # of the spectral densities (the factor of 2 because the spectral
