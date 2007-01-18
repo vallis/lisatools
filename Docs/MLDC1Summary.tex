@@ -164,7 +164,7 @@ Another measure of the success of a given algorithm is the accuracy with which i
 \end{equation}
 We note that it is not necessarily appropriate to use the Fisher matrix to determine the quality of parameter recovery. If an algorithm settles on a secondary maximum of the likelihood function, then the results are far from the regime of validity for the Fisher matrix approximation to expected errors in parameter estimation.
 
-In Table~\ref{1.1.1metrics}, we list the values of the measures for each challenge entry for challenges 1.1.1---with the exception of the UTB entry. Since the UTB algorithm only returns frequency and sky position, it cannot be included in this comparison. However, it can be included in the comparison of parameter differences given in Table~\ref{1.1.1parameters}.
+The white dwarf binary challenges required the recovery of 7 parameters to fully characterize each source. These parameters are: the amplitude $\mathcal{A}$, the frequency $f$, they sky location $\theta,~\phi$, the angle of inclination $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. In Table~\ref{1.1.1metrics}, we list the values of the measures for each challenge entry for challenges 1.1.1---with the exception of the UTB entry. Since the UTB algorithm only returns frequency and sky position, it cannot be included in this comparison. However, it can be included in the comparison of parameter differences given in Table~\ref{1.1.1parameters}.
 
 \begin{table}
 \caption{\label{1.1.1metrics} The performance of challenge entries on the single binary challenges as calculated using $\Delta\chi^2$, SNR, and $C$. The correction of the initial phase by a factor of $\pi$ or $\pi/2$ is indicated by an asterisk (*).}
@@ -313,7 +313,7 @@ MT/JPL (BAM) & 11.96 & 172.582 & 0.963 & 27 \\
 \end{indented}
 \end{table}
 
-The supermassive black hole challenges required recovery of 9 parameters describing the source. As with the white dwarf challenges, the quality of the recovered signal can be described by the measures given in Equations~\ref{deltachi}and~\ref{snr}. In place of the correlation, we compute several overlaps using:
+The supermassive black hole challenges required recovery of 9 parameters describing the source: the chirp mass $\mathcal{M}$, the reduced mass $\mu$, the luminosity distance $D_L$, the time of coalescence $t_c$, the sky location $\theta,~\phi$, the initial angle of inclination $\iota$, the inital polarization angle $\psi$, and the initial orbital phase $\phi_0$. As with the white dwarf challenges, the quality of the recovered signal can be described by the measures given in Equations~\ref{deltachi}and~\ref{snr}. In place of the correlation, we compute several overlaps using:
 \begin{equation}
 \label{overlaps}
 O_{\alpha} = \frac{\left(h^{\alpha}_{\rm key}|h^{\alpha}_{\rm rec}\right)}{\sqrt{\left(h^{\alpha}_{\rm key}|h^{\alpha}_{\rm key}\right)\left(h^{\alpha}_{\rm rec}|h^{\alpha}_{\rm rec}\right)}}
@@ -323,7 +323,12 @@ where $\alpha$ denotes the particular TDI channel being used. In order to mitiga
 \label{maxphi}
 {\rm max}_{\phi_0}\left(O_X\right) = \sqrt{\left(h^{X}_{\rm rec}|h^{X}_{\rm key}(\phi_0=0)\right)^2+\left(h^{X}_{\rm rec}|h^{X}_{\rm key}(\phi_0=\pi/2)\right)^2}.
 \end{equation}
-There were two groups that returned a full characterization of the signal for Challenge 1.2.1. The Montana/AEI group had a constant phase difference, and when this phase is corrected, the performance of both the JPL/Caltech and Montana /AEI groups is quite good. The Goddard group is developing a new algorithm using the Hilbert-Huang Transform and so it is in a very preliminary stage and has only returned $\mathcal{M}$ for this challenge. Only one group (Montana/AEI) submitted an entry for Challenge 1.2.2. The measures for each submission under both of these challenges are given in Table~\ref{1.2metrics}. We have also determined the errors in the recovered parameters for all entries in Challenges 1.2.1 and 1.2.2. These are presented in Table~\ref{1.2parameters}.
+There were two groups that returned a full characterization of the signal for Challenge 1.2.1. The Montana/AEI group had a constant phase difference, and when this phase is corrected, the performance of both the JPL/Caltech and Montana /AEI groups is quite good. The Goddard group is developing a new algorithm using the Hilbert-Huang Transform and so it is in a very preliminary stage and has only returned $\mathcal{M}$ for this challenge. Because of a known degeneracy in sky location, we can flip the sky positions according to:
+\begin{eqnarray}
+\theta \rightarrow \pi - \theta \\
+\phi \rightarrow \phi \pm \pi.
+\end{eqnarray}
+However, this adjustment also requires a change in the values of the inclination and polarization angles as well. Once these have been determined, the new values can be used to provide a more realistic estimate of the error in the returned values. We have applied this transformation to the JPL/Caltech entry and to the Montana/AEI entry in Challenge 1.2.1. Only one group (Montana/AEI) submitted an entry for Challenge 1.2.2. The measures for each submission under both of these challenges are given in Table~\ref{1.2metrics}. We have also determined the errors in the recovered parameters for all entries in Challenges 1.2.1 and 1.2.2. These are presented in Table~\ref{1.2parameters}.
 \begin{table}
 \caption{\label{1.2metrics} The performance of challenge entries on the supermassive black hole binary challenges 1.2.1 and 1.2.2. The results after a correction of the initial phase are indicated by a *.}
 \begin{indented}
@@ -333,34 +338,41 @@ Group & $\Delta\chi^2$ & SNR & $O_A$ & $O_E$ & ${\rm max}_{\phi_0}\left(O_X\righ
 \br
 \centre{6}{Challenge 1.2.1 (${\rm SNR_{key}} = 667.734$)}\\
 \mr
-JPL & **.*** & ***.*** & 0.*** & 0.***& 0.***\\
-MT/AEI & **.*** & ***.*** & 0.*** & 0.***& 0.***\\
-MT/AEI* & **.*** & ***.*** & 0.*** & 0.***& 0.***\\
+JPL & 261.48 & 664.47 & 0.994 & 0.996 & 0.9955\\
+MT/AEI & 10289.29 & 524.29 & 0.790 & 0.791 & 0.9998\\
+MT/AEI* & 105.50 & 662.87 & 0.998 & 0.998 & 0.9998\\
 \br
-\centre{6}{Challenge 1.2.2 (${\rm SNR_{key}} = 106.77$)}\\
+\centre{6}{Challenge 1.2.2 (${\rm SNR_{key}} = 104.19$)}\\
 \mr
-MT/AEI & **.*** & ***.*** & 0.*** & 0.***& 0.***\\
+MT/AEI & 1.41 & 104.29 & 0.997 & 0.998 & 0.9955\\
 \br
 \end{tabular}
 \end{indented}
 \end{table}
 
 \begin{table}
-\caption{\label{1.2parameters} The performance of challenge entries on the supermassive black hole binary challenges 1.2.1 and 1.2.2 on the estimation of recovered parameters.}
+\caption{\label{1.2parameters} The performance of challenge entries on the supermassive black hole binary challenges 1.2.1 and 1.2.2 on the estimation of recovered parameters. The angles are absolute errors, all other errors are relative.}
 \begin{indented}
-\item[]\begin{tabular}{lrrrrrrrrr}
+\item[]
+\begin{tabular}{lrrrrrrrrr}
 \br
-Group & $\Delta \mathcal{M}$ & $\Delta\mu$ & $\Delta D_L$ & $\Delta\theta$ & $\Delta\phi$ & $\Delta\iota$ & $\Delta\psi$ & $\Delta t_c$ & $\Delta\phi_0$\\
+Group & $\Delta \mathcal{M}/\mathcal{M}$ & $\Delta\mu/\mu$ & $\Delta D_L/D_L$ & $\Delta t_c/t_c$ & $\Delta\theta$ & $\Delta\phi$ & $\Delta\iota$ & $\Delta\psi$ & $\Delta\phi_0$\\
+& $(\times 10^{-4})$ & & & $(\times 10^{-6})$  & & & & \\
 \br
-\centre{10}{Challenge 1.2.1}\\
+\centre{10}{Challenge 1.2.1 (Reported values)}\\
 \mr
-JPL & *** & *** & *** & *** & *** & *** & *** & *** & ***\\
-MT/AEI & *** & *** & *** & *** & *** & *** & *** & *** & ***\\
-Goddard & *** & *** & *** & *** & *** & *** & *** & *** & ***\\
+JPL & 7.35 & 0.011 & 1.101 & 3.35 & 1.030 & -3.17 & 1.32 & -2.65 & 0.004\\
+MT/AEI & 0.98 & 0.001 & 0.042 & 0.26 & 0.001 & 0.001 & 0.02 & 3.14 & 0.004\\
+Goddard & 434.00 & --- & --- & 113.00 & --- & --- & --- & --- & ---\\
+\br
+\centre{10}{Challenge 1.2.1 (Sky flipped values)}\\
+\mr
+JPL & 7.35 & 0.011 & 1.101 & 3.35 & -0.043 & -0.032 & -0.58 & -0.31 & 0.004\\
+MT/AEI & 0.982 & 0.001 & 0.0415 & 0.255 & 0.001 & 0.001 & 0.017 & -0.0002 & 0.0045\\
 \br
 \centre{10}{Challenge 1.2.2}\\
 \mr
-MT/AEI & *** & *** & *** & *** & *** & *** & *** & *** & ***\\
+MT/AEI & 3.09 & 0.0365 & 0.273 & 182.00 & 0.019 & 0.0054 & -0.71 & -2.16 & -0.0015\\
 \br
 \end{tabular}
 \end{indented}
