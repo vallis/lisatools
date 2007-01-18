@@ -35,6 +35,10 @@ parser.add_option("-d", "--timeStep",
                   type="float", dest="timestep", default=15.0,
                   help="timestep for TDI observable sampling (s) [default 15]")
 
+parser.add_option("-n", "--noiseOnly",
+		  action="store_true", dest="noiseOnly", default=False,
+		  help="compute SNR using instrumental noise only [off by default]")
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
@@ -130,6 +134,9 @@ Sgal = (2.0 * L)**2 * (2*pi*fr)**2 * 4.0 * numpy.sin(om*L)**2 * (
          numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )
 
 Sn = Sx + Sgal
+if options.noiseOnly:
+   Sn = Sx
+    
 
 #fout = open("PsdN.dat", 'w')
 #spr  = "     "
