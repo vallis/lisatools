@@ -51,8 +51,9 @@ parser.add_option("-t", "--training",
                   action="store_true", dest="istraining", default=False,
                   help="include source information in output file [off by default]")
 
+# note that the default value is handled below
 parser.add_option("-T", "--duration",
-                  type="float", dest="duration", default=2.0*oneyear,
+                  type="float", dest="duration", default=None,
                   help="total time for TDI observables (s) [default 62914560 = 2^22 * 15]")
 
 parser.add_option("-d", "--timeStep",
@@ -79,8 +80,6 @@ parser.add_option("-L", "--lisasim",
                   action="store_true", dest="lisasimonly", default=False,
                   help="run only the LISA Simulator")
 
-# add options to disable the LISA Simulator or Synthetic LISA
-
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
@@ -90,6 +89,14 @@ challengename = args[0]
 
 if options.seed == None:
     parser.error("You must specify the seed!")
+
+# this sets the default dataset duration if not specified, with a special case for apparent challenge-1 datasets
+if options.duration == None:
+    if 'challenge1' in challengename:
+        print("--> It looks like you're generating a challenge-1 dataset, so I will set the duration to 2^21 * 15 (you can override this with -T).")
+        options.duration = oneyear
+    else:
+        options.duration = 2.0*oneyear
 
 if options.synthlisaonly:
     lisasimdir = None
@@ -183,7 +190,11 @@ if dosynthlisa:
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
         tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
         if (not makemode) or newer(xmlfile,tdifile):
-            run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
+            if os.path.isfile('Galaxy/Galaxy.xml'):
+                run('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            else:
+                run('bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
     # now run noise generation...
     noisefile = 'TDI/tdi-frequency-noise.xml'
