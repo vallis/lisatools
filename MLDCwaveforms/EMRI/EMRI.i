@@ -87,7 +87,7 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
        
        emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
 
-       emri.SetSourceLocation(self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
+       emri.SetSourceLocation(math.pi/2.0 - self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
                               self.AzimuthalAngleOfSpin, self.Distance)
 			      
        emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
