@@ -1,4 +1,3 @@
-
 \documentclass[12pt]{iopart}
 \newcommand{\gguide}{{\it Preparing graphics for IOP journals}}
 \usepackage{iopams}
@@ -94,7 +93,7 @@ At the LISA International Science Team (LIST) meeting of December 2005, the Work
 
 A MLDC Task Force was constituted at the beginning of 2006 and has been working since then to formulate challenge problems, develop standard models of the LISA mission and gravitational wave (GW) sources, provide computing tools (e.g. LISA response simulators, and source waveform generators), establish criteria for the evaluation of the analyses, and provide any technical support necessary to the challenge participants. The first round of challenges involve the distribution of several data sets, encoded in a simple standard format, and containing combinations of realistic simulated LISA noise with the signals from one or more GW sources with parameters which were unknown to the participants. The participants were then asked to return the maximum amount of correct information about the sources and to produce technical notes detailing their work.
 
-The release of the first round of challenge data sets was announced in June, 2006 at the Sixth LISA International Symposium hosted by the Goddard Space Flight Center in Greenbelt, Maryland. John Baker (a member of the MLDC Task Force who did not participate in the first round) was appointed as MLDC1 coordinator. The coordinator was responsible for generating the challenge data sets, receiving the results from the participants, and posting both the key data files and results as soon as possible after the submission deadline of December 4, 2006.
+The release of the first round of challenge data sets was announced in June, 2006 at the Sixth LISA International Symposium hosted by the Goddard Space Flight Center in Greenbelt, Maryland~\cite{MLDCLISA06a, MLDCLISA06b}. John Baker (a member of the MLDC Task Force who did not participate in the first round) was appointed as MLDC1 coordinator. The coordinator was responsible for generating the challenge data sets, receiving the results from the participants, and posting both the key data files and results as soon as possible after the submission deadline of December 4, 2006.
 
 The challenge data sets include a total of 9 year-long data sets which are described in detail on the MLDC website~\cite{MLDCweb}, the Task Force wiki~\cite{MLDCwiki}, and the Omnibus document for Challenge 1~\cite{MLDCdoc}. The challenge data sets are broadly grouped into three categories: (1.1) white dwarf binaries (WDs), (1.2) supermassive black holes (SMBHs), and (1.3) extreme mass ratio inspirals (EMRIs). The problem of detection of EMRIs is considered more difficult than the others, so the deadline for submission of results for the 1.3 challenges is extended to June, 2007. Consequently, in this paper we will discuss the results of challenges 1.1 and 1.2.
 
@@ -129,7 +128,7 @@ UTB & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & & 
 \end{indented}
 \end{table}
 
-With the exception of Challenges 1.1.5 and 1.2.2, every Challenge data set was analysed by at least three groups. Here we briefly summarise the approaches used by each group. More detailed descriptions from many of the groups can be found elsewhere in these proceedings or in the technical notes on the MLDC web page. Several groups used variations on matched filtering methods on many of the challenges. The Ames group at the NASA Ames Research Center employed a user-refined grid search on a number of the WD challenges, while the AEI group and Andrzej Krolak~\cite{krolak04} both used methods relying on the $\mathcal{F}$-statistic~\cite{jaranowski98}. Both the Global LISA Inference Group (GLIG)~\cite{stroeer06,umstatter05,wickham06} and Montana-AEI groups employed variations on Markov Chain Monte Carlo (MCMC) methods. The JPL-Caltech group used a multi-stage approach that combined time-frequency methods with grid-based and (MCMC) searches. The Montana-JPL group used two versions of a genetic algorithm~\cite{crowder06a,crowder06b}. The APC group has also implemented an hierarchical approach which first matches the annual amplitude modulation and then follows with a full matched filtering. Two groups did not use matched filtering at all. The UTB group used a tomographic search that employed the Radon transform while the Goddard group at the NASA Goddard Space Flight Center developed a time-frequency method that uses the Hilbert-Huang transform~\cite{huang98}. Although some of these groups have well-developed and mature algorithms, most groups are currently in various stages of development and so many of the entries are incomplete or suffer from known bugs which could not be hunted down before the December deadline. Some of the algorithms that are under development are meant to be part of an hierarchical search and so they only return a subset of the parameters needed to fully characterize the source.
+With the exception of Challenges 1.1.5 and 1.2.2, every Challenge data set was analysed by at least three groups. Here we briefly summarise the approaches used by each group. More detailed descriptions from many of the groups can be found elsewhere in these proceedings {\bf [Participants: Please supply additional references if available]} or in the technical notes on the MLDC web page~\cite{MLDCweb}. Several groups used variations on matched filtering methods on many of the challenges. The Ames group at the NASA Ames Research Center employed a user-refined grid search on a number of the WD challenges, while the AEI group and Andrzej Krolak~\cite{krolak04} both used methods relying on the $\mathcal{F}$-statistic~\cite{jaranowski98}. Both the Global LISA Inference Group (GLIG)~\cite{stroeer06,umstatter05,wickham06} and Montana-AEI groups employed variations on Markov Chain Monte Carlo (MCMC) methods. The JPL-Caltech group used a multi-stage approach that combined time-frequency methods with grid-based and (MCMC) searches. The Montana-JPL group used two versions of a genetic algorithm~\cite{crowder06a,crowder06b}. The APC group has also implemented an hierarchical approach which first matches the annual amplitude modulation and then follows with a full matched filtering. Two groups did not use matched filtering at all. The UTB group used a tomographic search that employed the Radon transform while the Goddard group at the NASA Goddard Space Flight Center developed a time-frequency method that uses the Hilbert-Huang transform~\cite{huang98}. Although some of these groups have well-developed and mature algorithms, most groups are currently in various stages of development and so many of the entries are incomplete or suffer from known bugs which could not be hunted down before the December deadline. Some of the algorithms that are under development are meant to be part of an hierarchical search and so they only return a subset of the parameters needed to fully characterize the source.
 
 \section{Assessment}
 
@@ -325,10 +324,15 @@ where $\alpha$ denotes the particular TDI channel being used. In order to mitiga
 \end{equation}
 There were two groups that returned a full characterization of the signal for Challenge 1.2.1. The Montana/AEI group had a constant phase difference, and when this phase is corrected, the performance of both the JPL/Caltech and Montana /AEI groups is quite good. The Goddard group is developing a new algorithm using the Hilbert-Huang Transform and so it is in a very preliminary stage and has only returned $\mathcal{M}$ for this challenge. Because of a known degeneracy in sky location, we can flip the sky positions according to:
 \begin{eqnarray}
-\theta \rightarrow \pi - \theta \\
-\phi \rightarrow \phi \pm \pi.
+\theta & \rightarrow & \pi - \theta \label{skyflip1} \\
+\phi & \rightarrow & \phi \pm \pi. \label{skyflip2}
 \end{eqnarray}
-However, this adjustment also requires a change in the values of the inclination and polarization angles as well. Once these have been determined, the new values can be used to provide a more realistic estimate of the error in the returned values. We have applied this transformation to the JPL/Caltech entry and to the Montana/AEI entry in Challenge 1.2.1. Only one group (Montana/AEI) submitted an entry for Challenge 1.2.2. The measures for each submission under both of these challenges are given in Table~\ref{1.2metrics}. We have also determined the errors in the recovered parameters for all entries in Challenges 1.2.1 and 1.2.2. These are presented in Table~\ref{1.2parameters}.
+However, this adjustment also requires a change in the values of the inclination and polarization angles as well. This is accomplished by substituting the initial returned values of $\theta_{\rm cl} = \frac{\pi}{2} - \theta$, $\phi$, $\iota$, and $\psi$ into:
+\begin{eqnarray}
+\cos{\iota} & = & \sin{\theta_{\rm cl}}\sin{\Theta}\cos{\left(\phi - \Phi\right)} + \cos{\Theta}\cos{\theta_{\rm cl}} \label{iota} \\
+\tan{\psi} & = & \frac{\cos{\theta_{\rm cl}}\cos{\left(\phi - \Phi\right)}\sin{\Theta} - \cos{\Theta}\sin{\theta_{\rm cl}}}{\sin{\Theta}\sin{\left(\phi - \Phi\right)}}, \label{psi}
+\end{eqnarray}
+and solve these equations for $\left(\Theta,\Phi\right)$. Once we have the values of $\left(\Theta,\Phi\right)$, we then use these values and the flipped sky positions from Equations~\ref{skyflip1} and~\ref{skyflip2} in the above equations~\ref{iota} and~\ref{psi} to determine the new values of $\iota$ and $\psi$. Once these have been found, the new values can be used to provide a more realistic estimate of the error in the returned values. We have applied this transformation to the JPL/Caltech entry and also adjusted the polarization phase for the Montana/AEI entry in Challenge 1.2.1. Only one group (Montana/AEI) submitted an entry for Challenge 1.2.2. The measures for each submission under both of these challenges are given in Table~\ref{1.2metrics}. We have also determined the errors in the recovered parameters for all entries in Challenges 1.2.1 and 1.2.2. These are presented in Table~\ref{1.2parameters}.
 \begin{table}
 \caption{\label{1.2metrics} The performance of challenge entries on the supermassive black hole binary challenges 1.2.1 and 1.2.2. The results after a correction of the initial phase are indicated by a *.}
 \begin{indented}
@@ -352,8 +356,8 @@ MT/AEI & 1.41 & 104.29 & 0.997 & 0.998 & 0.9955\\
 
 \begin{table}
 \caption{\label{1.2parameters} The performance of challenge entries on the supermassive black hole binary challenges 1.2.1 and 1.2.2 on the estimation of recovered parameters. The angles are absolute errors, all other errors are relative.}
-\begin{indented}
-\item[]
+%\begin{indented}
+%\item[]
 \begin{tabular}{lrrrrrrrrr}
 \br
 Group & $\Delta \mathcal{M}/\mathcal{M}$ & $\Delta\mu/\mu$ & $\Delta D_L/D_L$ & $\Delta t_c/t_c$ & $\Delta\theta$ & $\Delta\phi$ & $\Delta\iota$ & $\Delta\psi$ & $\Delta\phi_0$\\
@@ -361,30 +365,32 @@ Group & $\Delta \mathcal{M}/\mathcal{M}$ & $\Delta\mu/\mu$ & $\Delta D_L/D_L$ & 
 \br
 \centre{10}{Challenge 1.2.1 (Reported values)}\\
 \mr
-JPL & 7.35 & 0.011 & 1.101 & 3.35 & 1.030 & -3.17 & 1.32 & -2.65 & 0.004\\
+JPL & 7.35 & 0.011 & 1.101 & 3.35 & 1.030 & -3.170 & 1.32 & -2.65 & 0.004\\
 MT/AEI & 0.98 & 0.001 & 0.042 & 0.26 & 0.001 & 0.001 & 0.02 & 3.14 & 0.004\\
 Goddard & 434.00 & --- & --- & 113.00 & --- & --- & --- & --- & ---\\
 \br
-\centre{10}{Challenge 1.2.1 (Sky flipped values)}\\
+\centre{10}{Challenge 1.2.1 (Angle adjusted values)}\\
 \mr
 JPL & 7.35 & 0.011 & 1.101 & 3.35 & -0.043 & -0.032 & -0.58 & -0.31 & 0.004\\
-MT/AEI & 0.982 & 0.001 & 0.0415 & 0.255 & 0.001 & 0.001 & 0.017 & -0.0002 & 0.0045\\
+MT/AEI & 0.98 & 0.001 & 0.042 & 0.26 & 0.001 & 0.001 & 0.02 & -0.00 & 0.004\\
 \br
 \centre{10}{Challenge 1.2.2}\\
 \mr
-MT/AEI & 3.09 & 0.0365 & 0.273 & 182.00 & 0.019 & 0.0054 & -0.71 & -2.16 & -0.0015\\
+MT/AEI & 3.09 & 0.037 & 0.273 & 182.00 & 0.019 & 0.005 & -0.71 & -2.16 & -0.002\\
 \br
 \end{tabular}
-\end{indented}
+%\end{indented}
 \end{table}
 
 \section{Conclusions}
 
-The first round of the Mock LISA Data Challenges successfully attracted over ten groups to work on the problem of LISA data analysis. These groups attacked several of the challenges with a variety of different approaches. The algorithms and codes used in the challenges were at different levels of maturity and completeness of the pipelines. Nonetheless, almost all challenges had at least one entry which successfully characterized the signal to better than 90\% when assessed via the correlation. Most groups also discovered small bugs or discrepancies in definitions of some of the parameters used to characterize the signal. Given that most groups had less than 5 months to work out interfacing issues and assess their codes, the first round entries can be considered a success. Those groups that participated in round 1 have begun implementing the lessons learned for use in round 2, which is another successful outcome of the challenges. The MLDC Task Force has also begun to address the issues that have been raised as regards assessment of the entries. As the assessments become more refined in future challenges, we anticipate developing assessments for the true LISA data for which there is no key file.
+The first round of the Mock LISA Data Challenges successfully attracted over ten groups to work on the problem of LISA data analysis. These groups attacked several of the challenges with a variety of different approaches. The algorithms and codes used in the challenges were at different levels of maturity and completeness of the pipelines. Nonetheless, almost all challenges had at least one entry which successfully characterized the signal to better than 90\% when assessed via the correlation. Most groups also discovered small bugs or discrepancies in definitions of some of the parameters used to characterize the signal. Given that most groups had less than 5 months to work out interfacing issues and assess their codes, the first round entries can be considered a success. Those groups that participated in round 1 have begun implementing the lessons learned for use in round 2~\cite{MLDC2doc}, which is another successful outcome of the challenges. The MLDC Task Force has also begun to address the issues that have been raised as regards assessment of the entries. As the assessments become more refined in future challenges, we anticipate developing assessments for the true LISA data for which there is no key file.
 
 
 \section*{References}
 \begin{thebibliography}{10}
+\bibitem{MLDCLISA06a} Arnaud K A, {\it et al.} 2006 {\it AIP Conf. Proc.} {\bf 873} 619 ({\it Preprint} gr-qc/0609105)
+\bibitem{MLDCLISA06b} Arnaud K A, {\it et al.} 2006 {\it AIP Conf. Proc.} {\bf 873} 625 ({\it Preprint} gr-qc/0609106)
 \bibitem{MLDCweb} Mock LISA Data Challenge Homepage, {\tt astrogravs.nasa.gov/docs/mldc}.
 \bibitem{MLDCwiki} Mock LISA Data Challenge Task Force wiki, {\tt www.tapir.caltech.edu/dokuwiki/listwg1b:home}.
 \bibitem{MLDCdoc} Mock LISA Data Challenge Task Force, ``Document for Challenge 1,'' {\tt svn.sourceforge.net/viewvc/lisatools/Docs/challenge1.pdf}.
@@ -397,6 +403,7 @@ The first round of the Mock LISA Data Challenges successfully attracted over ten
 \bibitem{cornish06} Cornish N J and Porter E K 2006 Catching Super Massive Black Hole Binaries Without a Net {\it Preprint} gr-qc/0605135
 \bibitem{crowder06a} Crowder J, Cornish N J, Reddinger J L 2006 {\it Phys Rev D} {\bf 73} 063001
 \bibitem{crowder06b} Crowder J and Cornish N J 2006 A Solution to the Galactic Foreground Problem for LISA {\it Preprint} astro-ph/0611546
+\bibitem{MLDC2doc} Arnaud K A, {\it et al.} 2007 {\it Preprint} gr-qc/0701xxx
 
 \end{thebibliography}
 
