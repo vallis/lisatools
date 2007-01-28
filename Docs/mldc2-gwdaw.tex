@@ -1,9 +1,9 @@
 \documentclass[12pt]{iopart}
-\newcommand{\gguide}{{\it Preparing graphics for IOP journals}}
+
 \usepackage{iopams}
 \usepackage{graphicx}  
+\usepackage{url}
 
-%
 % some definitions 
 \def\be{\begin{equation}}
 \def\ee{\end{equation}}
@@ -11,8 +11,6 @@
 \def\bea{\begin{eqnarray}}
 \def\eea{\end{eqnarray}}
 %
-
-
 
 \begin{document}
 
@@ -86,7 +84,7 @@ Challenge 2 includes five single-source data sets (Challenge 1.3.1)%
 % 
 dedicated specifically to EMRIs, and two multi-source data sets (Challenge 2.1 and 2.2). All the data sets are all $\approx 2$ years long---they contain $2^{22}$ data points sampled at a cadence of 15 sec. More in detail the data sets are as follows: 
 \begin{itemize}
-\item \emph{Challenge 1.3.1} consists of five data sets, each of which contains radiation from a single EMRI with SNR approximately in the range 30--100;
+\item \emph{Challenge 1.3.1} consists of five data sets, each of which contains radiation from a single EMRI with SNR approximately in the range 40--110;
 \item \emph{Challenge 2.1} contains radiation from (i) a whole population of Galactic binary systems (about 30 million sources), including (ii) 20 ``verification binaries'';
 \item \emph{Challenge 2.2} contains radiation from (i) a whole population of Galactic binary systems (about 30 million sources), including (ii) 20 ``verification binaries''; (iii) an \emph{unknown} number (between 4 and 6) of MBH binaries with a range of SNRs (between $\approx 2000$ and $\approx 10$) and coalescence time; and (iv) 5 EMRIs, with SNRs in the range $\approx 30--100$.
 \end{itemize}
@@ -198,23 +196,23 @@ and from acceleration noise (assumed white in acceleration, but increasing as $1
 \be
 S_\mathrm{acc}^{1/2}(f) = 3 \times 10^{-15} [1 + (10^{-4}\,{\rm Hz}/f)^2]^{1/2}\, \mathrm{m}\, \mathrm{s}^{-2}\, \mathrm{Hz}^{-1/2}\,;
 \ee
-the total noise contribution is then simply $S_\mathrm{in} = S_\mathrm{opt}(f) + S_\mathrm{acc}(f)$. As we have mentioned above, the laser phase noise is assumed to be zero. The six optical noises and six acceleration noises (for the two optical benches on each spacecraft) are modeled as independent Gaussian random processes, and are realized in practice with sequences of pseudo-random numbers. Specifically, Synthetic LISA generates independent Gaussian deviates (i.e., white noise) in the time domain, and then filters them digitally to obtain the desired spectral shape; the LISA Simulator generates independent Gaussian deviates in the frequency domain, multiplies them by $S^{1/2}(f)$, and FFTs to the time domain.
+the total noise contribution is then simply $S_\mathrm{in} = S_\mathrm{opt}(f) + S_\mathrm{acc}(f)$. As we have mentioned above, the laser phase noise is assumed to be zero. The six optical noises and six acceleration noises (for the two optical benches on each spacecraft) are modelled as independent Gaussian random processes, and are realized in practice with sequences of pseudo-random numbers. Specifically, Synthetic LISA generates independent Gaussian deviates (i.e., white noise) in the time domain, and then filters them digitally to obtain the desired spectral shape; the LISA Simulator generates independent Gaussian deviates in the frequency domain, multiplies them by $S^{1/2}(f)$, and FFTs to the time domain.
 
 \section{Gravitational waveforms}
 
-In this section we describe the conventions adopted to describe the gravitational waveforms and the assumptions made on the signals to construct the data sets. They are identical to those adopted in Challenge 1. Here we introduce two new ingredients: the model of the Galaxy used to simulate a population of stellar-mass binaries and the kludge EMRI waveforms.
+In this section we describe the conventions adopted to describe the gravitational waveforms and the assumptions made on the signals to construct the data sets. They are identical to those adopted in Challenge 1, but for this challenge we introduce two new ingredients: the model of the Galaxy used to simulate a population of stellar-mass binaries, and the kludge EMRI waveforms.
 
 \subsection{Gravitational wave polarizations}
 \label{ss:polarizations}
 
-The sky location of a GW source is described in J2000 \emph{ecliptic coordinates}: latitude $\beta$ and longitude $\lambda$, the latter measured from the vernal point, aligned with the $\hat{x}$ axis in our convention. Gravitational radiation travels along the direction $\hat{k} = -(\cos \beta \cos \lambda, \cos \beta \sin \lambda, \sin \beta)$, with surfaces of constant phase given by $\xi = t - \hat{k} \cdot x$. In the transverse--traceless gauge, the gravitational strain tensor can be decomposed in two polarization states $h_{+}(\xi)$ and $h_{\times}(\xi)$ and is given by
+The sky location of a GW source is described in J2000 \emph{ecliptic coordinates}: latitude $\beta$ and longitude $\lambda$, the latter measured from the vernal point, aligned with the $\hat{x}$ axis in our convention. Gravitational radiation travels along the direction $\hat{k} = -(\cos \beta \cos \lambda, \cos \beta \sin \lambda, \sin \beta)$, with surfaces of constant phase given by $\xi = t - \hat{k} \cdot x$. In the transverse--traceless gauge, the gravitational strain tensor can be decomposed in two polarization states $h_{+}(\xi)$ and $h_{\times}(\xi)$, and is given by
 %
 \begin{equation}
 \label{eq:defpol}
-\mathbf{h}(\xi) = h_{+}(\xi) \left[ \hat{u}\otimes \hat{u} - \hat{v}\otimes \hat{v} \right] + h_{\times}(\xi) \left[ \hat{u}\otimes \hat{v} + \hat{v}\otimes \hat{u} \right]\,,
+\mathbf{h}(\xi) = h_{+}(\xi) \left[ \hat{u}\otimes \hat{u} - \hat{v}\otimes \hat{v} \right] + h_{\times}(\xi) \left[ \hat{u}\otimes \hat{v} + \hat{v}\otimes \hat{u} \right],
 \end{equation}
 %
-where $\hat{u} = \partial \hat{k} / \partial{\beta}$, $\hat{v} \propto \partial \hat{k} / \partial{\lambda}$. Thus, GWs from any MLDC source are completely specified by $\beta$, $\lambda$, and by the two functions $h_+(\xi)$ and $h_\times(\xi)$ for the source's GW polarization amplitudes, measured at the SSB.
+where $\hat{u} = \partial \hat{k} / \partial{\beta}$, $\hat{v} \propto \partial \hat{k} / \partial{\lambda}$. Thus, GWs from any MLDC source are completely specified by $\beta$, $\lambda$, and by the two functions $h_+(\xi)$ and $h_\times(\xi)$ for the source GW polarization amplitudes, measured at the SSB.
 
 The orbital orientation of nonprecessing binaries is described by the inclination $\iota$ (the angle between the line of sight $-\hat{k}$ and the orbital angular momentum of the binary), and by their polarization angle $\psi$: specifically, if $h^S_{+}(\xi)$ and $h^S_\times(\xi)$ are the binary's GW polarizations in the source frame (i.e., defined with respect to the binary's \emph{principal polarization axes} $\hat{p}$ and $\hat{q}$) then 
 %
@@ -223,19 +221,21 @@ h_+(\xi) + i h_\times(\xi) = e^{-2 i \psi} \left[ h^S_+(\xi) + i h^S_\times(\xi)
 \end{equation}
 %
 with $\psi = -\arctan(\hat{v} \cdot \hat{p} / \hat{u} \cdot \hat{p})$.
-Together with $\beta$, $\lambda$, and with the luminosity distance $D$, $\iota$ and $\psi$ form a set of common standard parameters, listed in Tab.\ \ref{tab:common} with their standard lisaXML (see~\cite{} for a description of the XML files adopted for the MLDCs).
+Together with $\beta$, $\lambda$, and with the luminosity distance $D$, $\iota$ and $\psi$ form a set of common standard parameters, listed in Tab.\ \ref{tab:common} with their standard lisaXML (see \cite{MLDCLISA06b} for a description of the XML files adopted for the MLDCs).
 
 \subsection{Galactic stellar mass binaries}
 \label{ss:WD}
 
-In Challenge 2, a Galactic stellar mass binary system of two stars of mass $m_1$ and $m_2$ at distance $D$  is modelled as a binary of are modeled as point masses in circular orbit with constant period. The source-frame polarization amplitudes are given by
+In Challenge 2, a Galactic stellar mass binary system of two stars of mass $m_1$ and $m_2$ at distance $D$  is modelled as two point masses in circular orbit with constant period. The source-frame polarization amplitudes are given by
 %
 \begin{eqnarray}
 h^S_+(\xi)  & = & \mathcal{A} \left(1 + \cos^2{\iota}\right) \cos(2\pi f \xi + \phi_0), \\
-h^S_\times(\xi) & = & -2 \mathcal{A} (\cos{\iota}) \sin(2\pi f \xi + \phi_0). \nonumber
+h^S_\times(\xi) & = & -2 \mathcal{A} (\cos{\iota}) \sin(2\pi f \xi + \phi_0), \nonumber
 \end{eqnarray}
 %
-where the amplitude is derived from the physical parameters of a source $\mathcal{A} = (2 \mu / D) (\pi M f)^{2/3}$ (notice that $f$ is constant in the SSB), with $M = m_1 + m_2$ the total mass, and $\mu = m_1 + m_2$ the reduced mass; $ \phi_0$ is an arbitrary random initial phase. A Challenge-2 \texttt{GalacticBinary} source is completely determined by the parameters of Tables \ref{tab:common} and \ref{tab:galactic} together. %
+where the amplitude is derived from the physical parameters of the source as $\mathcal{A} = (2 \mu / D) (\pi M f)^{2/3}$, with $M = m_1 + m_2$ the total mass, and $\mu = m_1 + m_2$ the reduced mass; $ \phi_0$ is an arbitrary random initial phase. Notice that $f$ is constant in the SSB, but not in the final LISA data set, because of Doppler effect induced by the LISA orbital motion.
+A Challenge-2 \texttt{GalacticBinary} source is completely determined by the parameters of Tables \ref{tab:common} and \ref{tab:galactic} together.
+%
 \begin{table}
 \begin{tabular}{llll}
 \hline
@@ -252,19 +252,18 @@ Initial GW phase    & $\phi_0$      & \texttt{InitialPhase} & \texttt{Radian} \\
 \end{tabular}
 \caption{\texttt{GalacticBinary} source parameters. Note that \texttt{Amplitude} effectively replaces the standard \texttt{Distance} parameter.\label{tab:galactic}}
 \end{table}
-The data sets contain 20 ``verification binaries''. For the MLDCs we define as verification binaries systems whose location and orbital period are exactly know. The remaining 4 parameters are selected randomly. We consider 5 real known systems and then select from the Galaxy model. Notice that for the training data sets 2.1 and 2.2 the verification binaries, as well as all the other binaries are the same. For the challenge data sets,this is not the case. Only the known parameters of the verification binaries remain the same. 
 
-The parameters -- masses, distance and location in the sky -- of each individual binary are drawn from a synthetic model of the Galaxy, which is discussed in the next section. The other parameters are selected randomly.
+The data sets 2.1 and 2.2 contain 20 ``verification binaries'', defined as systems whose location and orbital period are exactly known. The remaining 4 parameters are selected randomly. We consider 5 real known systems and then select 15 more from the synthetic model of the Galaxy described in the next section. Notice that for the training data sets 2.1 and 2.2, the verification binaries, as well as all the other binaries, are the same. For the challenge data sets, this is not the case. Only the known parameters of the verification binaries remain the same. 
 
 \subsection{Galactic model}
 \label{ss:galaxy}
-[{\bf IS THIS WHAT WE ARE USING?}]
 
-In constructing the Challenge data sets, the Galactic binary parameters are chosen at random based on our model Galactic population density. The bulk properties of the Galaxy can be broken down into morphology and composition. The morphology of a Galaxy is best described in terms of a population density function. Two population densities are currently considered in the literature. The double exponential used by Hils, Bender \& Webbink (1990) and Timpano, Rubbo \& Cornish (2005) is described entirely by central density, $\rho_0$, radial scale, $R_0$, and scale height, $z_0$, and has the form (in Galactocentric cylindrical coordinates):
+\textbf{MV: I don't think this section is appropriate!}
+In constructing the Challenge data sets, the Galactic binary parameters are chosen at random based on our model Galactic population density. The bulk properties of the Galaxy can be broken down into morphology and composition. The morphology of a Galaxy is best described in terms of a population density function. Two population densities are currently considered in the literature. The double exponential used by Hils, Bender, and Webbink (1990) and Timpano, Rubbo, and Cornish (2005) is described entirely by central density, $\rho_0$, radial scale, $R_0$, and scale height, $z_0$, and has the form (in Galactocentric cylindrical coordinates):
 \begin{equation}
 \rho({\bf r}) = \rho_0 e^{-R/R_0} e^{-z/z_0}. 
 \end{equation}
-The ``cuspy'' exponential-${\rm sech}^2$ used by Nelemans {\it et al.} (2001), Benacquista, DeGoes \& Lunder (2004), and Edlund {\it et al.} (2005) includes the possibility for a central cusp and so has an additional parameter $c$:
+The ``cuspy'' exponential-${\rm sech}^2$ used by Nelemans {\it et al.} (2001), Benacquista, DeGoes, and Lunder (2004), and Edlund {\it et al.} (2005) includes the possibility for a central cusp and so has an additional parameter $c$:
 \be
 \rho({\bf r}) = \rho_0 r^{-c} e^{-R/R_0} {\rm sech}^2(-z/z_0).
 \label{e:rho_BLT}
@@ -277,11 +276,11 @@ The model of the Galaxy that is used for the MLDCs corresponds to Eq.~(\ref{e:rh
 
 \subsection{Massive--black-hole binaries}
 
-In these first two rounds of MLDCs massive-black hole binaries we restrict to circular orbits and non-spinning black holes. We also consider only the in-spiral phase of the whole coalescence. We model the in-spiral at the restricted second post-Newtonian order, following~\cite{Blanchet,DIS}. We first introduce the parameters
+In these first two rounds of MLDCs, massive-black hole binaries are restricted to having circular orbits and non-spinning black holes. We also consider only the inspiral phase of the whole coalescence process. We model the inspiral at the restricted second post-Newtonian order, following~\cite{Blanchet,DIS}: we first introduce the parameters
 \be
 \tau =  \frac{\eta}{5M}(t_c - t)
 \ee
-where $t_c$ is the time at coalescence, and $\eta = \mu/M$. The time-evolution of the \emph{orbital} angular frequency $\omega$ and phase $\Phi$ are then given by
+where $t_c$ is the time at coalescence, and $\eta = \mu/M$. The time evolution of the \emph{orbital} angular frequency $\omega$ and phase $\Phi$ are then given at 2PN order by
 \bea
 M\omega &=& \frac{1}{8} \tau^{-3/8}\Biggl\{ 1 + \left( \frac{11}{32}\eta + \frac{743}{2688}\right) 
 \tau^{-1/4} - \frac{3}{10}\pi\tau^{-3/8} \nonumber \\
@@ -298,7 +297,7 @@ and
 (M\omega)^{4/3}\Biggr\} + \mathrm{const.}
 \label{eq:Phi}
 \eea
-respectively. The arbitrary constant entering the definition~(\ref{eq:Phi}) is set to $\Phi_0$ at the time corresponding to $t = 0$. 
+respectively. The arbitrary constant that enters Eq.\ (\ref{eq:Phi}) is set in such a way that $\Phi(\omega(t=0)) = \Phi_0$.
 
 In the source reference frame, the polarization waveforms are given by:
 %
@@ -307,7 +306,7 @@ h^S_{+}(\xi) &=& \frac{2\mu}{D}[M\omega(\xi)]^{2/3}(1+\cos^2 \iota)\cos [2\Phi(\
 h^S_{\times}(\xi) &=& -\frac{2\mu}{D}[M\omega(\xi)]^{2/3}(2 \cos \iota) \sin [2\Phi(\xi)]. \nonumber
 \end{eqnarray}
 %
-In order to avoid numerical artifacts at the time when the in-spiral terminates, we taper the signal according to:
+In order to avoid numerical artifacts at the end of the inspiral (i.e., the last stable orbit), we taper the signal according to:
 %
 \begin{equation}
 w(t) = \frac{1}{2}\,\left( 1 + \tanh\left[A (M/R - M/R_\mathrm{taper})\right] \right)\,,
@@ -315,9 +314,8 @@ w(t) = \frac{1}{2}\,\left( 1 + \tanh\left[A (M/R - M/R_\mathrm{taper})\right] \r
 %
 where $R$ is approximated with Kepler's law ($R = M^{1/3} \omega^{-2/3}$), and
 where the dimensionless coefficient $A = 150$ was determined empirically to produce smooth damping.
-[{\bf IS THIS REALLY WHAT WE ARE USING?}]
 
-The lisaXML standard parameters Challenge-2 \texttt{BlackHoleBinary} sources are listed in Tables \ref{tab:common} and \ref{tab:bbh}.
+The lisaXML standard parameters for Challenge-2 \texttt{BlackHoleBinary} sources are listed in Tables \ref{tab:common} and \ref{tab:bbh}.
 %
 \begin{table}
 \begin{tabular}{llll}
@@ -341,11 +339,10 @@ Tapering radius & $R$    & \texttt{TaperApplied}    & \texttt{TotalMass} \\
 
 \subsection{Extreme--Mass-Ratio Inspirals}
 
-Extreme--Mass-Ratio Inspiral (EMRI) -- a compact object (CO) orbiting a MBH -- are the new source class included in the second round of MLDCs. The EMRI waveforms adopted are the Barack--Cutler ``analytic kludge'' waveforms \cite{BC}: the orbits are instantaneously approximated as Newtonian ellipses and gravitational radiation is given by the corresponding Peters--Matthews formula \cite{pm}, but perihelion direction, orbital plane, semi-major axis, and eccentricity evolve according to post-Newtonian equations. While these waveforms are not particularly accurate in the highly relativistic regime of interest for real EMRI searches, they do exhibit the main qualitative features of the true waveforms, and they are considerably simpler to generate.  They are therefore ideal to develop and test search strategies. It is expected that any search strategy that works for them could be modified fairly easily to deal with the true general-relativistic waveforms, once these become available.
+Extreme--Mass-Ratio Inspirals -- compact objects (CO) orbiting an MBH -- constitute the new source class included in the second round of MLDCs. The EMRI waveforms adopted are the Barack--Cutler ``analytic kludge'' waveforms \cite{BC}, where orbits are instantaneously approximated as Newtonian ellipses and gravitational radiation is given by the corresponding Peters--Matthews formula \cite{pm}, but perihelion direction, orbital plane, semi-major axis, and eccentricity evolve according to post-Newtonian equations. While these waveforms are not particularly accurate in the highly relativistic regime of interest for real EMRI searches, they do exhibit the main qualitative features of the true waveforms, and they are considerably simpler to generate.  They are therefore ideal to develop and test search strategies. It is expected that any search strategy that works for them could be modified fairly easily to deal with the true general-relativistic waveforms, once these become available.
 
-The two-body system in general relativity is described by 17 parameters. Here we assume that the spin of the CO is negligible with respect to the MBH's spin and can therefore be ignored: the signal is described by only 14 parmeters, that we now describe. Let us consider a CO of mass $\mu (\ll M)$ orbiting a MBH of mass $M$ on an orbit with semi-major axis $a$, eccentricity $e$ and \emph{orbital} frequency $\nu$. At the Newtonian order,  $\nu = (2\pi M)^{-1} (M/a)^{3/2}$ and the \emph{orbital} mean anomaly $\Phi$, i.e., the average orbital phase with respect to the direction of pericenter, is $\Phi(t) = 2\pi\nu (t-t_0) +\Phi_0$, where  $\Phi_0$ is the mean anomaly at $t_0$. The spin $\vec S$ of the MBH is parametrized by its magnitude $S$ (so that $0 \le S/M^2 \le 1$) and the two polar angles $\theta_K,\phi_K$ in the SSB (here ``K'' stands for Kerr). $\vec L(t)$ represents the time-varying orbital angular momentum; its direction is parametrized by the \emph{constant} angle $\lambda$ (not to be confused with the ecliptic longitude, defined in Sec~\ref{ss:polarizations}) between $\vec L$ and $\vec S$%
-\footnote{In reality, radiation reaction will impose a small time variation in $\lambda$; however, this variation is known to be very small, see~\cite{scott1}, and is neglected here},%
-and by an azimuthal angle $\alpha(t)$, i.e., it describes the direction of $\hat L$ around $\hat S$. The angle $\tilde\gamma(t)$ is the (intrinsic) direction of pericenter, measured with respect to $\vec L\times\vec S$. Considering a given time $t_0$ (as measured in the SSB), $\nu_0$, $e_0$, $\tilde\gamma_0$, and $\Phi_0$ describe, respectively, the eccentricity, the direction of the pericenter within the orbital plane, and the mean anomaly at that given time. More specifically, $\tilde\gamma_0$ is the angle in the plane of the orbit from $\hat L \times \hat S$ to pericenter, $\Phi_0$ to be the mean anomaly with respect to pericenter passage. We refer the reader to Figure ... of Ref.~\cite{BC} for a graphic representation of the system.
+In general relativity, the full two-body system is described by 17 parameters. Here we assume that the spin of the CO is negligible with respect to the MBH's spin and can therefore be ignored: the signal is described by only 14 parameters, which we now describe. Let us consider a CO of mass $\mu$ $(\ll M)$ orbiting a MBH of mass $M$ on an orbit with semi-major axis $a$, eccentricity $e$ and \emph{orbital} frequency $\nu$. At the Newtonian order,  $\nu = (2\pi M)^{-1} (M/a)^{3/2}$, and the \emph{orbital} mean anomaly $\Phi$ (i.e., the average orbital phase with respect to the direction of pericenter) is $\Phi(t) = 2\pi\nu (t-t_0) +\Phi_0$, where  $\Phi_0$ is the mean anomaly at $t_0$. The spin $\vec S$ of the MBH is parametrized by its magnitude $S$ (so that $0 \le S/M^2 \le 1$) and by the two polar angles $\theta_K,\phi_K$ in the SSB (here ``K'' stands for Kerr). $\vec L(t)$ represents the time-varying orbital angular momentum: its direction is parametrized by the \emph{constant} angle $\lambda$ (not to be confused with the ecliptic longitude, defined in Sec~\ref{ss:polarizations}) between $\vec L$ and $\vec S$%
+\footnote{In reality, radiation reaction will impose a small time variation in $\lambda$; however, this variation is known to be very small, see~\cite{scott1}, and is neglected here.}, and by an azimuthal angle $\alpha(t)$ that describes the direction of $\hat L$ around $\hat S$. The angle $\tilde\gamma(t)$ is the (intrinsic) direction of pericenter, measured with respect to $\vec L\times\vec S$. Fixing the initial time $t_0$ (as measured in the SSB), $\nu_0$, $e_0$, $\tilde\gamma_0$, and $\Phi_0$ describe, respectively, the eccentricity, the direction of the pericenter within the orbital plane, and the mean anomaly at $t_0$. More specifically, $\tilde\gamma_0$ is the angle in the plane of the orbit from $\hat L \times \hat S$ to pericenter, and $\Phi_0$ is the mean anomaly with respect to pericenter passage. We refer the reader to Figure 1 of Ref.~\cite{BC} for a graphic representation of the system.
 
 It is useful to describe the gravitational wave tensor in a time-varying frame defined with respect to the unit vector ${\hat n} = -{\hat k}$ pointing from the origin of the SSB to the source and ${ \hat L}(t)$. Defining the unit vectors 
 ${ \hat p}$ and ${ \hat q}$ by
@@ -362,9 +359,9 @@ the general GW strain field at the SSB can then be written as
 \end{equation}
 %
 Notice that the two polarization basis tensors $[ \hat{p}\otimes \hat{p} - \hat{q}\otimes \hat{q}]$  and $[ \hat{p}\otimes \hat{p} - \hat{q}\otimes \hat{q}]$ are function of time. 
-One can decompose Eq.\ (\ref{eq;hab}) into $n$-harmonic contributions at integer multiples of the orbital frequency as:
+One can decompose Eq.\ (\ref{eq:hab}) into $n$-harmonic contributions at integer multiples of the orbital frequency,
 \be
-h_{+}\equiv \sum_n A^{+}_n \quad h_{\times}\equiv \sum_n A^{\times}_n \,,
+h_{+}\equiv \sum_n A^{+}_n, \quad h_{\times}\equiv \sum_n A^{\times}_n,
 \label{harmonics}
 \ee
 where the $A^{+,\times}_n$ are
@@ -387,14 +384,27 @@ b_n &=& - n{\cal A}(1-e^2)^{1/2}\bigl[J_{n-2}(ne)-2J_{n}(ne)
 \nonumber\\
 c_n &=& 2{\cal A}J_n(ne)\cos[n\Phi(t)]\,.
 \end{eqnarray}
-In the previous expressions $\gamma$ is an azimuthal angle measuring the direction of pericenter with respect to $\hat x \equiv [-\hat n + \hat L (\hat L\cdot \hat n)]/[1-(\hat L\cdot \hat n)^2]^{1/2}$ and $J_n$ are Bessel functions of the first kind. The overall amplitude is given by
+Here the $J_n$ are Bessel functions of the first kind, and $\gamma$ is an azimuthal angle measuring the direction of pericenter with respect to $\hat x \equiv [-\hat n + \hat L (\hat L\cdot \hat n)]/[1-(\hat L\cdot \hat n)^2]^{1/2}$.
+The angle $\gamma$ is related to $\tilde \gamma$ by
+\be
+\label{beta}
+\gamma = \tilde\gamma + \beta,
+\ee
+where $\beta$ is the angle from $\hat x \propto [\hat L(\hat L \cdot \hat n) \hat n] $ to $(\hat L \times \hat S)$, as given by
+\begin{eqnarray}\label{sinbeta}
+\sin\beta &=& \frac{\cos\lambda\, \hat L\cdot\hat n -\hat S\cdot \hat n }
+{\sin\lambda\bigl[1 - (\hat L\cdot\hat n)^2\bigr]^{1/2}}, \nonumber \\
+\cos\beta &=& \frac{\hat n \cdot (\hat S \times \hat L)}
+{\sin\lambda\bigl[1 - (\hat L\cdot\hat n)^2\bigr]^{1/2} }.
+\end{eqnarray}
+%
+The overall amplitude is given by
 \begin{equation} \label{calA}
 {\cal A}\equiv (2\pi \nu M)^{2/3}\frac{\mu}{D}\,.
 \end{equation}
 In practice, we truncate the sums in Eq.~(\ref{harmonics}) at $n=20$.
 
-
-The angular momenum direction vector $\hat L$ is not constant, since $\hat L$ precesses about the MBH's spin
+The angular momentum direction vector $\hat L$ is not constant, since $\hat L$ precesses about the MBH's spin
 direction $\hat S$.  Let $\theta_L(t),\phi_L(t)$ be the angles specifying the instantaneous direction of $\hat L$, and let $\hat z$ be a unit vector normal to the ecliptic. One then obtains
 \be \label{alpha}
 \hat L = \hat S \, \cos\lambda +
@@ -413,23 +423,10 @@ and the angles $\theta_L(t),\phi_L(t)$ are given in terms of $\theta_K$, $\phi_K
 \sin\theta_L(t)\sin\phi_L(t) &=&
 \sin\theta_K\sin\phi_K\cos\lambda \nonumber \\
 & & -\sin\phi_K\cos\theta_K\sin\lambda\cos\alpha(t)
--\cos\phi_K\sin\lambda\sin\alpha(t) .
+-\cos\phi_K\sin\lambda\sin\alpha(t).
 \end{eqnarray}
-
-The angle $\gamma$ that appears in Eqs.\ (\ref{A}) measures the direction of pericenter with respect to
-$\hat x \equiv [-\hat n + \hat L (\hat L\cdot \hat n)]/[1-(\hat L\cdot \hat n)^2]^{1/2}$. It is convenient (see the discussion in~\cite{BC}) to define $\tilde\gamma$ to be the direction of pericenter with respect to $\hat L \times \hat S$; $\gamma$  and $\tilde \gamma$ are related by
-\be
-\label{beta}
-\gamma = \tilde\gamma + \beta,
-\ee
-where $\beta$ is the angle from $\hat x \propto [\hat L(\hat L \cdot \hat n) \hat n] $ to $(\hat L \times \hat S)$, and is identified by:
-\begin{eqnarray}\label{sinbeta}
-\sin\beta &=& \frac{\cos\lambda\, \hat L\cdot\hat n -\hat S\cdot \hat n }
-{\sin\lambda\bigl[1 - (\hat L\cdot\hat n)^2\bigr]^{1/2}}, \nonumber \\
-\cos\beta &=& \frac{\hat n \cdot (\hat S \times \hat L)}
-{\sin\lambda\bigl[1 - (\hat L\cdot\hat n)^2\bigr]^{1/2} }.
-\end{eqnarray}
-The angle $\beta(t)$ is time dependent, and, to evaluate the above expressions, the following relations are useful:
+%
+To work with these expressions, the following relations are useful:
 \be
 \label{SdotN}
 { \hat S}\cdot{ \hat n} = \cos\theta_S \cos\theta_K
@@ -452,24 +449,24 @@ and
 & = & \cos\theta_S \cos\theta_L +
 \sin\theta_S \sin\theta_L \cos(\phi_S-\phi_L).
 \eea
-Note that the time-variation of ${ \hat S}\cdot{ \hat n}$ is very small in the extreme mass-ratio case considered here, and in our kludged approximation we approximate $\hat S$---and hence ${\hat S}\cdot{\hat n}$---as strictly constant.
+Note that the time-variation of ${ \hat S}\cdot{ \hat n}$ is very small in the extreme mass-ratio case considered here, and in our kludged approximation we approximate $\hat S$ -- and hence ${\hat S}\cdot{\hat n}$ -- as strictly constant.
 
-The evolution of $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, and $\alpha(t)$ is given by the following PN formulae:
+The evolution of $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, and $\alpha(t)$ is given by the following PN formulas:
 \begin{eqnarray}
 \frac{d\Phi}{dt} &=& 2\pi\nu, \label{Phidot} \\
 \frac{d\nu}{dt} &=&
 \frac{96}{10\pi}(\mu/M^3)(2\pi M\nu)^{11/3}(1-e^2)^{-9/2}
-\bigl\{
+\Bigl\{
 \left[1+(73/24)e^2+(37/96)e^4\right](1-e^2) \nonumber \\
 &&+ (2\pi M\nu)^{2/3}\left[(1273/336)-(2561/224)e^2-(3885/128)e^4
 -(13147/5376)e^6 \right] \nonumber \\
-&&- (2\pi M\nu)(S/M^2)\cos\lambda (1-e^2)^{-1/2}\bigl[(73/12)
+&&- (2\pi M\nu)(S/M^2)\cos\lambda (1-e^2)^{-1/2}[(73/12)
 + (1211/24)e^2 \nonumber \\
-&&+(3143/96)e^4 +(65/64)e^6 \bigr]
-\bigr\}, \label{nudot} \\
+&&+(3143/96)e^4 +(65/64)e^6]
+\Bigr\}, \label{nudot} \\
 %
 \frac{d\tilde\gamma}{dt} &=& 6\pi\nu(2\pi\nu M)^{2/3} (1-e^2)^{-1}
-\left[1+\frac{1}{4}(2\pi\nu M)^{2/3} (1-e^2)^{-1}(26-15e^2)\right] \nonumber \\
+\left[1+(2\pi\nu M)^{2/3} (1-e^2)^{-1}(26-15e^2)/4\right] \nonumber \\
 &&-12\pi\nu\cos\lambda (S/M^2) (2\pi M\nu)(1-e^2)^{-3/2},
 \label{Gamdot} \\
 %
@@ -478,29 +475,30 @@ The evolution of $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, and $\alpha(t)$
 &&- \frac{1}{56}(2\pi M\nu)^{2/3}\bigl( (8)(16705) + (12)(9082)e^2 - 25211e^4 \bigr)\bigr]\,
 \nonumber \\
 &&+ e (\mu/M^2)(S/M^2)\cos\lambda\,(2\pi M\nu)^{11/3}(1-e^2)^{-4}
-\, \bigl[(1364/5) + (5032/15)e^2 + (263/10)e^4\bigr] ,
+\, \bigl[(1364/5) + (5032/15)e^2 \nonumber \\ && + (263/10)e^4\bigr] ,
 \label{edot} \\
 %
 \frac{d\alpha}{dt} &=& 4\pi\nu (S/M^2) (2\pi M\nu)(1-e^2)^{-3/2}.
 \label{alphadot}
 \end{eqnarray}
-In solving the above time-evolution equations, the initial values (at time $t_0$) of $\Phi$, $\nu$, $\tilde\gamma$, $e$, and $\alpha$ are just the parameters $\Phi_0$, $\nu_0$, $\tilde\gamma_0$, $e_0$, and $\alpha_0$. We use our PN Eqs.~(\ref{edot}) and (\ref{nudot}) to evolve $e(t)$ and $\nu(t)$. For a point particle in Schwarzschild, the plunge occurs at
-$a_{\rm min} = M (6 + 2e)(1-e^2)^{-1}$~\cite{Cutler-Kennefick-Poisson},
+%
+For a point particle in Schwarzschild, the plunge occurs at
+$a_{\rm min} = M (6 + 2e)(1-e^2)^{-1}$ \cite{ckp},
 so we set
 \be\label{numax}
 \nu_{\rm max} = (2\pi M)^{-1}[(1-e^2)/(6 + 2e)]^{3/2} \, ,
 \ee
 and we shut-off the waveform when $\nu$ reaches this $\nu_{\rm max}$.
 
-Eq.~(\ref{hab}) express the waveform in terms of time-varying polarization tensors. However to generate the LISA responses it is necessary to re-express Eq.~(\ref{hab}) in terms of fixed polarization tensors. This achieved through a rotation by the polarization angle
+Equation (\ref{eq:hab}) expresses the waveform in terms of time-varying polarization tensors, but to generate the LISA responses it is necessary to re-express it in terms of fixed polarization tensors. This is achieved through a rotation by the polarization angle
 \begin{equation}\label{psiSL}
 \psi = \mathrm{arctan}\left(\frac{\sin\theta_L \sin(\phi_S-\phi_L)}{\cos \theta_S \sin \theta_L \cos(\phi_S - \phi_L) - \cos\theta_L \sin\theta_S}\right) - \psi_0\,.
 \end{equation}
 
-The algorithm for constructing the MLDC EMRI waveforms works as follows. One fixes a fiducial frequency $\nu_0$ and choose the waveform parameters $t_0,\,\ln\mu,\,\ln M,\,S/M^2,\,e_0,\,\tilde\gamma_0,\,\Phi_0,\,\cos\theta_S,\,\phi_S,\,\cos\lambda,\,\alpha_0,\cos\theta_K,\,\phi_K,\psi_0,D$. One then (i) solves the ODEs (\ref{Phidot})--(\ref{alphadot}) for $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, $\alpha(t)$; (ii) uses $e(t)$ and $\nu(t)$ to calculate $a_n(t), b_n(t), c_n(t)$ in Eqs.~(\ref{abc}); (iii) calculates $\theta_L(t),\phi_L(t)$ using Eqs.~(\ref{relations3}), and then $\gamma(t)$ from $\tilde\gamma(t)$ using Eqs.~(\ref{beta})--(\ref{2LdotN}); (iv) computes the amplitude coefficients $A_n^{+,\times}$  using Eqs.~(\ref{A}) and (\ref{LdotN}); (v) calculates $\psi$ using Eq.~(\ref{psiSL}) and (iv) finally $h_{+,\times}(t)$ using
-Eqs.~(\ref{final}).   
+The algorithm for constructing the MLDC EMRI waveforms works as follows. One fixes a fiducial frequency $\nu_0$ and chooses the waveform parameters $t_0,\,\ln\mu,\,\ln M,\,S/M^2,\,e_0,\,\tilde\gamma_0,\,\Phi_0,\,\cos\theta_S,\,\phi_S,\,\cos\lambda,\,\alpha_0,\cos\theta_K,\,\phi_K,\psi_0,D$. One then (i) solves the ODEs (\ref{Phidot})--(\ref{alphadot}) for $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, $\alpha(t)$; (ii) uses $e(t)$ and $\nu(t)$ to calculate $a_n(t), b_n(t), c_n(t)$ in Eqs.~(\ref{abc}); (iii) calculates $\theta_L(t),\phi_L(t)$ using Eqs.~(\ref{relations3}), and then obtains $\gamma(t)$ from $\tilde\gamma(t)$ using Eqs.~(\ref{beta})--(\ref{sinbeta}); (iv) computes the amplitude coefficients $A_n^{+,\times}$  using Eqs.~(\ref{A}) and (\ref{LdotN}); (v) calculates $\psi$ using Eq.~(\ref{psiSL}); (vi) finally,  $h_{+,\times}(t)$ using
+Eq.~(\ref{psiSL}).
 
-The lisaXML standard parameters Challenge-2 \texttt{ExtremeMassRatioInspiral} sources are listed in Tables \ref{tab:common} and \ref{tab:emri}
+The lisaXML standard parameters for Challenge-2 \texttt{ExtremeMassRatioInspiral} sources are listed in Tables \ref{tab:common} and \ref{tab:emri}.
 %
 \begin{table}
 \begin{tabular}{llll}
@@ -540,65 +538,38 @@ M.V.'s work was supported by the LISA Mission Science Office and by the Human Re
 
 \section*{References}
 \begin{thebibliography}{10}
-\bibitem{ScienceCase} LISA science case, web....
-\bibitem{lisappa} LISA Study Team, ``LISA: Laser Interferometer Space Antenna for the detection and observation of gravitational waves,'' Pre-Phase A Report, 2nd ed. (Max Planck Institut f\"ur Quantenoptik, Garching, Germany, 1998).
+\bibitem{ScienceCase} LISA Mission Science Office, ``LISA: probing the universe with gravitational waves'', v. 1.0 (2007), available at \url{www.lisascience.org/resources}.
+\bibitem{lisappa} LISA Study Team, ``LISA: Laser Interferometer Space Antenna for the detection and observation of gravitational waves'', Pre-Phase A Report, 2nd ed. (Max Planck Institut f\"ur Quantenoptik, Garching, Germany, 1998).
 %
-\bibitem{CT2002} C. Cutler, and K. S. Thorne, in \emph{General Relativity and Gravitation}, N. T. Bishop and D. M. Sunil, eds. (World Scientific, Singapore, 2002), p. 72.
-\bibitem{MLDCLISA06a} Arnaud K A, {\it et al.} 2006 {\it AIP Conf. Proc.} {\bf 873} 619 ({\it Preprint} gr-qc/0609105)
-\bibitem{MLDCLISA06b} Arnaud K A, {\it et al.} 2006 {\it AIP Conf. Proc.} {\bf 873} 625 ({\it Preprint} gr-qc/0609106)
-\bibitem{MLDCweb} Mock LISA Data Challenge Homepage, {\tt astrogravs.nasa.gov/docs/mldc}.
-\bibitem{MLDCwiki} Mock LISA Data Challenge Task Force wiki, {\tt www.tapir.caltech.edu/dokuwiki/listwg1b:home}.
-\bibitem{MLDCdoc} Mock LISA Data Challenge Task Force, ``Document for Challenge 1,'' \texttt{svn.sourceforge.net/viewvc/lisatools/Docs/challenge1.pdf}.
-\bibitem{MLDC1-gwdaw} Arnaud K A, {\it et al.} 2007 {\it Preprint} gr-qc/0701xxx
-\bibitem{lisasimulator} N. J. Cornish and L. J. Rubbo, \emph{Phys. Rev. D} \textbf{67}, 022001 (2003); erratum, \emph{ibid.}, 029905 (2003); LISA Simulator website, \texttt{www.physics.montana.edu/lisa}; the canonical MLDC releases of Synthetic LISA are also available from the SourceForge MLDC site \cite{lisatools}.
-\bibitem{synthlisa} M. Vallisneri, \emph{Phys. Rev. D} \textbf{71}, 022001 (2005); Synthetic LISA website, \texttt{www.vallis.org/syntheticlisa}; the canonical MLDC releases of Synthetic LISA are also available from the SourceForge MLDC site \cite{lisatools}.
+\bibitem{CT2002} Cutler C and Thorne K S, in \emph{General Relativity and Gravitation}, N. T. Bishop and D. M. Sunil, eds. (World Scientific, Singapore, 2002), p. 72.
+\bibitem{MLDCLISA06a} Arnaud K A, {\it et al.} 2006 {\it AIP Conf. Proc.} {\bf 873} 619 (\url{gr-qc/0609105}).
+\bibitem{MLDCLISA06b} Arnaud K A, {\it et al.} 2006 {\it AIP Conf. Proc.} {\bf 873} 625 (long version with lisaXML description: \url{gr-qc/0609106}).
+\bibitem{MLDCweb} Mock LISA Data Challenge Homepage, \url{astrogravs.nasa.gov/docs/mldc}.
+\bibitem{MLDCwiki} Mock LISA Data Challenge Task Force wiki, \url{www.tapir.caltech.edu/dokuwiki/listwg1b:home}.
+\bibitem{MLDCdoc} Mock LISA Data Challenge Task Force, ``Document for Challenge 1'', \url{svn.sourceforge.net/viewvc/lisatools/Docs/challenge1.pdf}.
+\bibitem{MLDC1-gwdaw} Arnaud K A, {\it et al.} 2007 (gr-qc/0701139).
+\bibitem{lisasimulator} Cornish N J and Rubbo L J, \emph{Phys. Rev. D} \textbf{67}, 022001 (2003); erratum, \emph{ibid.}, 029905 (2003); LISA Simulator website, \texttt{www.physics.montana.edu/lisa}; the canonical MLDC releases of Synthetic LISA are also available from the SourceForge MLDC site \cite{lisatools}.
+\bibitem{synthlisa} Vallisneri M, \emph{Phys. Rev. D} \textbf{71}, 022001 (2005); Synthetic LISA website, \texttt{www.vallis.org/syntheticlisa}; the canonical MLDC releases of Synthetic LISA are also available from the SourceForge MLDC site \cite{lisatools}.
 \bibitem{rosetta} M. Vallisneri, the \emph{TDI Rosetta Stone} v. 1/5/2005, \texttt{www.vallis.org/tdi}.
-\bibitem{firstgen} (TDI 1.0) J. W. Armstrong, F. B. Estabrook, and M. Tinto,
-\emph{Astrophys. J.} \textbf{527}, 814 (1999); F. B. Estabrook, M. Tinto, and J. W. Armstrong, \emph{Phys. Rev. D} \textbf{62}, 042002 (2000).
-\bibitem{modified} (TDI 1.5) N. J. Cornish \& R. W. Hellings, \emph{Clas. Quant. Grav.} \textbf{20}, 4851 (2003).
-\bibitem{secondgen} (TDI 2.0) D. A. Shaddock, M. Tinto, F. B. Estabrook, and J. W. Armstrong, \emph{Phys. Rev. D} \textbf{68}, 061303(R) (2003); M. Tinto, F. B. Estabrook, and J. W. Armstrong, \emph{Phys. Rev. D} \textbf{69}, 082001 (2004).
+\bibitem{firstgen} (TDI 1.0) Armstrong J W, Estabrook F B, and Tinto M,
+\emph{Astrophys. J.} \textbf{527}, 814 (1999); Estabrook F B, Tinto M, and Armstrong J W, \emph{Phys. Rev. D} \textbf{62}, 042002 (2000).
+\bibitem{modified} (TDI 1.5) Cornish N J and Hellings R W, \emph{Clas. Quant. Grav.} \textbf{20}, 4851 (2003).
+\bibitem{secondgen} (TDI 2.0) Shaddock D A, Tinto M, Estabrook F B, and Armstrong J W, \emph{Phys. Rev. D} \textbf{68}, 061303(R) (2003); Tinto M, Estabrook F B, and Armstrong J W, \emph{Phys. Rev. D} \textbf{69}, 082001 (2004).
 \bibitem{lisatools} LISAtools SourceForge Project, \texttt{sourceforge.net/projects/lisatools}; the LISAtools Subversion code archive is accessible from 
-%\texttt{sourceforge.net/svn/?group_id=161442}; 
-%the Subversion version control system is distributed and documented at \texttt{subversion.tigris.org}.
-\bibitem{Blanchet} Blanchet, Faye, Iyer, Joguet Phys.Rev. D65 (2002) 061501
-\bibitem{DIS} Damour, Iyer, Sathyaprakash Phys.Rev. D63 (2001) 044023
+\url{sourceforge.net/svn/?group_id=161442}.
+\bibitem{Blanchet} Blanchet L, Faye G, Iyer B R, Joguet B, \emph{Phys. Rev. D} \textbf{65}, 061501 (2002); \emph{erratum}, \textbf{71}, 129902(E) (2005).
+\bibitem{DIS} Damour T, Iyer B R, Sathyaprakash B S, \emph{Phys. Rev. D} \textbf{63}, 044023 (2001).
 
-\bibitem{xml} World Wide Web Consortium (W3C), ``eXtensible Markup Language (XML) activity and information,'' \texttt{www.w3.org/XML}.
-\bibitem{xsil} Caltech Center for Advanced Computing Research, ``XSIL: Extensible Scientific Interchange Language,'' \texttt{www.cacr.caltech.edu/SDA/xsil}.
-\bibitem{xsl} World Wide Web Consortium (W3C), ``The Extensible Stylesheet Language Family (XSL),'' \texttt{www.w3.org/Style/XSL}.
+\bibitem{BC} Barack L and Cutler C, \emph{Phys. Rev. D} {\bf 69}, 082005 (2004).
+\bibitem{pm} Peters P C and Mathews J, \emph{Phys. Rev. D} {\bf 131}, 435 (1963);
+ Peters P C, \emph{Phys. Rev. D} {\bf 136}, B1224 (1964).
+\bibitem{scott1} Hughes S A, \emph{Phys. Rev. D} {\bf 61}, 084004 (2000).
+\bibitem{ckp} Cutler C, Kennefick D, and Poisson E, \emph{Phys. Rev. D} {\bf 50}, 3816 (1994).
 
-
+\bibitem{xml} World Wide Web Consortium (W3C), ``eXtensible Markup Language (XML) activity and information'', \texttt{www.w3.org/XML}.
+\bibitem{xsil} Caltech Center for Advanced Computing Research, ``XSIL: Extensible Scientific Interchange Language'', \texttt{www.cacr.caltech.edu/SDA/xsil}.
+\bibitem{xsl} World Wide Web Consortium (W3C), ``The Extensible Stylesheet Language Family (XSL)'', \texttt{www.w3.org/Style/XSL}.
 
 \end{thebibliography}
 
-
 \end{document}
-
-
-
-
-
-Challange 2 
-
-
-Another source of complexity that we wish to exclude from the initial challenges is the uncertainty about the true shape of the gravitational waveforms that Nature will provide to LISA. However, we can already begin prepare for their detection and analysis, while waiting for theory to provide more and more accurate models, by working with fully known waveforms of comparable structure and increasing complexity. 
-
-\subsection{Galactic binaries}
-
-\vspace{-0.4cm}
-
-
-
-\end{document}
-
-
- The challenge data sets are broadly grouped into three categories: (1.1) white dwarf binaries (WDs), (1.2) supermassive black holes (SMBHs), and (1.3) extreme mass ratio inspirals (EMRIs). The problem of detection of EMRIs is considered more difficult than the others, so the deadline for submission of results for the 1.3 challenges is extended to June, 2007. Consequently, in this paper we will discuss the results of challenges 1.1 and 1.2.
-
-
-involve the distribution of several data sets, encoded in a simple standard format, and containing combinations of realistic simulated LISA noise with the signals from one or more GW sources with parameters which were unknown to the participants. The participants were then asked to return the maximum amount of correct information about the sources and to produce technical notes detailing their work.
-
-The release of the first round of challenge data sets was announced in June, 2006 at the Sixth LISA International Symposium hosted by the Goddard Space Flight Center in Greenbelt, Maryland. John Baker (a member of the MLDC Task Force who did not participate in the first round) was appointed as MLDC1 coordinator. The coordinator was responsible for generating the challenge data sets, receiving the results from the participants, and posting both the key data files and results as soon as possible after the submission deadline of December 4, 2006.
-
-
-The WD challenges consist of three single source data sets with the GW frequency around 1 mHz (1.1.1a), 3 mHz (1.1.1b) and 10 mHz (1.1.1c) and four multiple source data sets with isolated sources of known (1.1.2) and unknown (1.1.3) sky locations and frequencies, and overlapping sources with a low (1.1.4) and high (1.1.5) density of sources in frequency space. The SMBH challenges consist of two single source data sets. In one (1.2.1) the SMBH binary merges during the observation time, and in the other (1.2.2) the merger takes place a few months after the end of the data set.
-
