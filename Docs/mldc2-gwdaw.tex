@@ -299,16 +299,16 @@ and
 \Phi &=& -\frac{1}{32\eta}(M\omega)^{-5/3}\Biggl\{ 1 + \left( \frac{3715}{1008} + \frac{55}{12}\eta\right)
 (M\omega)^{2/3} - 10\pi(M\omega)  \nonumber \\
 &+&  \left( \frac{15293365}{1016064} + \frac{27145}{1008}\eta + \frac{3085}{144}\eta^2\right)
-(M\omega)^{4/3}\Biggr\} + \mathrm{const.}
+(M\omega)^{4/3}\Biggr\}\,,
 \label{eq:Phi}
 \eea
-respectively. The arbitrary constant that enters Eq.\ (\ref{eq:Phi}) is set in such a way that $\Phi(\omega(t=0)) = \Phi_0$.
+respectively. The phase of the polarization waveforms, see below, is then computed according to $\Phi(t) - \Phi(t = 0) + \Phi_0$, where $\Phi_0$ is an arbitrary initial orbital phase.
 
 In the source reference frame, the polarization waveforms are given by:
 %
 \begin{eqnarray}
 h^S_{+}(\xi) &=& \frac{2\mu}{D}[M\omega(\xi)]^{2/3}(1+\cos^2 \iota)\cos [2\Phi(\xi)], \\
-h^S_{\times}(\xi) &=& -\frac{2\mu}{D}[M\omega(\xi)]^{2/3}(2 \cos \iota) \sin [2\Phi(\xi)]. \nonumber
+h^S_{\times}(\xi) &=& -\frac{2\mu}{D}[M\omega(\xi)]^{2/3}(2 \cos \iota) \sin [2\Phi(\xi)]. 
 \end{eqnarray}
 %
 In order to avoid numerical artifacts at the end of the inspiral (i.e., the last stable orbit), we taper the signal according to:
@@ -318,7 +318,7 @@ w(t) = \frac{1}{2}\,\left( 1 + \tanh\left[A (M/R - M/R_\mathrm{taper})\right] \r
 \end{equation}
 %
 where $R$ is approximated with Kepler's law ($R = M^{1/3} \omega^{-2/3}$), and
-where the dimensionless coefficient $A = 150$ was determined empirically to produce smooth damping; $R_\mathrm{taper}$ is set to ???.
+where the dimensionless coefficient $A = 150$ was determined empirically to produce smooth damping; $R_\mathrm{taper}$ is set to $7\, M$.
 
 The lisaXML standard parameters for Challenge-2 \texttt{BlackHoleBinary} sources are listed in Tables \ref{tab:common} and \ref{tab:bbh}.
 %
