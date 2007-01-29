@@ -97,10 +97,12 @@ Details about the range of the source parameters included in the data sets is gi
 Challenge & Sources & Parameters \\
 \hline
 \multicolumn{2}{l}{1.3.1a,b,c,d,e} & \\
-&Extreme-mass-ratio inspirals & $\mu/M_\odot \in U[5,15]$, $M / 10^6 M_\odot \in U[0.5,2]$ \\
- &                                             & $S/M^2 \in U[0.5, 0.7]$ \\
- &                                             & time at plunge $\in  U[1.5,2]$ yr \\
- &                                              & eccentricity at plunge $\in U[0.1, 0.25]$ \\
+&Extreme-mass-ratio inspirals & $\mu/M_\odot \in U[9.5,10.5]$, $S/M^2 \in U[0.5, 0.7]$ \\
+&                                             & time at plunge $\in  U[2^{21},2^{22}] \times 15$ sec \\
+&                                             & eccentricity at plunge $\in U[0.15, 0.25]$ \\
+&\multicolumn{1}{r}{\ldots one source with}          & $M / 10^7 M_\odot \in U[0.95,1.05]$ \\
+&\multicolumn{1}{r}{\ldots two sources with}         & $M / 10^6 M_\odot \in U[4.75,5.25]$ \\
+&\multicolumn{1}{r}{\ldots two sources with}         & $M / 10^6 M_\odot \in U[0.95,1.05]$ \\
 \hline
 2.1 & & \\
 &Galactic binaries & drawn from a population (see Sec~\ref{ss:galaxy})\\
@@ -495,8 +497,12 @@ Equation (\ref{eq:hab}) expresses the waveform in terms of time-varying polariza
 \psi = \mathrm{arctan}\left(\frac{\sin\theta_L \sin(\phi_S-\phi_L)}{\cos \theta_S \sin \theta_L \cos(\phi_S - \phi_L) - \cos\theta_L \sin\theta_S}\right) - \psi_0\,.
 \end{equation}
 
-The algorithm for constructing the MLDC EMRI waveforms works as follows. One fixes a fiducial frequency $\nu_0$ and chooses the waveform parameters $t_0,\,\ln\mu,\,\ln M,\,S/M^2,\,e_0,\,\tilde\gamma_0,\,\Phi_0,\,\cos\theta_S,\,\phi_S,\,\cos\lambda,\,\alpha_0,\cos\theta_K,\,\phi_K,\psi_0,D$. One then (i) solves the ODEs (\ref{Phidot})--(\ref{alphadot}) for $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, $\alpha(t)$; (ii) uses $e(t)$ and $\nu(t)$ to calculate $a_n(t), b_n(t), c_n(t)$ in Eqs.~(\ref{abc}); (iii) calculates $\theta_L(t),\phi_L(t)$ using Eqs.~(\ref{relations3}), and then obtains $\gamma(t)$ from $\tilde\gamma(t)$ using Eqs.~(\ref{beta})--(\ref{sinbeta}); (iv) computes the amplitude coefficients $A_n^{+,\times}$  using Eqs.~(\ref{A}) and (\ref{LdotN}); (v) calculates $\psi$ using Eq.~(\ref{psiSL}); (vi) finally,  $h_{+,\times}(t)$ using
-Eq.~(\ref{psiSL}).
+The algorithm for constructing the MLDC EMRI waveforms works as follows. One fixes a fiducial frequency $\nu_0$ at $t_0 = 0$ and chooses the waveform parameters $\mu,\, M,\,S/M^2,\,e_0,\,\tilde\gamma_0,\,\Phi_0,\,\cos\theta_S,\,\phi_S,\,\cos\lambda,\,\alpha_0,\cos\theta_K,\,\phi_K,\psi_0,D$. One then (i) solves the ODEs (\ref{Phidot})--(\ref{alphadot}) for $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, $\alpha(t)$; (ii) uses $e(t)$ and $\nu(t)$ to calculate $a_n(t), b_n(t), c_n(t)$ in Eqs.~(\ref{abc}); (iii) calculates $\theta_L(t),\phi_L(t)$ using Eqs.~(\ref{relations3}), and then obtains $\gamma(t)$ from $\tilde\gamma(t)$ using Eqs.~(\ref{beta})--(\ref{sinbeta}); (iv) computes the amplitude coefficients $A_n^{+,\times}$  using Eqs.~(\ref{A}) and (\ref{LdotN}); (v) calculates $\psi$ using Eq.~(\ref{psiSL}); (vi) finally,  $h_{+,\times}(t)$ are computed using the following equations
+\begin{eqnarray}\label{final}
+h_+(t) = A^+(t) cos(2\psi_0 - 2\psi_{SL}(t) ) + A^{\times}(t) sin(2\psi_0 - 2\psi_{SL}(t) ) \nonumber \\
+h_{\times}(t) = A^{\times}(t) cos(2\psi_0 - 2\psi_{SL}(t) ) - A^+(t) sin(2\psi_0 - 2\psi_{SL}(t) )
+\end{eqnarray}
+
 
 The lisaXML standard parameters for Challenge-2 \texttt{ExtremeMassRatioInspiral} sources are listed in Tables \ref{tab:common} and \ref{tab:emri}.
 %
@@ -515,8 +521,8 @@ Central-BH spin        & $|S|/M^2$  & \texttt{CoalescenceTime}      & \texttt{Se
 Central-BH spin orientation & $\theta_K, \phi_K$ & \texttt{PolarAngleOfSpin}, & \texttt{Radian} \\
  \multicolumn{1}{r}{w.r.t. SSB frame}  &                         & \texttt{AzimuthalAngleOfSpin} & \\ \hline
 & & \texttt{InitialAzimuthal}\ldots & \\                   
-Azimuthal orbital freq.\ at $t = 0$ & $\nu_0$ & \multicolumn{1}{r}{\ldots\texttt{OrbitalFrequency}} & \texttt{Hertz} \\
-Azimuthal orbital phase at $t = 0$ & $\Phi_0$ & \multicolumn{1}{r}{\ldots\texttt{OrbitalPhase}} & \texttt{Radian} \\ \hline
+Radial orbital freq.\ at $t = 0$ & $\nu_0$ & \multicolumn{1}{r}{\ldots\texttt{OrbitalFrequency}} & \texttt{Hertz} \\
+Orbital mean anomaly at $t = 0$ & $\Phi_0$ & \multicolumn{1}{r}{\ldots\texttt{OrbitalPhase}} & \texttt{Radian} \\ \hline
 Eccentricity at $t = 0$ & $e_0$ & \texttt{InitialEccentricity} & \texttt{1} \\
 Direction of pericenter at $t = 0$ & $\tilde{\gamma}_0$ & \texttt{InitialTildeGamma} & \texttt{Radian} \\
 Direction of orbital angular & $\alpha_0$ & \texttt{InitialAlphaAngle} & \texttt{Radian} \\
@@ -524,7 +530,10 @@ Direction of orbital angular & $\alpha_0$ & \texttt{InitialAlphaAngle} & \texttt
 Opening angle & $\lambda$ & \texttt{LambdaAngle} & \texttt{Radian} \\ 
 \hline
 \end{tabular}
-\caption{\texttt{ExtremeMassRatioInspiral} source parameters. Note that EMRIs do not use the nonprecessing-binary inclination $\iota$, and be aware of the collision between the symbols for the EMRI compact-object mass ($\mu$) and opening angle ($\lambda$), the binary reduced mass (again $\mu$), and the ecliptic longitude (again $\lambda$).\label{tab:emri}}
+\caption{\texttt{ExtremeMassRatioInspiral} source parameters. Note that EMRIs do not use the nonprecessing-binary inclination $\iota$, and be aware of the collision between the symbols for the EMRI compact-object mass ($\mu$) and opening angle ($\lambda$), the binary reduced mass (again $\mu$), and the ecliptic longitude (again $\lambda$). Note that $\nu$ is called ``Azimuthal orbital frequency'' in the XML file and it is referred to as a radial orbital frequency in \cite{BC}.
+If we reduce equations to non-spinning MBH and circular orbit, then 
+orbital frequency corresponds to $\nu + \dot{\tilde{\gamma}}/{2\pi}$.
+\label{tab:emri}}
 \end{table}
 
 \section{Conclusions}
