@@ -145,6 +145,7 @@ Challenge & Sources & Parameters \\
 \begin{figure}[htb]
 \input{epsf}
 \centerline{\includegraphics[height=8cm]{challenge-2}}
+%\centerline{\includegraphics[height=8cm]{challenge-2b}}
 \caption{\protect\footnotesize
 An example of Challenge 2.2 data set, plotted as the fractional frequency fluctuation spectrum of the full TDI $X$ signal, and separately of instrument noise and of the individual sources (bundling all Galactic binary sources as the ``Galaxy''.)}
 \label{f:C2.2}
@@ -405,7 +406,7 @@ The overall amplitude is given by
 \begin{equation} \label{calA}
 {\cal A}\equiv (2\pi \nu M)^{2/3}\frac{\mu}{D}\,.
 \end{equation}
-In practice, we truncate the sums in Eq.~(\ref{harmonics}) at $n=20$.
+In practice, we truncate the sums in Eq.~(\ref{harmonics}) at $n=4$ if $e < 0.136$, otherwise at $n = 30\times e$.
 
 The angular momentum direction vector $\hat L$ is not constant, since $\hat L$ precesses about the MBH's spin
 direction $\hat S$.  Let $\theta_L(t),\phi_L(t)$ be the angles specifying the instantaneous direction of $\hat L$, and let $\hat z$ be a unit vector normal to the ecliptic. One then obtains
@@ -578,7 +579,7 @@ M.V.'s work was supported by the LISA Mission Science Office and by the Human Re
  Peters P C, \emph{Phys. Rev. D} {\bf 136}, B1224 (1964).
 \bibitem{scott1} Hughes S A, \emph{Phys. Rev. D} {\bf 61}, 084004 (2000).
 \bibitem{ckp} Cutler C, Kennefick D, and Poisson E, \emph{Phys. Rev. D} {\bf 50}, 3816 (1994).
-\bibitem{xsl} World Wide Web Consortium (W3C), ``The Extensible Stylesheet Language Family (XSL)'', \texttt{www.w3.org/Style/XSL}.
+
 
 \end{thebibliography}
 
