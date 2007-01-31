@@ -111,6 +111,7 @@ if options.seednoise == None:
 else:
     seednoise = options.seednoise
 
+random.seed(seed)
 timestep = options.timestep
 duration = options.duration
 makemode = options.makemode
@@ -370,10 +371,10 @@ if lisasimdir:
 
         if options.istraining:
             run('bin/mergeXML.py %(nonoisefile)s %(tdifile)s')
-            run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+            run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
         else:
             run('bin/mergeXML.py -n %(nonoisefile)s %(tdifile)s')
-            run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+            run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
 	    
         ind += 1
 
@@ -412,7 +413,7 @@ print "step5: time = ", step6time -step5time
 endtime = time.time()
 
 print
-print "--> Completed generating %s" % challengename 
+print "--> Completed generating " 
 print "    Total time         : %s" % timestring(endtime   - step0time)
 #print "    Sources time       : %s" % timestring(step3time - step1time)
 #print "    Synthetic LISA time: %s" % timestring(step4time - step3time)
