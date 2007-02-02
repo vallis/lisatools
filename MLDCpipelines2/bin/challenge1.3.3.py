@@ -18,9 +18,9 @@ def run(command):
 # only one argument, and it's the seed...
 seed = int(sys.argv[1])
 
-#Challenge 1.3.3: One EMRI. MBH mass = 5.e6, snr random between 40 and 110
+#Challenge 1.3.3: One EMRI. MBH mass = 5.e6, snr random between 40 and 60
 
-requestsn = random.randint(40,110)
+requestsn = random.randint(40,60)
 run('bin/makesource-EMRI.py --seed=%s --distance=1e9 --requestSN=%s --massSMBH=5.e6 --sourceName="EMRI-1.3.3" Source/EMRI-1.3.3.xml' % (seed,requestsn))
 
 

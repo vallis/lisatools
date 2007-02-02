@@ -18,10 +18,10 @@ def run(command):
 # only one argument, and it's the seed...
 seed = int(sys.argv[1])
 
-#Challenge 1.3.2: One EMRI. MBH mass = 1.e6, snr random between 40 and 110
+#Challenge 1.3.2: One EMRI. MBH mass = 5.e6, snr random between 70 and 110
 
-requestsn = random.randint(40,110)
-run('bin/makesource-EMRI.py --seed=%s --distance=1e9 --requestSN=%s --massSMBH=1e6 --sourceName="EMRI-1.3.2" Source/EMRI-1.3.2.xml' % (seed,requestsn))
+requestsn = random.randint(70,110)
+run('bin/makesource-EMRI.py --seed=%s --distance=1e9 --requestSN=%s --massSMBH=5.e6 --sourceName="EMRI-1.3.2" Source/EMRI-1.3.2.xml' % (seed,requestsn))
 
 
 
