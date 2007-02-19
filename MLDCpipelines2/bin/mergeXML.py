@@ -91,12 +91,10 @@ for inputfile in inputfiles:
 
                 try:
                     if tdi.DataType == 'FractionalFrequency':
-                        tdi.t  += thistdi.t
                         tdi.Xf += thistdi.Xf
                         tdi.Yf += thistdi.Yf
                         tdi.Zf += thistdi.Zf
                     elif tdi.DataType == 'Strain':
-                        tdi.t  += thistdi.t
                         tdi.Xs += thistdi.Xs
                         tdi.Ys += thistdi.Ys
                         tdi.Zs += thistdi.Zs
