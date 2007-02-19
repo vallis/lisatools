@@ -388,8 +388,8 @@ if dosynthlisa:
     nonoisefile   = os.path.basename(nonoisefile)
     withnoisefile = os.path.basename(withnoisefile)
 
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-*.bin',nonoisefile  )))
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-*.bin',withnoisefile)))    
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
 
     os.chdir('..')
 
@@ -451,8 +451,8 @@ if lisasimdir:
     nonoisefile   = os.path.basename(nonoisefile)
     withnoisefile = os.path.basename(withnoisefile)
 
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-*.bin',nonoisefile  )))
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-*.bin',withnoisefile)))    
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
+    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
 
     os.chdir('..')
 
