@@ -18,7 +18,10 @@ binaryfile.close()
 
 readbuffer = numpy.reshape(readbuffer,(4194304,4))
 
-readbuffer[:,0] = numpy.arange(0,62914560,15,dtype='d')
+if 'frequency' in infile:
+    readbuffer[:,0] = numpy.arange(0,62914560,15,dtype='d')
+else:
+    readbuffer[:,0] = numpy.arange(7.5,62914567.5,15,dtype='d')
 
 binaryfile = open(outfile,'w')
 binaryfile.write(readbuffer.tostring())
