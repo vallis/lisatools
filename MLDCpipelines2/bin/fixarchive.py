@@ -14,7 +14,7 @@ if len(sys.argv) < 2:
 archive = sys.argv[1]
 
 if '.tar.gz' in archive:
-    challengename = re.sub('\.tar\.gz','',archive)
+    challengename = os.path.basename(re.sub('\.tar\.gz','',archive))
     backup = re.sub('\.tar\.gz','-backup.tar.gz',archive)
 else:
     print "Please give filename of tar-gzipped archive"
@@ -29,7 +29,7 @@ run('mv %(archive)s %(backup)s')
 run('fixbinary.py %(challengename)s/%(challengename)s-0.bin %(challengename)s/%(challengename)s-0.bin')
 
 # remove the spurious binary if present
-if os.isfile('%(challengename)s/%(challengename)s-nonoise-0.bin') and ('nonoise' not in challengename):
+if os.path.isfile('%(challengename)s/%(challengename)s-nonoise-0.bin' % globals()) and ('nonoise' not in challengename):
     run('rm %(challengename)s/%(challengename)s-nonoise-0.bin')
 
 # tar up the directory and remove it
