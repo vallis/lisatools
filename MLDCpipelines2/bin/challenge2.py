@@ -314,7 +314,7 @@ step6time = time.time()
 # ignore make mode here, we'll always repackage everything
 
 # first empty the Dataset directory (do not remove tar.gz)
-run('rm -f Dataset/*.xml Dataset/*.bin Dataset/*.txt')
+run('rm -f Dataset/'+challengename+'*.xml Dataset/'+challengename+'*.bin Dataset/'+challengename+'*.txt')
 
 # improve dataset metadata here
 
