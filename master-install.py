@@ -168,11 +168,13 @@ if platform.system() == 'Darwin':
     assert(0 == os.system('cp Fast_Response_OSX_G5 Fast_Response'))
 elif platform.system() == 'Linux':
     assert(0 == os.system('cp Fast_Response_LINUX_X86_32 Fast_Response'))
+elif 'CYGWIN' in platform.system():
+    print "!!! I'm on cygwin... I'm skipping Galaxy for the moment."
 else:
     print "!!! Can't determine platform/processor, or don't have Fast_Response executable!" 
     sys.exit(1)
 
-if not os.path.isfile('Data/dwd_GWR_all_pars.dat'):
+if not os.path.isfile('Data/dwd_GWR_all_pars.dat') and (not 'CYGWIN' in platform.system()):
     print "    (downloading Nelemans galaxy (388M), this will take a while...)"
     assert(0 == os.system('curl http://www.physics.montana.edu/faculty/cornish/LISA/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
     assert(0 == os.system('gunzip dwd_GWR_all_pars.dat.gz'))
