@@ -9,6 +9,7 @@ __version__ = '$Id$'
 import sys
 import os
 import glob
+import platform
 
 from distutils.sysconfig import get_python_lib
 from distutils.dep_util import newer, newer_group
@@ -70,6 +71,9 @@ except:
     print "--> Installing numpy"
     os.chdir('Packages')
     assert(0 == os.system('tar zxf numpy-1.0.tar.gz'))
+    # run patch to exclude numarray compilation on cygwin
+    if 'CYGWIN' in platform.system():
+        assert(0 == os.system('patch numpy-1.0/numpy/setup.py Patch-cygwin/numpy-setup.py'))
     os.chdir('numpy-1.0')
     assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
     os.chdir('..')
@@ -156,8 +160,6 @@ if ( newer_group(sources,'Galaxy_Maker') or newer_group(sources,'Galaxy_key')  o
 
 # copy every time...
 
-import platform
-
 # notes: on OS X, I'm not sure how to differentiate between G4 and G5, so will use G5...
 #        also I don't have an Intel version, so I will still use G5 and count on Rosetta...
 #        (I could check the processor with platform.processor() == 'powerpc')
@@ -215,6 +217,10 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
     # copy modified LISAconstants.h file
     assert(0 == os.system('cp %s lisasimulator-1year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-1year.h')))
 
+    # patch IO on cygwin
+    if 'CYGWIN' in platform.system():
+        assert(0 == os.system('patch lisasimulator-1year/IO/ezxml.c %s' % (here + /Packages/Patch-cygwin/io-C-ezxml.c')))
+
     # compile and setup
     os.chdir('lisasimulator-1year')
     assert(0 == os.system('./Compile'))
@@ -234,6 +240,10 @@ if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
 
     # copy modified LISAconstants.h file
     assert(0 == os.system('cp %s lisasimulator-2year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-2year.h')))
+
+    # patch IO on cygwin
+    if 'CYGWIN' in platform.system():
+        assert(0 == os.system('patch lisasimulator-2year/IO/ezxml.c %s' % (here + /Packages/Patch-cygwin/io-C-ezxml.c')))
 
     # compile and setup
     os.chdir('lisasimulator-2year')
