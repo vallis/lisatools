@@ -221,7 +221,7 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
 
     # patch IO on cygwin
     if 'CYGWIN' in platform.system():
-        assert(0 == os.system('patch lisasimulator-1year/IO/ezxml.c %s' % (here + /Packages/Patch-cygwin/io-C-ezxml.c')))
+        assert(0 == os.system('patch lisasimulator-1year/IO/ezxml.c %s' % (here + '/Packages/Patch-cygwin/io-C-ezxml.c')))
 
     # compile and setup
     os.chdir('lisasimulator-1year')
