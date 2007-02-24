@@ -22,6 +22,11 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/* disable MMAP on CYGWIN, seems to cause problems... */
+#ifdef CYGWIN
+#define EZXML_NOMMAP
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
