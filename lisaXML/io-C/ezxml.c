@@ -23,7 +23,7 @@
  */
 
 /* disable MMAP on CYGWIN, seems to cause problems... */
-#ifdef CYGWIN
+#ifdef __CYGWIN__
 #define EZXML_NOMMAP
 #endif
 
