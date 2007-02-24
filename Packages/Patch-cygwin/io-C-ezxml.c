@@ -1,5 +1,5 @@
 24a25,28
-> #ifdef CYGWIN
+> #ifdef __CYGWIN__
 > #define EZXML_NOMMAP
 > #endif
 > 
