@@ -36,34 +36,35 @@ int main(){
 double D = 1.e9;     		// luminocity distance to the source
 double dt = 15.0;    		// timestep 
 double oneyear = pow(2., 21.)*15.0;
-float Tmax = (float) oneyear;
+double Tmax = (double) oneyear;
 
-float mu = 10.0;        	// mass of CO
-float MBHmass = 1.0e6;  	// mass of MBH
-float spin = 0.6;      
-float nu0, nu_lso, e_in, nu_in; // to be determined             
-float e_lso = 0.2;      	// estimated freq at plunge
-float gamma0 = LISAWP_PI/7.0;
-float Phi0 = 0.0;    		// initial orbital phase
-float al0 = 1.5*LISAWP_PI;  	// alpha 
-float lam = LISAWP_PI/1.5;      //lambda
-float elat = LISAWP_PI/4.0;    	// thetaS 
-float elon = LISAWP_PI + 0.1;   // phiS 
-float thK = LISAWP_PI/3.1;      // thetaK
-float phK = 1.3*LISAWP_PI;	// phiK
-float pol = 0.0;                // initial polarization angle
-float Tend = 0.6*oneyear;       // estimated duration of the signal
+double mu = 10.0;        	// mass of CO
+double MBHmass = 1.0e6;  	// mass of MBH
+double spin = 0.6;      
+double nu0, nu_lso, e_in, nu_in; // to be determined             
+double e_lso = 0.2;      	// estimated freq at plunge
+double gamma0 = LISAWP_PI/7.0;
+double Phi0 = 0.0;    		// initial orbital phase
+double al0 = 1.5*LISAWP_PI;  	// alpha 
+double lam = LISAWP_PI/1.5;      //lambda
+double elat = LISAWP_PI/4.0;    	// thetaS 
+double elon = LISAWP_PI + 0.1;   // phiS 
+double thK = LISAWP_PI/3.1;      // thetaK
+double phK = 1.3*LISAWP_PI;	// phiK
+double pol = 0.0;                 // initial polarization angle
+double Tend = 0.6*oneyear;       // estimated duration of the signal
 float t_end, e_end, nu_end;
-float t0 = -1500.0;                 // initial time 
+double t0 = 0.0;                 // initial time 
 
-AKWaveform ak(spin, mu, MBHmass, Tmax, (float)dt);
+AKWaveform ak(spin, mu, MBHmass, Tmax, (double)dt);
 
 ak.SetSourceLocation(elat, elon, thK, phK, D);
 
 nu_lso =  pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(LISAWP_TWOPI*MBHmass*LISAWP_MTSUN_SI);
 
+ak.EstimateInitialParams(Tend, e_lso, gamma0, Phi0, al0, lam);
 
-ak.EstimateInitialParams((double)Tend, e_lso, nu_lso, &e_in, &nu_in);
+ak.GetOrbitalParamsAt0(nu_in, e_in, gamma0, Phi0, al0);
 
 ak.EvolveOrbit(t0, nu_in, e_in, gamma0, Phi0, al0, lam);
 
@@ -80,21 +81,23 @@ ak.GetFinalOrbitalParams(t_end, e_end, nu_end);
  std::cout << "Actual   duration  of the waveform = " << t_end/oneyear << "  years"
                 << std::endl;
 
-std::vector<float> time;
+std::vector<double> time;
 std::vector<double> hplus;
 std::vector<double> hcross;
 	
  
-ak.GetWaveform(pol, time, hplus, hcross);
+int sz = ak.GetWaveform(pol, hplus, hcross);
 
 std::cout << " Waveform was computed " << std::endl;
 std::cout << " Recording...." << std::endl;
 
+double t = t0;
 std::string spr = "         ";
 std::ofstream fout("EMRI.dat");
 fout << "#  time/year		hplus 		hcross" << std::endl;
-for (int i=0; i<time.size(); i++){
-      fout <<  time[i]/oneyear  << spr << hplus[i] << spr << hcross[i] << std::endl;
+for (int i=0; i<hplus.size(); i++){
+      fout <<  t/oneyear  << spr << hplus[i] << spr << hcross[i] << std::endl;
+      t += dt;
 }
 fout.close();
 
