@@ -15,10 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
-/******************  CVS info ************************ 
-#define CVSTAG "$Name:  $"
-#define CVSHEADER "$Header: /afs/.aei-potsdam.mpg.de/u/stba/cvs/LISA/LISAWP/waveforms/include/AKWaveform.hh,v 1.1 2006/05/17 10:55:57 stba Exp $" 
+
+/******************  SVN info ************************ 
 */
+#define SVNIDAKWAVEFORMHH "$Id: AKWaveform.hh 275 2007-01-12 12:45:51Z stasbabak $"
+
 #ifndef AKWAVEFORMHH
 #define AKWAVEFORMHH
 
@@ -30,7 +31,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Constants.hh"
 #include <vector>
 #include <gsl/gsl_sf_bessel.h>
-//#include "GSL_incl/gsl_sf_bessel.h"
 
 
 /*** Class AKWaveform
@@ -54,7 +54,7 @@ class AKWaveform:public BaseIntegr{
      * @param MBHmass mass of the MBH (solar mass)
      * @param timestep sampling rate: dt (in sec)
      */
-    AKWaveform(float spin, float mu, float MBHmass, float tfin, float timestep);
+    AKWaveform(double spin, double mu, double MBHmass, double tfin, double timestep);
 
     /** Set the parameters defining source position wrt SSB
      * @param thS the source direction's polar angle (rad)
@@ -64,30 +64,30 @@ class AKWaveform:public BaseIntegr{
      * @param D distance to the source (in pc)
      */
 
-    void SetSourceLocation(float thS, float phS,  float thK, float phK, float D);
+    void SetSourceLocation(double thS, double phS, double thK, double phK, double D);
 
-    /** Estimates initial frequency and eccentricity for eccentricity given at lso
+    /** Estimates orbital params at t=0 for eccentricity given at plunge
      * @param Tin duration of the backward integration
-     * @param e_lso eccentricity at lso or at time Tin (input)
-     * @param nu_lso freq at lso or at at time Tin (input)
-     * @param e_in approx. eccentricity at t=0 (output)
-     * @param nu_in approx. frequency at t=0 (output)
+     * @param eccen eccentricity at lso or at time Tin (input)
+     * @param gamma0 gamma angle at plunge
+     * @param Phi0 azimuthal orbital phase at plunge
+     * @param al0 alpha angle at plunge
+     * @param lam lambda angle (const)
      */
-    
-    void EstimateInitialParams(double Tin, float e_lso, float nu_lso, float *e_in, \
-		    float *nu_in); 
+    void EstimateInitialParams(double Tin, double eccen, double gamma0, \
+		    double Phi0, double al0, double lam); 
     
     /** Computes orbital evolution
-     * @param nu0 initial value of orbital azimuthal frequency
-     * @param eccen initial value of eccentricity
-     * @param gamma0 inital position of pericenter, as angle between LxS and pericenter
-     * @param Phi0 initial azimuthal orbital phase
-     * @param al0 initial 
+     * @param eccen value of eccentricity at plunge
+     * @param gamma0 position of pericenter, as angle between LxS and pericenter
+     *               at plunge
+     * @param Phi0 azimuthal orbital phase at plunge
+     * @param al0 alpha angle at plunge 
      * @param lam angle between L and S
      */
 
-    void EvolveOrbit(float t0, float nu0, float eccen, float gamma0, \
-		    float Phi0, float al0, float lam);
+    void EvolveOrbit(double t0, double nu0, double eccen, double gamma0, \
+		    double Phi0, double al0, double lam);
 
 
     /** Returns orbital evolution */
@@ -106,14 +106,16 @@ class AKWaveform:public BaseIntegr{
    		    
 
     /** returns orbital elements at time t */
-    void GetOrbitalParams(float t, float& nut, float& et, float& gt, float& pht, float& alt);
+    void GetOrbitalParams(double t, double& nut, double& et, double& gt, double& pht, double& alt);
+    
+    /** returns orbital elements at time t=0 */
+    void GetOrbitalParamsAt0(double& nut, double& et, double& gt, double& pht, double& alt);
     
 
-    /** Returns waveform 
+    /** Returns size of waveform and fills up hplus, hcross
      *@param ps0 initial polarization angle
     */
-     void GetWaveform(float ps0, std::vector<float>& time, std::vector<double>& hplus, \
-		     std::vector<double>& hcross);
+     int GetWaveform(double ps0, std::vector<double>& hPlus, std::vector<double>& hCross);
 
 	private:
 
@@ -140,17 +142,25 @@ class AKWaveform:public BaseIntegr{
      double gamma_0;
      double alpha0;
 
+     double phi_at0;
+     double ecc_at0;
+     double nu_at0;
+     double gamma_at0;
+     double alpha_at0;
+    
+
    ///  location
      double thetaS;
      double phiS;
-     double lambda;
+     double lambba;
      double thetaK;
      double phiK;
      double dist;
      
      bool sourceSet;
      bool runDone;
-     
+     bool back;
+    
      /// current coordinates
      double phi;
      double nu;
