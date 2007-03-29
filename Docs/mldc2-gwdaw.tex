@@ -340,7 +340,8 @@ Angular orbital phase & $\Phi_0$ & \texttt{InitialAngularOrbitalPhase} & \texttt
 Tapering radius & $R$    & \texttt{TaperApplied}    & \texttt{TotalMass} \\ 
 \hline
 \end{tabular}
-\caption{\texttt{BlackHoleBinary} source parameters.\label{tab:bbh}}
+\caption{\texttt{BlackHoleBinary} source parameters. Note that the tapering radius for Challenge 2 was fixed, $R = 7M$.
+\label{tab:bbh}}
 \end{table}
 
 \subsection{Extreme--Mass-Ratio Inspirals}
@@ -394,7 +395,7 @@ The angle $\gamma$ is related to $\tilde \gamma$ by
 \label{beta}
 \gamma = \tilde\gamma + \beta,
 \ee
-where $\beta$ is the angle from $\hat x \propto [\hat L(\hat L \cdot \hat n) \hat n] $ to $(\hat L \times \hat S)$, as given by
+where $\beta$ is the angle from $\hat x \propto [\hat L(\hat L \cdot \hat n) - \hat n] $ to $(\hat L \times \hat S)$, as given by
 \begin{eqnarray}\label{sinbeta}
 \sin\beta &=& \frac{\cos\lambda\, \hat L\cdot\hat n -\hat S\cdot \hat n }
 {\sin\lambda\bigl[1 - (\hat L\cdot\hat n)^2\bigr]^{1/2}}, \nonumber \\
@@ -496,13 +497,13 @@ and we shut-off the waveform when $\nu$ reaches this $\nu_{\rm max}$.
 
 Equation (\ref{eq:hab}) expresses the waveform in terms of time-varying polarization tensors, but to generate the LISA responses it is necessary to re-express it in terms of fixed polarization tensors. This is achieved through a rotation by the polarization angle
 \begin{equation}\label{psiSL}
-\psi = \mathrm{arctan}\left(\frac{\sin\theta_L \sin(\phi_S-\phi_L)}{\cos \theta_S \sin \theta_L \cos(\phi_S - \phi_L) - \cos\theta_L \sin\theta_S}\right) - \psi_0\,.
+\psi_{SL} = \mathrm{arctan}\left(\frac{\sin\theta_L \sin(\phi_S-\phi_L)}{\cos \theta_S \sin \theta_L \cos(\phi_S - \phi_L) - \cos\theta_L \sin\theta_S}\right) - \psi_0\,.
 \end{equation}
 
 The algorithm for constructing the MLDC EMRI waveforms works as follows. One fixes a fiducial frequency $\nu_0$ at $t_0 = 0$ and chooses the waveform parameters $\mu,\, M,\,S/M^2,\,e_0,\,\tilde\gamma_0,\,\Phi_0,\,\cos\theta_S,\,\phi_S,\,\cos\lambda,\,\alpha_0,\cos\theta_K,\,\phi_K,\psi_0,D$. One then (i) solves the ODEs (\ref{Phidot})--(\ref{alphadot}) for $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, $\alpha(t)$; (ii) uses $e(t)$ and $\nu(t)$ to calculate $a_n(t), b_n(t), c_n(t)$ in Eqs.~(\ref{abc}); (iii) calculates $\theta_L(t),\phi_L(t)$ using Eqs.~(\ref{relations3}), and then obtains $\gamma(t)$ from $\tilde\gamma(t)$ using Eqs.~(\ref{beta})--(\ref{sinbeta}); (iv) computes the amplitude coefficients $A_n^{+,\times}$  using Eqs.~(\ref{A}) and (\ref{LdotN}); (v) calculates $\psi$ using Eq.~(\ref{psiSL}); (vi) finally,  $h_{+,\times}(t)$ are computed using the following equations
 \begin{eqnarray}\label{final}
-h_+(t) = A^+(t) cos(2\psi_0 - 2\psi_{SL}(t) ) + A^{\times}(t) sin(2\psi_0 - 2\psi_{SL}(t) ) \nonumber \\
-h_{\times}(t) = A^{\times}(t) cos(2\psi_0 - 2\psi_{SL}(t) ) - A^+(t) sin(2\psi_0 - 2\psi_{SL}(t) )
+h_+(t) = A^+(t) cos(2\psi_{SL}(t) ) - A^{\times}(t) sin(2\psi_{SL}(t) ) \nonumber \\
+h_{\times}(t) = A^{\times}(t) cos(2\psi_{SL}(t) ) + A^+(t) sin(2\psi_{SL}(t) )
 \end{eqnarray}
 
 
@@ -519,7 +520,7 @@ The lisaXML standard parameters for Challenge-2 \texttt{ExtremeMassRatioInspiral
 \hline
 Mass of central BH     & $M$      & \texttt{MassOfSMBH}           & \texttt{SolarMass} \\
 Mass of compact object & $\mu$  & \texttt{MassOfCompactObject}  & \texttt{SolarMass} \\
-Central-BH spin        & $|S|/M^2$  & \texttt{CoalescenceTime}      & \texttt{Second} \\
+Central-BH spin        & $|S|/M^2$  & \texttt{Spin}      & \texttt{MassSquare} \\
 Central-BH spin orientation & $\theta_K, \phi_K$ & \texttt{PolarAngleOfSpin}, & \texttt{Radian} \\
  \multicolumn{1}{r}{w.r.t. SSB frame}  &                         & \texttt{AzimuthalAngleOfSpin} & \\ \hline
 & & \texttt{InitialAzimuthal}\ldots & \\                   
@@ -527,12 +528,15 @@ Radial orbital freq.\ at $t = 0$ & $\nu_0$ & \multicolumn{1}{r}{\ldots\texttt{Or
 Orbital mean anomaly at $t = 0$ & $\Phi_0$ & \multicolumn{1}{r}{\ldots\texttt{OrbitalPhase}} & \texttt{Radian} \\ \hline
 Eccentricity at $t = 0$ & $e_0$ & \texttt{InitialEccentricity} & \texttt{1} \\
 Direction of pericenter at $t = 0$ & $\tilde{\gamma}_0$ & \texttt{InitialTildeGamma} & \texttt{Radian} \\
-Direction of orbital angular & $\alpha_0$ & \texttt{InitialAlphaAngle} & \texttt{Radian} \\
-\multicolumn{1}{r}{momentum w.r.t. $S$ at $t = 0$} & & & \\
-Opening angle & $\lambda$ & \texttt{LambdaAngle} & \texttt{Radian} \\ 
+Azimuthal angle of orbital & $\alpha_0$ & \texttt{InitialAlphaAngle} & \texttt{Radian} \\
+\multicolumn{1}{r}{angular momentum at $t = 0$} & & & \\
+Angle between spin  & $\lambda$ & \texttt{LambdaAngle} & \texttt{Radian} \\ 
+and angular momentum & & &\\
 \hline
 \end{tabular}
-\caption{\texttt{ExtremeMassRatioInspiral} source parameters. Note that EMRIs do not use the nonprecessing-binary inclination $\iota$, and be aware of the collision between the symbols for the EMRI compact-object mass ($\mu$) and opening angle ($\lambda$), the binary reduced mass (again $\mu$), and the ecliptic longitude (again $\lambda$). Note that $\nu$ is called ``Azimuthal orbital frequency'' in the XML file and it is referred to as a radial orbital frequency in \cite{BC}.
+\caption{\texttt{ExtremeMassRatioInspiral} source parameters. Note that EMRIs do not use the nonprecessing-binary inclination $\iota$, 
+and as polarization we use $\psi_0$, the polarization angle at $t=0$.
+Be aware of the collision between the symbols for the EMRI compact-object mass ($\mu$) and opening angle ($\lambda$), the binary reduced mass (again $\mu$), and the ecliptic longitude (again $\lambda$). Note that $\nu$ is called ``Azimuthal orbital frequency'' in the XML file and it is referred to as a radial orbital frequency in \cite{BC}.
 If we reduce the equations to non-spinning MBH and circular orbits, then 
 the orbital frequency corresponds to $\nu + \dot{\tilde{\gamma}}/{2\pi}$.
 \label{tab:emri}}
