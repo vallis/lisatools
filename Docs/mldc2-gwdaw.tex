@@ -80,13 +80,13 @@ The first round of MLDCs~\cite{MLDCLISA06a,MLDCLISA06b} has just been completed.
 The first round of MLDCs contained single source data sets, or data sets with several ($\approx 20$) signals well separated in parameter space; an exception were two data sets containing $\approx 50$ signals from Galactic binaries, concentrated in frequency bands of width 30 $\mu$Hz and 3 $\mu$Hz. Challenge 1 focused on only two signal classes: Galactic stellar mass binaries and massive-black-hole (MBH) binary inspirals. The key goal of this first round of challenges was the development and validation of source specific data analysis techniques for the minimum science requirement signals. Challenge 2 has a much more realistic flavour: it includes millions of Galactic binaries,
 as we expect in reality, in addition to multiple massive-black hole binaries and EMRIs. Thus, this round of challenges will require analysts to tackle \emph{global analysis} in the presence of the most challenging signals that we expect to observe with LISA. 
 
-Challenge 2 includes five single-source data sets (Challenge 1.3.1)%
+Challenge 2 includes five single-source data sets (Challenge 1.3)%
 \footnote{These data sets are still identified by 1.X because training data sets were distributed with Challenge 1; blind data sets are however released only now. For consistency with previous documents, we maintain the original nomenclature.},
 % 
 dedicated specifically to EMRIs, and two multi-source data sets (Challenge 2.1 and 2.2). All the data sets are all $\approx 2$ years long---they contain $2^{22}$ data points sampled at a cadence of 15 sec. More specifically,
 the data sets are as follows: 
 \begin{itemize}
-\item \emph{Challenge 1.3.1} consists of five data sets, each of which contains radiation from a single EMRI with SNR approximately in the range 40--110;
+\item \emph{Challenge 1.3} consists of five data sets, each of which contains radiation from a single EMRI with SNR approximately in the range 40--110;
 \item \emph{Challenge 2.1} contains radiation from (i) a whole population of Galactic binary systems (about 26 million sources), including (ii) 20 ``verification binaries'';
 \item \emph{Challenge 2.2} contains radiation from (i) a whole population of Galactic binary systems (about 26 million sources), including (ii) 20 ``verification binaries''; (iii) an \emph{unknown} number (between 4 and 6) of MBH binaries with a range of SNRs (between $\approx 2000$ and $\approx 10$) and coalescence times; and (iv) 5 EMRIs, with SNRs in the range $\approx 30-100$.
 \end{itemize}
@@ -98,15 +98,15 @@ Details about the range of the source parameters included in the data sets are g
 \hline
 Challenge & Sources & Parameters \\
 \hline
-\multicolumn{2}{l}{1.3.1} & \\
+\multicolumn{2}{l}{1.3} & \\
 &Extreme-mass-ratio inspirals & $\mu/M_\odot \in U[9.5,10.5]$, $S/M^2 \in U[0.5, 0.7]$ \\
 &                                             & time at plunge $\in  U[2^{21},2^{22}] \times 15$ sec \\
 &                                             & eccentricity at plunge $\in U[0.15, 0.25]$ \\
-1.3.1a &\multicolumn{1}{r}{\ldots one source with}          & $M / 10^7 M_\odot \in U[0.95,1.05]$ \\
-1.3.1b &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[4.75,5.25]$ \\
-1.3.1c &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[4.75,5.25]$ \\
-1.3.1d &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[0.95,1.05]$ \\
-1.3.1e &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[0.95,1.05]$ \\
+1.3.1 &\multicolumn{1}{r}{\ldots one source with}          & $M / 10^7 M_\odot \in U[0.95,1.05]$ \\
+1.3.2 &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[4.75,5.25]$  (high SNR) \\
+1.3.3 &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[4.75,5.25]$ (low SNR)\\
+1.3.4 &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[0.95,1.05]$ (high SNR)\\
+1.3.5 &\multicolumn{1}{r}{\ldots one source with}         & $M / 10^6 M_\odot \in U[0.95,1.05]$ (low SNR)\\
 \hline
 
 2.1 & & \\
@@ -136,7 +136,7 @@ Challenge & Sources & Parameters \\
 &\multicolumn{1}{r}{\ldots two sources with}         & $M / 10^6 M_\odot \in U[0.95,1.05]$ \\
 \hline
 \end{tabular}
-\caption{Summary of data sets and signal parameter ranges in the second round of MLDCs. All angular parameters are drawn randomly from a uniform distribution over the whole relevant range. The distance of the source is again drawn randomly, with the constraint to approximately provide the SNR at which the signal was designed to appear. In this Table, $t_\mathrm{in}$ corresponds to the beginning of the observation (i.e., the time stamp of the first data sample); $U[.]$ stands for uniform distribution within the given range. Notice that the single-source data sets in Challenge 1.3 drawn from the same parameter range (b-c and d-e) differ mainly in SNR, as well as the actual EMRI parameters. The same apply to the multiple source data set 2.2.}
+\caption{Summary of data sets and signal parameter ranges in the second round of MLDCs. All angular parameters are drawn randomly from a uniform distribution over the whole relevant range. The distance of the source is again drawn randomly, with the constraint to approximately provide the SNR at which the signal was designed to appear. In this Table, $t_\mathrm{in}$ corresponds to the beginning of the observation (i.e., the time stamp of the first data sample); $U[.]$ stands for uniform distribution within the given range. Notice that the single-source data sets in Challenge 1.3 drawn from the same parameter range (b-c and d-e) differ mainly in SNR (low SNR $\sim50$, high SNR $\sim90$), as well as the actual EMRI parameters. The same applies to the EMRIs in data set 2.2.}
 \label{t:MLDC2}
 \end{table}
 %------------------------------    END TABLE   -------------------------------
