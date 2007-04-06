@@ -30,7 +30,6 @@ class GalacticBinary(lisaxml.Source):
         Ac = -2.0 * self.Amplitude * math.cos(self.Inclination)        
         
         hp = Ap * numpy.cos(phase) 
-        hc = Ac * numpy.sin(phase);
+        hc = Ac * numpy.sin(phase)
         
         return (hp,hc)
-    
