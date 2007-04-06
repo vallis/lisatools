@@ -79,15 +79,12 @@ samples = int( (options.duration + options.prebuffer + options.postbuffer) / opt
 
 # impose polarization on waveform
 
-if (mysystem.xmltype == 'ExtremeMassRatioInspiral'):
-    mysystem.TimeSeries = lisaxml.TimeSeries((hp0,hc0),'hp,hc')
-else:
-    pol = mysystem.Polarization
+pol = mysystem.Polarization
 
-    hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
-    hc = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
+hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
+hc = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
 
-    mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc),'hp,hc')
+mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc),'hp,hc')
 
 mysystem.TimeSeries.Cadence = options.timestep
 mysystem.TimeSeries.TimeOffset = initialtime
