@@ -65,7 +65,7 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
 
     outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
                   ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
-                  ('Polarization',                     'Radian',        None, 'standard source polarization'),
+                  ('Polarization',                     'Radian',        0,    'standard source polarization (degenerate for EMRIs)'),
                   ('PolarAngleOfSpin',                 'Radian',        None, 'polar angle of MBH spin'),
                   ('AzimuthalAngleOfSpin',             'Radian',        None, 'azimuthal direction of MBH spin'),
                   ('Spin',                             'MassSquared',   None, 'magnitude of (specific) spin (S) of MBH'),
