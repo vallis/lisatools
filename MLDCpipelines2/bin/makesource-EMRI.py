@@ -75,7 +75,10 @@ mysystem = EMRI.ExtremeMassRatioInspiral("ExtremeMassRatioInspiral")
 
 mysystem.EclipticLatitude           = 0.5*math.pi - math.acos(random.uniform(-1.0,1.0)) # ecliptic latitude in Radian [-pi/2,pi/2]
 mysystem.EclipticLongitude          = random.uniform(0.0,2.0*math.pi)                   # ecliptic longitude in Radian [0,2*pi]
-mysystem.Polarization               = random.uniform(0.0,2.0*math.pi)                   # polarization in Radian [0,2*pi]
+
+# mysystem.Polarization               = random.uniform(0.0,2.0*math.pi)                   # polarization in Radian [0,2*pi]
+mysystem.Polarization               = 0
+
 mysystem.Distance                   = options.D                                         # distance in Parsec (from command-line parameter)
 mysystem.PolarAngleOfSpin	        = math.acos(random.uniform(-1.0, 1.0))		        # polar angle of the spin in Radian [0,pi]
 mysystem.AzimuthalAngleOfSpin	    = random.uniform(0.0, 2.0*math.pi)		            # polar angle of the spin in Radian [0,2*pi]
