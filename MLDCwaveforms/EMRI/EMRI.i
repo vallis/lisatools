@@ -74,8 +74,8 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
                   ('InitialAzimuthalOrbitalFrequency', 'Hertz',         None, 'initial value of orbital azimuthal frequency'),
                   ('InitialAzimuthalOrbitalPhase',     'Radian',        None, 'initial azimuthal orbital phase'),
                   ('InitialEccentricity',              'Unit',          None, 'initial orbital eccentricity'),
-                  ('InitialTildeGamma',                'Radian',        None, 'nital position of pericenter, as angle between LxS and pericenter'),
-                  ('InitialAlphaAngle',                'Radian',        None, 'nitial azimuthal direction of L (in the orbital plane)'),
+                  ('InitialTildeGamma',                'Radian',        None, 'initial position of pericenter, as angle between LxS and pericenter'),
+                  ('InitialAlphaAngle',                'Radian',        None, 'initial azimuthal direction of L (in the orbital plane)'),
                   ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
                   ('Distance',                         'Parsec',        None, 'standard source distance')
             )
@@ -95,7 +95,11 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
 
        hp = numpy.empty(samples,'d')
        hc = numpy.empty(samples,'d')
-       wavelen = emri.GetWaveform(self.Polarization, hp, hc)
+
+       # don't apply polarization here since it comes in at the level of makebarycentric.py
+       # wavelen = emri.GetWaveform(self.Polarization, hp, hc)
+
+       wavelen = emri.GetWaveform(0, hp, hc)
 
        hp[wavelen:] = 0.0
        hc[wavelen:] = 0.0

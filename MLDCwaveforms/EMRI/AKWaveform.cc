@@ -440,7 +440,8 @@ int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double*
    double phiD = 0.0;
    //double OmOrb = LISAWP_TWOPI/LISAWP_YRSID_SI;
    double t;
-   double psiSL;
+   // double psiSL; MV 070330
+   double psi;
    double cs;
 
    for (int i=0; i<theSize; i++){
@@ -453,7 +454,7 @@ int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double*
         alpha = al_t[i];
 	gamma = gamma_t[i];
     
-        thetaL = acos(cos(thetaK)*cos(lambba) + sin(thetaK)*sin(lambba)*cos(alpha));
+    thetaL = acos(cos(thetaK)*cos(lambba) + sin(thetaK)*sin(lambba)*cos(alpha));
 	LISAWPAssert(sin(thetaL) != 0.0, "sin(thetaL) = 0, cannot determine phiL");
 
 	cs = ( sin(thetaK)*cos(phiK)*cos(lambba) - \
@@ -469,21 +470,26 @@ int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double*
         if(e <0.136) N=4;	
 	Waveform(N);
 
-	double dw = (cos(thetaS)*sin(thetaL)*cos(phiS-phiL) - cos(thetaL)*sin(thetaS));
-	if ( dw != 0.0){
-  	   psiSL = ArcTan( (sin(thetaL)*sin(phiS-phiL)) , dw);
-	}else{
-           psiSL = LISAWP_PI/2.0;
-	}
-	
-	*hPlus = Aplus*cos(2.*ps0 - 2.*psiSL) + Across*sin(2*ps0 - 2*psiSL);
-	*hCross = Across*cos(2.*ps0 - 2.*psiSL) - Aplus*sin(2*ps0 - 2*psiSL);
+    // MV 070330: using standard polarization angle
+
+    double up = (cos(thetaS)*sin(thetaL)*cos(phiS-phiL) - cos(thetaL)*sin(thetaS));
+    double dw = (sin(thetaL)*sin(phiS-phiL));
+
+    if (dw != 0.0) {
+        psi = ArcTan(up, dw); // previously it was psiSL = ArcTan(dw,up);
+    } else {
+        psi = LISAWP_PI / 2.0;
+    }
+    
+    // previously it was 2.0*ps0 - 2.0*psiSL
+	*hPlus  =  Aplus*cos(2.0*ps0 + 2.0*psi) + Across*sin(2.0*ps0 + 2.0*psi);
+	*hCross = -Aplus*sin(2.0*ps0 + 2.0*psi) + Across*cos(2.0*ps0 + 2.0*psi);
+
+    // end MV 070330
 
 	hPlus++;
 	hCross++;
-	
-
-   }// end of for loop
+   } // end of for loop
    
    return(theSize);
 
