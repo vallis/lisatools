@@ -30,7 +30,7 @@ H Halloin$^2$,
 K Hayama$^4$,
 M Hendry$^5$,
 O Jeannin$^2$,
-A Krolak$^{13}$,
+A Kr\'olak$^{13}$,
 S L Larson$^{14}$,
 I Mandel$^6$,
 C Messenger$^5$,
@@ -124,7 +124,7 @@ Ames & $\bullet$ & $\bullet$ & & $\bullet$ & $\bullet$ & & & & \\
 APC & $\bullet$ & & & & & & & & \\
 Goddard & & & & & & & & $\bullet$ & \\
 GLIG & & & $\bullet$ & & & & & &  \\
-Krolak & $\bullet$ & $\bullet$ & $\bullet$ & & $\bullet$ & & & & \\
+Kr\'olak & $\bullet$ & $\bullet$ & $\bullet$ & & $\bullet$ & & & & \\
 JPL/Caltech & & & & & & & & $\bullet$ & \\
 MT/AEI & & & & & & & & $\bullet$ & $\bullet$ \\
 MT/JPL & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & & \\
@@ -134,7 +134,7 @@ UTB & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & & 
 \end{indented}
 \end{table}
 
-With the exception of Challenges 1.1.5 and 1.2.2, every Challenge data set was analysed by at least three groups. Here we briefly summarise the approaches used by each group. More detailed descriptions from many of the groups can be found elsewhere in these proceedings~\cite{auger07,camp07,crowder07,cutler07,auger07,nayak07, porter07,prix07, roever07, stroeer07,thompson07} or in the technical notes on the MLDC web page~\cite{MLDCweb}. Several groups used variations on matched filtering methods on many of the challenges. The Ames group at the NASA Ames Research Center employed a user-refined grid search on a number of the WD challenges. The AEI group and Andrzej Krolak both used grid-based methods. The Global LISA Inference Group (GLIG), Montana-JPL, and Montana-AEI groups employed variations on Markov Chain Monte Carlo (MCMC) methods~\cite{gilks96}. The JPL-Caltech group used a multi-stage approach that combined time-frequency methods with grid-based and MCMC searches. The Montana-JPL group also used a genetic algorithm~\cite{holland75}. The APC group has also implemented an hierarchical approach which first matches the annual amplitude modulation and then follows with a full matched filtering. Two groups did not use matched filtering at all. The UTB group used a tomographic search that employed the Radon transform~\cite{deans83} while the Goddard group at the NASA Goddard Space Flight Center developed a time-frequency method that uses the Hilbert-Huang transform~\cite{huang98}. Although some of these groups have well-developed and mature algorithms, most groups are currently in various stages of development and so many of the entries are incomplete or suffer from known bugs which could not be hunted down before the December deadline. Some of the algorithms that are under development are meant to be part of an hierarchical search and so they only return a subset of the parameters needed to fully characterise the source.
+With the exception of Challenges 1.1.5 and 1.2.2, every Challenge data set was analysed by at least three groups. Here we briefly summarise the approaches used by each group. More detailed descriptions from many of the groups can be found elsewhere in these proceedings~\cite{auger07,camp07,crowder07,brown07,auger07,nayak07, porter07,prix07, roever07, stroeer07,thompson07} or in the technical notes on the MLDC web page~\cite{MLDCweb}. Several groups used variations on matched filtering methods on many of the challenges. The Ames group at the NASA Ames Research Center employed a user-refined grid search on a number of the WD challenges. The AEI group and Andrzej Kr\'olak both used grid-based methods. The Global LISA Inference Group (GLIG), Montana-JPL, and Montana-AEI groups employed variations on Markov Chain Monte Carlo (MCMC) methods~\cite{gilks96}. The JPL-Caltech group used a multi-stage approach that combined time-frequency methods with grid-based and MCMC searches. The Montana-JPL group also used a genetic algorithm~\cite{holland75}. The APC group has also implemented an hierarchical approach which first matches the annual amplitude modulation and then follows with a full matched filtering. Two groups did not use matched filtering at all. The UTB group used a tomographic search that employed the Radon transform~\cite{deans83} while the Goddard group at the NASA Goddard Space Flight Center developed a time-frequency method that uses the Hilbert-Huang transform~\cite{huang98}. Although some of these groups have well-developed and mature algorithms, most groups are currently in various stages of development and so many of the entries are incomplete or suffer from known bugs which could not be hunted down before the December deadline. Some of the algorithms that are under development are meant to be part of an hierarchical search and so they only return a subset of the parameters needed to fully characterise the source.
 
 \section{Assessment}
 
@@ -184,8 +184,8 @@ AEI & 8.095 & 50.604 & 0.989\\
 Ames & 7.155 & 51.032 & 0.997\\
 APC & 423.406 & -8.007 & -0.135 \\
 APC* & 229.115 & 50.385 & 0.990 \\
-Krolak & 778.888 & 0.933 & -0.004 \\
-Krolak* & 1.036 & 51.038 & 0.999 \\
+Kr\'olak & 778.888 & 0.933 & -0.004 \\
+Kr\'olak* & 1.036 & 51.038 & 0.999 \\
 MT/JPL (BAM) & 1.902 & 51.178 & 0.998 \\
 MT/JPL (GA) & 1.796 & 51.138 & 0.998 \\
 \br
@@ -193,19 +193,19 @@ MT/JPL (GA) & 1.796 & 51.138 & 0.998 \\
 \mr
 AEI & 47.913 & 33.104 & 0.874\\
 Ames & 64.371 & 32.067 & 0.822\\
-Krolak & 841.074 & -37.038 & -0.996 \\
-Krolak* & 2.566 & 37.038 & 0.996 \\
+Kr\'olak & 841.074 & -37.038 & -0.996 \\
+Kr\'olak* & 2.566 & 37.038 & 0.996 \\
 MT/JPL (BAM) & 7.735 & 36.856 & 0.980 \\
 MT/JPL (GA) & 8.371 & 36.808 & 0.979 \\
 \br
-\centre{4}{Challenge 1.1.1c (${\rm SNR}_{\rm key}=91.579$)} \\
+\centre{4}{Challenge 1.1.1c (${\rm SNR}_{\rm key}=101.390$)} \\
 \mr
-AEI & 1957.416 & -12.982 & -0.144\\
-GLIG & 1459.510 & 13.093 & 0.142\\
-Krolak & 4892.990 & -88.630 & -0.968 \\
-Krolak* & 79.628 & 88.630 & 0.968 \\
-MT/JPL (BAM) & 771.396 & 57.250 & 0.623 \\
-MT/JPL (GA) & 1122.693 & 39.348 & 0.424 \\
+AEI & 2399.307 & -14.373 & -0.144\\
+GLIG & 1788.991 & 14.496 & 0.142\\
+Kr\'olak & 5997.595 & -98.126 & -0.968 \\
+Kr\'olak* & 97.603 & 98.126 & 0.968 \\
+MT/JPL (BAM) & 945.541 & 63.383 & 0.623 \\
+MT/JPL (GA) & 1376.143 & 43.564 & 0.424 \\
 \br
 \end{tabular}
 \end{indented}
@@ -223,7 +223,7 @@ Group & $\Delta f$ (nHz) & $\Delta \theta$ & $\Delta \phi$ & $\Delta \ln{A}$ & $
 AEI & -1.208 & -0.018 & 0.001 & -0.078 & -0.101 & 0.157 & -0.065 \\
 Ames & -1.889 & -1.159 & 3.127 & 0.337 & 0.503 & 0.181 & -0.126 \\
 APC & 1.343 & -0.030 & -0.011 & 0.807 & 0.217 & 0.174 & 1.202 \\
-Krolak & 0.980 & 0.028 & --0.008 & 0.113 & 0.180 & 0.208 & -2.089 \\
+Kr\'olak & 0.980 & 0.028 & --0.008 & 0.113 & 0.180 & 0.208 & -2.089 \\
 MT/JPL (BAM) & -1.367 & -0.015 & -0.008 & -0.046 & -0.084 & 0.196 & -0.228 \\
 MT/JPL (GA) & -1.044 & -0.013 & -0.003 & -0.077 & -0.091 & 0.224 & -0.308 \\
 UTB & -3.209 & 0.143 & 0.603 & --- & --- & --- & --- \\
@@ -232,7 +232,7 @@ UTB & -3.209 & 0.143 & 0.603 & --- & --- & --- & --- \\
 \mr
 AEI & 0.399 & -0.049 & 0.001 & -0.009 & -0.045 & 0.020 & 0.432 \\
 Ames & -21.098 & -0.606 & 0.004 & 0.171 & 0.048 & 0.028 & 2.173 \\
-Krolak & 0.341 & 0.037 & -0.004 & -0.112 & -0.042 & -0.042 & -3.098 \\
+Kr\'olak & 0.341 & 0.037 & -0.004 & -0.112 & -0.042 & -0.042 & -3.098 \\
 MT/JPL (BAM) & 0.434 & -0.040 & 0.003 & -0.025 & -0.042 & 0.029 & 0.097 \\
 MT/JPL (GA) & 0.314 & -0.039 & 0.003 & -0.044 & -0.044 & 0.030 & 0.117 \\
 UTB & -4.299 & 0.198 & 0.007 & --- & --- & --- & --- \\
@@ -241,7 +241,7 @@ UTB & -4.299 & 0.198 & 0.007 & --- & --- & --- & --- \\
 \mr
 AEI & -0.405 & 0.012 & -0.001 & 0.312 & -0.159 & 0.127 & 1.501\\
 GLIG & 154.850 & 0.306 & 0.178 & 0.341 & 0.939 & 0.722 & 2.413\\
-Krolak & -5.210 & 0.059 & -0.010 & -0.194 & -0.268 & 0.451 & 2.747 \\
+Kr\'olak & -5.210 & 0.059 & -0.010 & -0.194 & -0.268 & 0.451 & 2.747 \\
 MT/JPL (BAM) & -0.330 & 0.008 & -0.001 & 0.309 & 0.033 & -0.609 & 2.148 \\
 MT/JPL (GA) & 0.311 & 0.013 & -0.001 & 0.652 & -1.062 & -0.614 & 2.026 \\
 UTB & 8.577 & 0.139 & 0.066 & --- & --- & --- & --- \\
@@ -255,16 +255,16 @@ The multi-source challenges present a different problem for assessment, since th
 The challenge 1.1.2 data set contained 20 ``verification'' binaries whose frequencies and sky location were given to the participants. Six of these binaries were taken from the list of known binaries available on Gijs Nelemans website~\cite{nelemanswiki} and the remaining 14 were simulated binaries. Of the four groups that submitted entries for challenge 1.1.2, two of them did not use the additional information of sky location and frequency in their searches. The Montana/JPL group used the same search algorithms as they used in all of the 1.1 challenges, and the UTB group used their tomographic algorithm to obtain the frequency and sky location. The UTB group successfully recovered 17 of the 20 source binaries. The other three groups successfully recovered all 20 source binaries, although the AEI group had very low correlation with the 2 highest frequency binaries. This is understandable since the AEI group used the low frequency approximation (which is valid for frequencies below about 3 mHz) for calculating their templates and the 2 highest frequency binaries were at frequencies above 6 mHz. These two binaries are also responsible for most of the loss in correlation for this entry. The performance of the three groups that returned the complete parameterisation of each binary recovered is given in Table~\ref{1.1.2metrics}
 
 \begin{table}
-\caption{\label{1.1.2metrics} The performance of challenge entries on the verification binary challenge 1.1.2 as calculated using $\Delta\chi^2$, SNR, and $C$. Since every group returned the full 20 binaries, the dimension of the model is $D = 140$. The SNR of the key is 529.283.}
+\caption{\label{1.1.2metrics} The performance of challenge entries on the verification binary challenge 1.1.2 as calculated using $\Delta\chi^2$, SNR, and $C$. Since every group returned the full 20 binaries, the dimension of the model is $D = 140$. The SNR of the key is 544.952.}
 \begin{indented}
 \item[]\begin{tabular}{lrrr}
 \br
 Group & $\Delta\chi^2$ & SNR & $C$ \\
 \mr
-AEI & 1357.07 & 330.286 & 0.625\\
-Ames & 214.20 & 501.608 & 0.948\\
-MT/JPL (BAM) & 18.20 & 528.485 & 0.998 \\
-MT/JPL (GA) & 182.77 & 504.868 & 0.954 \\
+AEI & 1443.59 & 339.262 & 0.624\\
+Ames & 227.007 & 516.471 & 0.948\\
+MT/JPL (BAM) & 19.02 & 544.165 & 0.998 \\
+MT/JPL (GA) & 194.46 & 519.712 & 0.954 \\
 \br
 \end{tabular}
 \end{indented}
@@ -273,26 +273,26 @@ MT/JPL (GA) & 182.77 & 504.868 & 0.954 \\
 Challenge 1.1.3 also contained 20 binaries isolated in frequency space between 0.5 mHz and 10 mHz. In this challenge, all binaries were drawn from the simulation and all parameters were blind. Five groups submitted entries, although the UTB group again only provided frequency and sky location. The UTB group successfully identified 14 of the 20 binaries. The performance of the other four entries are given in Table~\ref{1.1.3metrics}. The sky locations returned by each group are compared with the source positions in Figure~\ref{1.1.3skypo}.
 
 \begin{table}
-\caption{\label{1.1.3metrics} The performance of challenge entries on the isolated binary challenge 1.1.3 as calculated using $\Delta\chi^2$, SNR, and $C$. Since not all groups returned the full 20 binaries, the dimension of the model is calculated by $D = 7\times N_{\rm rec}$, where $N_{\rm rec}$ is the number of recovered binaries. The SNR of the key is 120.735. The correction of the initial phase by a factor of $\pi$ or $\pi/2$ is indicated by an asterisk (*).}
+\caption{\label{1.1.3metrics} The performance of challenge entries on the isolated binary challenge 1.1.3 as calculated using $\Delta\chi^2$, SNR, and $C$. Since not all groups returned the full 20 binaries, the dimension of the model is calculated by $D = 7\times N_{\rm rec}$, where $N_{\rm rec}$ is the number of recovered binaries. The SNR of the key is 122.864. The correction of the initial phase by a factor of $\pi$ or $\pi/2$ is indicated by an asterisk (*).}
 \begin{indented}
 \item[]\begin{tabular}{lrrrr}
 \br
 Group & $\Delta\chi^2$ & SNR & $C$ & $N_{\rm rec}$ \\
 \mr
-AEI & 65.15 & 88.351 & 0.726 & 16\\
-Ames & 47.23 & 102.230 & 0.840 & 13\\
-Krolak & 197.77 & 9.117 & 0.077 & 20\\
-Krolak* & 145.08 & 38.457 & 0.323 & 20\\
-MT/JPL (BAM) & 43.32 & 97.106 & 0.796 & 19\\
-MT/JPL* (BAM) & 4.07 & 119.51 & 0.981 & 19\\
-MT/JPL (GA) & 19.04 & 111.812 & 0.914 & 18\\
+AEI & 67.67 & 89.789 & 0.726 & 16\\
+Ames & 48.42 & 104.236 & 0.841 & 13\\
+Kr\'olak & 204.36 & 9.558 & 0.080 & 20\\
+Kr\'olak* & 150.95 & 38.770 & 0.323 & 20\\
+MT/JPL (BAM) & 44.81 & 98.838 & 0.797 & 19\\
+MT/JPL* (BAM) & 4.16 & 121.64 & 0.981 & 19\\
+MT/JPL (GA) & 19.66 & 113.797 & 0.914 & 18\\
 \br
 \end{tabular}
 \end{indented}
 \end{table}
 
 \begin{figure}
-\includegraphics[angle=0,width=1.0\textwidth]{1.1.3.skyposition6.eps}
+\includegraphics[clip=true,angle=0,width=1.0\textwidth]{1.1.3.skyposition6.eps}
 \caption{\label{1.1.3skypo}Recovered sky positions from each entry for Challenge 1.1.3. The source positions are indicated by $+$ and the recovered positions are indicated by $\circ$. Each plot includes only those sources which are within a frequency bin of a recovered source. The plots are of ecliptic latitude vs. longitude in degrees.}
 \end{figure}
 
@@ -392,7 +392,7 @@ MT/AEI & 3.09 & 0.037 & 0.273 & 182.00 & 0.019 & 0.005 & -0.71 & -2.16 & -0.002\
 The first round of the Mock LISA Data Challenges successfully attracted over ten groups to work on the problem of LISA data analysis. These groups attacked several of the challenges with a variety of different approaches. The algorithms and codes used in the challenges were at different levels of maturity and completeness of the pipelines. Nonetheless, all challenges had at least one entry which successfully characterized the signal to better than 95\% when assessed via the correlation with phasing ambiguities accounted for. In the overlapping source challenge 1.1.5, one group was able to recover true binaries at a source density of $\sim 0.25$. Most groups also discovered small bugs or discrepancies in definitions of some of the parameters used to characterise the signal. The first round entries were a success, especially considering that most groups had less than 5 months to work out interfacing issues and assess their codes. Those groups that participated in round 1 have begun implementing the lessons learned for use in round 2~\cite{MLDC2doc}, which is another successful outcome of the challenges. The MLDC Task Force has also begun to address the issues that have been raised as regards assessment of the entries. As the assessments become more refined in future challenges, we anticipate developing assessments for the true LISA data for which there is no key file.
 
 \section*{Acknowledgements}
-MB acknowledges funding from NASA Grant NNG04GD52G and support by the NASA Center for Gravitational Wave Astronomy at University of Texas at Brownsville (NAG5-13396). N Christensen acknowledges funding from NSF Grant PHY-0553422 and the Fulbright Scholar Program. N Cornish, J Crowder and E Porter acknowledge funding from NASA Grant NNG05GI69G. J Crowder, CC and MV carried out this work at JPL, Caltech, under contract to NASA. MV is grateful for support from the Human Resources Development Fund program at JPL. IM would like to thank the Brinson, Foundation, NASA Grant NNG04GK98G and NSF Grant PHY-0601459 and the LIGO Laboratory. LIGO was constructed by the California Institute of Technology and Massachusetts Institute of Technology with funding from the National Science Foundation and operates under cooperative agreement PHY-0107417.
+MB acknowledges funding from NASA Grant NNG04GD52G. MB, SM and RN were supported by the NASA Center for Gravitational Wave Astronomy at University of Texas at Brownsville (NAG5-13396). N Christensen acknowledges funding from NSF Grant PHY-0553422 and the Fulbright Scholar Program. N Cornish, J Crowder and EP acknowledge funding from NASA Grant NNG05GI69G. J Crowder, CC and MV carried out this work at JPL, Caltech, under contract to NASA. MV is grateful for support from the Human Resources Development Fund program at JPL. IM would like to thank the Brinson, Foundation, NASA Grant NNG04GK98G and NSF Grant PHY-0601459 and the LIGO Laboratory. LIGO was constructed by the California Institute of Technology and Massachusetts Institute of Technology with funding from the National Science Foundation and operates under cooperative agreement PHY-0107417.The work of AK was supported in part by grant 1 P03B 029 27 from Polish Ministry of Science and Information Technology. AK would like to acknowledge hospitality of Max Planck Institute for Gravitational Physics in Potsdam, Germany where part of his work was done. AV was partially supported by the Packard Foundation and the NSF.
 
 \section*{References}
 \begin{thebibliography}{10}
@@ -404,8 +404,8 @@ MB acknowledges funding from NASA Grant NNG04GD52G and support by the NASA Cente
 \bibitem{auger07} Auger G, {\it et al.} 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
 \bibitem{camp07} Camp J B, Cannizzo J K and Numata K 2007 {\it Phys Rev D} {\it in press} ({\it Preprint} gr-qc/0701148)
 \bibitem{crowder07} Crowder J and Cornish N 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
-\bibitem{cutler07} Cutler C, {\it et al.} 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
-\bibitem{krolak07} Krolak A 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
+\bibitem{brown07} Brown D, {\it et al.} 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
+\bibitem{krolak07} Kr\'olak A 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
 \bibitem{nayak07} Nayak R K, Mohanty, S D and Hayama, K 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
 \bibitem{porter07} Porter E and Cornish N 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
 \bibitem{prix07} Prix R and Whelan J T, 2007 {\it Proceedings of GWDAW 11} {\it in preparation}
