@@ -10,6 +10,7 @@ import sys
 import os
 import glob
 import platform
+import re
 
 from distutils.sysconfig import get_python_lib
 from distutils.dep_util import newer, newer_group
@@ -191,11 +192,14 @@ try:
 except:
     print "--> Installing Synthetic LISA"
     os.chdir('Packages')
-    assert(0 == os.system('tar zxf synthLISA-1.3.3.tar.gz'))
-    os.chdir('synthLISA-1.3.3')
+    # find the latest .tar.gz
+    synthlisatargz = glob.glob('synthLISA-*.tar.gz')[-1]
+    assert(0 == os.system('tar zxf %s' % synthlisatargz))
+    synthlisatar = re.sub('\.tar\.gz','',synthlisatargz)
+    os.chdir(synthlisatar)
     assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
     os.chdir('..')
-    assert(0 == os.system('rm -rf synthLISA-1.3.3'))
+    assert(0 == os.system('rm -rf %s' % synthlisatar))
     os.chdir(here)
 
 # install/check install for LISA Simulator
