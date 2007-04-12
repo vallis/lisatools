@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{MLDC Challenge 2 Assessment}
+\author{Matthew Benacquista, Soumya Mohanty}
+\date{\today}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+\section{Linking Assessment to Science \label{science}}
+The second round of the Mock LISA Data Challenges involves two two-year data sets. The first data set (Challenge 2.1) contains the signal from $2.7 \times 10^7$ Galactic white dwarf binaries based on the population synthesis of Nelemans (ref). The second data set (Challenge 2.2) contains different realization of the Galactic binaries of the first data set along with 4 to 6 massive black hole (MBH) binaries and 5 extreme mass ratio inspirals (EMRIs)~\cite{MLDC2}. There are also 5 single source EMRI data sets (Challenges 1.3.1 to 1.3.5)from the first round of challenges. Since the data sets of challenges 2.1 and 2.2 more closely mimic a true LISA signal, we intend to measure the success of the entries at returning subsets of data relevant to the LISA Science Case document (ref). For Galactic binaries, we consider four basic questions: (i) identification of individual binaries for follow-on electromagnetic observations; (ii) measurement of the structure of the Galaxy; (iii) measurement of the shape of the spectrum; and (iv) subtraction of the foreground signal. For MBH inspirals, we consider two questions: (i) identification for follow-on electromagnetic observations; and (ii) subtraction of the signal from the data stream. For EMRIs, we also consider two questions: (i) identification of central black hole mass and spin; and (ii) subtraction of the signal from the data stream.
+\section{Measuring Closeness of Fit}
+Since the full set of parameters necessary to describe the source is not needed to answer some of the questions posed above, we will measure how well an entry successfully extracts the important parameters by measuring the distance between the returned parameters and the key parameters in a projected sub-space of the full parameter space. To do this, we will use the Fisher Information Matrix (FIM) as the metric in the full parameter space. For a given set of parameters $\lambda_i$ that fully characterizes the signal $h(\lambda)$, the FIM is:
+\begin{equation}
+\Gamma_{ij} = \left(\partial_ih|\partial_jh\right)
+\end{equation}
+where $\partial_i = \partial/\partial\lambda_i$, and the inner product is defined as:
+\begin{equation}
+\left(a|b\right) = 2\int_0^{\infty}{\frac{a^*b + ab^*}{S_n(f)}~df}.
+\end{equation}
+In principle, the FIM should be calculated with the full set of parameters for all Galactic binaries, all MBH inspirals, and all EMRIs and the noise spectral density, $S_n(f)$, taken as the instrument noise. This is not feasible in practice, so we approximate $S_n(f)$ by taking the running median of the spectrum of the full data stream. Since the foreground confusion noise is due to the Galactic binaries and individual binaries will have their power spread over a frequency range bounded approximately by $10^{-4} f$, we take the running median over a variable number of bins given by $\Delta f = 10^{-2} f$ so that an individual loud binary contributes to less than 1 \% of the bins used to determine $S_n(f)$ for any given $f$. Furthermore, we calculate FIM for a single source at a time. Thus, in the full parameter space, the line element is given by:
+\begin{equation}
+ds^2 = \Gamma_{ij}d\lambda_id\lambda_j.
+\end{equation}
+
+When we analyze the distance for a reduced set of parameters, we will average over the values of the nuisance parameters. For example, if we don't care about a particular parameter $\theta$ that lies in the range $\theta_1$ to $\theta_2 = \theta_1 + \Delta\theta$, then we use:
+\begin{equation}
+\tilde{\Gamma}_{ij} = \frac{1}{\Delta\theta}\int_{\theta_1}^{\theta_2}{\left(\partial_ih|\partial_jh\right)~d\theta}
+\end{equation}
+and we do not evaluate the partials with respect to the parameter $\theta$. The integration can be brought inside the inner product, so we define:
+\begin{equation}
+\bar{h}_\theta = \frac{1}{\Delta\theta}\int_{\theta_1}^{\theta_2}{h~d\theta},
+\end{equation}
+so
+\begin{equation}
+\tilde{\Gamma}_{ij} = \left(\partial_i\bar{h}_{\theta}|\partial_j\bar{h}_{\theta}\right).
+\end{equation}
+Since a reduction in the dimension of the parameter space will automatically reduce the calculated distance even for a randomly chosen point in parameter space, we will normalize all distances by the number of dimensions in the parameter space. Consequently we now define the distance between the key (or true) parameters and the recovered parameters as:
+\begin{equation}
+D = \int_{\rm key}^{\rm rec}{\frac{\sqrt{ds^2}}{n}},
+\end{equation}
+where $n$ is the dimension of the subspace being used.
+
+\section{Measuring Subtraction from Data Stream \label{subtraction}}
+When assessing how well the Galactic binaries have been subtracted from the data stream, it is not necessary that each individual binary match with its counterpart in the key. Instead, we want to measure how well the overall level of signal from the binaries has been removed while at the same time leaving the remaining source signals untouched. To measure this, we compute the signal to noise ratio:
+\begin{equation}
+{\rm SNR} = \frac{\left(s|h_{\rm key}\right)}{\sqrt{\left(h_{\rm key}|h_{\rm key}\right)}}
+\end{equation}
+for the challenge data set $s$ and for the challenge data set with the signal from all recovered binaries subtracted $s_{\rm sub}$. The ratio of these two SNRs (${\rm SNR}_{\rm sub}/{\rm SNR}$) should give a measure of how well the binary subtraction has improved the detection probability for the remaining signals.
+
+The assessment of the subtraction of the other sources is more straightforward since it is similar to an accurate measure of the source parameters. Consequently, we use the same measures of source recovery as were used in Challenge 1:
+\begin{equation}
+\label{deltachi}
+\Delta \chi^2 = \frac{\left(h_{\rm key} - h_{\rm rec}|h_{\rm key} - h_{\rm rec}\right)}{D},
+\end{equation}
+where $D$ is the dimension of the parameter space, and
+\begin{equation}
+\label{cor}
+C = \frac{\left(h_{\rm key}|h_{\rm rec}\right)}{\sqrt{\left(h_{\rm key}|h_{\rm key}\right)\left(h_{\rm rec}|h_{\rm rec}\right)}}.
+\end{equation}
+
+\section{Density Function Estimation \label{density}}
+Let the set of parameters defining any one binary be $\Theta = \{\Omega,\theta,\phi,\phi_0,\ldots\}$, where the symbols have their usual
+meaning. Let the challenge data set have $N$ binaries, located at different points in some bounded region of the manifold with coordinates
+ $\Theta$.
+A reconstruction algorithm returns $M$ candidate binaries with associated parameters $\Gamma \subseteq
+\Theta$, i.e., $M$ points in a sub-manifold of the $\Theta$ space. How do we assess the reconstruction? For concreteness, we take the case of tomographic reconstruction for which $\Gamma = \{\Omega, \theta, \phi\}$. 
+
+The answer appears to depend on what the reconstructed points are used for. Obviously, the information in $\Gamma$ is not sufficient for subtracting the Galactic binary population signal (BPS) 
+from the data. However, there may be enough information to study Galactic structure; 
+parameters such as the initial phase at start of observation, $\phi_0$, obviously do not impact such a study even though it is a critical parameter for the purpose of subtracting the BPS. It is important to develop assessment strategies, therefore, that allow us to focus on the science questions and see how different reconstruction approaches can help us understand them.
+
+For studies of Galactic structure using LISA, the most relevant quantity of interest appears to be the binary number density function $\rho(\Omega,\theta,\phi)$. Then the obvious target of assessment is a reconstruction, $\widehat{\rho}(\Omega,\theta,\phi)$,  of $\rho$. Given a sample of points, 
+several techniques are available in the statistical literature~\cite{silverman} for estimating the underlying (smooth) multi-variate 
+density function from which the points were drawn. Our proposed approach therefore is:
+\begin{enumerate}
+\item Given the sample of $M$ points, construct the estimate $\widehat{\rho}$ using one of the methods in~\cite{silverman}.
+\item Compare $\widehat{\rho}$ and $\rho$ using some distance measure. The comparison can be {\em local}, such as in a limited frequency band, or {\em global}. Another approach might be to decompose $\widehat{\rho}$ on an orthonormal basis of functions on $\Gamma$ and 
+compare its spectral properties with those of $\rho$.
+\end{enumerate}
+In the MLDCs, we can obtain $\rho$ by marginalizing the parent distribution, used for drawing the binaries, over the parameters in the set $\Theta - \Gamma$. 
+
+
+\section{Assessing the Questions}
+With the above machinery, we can now outline the assessments of each question described in Section~\ref{science}.
+
+\subsection{Galactic Binaries: Identification}
+The identification of individual Galactic binaries for follow-on electromagnetic observations requires accurate recovery of all parameters describing the binary (although certain follow-on observations may not need all parameters). Therefore, we measure success at answering this question by using $\Delta \chi^2$, $C$, and ${\rm SNR}$ measured using $h_{\rm rec}$ generated from the recovered parameters. We determine the key binaries that have been recovered by requiring that the recovered frequency lie in the same resolvable frequency bin as the key binary and then that the correlation $C > 0.7$. We will also measure the accuracy of the sky location in terms of $\sigma_{\theta}$ and $\sigma_{\phi}$ as calculated using the FIM, as well as $\Delta\theta$ and $\Delta\phi$. Since the requirement of this assessment is that a binary be identified with sufficient accuracy that a follow-on electromagnetic observation can be made we will assume that the recovered binary parameters are close enough to the true parameters that the FIM approach is valid.
+
+\subsection{Galactic Binaries: Galactic Structure}
+The identification of binaries for determining Galactic structure only requires accurate sky location. The other parameters are less important. Thus, we measure success at answering this question by using the FIM metric over the reduced parameter space of $f$, $\theta$, and $\phi$ to determine the distance from the recovered binaries to the key binaries. We restrict the key binaries to those with an ${\rm SNR} > 5$ in the given frequency bin. We identify the recovered binary with the key binary that is closest to it in the reduced parameter space. We will also report $\Delta\theta$ and $\Delta\phi$ for each recovered binary. We can also use the density function estimation outlined in Section~\ref{density}.
+
+\subsection{Galactic Binaries: Spectral Shape}
+To answer the question of the shape of the spectrum we are interested in the frequency and amplitude of the recovered binaries. The other parameters are irrelevant. Thus, we simply compare the recovered amplitude with the key amplitudes in each frequency bin where there is a recovered binary. A second approach can use a modified version of the density function estimation, over the subset of $f$ and $A$.
+
+\subsection{Galactic Binaries: Foreground Subtraction}
+The assessment of this question is described in Section~\ref{subtraction}.
+
+\subsection{Massive Black Holes: Identification}
+Identification of MBH inspirals for follow-on electromagnetic observations requires accurate recovery of at least sky location and time of coalescence. For cosmology, the masses and distance are also important. Thus we will assess this question two ways. First we will determine the distance in the parameter subspace spanned by the sky location and time of coalescence. Next, we will include the masses and distance as well as sky location.
+
+\subsection{Massive Black Holes: Source Subtraction}
+Source subtraction will be assessed by taking the combined signal of all returned MBH signals and measuring the $\Delta \chi^2$ and $C$ with the combined key signal using the method outlined in Section~\ref{subtraction}.
+
+\subsection{EMRIs: Spacetime Mapping}
+In order to map the spacetime about the massive object in an extreme mass ratio inspiral, we will look at measuring the mass and spin of the central black hole. Thus, we measure the distance separating the recovered signal from the key signal in the reduced subspace spanned by these two parameters. We will do this for EMRIs in Challenges 1.3.1 to 1.3.5 as well as Challenge 2.2.
+
+\subsection{EMRIs: Source Subtraction}
+For the EMRIs in Challenge 2.2, we will again assess source subtraction by taking the combined signal of all returned EMRI parameters and measure the $\Delta \chi^2$ and $C$ with the combined key signal using the method outlined in Section~\ref{subtraction}. For Challenges 1.3.1 to 1.3.5, we will assess the complete recovery of each individual EMRI using $\Delta \chi^2$ and $C$.
+
+\begin{thebibliography}{99}
+\bibitem{MLDC2} K.~A.~Arnaud, S.~Babak, J.~Baker, M.~J.~Benacquista, N.~J.~Cornish, C.~Cutler, L.~S.~Finn, S.~L.~Larson, T.~Littenberg, E.~K.~Porter, B.~S.~Sathyaprakash, M.~Vallisneri, A.~Vecchio, and J-Y.~Vinet, ``An overview of the second round of challenges of the Mock LISA Data Challenges'', {\em Online preprint} arXiv:gr-qc/0701170v2 (3 Apr 2007).
+\bibitem{LISAScience} {\em Online document} ``LISA: Probing the Universewith Gravitational Waves'' http://www.lisa-science.org/resources/talks-articles/science (Jan 2007).
+\bibitem{silverman} B.~W.~Silverman, {\em Density estimation for statistics and data analysis} (Chapman and Hall, 1994).
+\end{thebibliography}
+
+\end{document}   
