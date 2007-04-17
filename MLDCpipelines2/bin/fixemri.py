@@ -19,12 +19,12 @@ def find_root(function,lower,upper,tolerance):
     print "Check solve: %f" % function(upper)
     return upper
 
-def unwrap(angle):
-    while angle > 2*pi:
-        angle = angle - 2*pi
+def unwrap(angle,period):
+    while angle > 0.5*period:
+        angle = angle - period
     
-    while angle < 0:
-        angle = angle + 2*pi
+    while angle < -0.5*period:
+        angle = angle + period
     
     return angle
 
@@ -69,10 +69,10 @@ for source in allsources:
             # we're choosing one branch here, but cosphisl may be > 1, in which case we get a nan
             sinphisl = sqrt(1 - cosphisl**2)
 
-            return unwrap(atan2(sin(thetal) * sinphisl,
-                                cos(thetas) * sin(thetal) * cosphisl - cos(thetal) * sin(thetas)))
-        
-        thetalnew = find_root(lambda x: psibad(x) - 0.5*pi + psibad(x) - pol,
+            return atan2(sin(thetal) * sinphisl,
+                         cos(thetas) * sin(thetal) * cosphisl - cos(thetal) * sin(thetas))
+
+        thetalnew = find_root(lambda x: unwrap(psibad(x) - 0.5*pi + psibad(thetal) - pol,pi),
                               0,pi,1e-5)
 
         philnew   = find_root(lambda x: cos(thetas)*cos(thetalnew) + sin(thetas)*sin(thetalnew)*cos(phis - x) - cosi,
