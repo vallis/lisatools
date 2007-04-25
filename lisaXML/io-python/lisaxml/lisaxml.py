@@ -15,6 +15,14 @@ import shutil
 import time
 import re
 
+# if we have traits, import xmltraits.py
+
+try:
+    import enthought.traits.api
+    from xmltraits import InteractiveMakeSource
+except:
+    pass
+
 # somehow I will have to compile this directory of modules by source...
 
 # if (say) MLDC defines SourceClassModules and then imports BBH,
