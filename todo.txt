@@ -4,10 +4,9 @@
 + modified logic of symbolic linking of galaxy dat files [done 07/01/11]
 + final tar-gzipping of result files [done 07/01/12]
 + test independent noise and source seeds [done 07/01/12]
-
-- check if BBH in LISA simulator noise file
++ check if BBH in LISA simulator noise file [done 07/01/12]
 
 for the future...
 
 - multithreading (with LISA Simulator and Galaxy working in scratch directories)
-- cleanup challenge document
+- more useful traits support
