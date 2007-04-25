@@ -31,8 +31,8 @@ parser.add_option("-t", "--initialTime",
                   help="initial time for waveform, not counting prebuffer (s) [default 0.0]")
                                     
 parser.add_option("-T", "--duration",
-                  type="float", dest="duration", default=31457280.0,
-                  help="total time for waveform, not counting pre- and postbuffer (s) [default 31457280 = 2^21 * 15]")
+                  type="float", dest="duration", default=62914560.0,
+                  help="total time for waveform, not counting pre- and postbuffer (s) [default 62914560 = 2^22 * 15]")
 
 parser.add_option("-d", "--timeStep",
                   type="float", dest="timestep", default=15.0,
@@ -41,6 +41,14 @@ parser.add_option("-d", "--timeStep",
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
+
+parser.add_option("-D", "--debug",
+                  action="store_true", dest="debug", default=False,
+                  help="compute debugging time series for EMRIs [off by default]")
+
+parser.add_option("-P", "--poldebug",
+                  action="store_true", dest="poldebug", default=False,
+                  help="use SL polarization convention for EMRIs [off by default]")
 
 (options, args) = parser.parse_args()
 
@@ -75,7 +83,15 @@ if ( hasattr(mysystem,'IntegrationStep') and
 initialtime = options.inittime - options.prebuffer
 samples = int( (options.duration + options.prebuffer + options.postbuffer) / options.timestep + 0.1 )
 
-(hp0,hc0) = mysystem.waveforms(samples,options.timestep,initialtime)
+if options.poldebug == True and mysystem.xmltype == 'ExtremeMassRatioInspiral':
+    (hp0,hc0) = mysystem.waveforms(samples,options.timestep,initialtime,debug=-1)
+else:
+    (hp0,hc0) = mysystem.waveforms(samples,options.timestep,initialtime,debug=0)
+
+if options.debug == True and mysystem.xmltype == 'ExtremeMassRatioInspiral':
+    (Ap,Ac) = mysystem.waveforms(samples,options.timestep,initialtime,debug=1)
+    (ga,al) = mysystem.waveforms(samples,options.timestep,initialtime,debug=2)
+    (ps,pl) = mysystem.waveforms(samples,options.timestep,initialtime,debug=3)
 
 # impose polarization on waveform
 
@@ -84,7 +100,10 @@ pol = mysystem.Polarization
 hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
 hc = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
 
-mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc),'hp,hc')
+if options.debug == True and mysystem.xmltype == 'ExtremeMassRatioInspiral':
+    mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc,Ap,Ac,ga,al,ps,pl),'hp,hc,Ap,Ac,gamma,alpha,psi,psisl')
+else:
+    mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc),'hp,hc')
 
 mysystem.TimeSeries.Cadence = options.timestep
 mysystem.TimeSeries.TimeOffset = initialtime
