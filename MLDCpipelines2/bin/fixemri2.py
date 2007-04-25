@@ -65,6 +65,8 @@ for source in allsources:
         rm = RotationMatrix(thetas,phis,pol-pi/2)
         
         thetaknew, phiknew = VectorToAngle(Rotate(rm,AngleToVector(thetak,phik)))
+        if phiknew < 0:
+            phiknew = phiknew + 2*pi
 
         cosk = cos(thetas) * cos(thetak) + sin(thetas) * sin(thetak) * cos(phis - phik)
         cosknew = cos(thetas) * cos(thetaknew) + sin(thetas) * sin(thetaknew) * cos(phis - phiknew)
@@ -88,9 +90,13 @@ for source in allsources:
         
         alpha0new = acos((cos(thetalnew) - cos(thetaknew)*cos(lam))/(sin(thetaknew)*sin(lam)))
         
+        nscl = sin(thetas) * sin(phik - phis) * sin(lam) * cos(alpha0) + (cosk * cos(thetak) - cos(thetas)) * sin(lam) * sin(alpha0) / sin(thetak)
+        sinalpha0new = (nscl - sin(thetas) * sin(phiknew - phis) * sin(lam) * cos(alpha0new)) / ((cosk * cos(thetaknew) - cos(thetas)) * sin(lam)) * sin(thetaknew) 
+        if sinalpha0new < 0:
+            alpha0new = 2*pi - alpha0new
+        
         # verify that gamma is invariant
         
-        nscl = sin(thetas) * sin(phik - phis) * sin(lam) * cos(alpha0) + (cosk * cos(thetak) - cos(thetas)) * sin(lam) * sin(alpha0) / sin(thetak)
         beta = atan2( (cos(lam) * cosi - cosk) / (sin(lam) * sqrt(1 - cosi**2)), 
                       nscl / (sin(lam) * sqrt(1 - cosi**2)) )
 
