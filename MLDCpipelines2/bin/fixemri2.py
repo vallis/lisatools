@@ -62,7 +62,7 @@ for source in allsources:
 
         # rotate thetak, phik
 
-        rm = RotationMatrix(thetas,phis,pol)
+        rm = RotationMatrix(thetas,phis,pol-pi/2)
         
         thetaknew, phiknew = VectorToAngle(Rotate(rm,AngleToVector(thetak,phik)))
 
