@@ -423,76 +423,107 @@ void AKWaveform::GetFinalOrbitalParams(float& t, float& e_end, float& nu_end){
 
 }
 
-int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength){
-
+int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength, int debug) {
     LISAWPAssert(runDone, "you must Run first");
     LISAWPAssert(sourceSet, "you must set source location");
-   
-
 
     int theSize = tt.size();
 
     LISAWPAssert(theSize <= hPlusLength && theSize <= hCrossLength, "Buffer insufficient!");
-       
+
     Sn = cos(thetaS)*cos(thetaK) + sin(thetaS)*sin(thetaK)*cos(phiS - phiK);
-    
-   // loop over orbital evolution
-   double phiD = 0.0;
-   //double OmOrb = LISAWP_TWOPI/LISAWP_YRSID_SI;
-   double t;
-   // double psiSL; MV 070330
-   double psi;
-   double cs;
 
-   for (int i=0; i<theSize; i++){
+    // loop over orbital evolution
+    double phiD = 0.0;
+    //double OmOrb = LISAWP_TWOPI/LISAWP_YRSID_SI;
+    double t;
+    // double psiSL; MV 070330
+    double psi;
+    double cs;
 
-	t = tt[i];
+    for (int i=0; i<theSize; i++) {
+        t = tt[i];
         e = e_t[i];
-	nu = nu_t[i];
-      //phiD = LISAWP_TWOPI*nu*(LISAWP_AU_SI/LISAWP_C_SI)*sin(thetaS)*cos(OmOrb*t - phiS);  
-	phi = phi_t[i] + phiD;
+        nu = nu_t[i];
+        //phiD = LISAWP_TWOPI*nu*(LISAWP_AU_SI/LISAWP_C_SI)*sin(thetaS)*cos(OmOrb*t - phiS);  
+        phi = phi_t[i] + phiD;
         alpha = al_t[i];
-	gamma = gamma_t[i];
-    
-    thetaL = acos(cos(thetaK)*cos(lambba) + sin(thetaK)*sin(lambba)*cos(alpha));
-	LISAWPAssert(sin(thetaL) != 0.0, "sin(thetaL) = 0, cannot determine phiL");
+        gamma = gamma_t[i];
 
-	cs = ( sin(thetaK)*cos(phiK)*cos(lambba) - \
-	     cos(phiK)*cos(thetaK)*sin(lambba)*cos(alpha) + sin(phiK)*sin(lambba)*sin(alpha));
-	if (cs != 0){
-	    phiL = ArcTan((sin(thetaK)*sin(phiK)*cos(lambba) - \
-	      sin(phiK)*cos(thetaK)*sin(lambba)*cos(alpha) -cos(phiK)*sin(lambba)*sin(alpha)), cs);
-	}else{
-	    phiL = LISAWP_PI/2.0;
-	}
-    
+        thetaL = acos(cos(thetaK)*cos(lambba) + sin(thetaK)*sin(lambba)*cos(alpha));
+        LISAWPAssert(sin(thetaL) != 0.0, "sin(thetaL) = 0, cannot determine phiL");
+
+        cs = ( sin(thetaK)*cos(phiK)*cos(lambba) - \
+             cos(phiK)*cos(thetaK)*sin(lambba)*cos(alpha) + sin(phiK)*sin(lambba)*sin(alpha) );
+
+        if (cs != 0) {
+            phiL = ArcTan((sin(thetaK)*sin(phiK)*cos(lambba) - \
+            sin(phiK)*cos(thetaK)*sin(lambba)*cos(alpha) -cos(phiK)*sin(lambba)*sin(alpha)), cs);
+        } else {
+            phiL = LISAWP_PI/2.0;
+        }
+
         int N = (int)(30*e);
-        if(e <0.136) N=4;	
-	Waveform(N);
+        if (e<0.136) N=4;	
 
-    // MV 070330: using standard polarization angle
+        Waveform(N);
 
-    double up = (cos(thetaS)*sin(thetaL)*cos(phiS-phiL) - cos(thetaL)*sin(thetaS));
-    double dw = (sin(thetaL)*sin(phiS-phiL));
+        // MV 070330: using standard polarization angle
 
-    if (dw != 0.0) {
-        psi = ArcTan(up, dw); // previously it was psiSL = ArcTan(dw,up);
-    } else {
-        psi = LISAWP_PI / 2.0;
-    }
-    
-    // previously it was 2.0*ps0 - 2.0*psiSL
-	*hPlus  =  Aplus*cos(2.0*ps0 + 2.0*psi) + Across*sin(2.0*ps0 + 2.0*psi);
-	*hCross = -Aplus*sin(2.0*ps0 + 2.0*psi) + Across*cos(2.0*ps0 + 2.0*psi);
+        double up = (cos(thetaS)*sin(thetaL)*cos(phiS-phiL) - cos(thetaL)*sin(thetaS));
+        double dw = (sin(thetaL)*sin(phiS-phiL));
 
-    // end MV 070330
+        if (debug == -1) {
+            // this is the old (wrong) SL convention
+            
+            if (up != 0.0)
+                psi = ArcTan(dw,up);
+            else
+                psi = LISAWP_PI / 2.0;
 
-	hPlus++;
-	hCross++;
+            *hPlus  =  Aplus*cos(2.0*ps0 - 2.0*psi) + Across*sin(2.0*ps0 - 2.0*psi);
+            *hCross = -Aplus*sin(2.0*ps0 - 2.0*psi) + Across*cos(2.0*ps0 - 2.0*psi);
+        } else {
+            if (dw != 0.0)
+                psi = ArcTan(up, dw);
+            else
+                psi = LISAWP_PI / 2.0;
+
+            switch (debug) {
+                case 1:
+                    *hPlus  = Aplus;
+                    *hCross = Across;
+                    break;
+                case 2:
+                    double Ln, nSL, beta, gma;
+
+                    Ln  = cos(thetaS)*cos(thetaL) + sin(thetaS)*sin(thetaL)*cos(phiS - phiL);
+                    nSL = sin(thetaS)*sin(phiK - phiS)*sin(lambba)*cos(alpha) + \
+                 	      (Sn*cos(thetaK) - cos(thetaS))*sin(lambba)*sin(alpha)/sin(thetaK);
+
+                    if (nSL != 0.0) beta = ArcTan( (cos(lambba)*Ln - Sn),(nSL) ); else beta = LISAWP_PI/2.0;
+                    gma = gamma + beta;
+                                
+                    *hPlus  = gma;
+                    *hCross = Ln;
+                    break;
+                case 3:
+                    *hPlus  = psi;
+                    if (up != 0.0) psi = ArcTan(dw,up); else psi = LISAWP_PI / 2.0;
+                    *hCross = psi;
+                    break;
+                default:
+                    *hPlus  =  Aplus*cos(2.0*ps0 + 2.0*psi) + Across*sin(2.0*ps0 + 2.0*psi);
+                    *hCross = -Aplus*sin(2.0*ps0 + 2.0*psi) + Across*cos(2.0*ps0 + 2.0*psi);
+                    break;
+            }
+        }
+
+        hPlus++;
+        hCross++;
    } // end of for loop
-   
-   return(theSize);
 
+   return(theSize);
 }
 
 
