@@ -103,7 +103,7 @@ class AKWaveform:public BaseIntegr{
      */
     
     void GetFinalOrbitalParams(float& t, float& e_end, float& nu_end);
-   		    
+
 
     /** returns orbital elements at time t */
     void GetOrbitalParams(double t, double& nut, double& et, double& gt, double& pht, double& alt);
@@ -115,7 +115,7 @@ class AKWaveform:public BaseIntegr{
     /** Returns size of waveform and fills up hplus, hcross
      *@param ps0 initial polarization angle
     */
-     int GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength);
+     int GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength, int debug);
 
 	private:
 
