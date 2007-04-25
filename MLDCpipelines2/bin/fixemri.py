@@ -144,10 +144,12 @@ for source in allsources:
             # Solve for psibad(thetalnew,philnew), modulus pi:
             #   assume positive sign for sin(phis - philnew); we know the sign of sin(phis - phil)
             thetalnew = bracket_find_root(lambda x: unwrap(psibad(x,sgn) - 0.5*pi - psibad(thetal,sign(sin(phis - phil))) + pol,pi),
-                                          0,pi,1e-8)
+                                          0,pi,1e-12)
 
             if len(thetalnew) > 1:
                 raise ValueError, "Found more than one psibad solutions!"
+            elif len(thetalnew) == 0:
+                raise ValueError, "Cannot find any solution for psibad!"
             else:
                 thetalnew = thetalnew[0]
 
@@ -194,7 +196,7 @@ for source in allsources:
 
             alpha0new = bracket_find_root(lambda a: ( cos(thetas) * cos(fthetak(a,sgn)) + sin(thetas) * sin(fthetak(a,sgn)) *
                                                         ( cosphisl * fcosphilk(fthetak(a,sgn),a) - sinphisl * fsinphilk(a) ) - cosk ),
-                                          0,2*pi,1e-8)
+                                          0,2*pi,1e-12)
 
             sols = []
             for alpha0 in alpha0new:
@@ -209,6 +211,8 @@ for source in allsources:
             return sols
 
         sols = falpha0(thetalnew1,philnew1,1) + falpha0(thetalnew1,philnew1,-1) + falpha0(thetalnew2,philnew2,1) + falpha0(thetalnew2,philnew2,-1)
+
+        # choose the best solution (defined as the one for which the transformation thetak, phik -> thetal, phil has the least error)
 
         thesol = None
 
@@ -244,7 +248,7 @@ for source in allsources:
 
         beta = atan2(sinbeta,cosbeta)
 
-        nsclnew = sin(thetas) * sin(phiknew - phis) * sin(lam) * cos(alpha0new) + (cosk * cos(thetaknew) - cos(thetas)) * sin(lam) * sin(alpha0) / sin(thetaknew)
+        nsclnew = sin(thetas) * sin(phiknew - phis) * sin(lam) * cos(alpha0new) + (cosk * cos(thetaknew) - cos(thetas)) * sin(lam) * sin(alpha0new) / sin(thetaknew)
 
         cosbetanew = nsclnew / (sin(lam) * sqrt(1 - cosi**2))
 
@@ -259,6 +263,7 @@ for source in allsources:
         # write changes to file
         
         print "--- Changes to key file ---"
+        print "alpha0: %+f*pi -> %+f*pi" % (alpha0/pi, alpha0new/pi)
         print "tildeg: %+f*pi -> %+f*pi" % (tildeg/pi, tildegnew/pi)
         print "thetak: %+f*pi -> %+f*pi" % (thetak/pi, thetaknew/pi)
         print "phik  : %+f*pi -> %+f*pi" % (phik/pi,   phiknew/pi)
@@ -278,6 +283,7 @@ for source in allsources:
         print "sinpsi: %+f    -> %+f" % (scf,newscf)
         
         source.InitialTildeGamma = tildegnew
+        source.InitialAlphaAngle = alpha0new
 
         source.PolarAngleOfSpin = thetaknew
         source.AzimuthalAngleOfSpin = phiknew
