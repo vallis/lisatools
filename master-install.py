@@ -20,6 +20,7 @@ gsldir = None
 
 newsynthlisa = False
 newlisasim   = False
+dotraits     = False
 
 for arg in sys.argv:
     if arg.startswith('--prefix='):             # main library dir
@@ -30,6 +31,8 @@ for arg in sys.argv:
         newsynthlisa = True
     elif arg.startswith('--newlisasim'):        # force lisasim reinstallation
         newlisasim = True
+    elif arg.startswith('--traits'):            # include experimental traits functionality
+        dotraits = True
 
 if libdir == None:
     print "!!! You need to specify a master lib dir with --prefix=<libdir>"
@@ -260,4 +263,27 @@ if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
 os.chdir(here)
 print >> open('MLDCpipelines2/bin/lisasimulator.py','w'), "lisasim1yr = '%s'; lisasim2yr = '%s'" % (libdir + '/lisasimulator-1year',
                                                                                                     libdir + '/lisasimulator-2year')
+# install/check install for traits
 
+if dotraits:
+    try:
+        import enthought.traits
+    except:
+        try:
+            import wx
+            if not '2.6.3' in wx.__version__:
+                raise
+        except:
+            print "!!! Sorry, but Enthought Traits requires wxPython 2.6.3.3"
+            print "    (you can get it from http://www.wxpython.org)"
+        else:        
+            print "--> Installing traits"
+            os.chdir('Packages')
+            assert(0 == os.system('tar zxf enthought.traits-1.1.0-src.tar.gz'))
+            # compile in place, then move to python libdir
+            os.chdir('enthought.traits-1.1.0/enthought/traits')
+            assert(0 == os.system('python setup_minimal.py build_ext --inplace'))
+            os.chdir('../../..')
+            assert(0 == os.system('mv enthought.traits-1.1.0/enthought %s' % pythonlib))
+            assert(0 == os.system('rm -rf enthought.traits-1.1.0'))
+            os.chdir(here)
