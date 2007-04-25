@@ -91,8 +91,9 @@ if options.seed == None:
     parser.error("You must specify the seed!")
 
 # this sets the default dataset duration if not specified, with a special case for apparent challenge-1 datasets
+# (but not for 1.3.X EMRIs, which are two years)
 if options.duration == None:
-    if 'challenge1' in challengename:
+    if 'challenge1' in challengename and (not 'challenge1.3' in challengename):
         print("--> It looks like you're generating a challenge-1 dataset, so I will set the duration to 2^21 * 15 (you can override this with -T).")
         options.duration = oneyear
     else:
