@@ -68,7 +68,7 @@ for source in allsources:
 
         cosk = cos(thetas) * cos(thetak) + sin(thetas) * sin(thetak) * cos(phis - phik)
         cosknew = cos(thetas) * cos(thetaknew) + sin(thetas) * sin(thetaknew) * cos(phis - phiknew)
-        print "Check cosk: %f -> %f" % (cosk, cosknew)
+        print "Check cosk: %+f -> %+f" % (cosk, cosknew)
 
         # get thetal, phil at alpha = alpha0 (lam is constant)
         
@@ -82,13 +82,13 @@ for source in allsources:
         
         cosi = cos(thetas) * cos(thetal) + sin(thetas) * sin(thetal) * cos(phis - phil)
         cosinew = cos(thetas) * cos(thetalnew) + sin(thetas) * sin(thetalnew) * cos(phis - philnew)
-        print "Check cosi: %f -> %f" % (cosi, cosinew)
+        print "Check cosi: %+f -> %+f" % (cosi, cosinew)
         
         # get the new alpha0 (lam does not change...)
         
         alpha0new = acos((cos(thetalnew) - cos(thetaknew)*cos(lam))/(sin(thetaknew)*sin(lam)))
         
-        # suppose gamma must stay invariant; then
+        # verify that gamma is invariant
         
         nscl = sin(thetas) * sin(phik - phis) * sin(lam) * cos(alpha0) + (cosk * cos(thetak) - cos(thetas)) * sin(lam) * sin(alpha0) / sin(thetak)
         beta = atan2( (cos(lam) * cosi - cosk) / (sin(lam) * sqrt(1 - cosi**2)), 
@@ -100,11 +100,12 @@ for source in allsources:
         
         tildegnew = tildeg + beta - betanew
 
+        print "Check tgam: %+f -> %+f" % (tildeg, tildegnew)
+
         # write changes to file
         
         print "--- Changes to key file ---"
         print "alpha0: %+f*pi -> %+f*pi" % (alpha0/pi, alpha0new/pi)
-        print "tgama0: %+f*pi -> %+f*pi" % (tildeg/pi, tildegnew/pi)
         
         print "thetak: %+f*pi -> %+f*pi" % (thetak/pi, thetaknew/pi)
         print "phik  : %+f*pi -> %+f*pi" % (phik/pi,   phiknew/pi)
@@ -120,11 +121,10 @@ for source in allsources:
         ccf,    scf    = cos(2*pol - 2*psiSL), sin(2*pol - 2*psiSL)
         newccf, newscf = cos(2*psiLS),         sin(2*psiLS)
         
-        print "--- Polarization rotation ---"
-        print "cospsi: %+f    -> %+f" % (ccf,newccf)
-        print "sinpsi: %+f    -> %+f" % (scf,newscf)
+        print "--- Final check: polarization rotation ---"
+        print "cospsi: %+f -> %+f" % (ccf,newccf)
+        print "sinpsi: %+f -> %+f" % (scf,newscf)
         
-        source.InitialTildeGamma = tildegnew
         source.InitialAlphaAngle = alpha0new
 
         source.PolarAngleOfSpin = thetaknew
