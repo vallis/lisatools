@@ -82,29 +82,35 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
 
     def  __init__(self,name=''):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
+        
+        self.samples = None
+        self.deltat  = None
+        self.inittime = None
     
-    def waveforms(self,samples,deltat,inittime):
-       
-       emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
+    def waveforms(self,samples,deltat,inittime,debug=0):
+        if samples != self.samples or deltat != self.deltat or inittime != self.inittime:
+            self.samples, self.deltat, self.inittime = samples, deltat, inittime
 
-       emri.SetSourceLocation(math.pi/2.0 - self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
-                              self.AzimuthalAngleOfSpin, self.Distance)
-			      
-       emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
-                        self.InitialAzimuthalOrbitalPhase, self.InitialAlphaAngle, self.LambdaAngle)
+            self.emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
+            
+            self.emri.SetSourceLocation(math.pi/2.0 - self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
+                                        self.AzimuthalAngleOfSpin, self.Distance)
+            
+            self.emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
+                                  self.InitialAzimuthalOrbitalPhase, self.InitialAlphaAngle, self.LambdaAngle)
+        
+        hp = numpy.empty(samples,'d')
+        hc = numpy.empty(samples,'d')
 
-       hp = numpy.empty(samples,'d')
-       hc = numpy.empty(samples,'d')
+        # don't apply polarization here since it comes in at the level of makebarycentric.py
+        # wavelen = emri.GetWaveform(self.Polarization, hp, hc)
 
-       # don't apply polarization here since it comes in at the level of makebarycentric.py
-       # wavelen = emri.GetWaveform(self.Polarization, hp, hc)
+        wavelen = self.emri.GetWaveform(0, hp, hc, debug)
 
-       wavelen = emri.GetWaveform(0, hp, hc)
+        hp[wavelen:] = 0.0
+        hc[wavelen:] = 0.0
 
-       hp[wavelen:] = 0.0
-       hc[wavelen:] = 0.0
-
-       return (hp,hc)
+        return (hp,hc)
        
 # utility function
 
