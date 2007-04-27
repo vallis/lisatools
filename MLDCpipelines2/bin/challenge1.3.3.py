@@ -18,6 +18,8 @@ def run(command):
 # only one argument, and it's the seed...
 seed = int(sys.argv[1])
 
+random.seed(seed)
+
 #Challenge 1.3.3: One EMRI. MBH mass = 5.e6, snr random between 40 and 60
 
 requestsn = random.randint(40,60)
