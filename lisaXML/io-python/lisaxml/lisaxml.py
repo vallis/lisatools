@@ -1,4 +1,4 @@
-__version__='$Id$'
+__version__ = '$Id$'
 
 import pyRXP
 import xmlutils
@@ -48,6 +48,17 @@ SourceClassModules['GalacticBinary'] = 'GalacticBinary'
 # a general list...
 
 class XMLobject(object):
+    """This is the base class for objects represented in lisaXML. It keeps
+    track of what attributes are set for an object, and adds them to
+    XMLobject.parameters unless the attribute name ends in _Unit or _Type. The
+    idea is that all the attributes in XMLobject.parameters will eventually be
+    written to XML as <Param> elements. When attributes are deleted they are
+    also removed from XMLobject.parameters. To add an attribute while keeping
+    it out of XMLobject.parameters, one can use the syntax
+    XMLobject.__dict__['attributename'] = valueself. This class provides also
+    a function parstr to print out an attribute/parameter with its Unit, if it
+    is set."""
+    
     def __init__(self):
         self.__dict__['parameters'] = []
     
@@ -75,15 +86,29 @@ class XMLobject(object):
         
         return "%s (%s)" % (value,unit)
     
+    def doComment(self,comments):
+        """Add Comment element (internal function)"""
+        
+        return ('Comment', {}, [comments])
+    
 
-class Table(XMLobject):
+class Table(XMLobject):    
+    """This class represents a lisaXML Table object. It is constructed with
+    the name and record length of a stream. Attributes are supposed to be set,
+    in order, representing the <Param> elements that corresponding to columns
+    in the stream. Currently writing out the XML for a Table object copies the
+    stream if the file is smaller than 5Mb, and symlinks it otherwise."""
+    
     def __init__(self,streamname,streamlength):
+        """Creates a Table object."""
+        
         super(Table,self).__init__()
         
         self.__dict__['StreamName'] = streamname
         self.__dict__['StreamLength'] = streamlength
     
     def XML(self,textfile):
+        """Returns a nested-tuple representation of a Table object."""
         columns = []
         
         for par in self.parameters:
@@ -126,12 +151,20 @@ class Table(XMLobject):
     
 
 class PlaneWaveTable(XMLobject):
+    """This class represents a lisaXML PlaneWaveTable, which embeds (as
+    PlaneWaveTable.Table) a table of source parameters, but carries additional
+    parameters, such as SourceType."""
+    
     def __init__(self,name=''):
+        """Creates a PlaneWaveTable object."""
+        
         super(PlaneWaveTable,self).__init__()
         
         self.__dict__['name'] = name
     
     def XML(self,xmlfile,name=None,comments=''):
+        """Returns a nested-tuple representation of a PlaneWaveTable object."""
+        
         xsildict = {}
         params = []
         
@@ -151,7 +184,16 @@ class PlaneWaveTable(XMLobject):
     
 
 class TimeSeries(XMLobject):
+    """This class derives from XMLobject, and it represents a TimeSeries
+    holding numpy arrays for an Observable or Source object."""
+    
     def __init__(self,arrays,name='',unit=''):
+        """Create a TimeSeries object. "arrays" must be a numpy 1D array, or a list
+        or tuple of numpy arrays of the same length. "name" must be given as a 
+        comma separated list of observable names. The attributes TimeOffset and
+        Cadence must also be set before the TimeSeries can be output.
+        See also lisaxml.Observable."""
+        
         super(TimeSeries,self).__init__()
         
         # if we get only one array, make a tuple        
@@ -167,6 +209,8 @@ class TimeSeries(XMLobject):
         self.__dict__['unit'] = unit
     
     def XML(self,filename,encoding='Binary'):
+        """Returns a nested-tuple representation of a TimeSeries object."""
+        
         buffer = numpy.zeros([self.Length,self.Records],'d')
         
         for i in range(self.Records):
@@ -196,20 +240,68 @@ class TimeSeries(XMLobject):
                    ('Dim', {'Name': 'Records'}, [self.Records]),
                    Stream ] )
         
-        # watch the definition of duration (it is just length * timestep) 
+        # use default units for TimeOffset and Cadence
+                
+        if not hasattr(self,'TimeOffset_Unit'):
+            self.TimeOffset_Unit = 'Second'
+        if not hasattr(self,'Cadence_Unit'):
+            self.Cadence_Unit = 'Second'
         
+        # watch the definition of duration (it is just length * timestep) 
+                
         TimeSeries = ('XSIL',
                       {'Name': self.name, 'Type': 'TimeSeries'},
-                      [ ('Param', {'Name': 'TimeOffset', 'Unit': 'Second'}, [self.TimeOffset]),
-                        ('Param', {'Name': 'Cadence',    'Unit': 'Second'}, [self.Cadence]),
-                        ('Param', {'Name': 'Duration',   'Unit': 'Second'}, [self.Length * self.Cadence]),
+                      [ ('Param', {'Name': 'TimeOffset', 'Unit': self.TimeOffset_Unit}, [self.TimeOffset]),
+                        ('Param', {'Name': 'Cadence',    'Unit': self.Cadence_Unit},    [self.Cadence]),
+                        ('Param', {'Name': 'Duration',   'Unit': self.Cadence_Unit},    [self.Length * self.Cadence]),
                         Array ] )
         
         return TimeSeries
     
 
 class Observable(XMLobject):
+    """This class derives from XMLobject, and it represents a set of TDI
+    observable time series with the same cadence, time offset, and length.
+    Observable.TimeSeries is an instance of TimeSeries containing and
+    describing the data.
+        
+    --- Output ---
+    The following is an example of setting up an Observable object to write it
+    to a lisaXML file object (using TDIData()).
+        
+    tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
+        
+    # or 'Strain'
+    tdiobs.DataType = 'FractionalFrequency'
+        
+    # where t, X, Y, Z are numpy 1D arrays
+    tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
+    tdiobs.TimeSeries.Cadence    = timestep
+    tdiobs.TimeSeries.TimeOffset = inittime
+        
+    lisaXMLinstance.TDIData(tdiobs)
+        
+    --- Input ---
+    Observable.TimeSeries is also available upon reading from a readXML file
+    object (using getTDIObservables(), which returns a list of Observable
+    objects). In that case the individual numpy arrays can be accessed as
+    attributes of TimeSeries.
+        
+    # get the first Observable object
+    tdiobs = readXMLinstance.getTDIObservables()[0]
+        
+    length     = tdiobs.TimeSeries.Length
+    timestep   = tdiobs.TimeSeries.Cadence
+    timeoffset = tdiobs.TimeSeries.TimeOffset
+        
+    t  = timeoffset.t
+    Xf = timeoffset.Xf
+    Yf = timeoffset.Yf
+    Zf = timeoffset.Zf"""
+    
     def __init__(self,name=''):
+        """Creates an Observable object."""
+        
         super(Observable,self).__init__()
         
         self.__dict__['name'] = name
@@ -237,9 +329,64 @@ class Observable(XMLobject):
     
 
 class Source(XMLobject):
-    def __init__(self,sourcetype,name=''):
-        super(Source,self).__init__()
+    """This class represents a lisaXML GW Source object. It inherits from
+    XMLobject and has the same attribute/parameter semantics; in addition, it
+    carries "name" and "xmltype" parameters. The first is written to XML as
+    the "Name" of a PlaneWave element; the second is included among the
+    PlaneWave parameters as <Param Name="SourceType">. "xmltype" is usually
+    automatically set when instantiating Source from a derived object, such as
+    "BBH" or "EMRI". Symmetrically, when a PlaneWave element is read from XML,
+    it will instantiate an object of type given by SourceType.
         
+    Source.outputlist contains the list of parameters that will be written
+    to XML; each parameter is specified by a tuple
+        ('ParName', 'DefaultParUnit', DefaultValue, 'parameter description')
+    if DefaultValue is None, then the parameter must be set explicitly (e.g.,
+    "bbh.Mass1 = 1e6") before the Source can be written to XML. If the Unit
+    is not set explicitly (e.g., "bbh.Mass1_Unit='kg'") then the parameter
+    will be taken to be specified w.r.t. 'DefaultParUnit'. The package
+    lisaxml.convertunit will attempt to some trivial unit conversions.
+        
+    All Source objects should support the function call
+        waveforms(samples,timestep,initialtime)
+    (where timestep and initialtime are in seconds) to return hp and hc
+    time series as numpy arrays.
+        
+    --- Output ---
+    import BBH
+        
+    # BBH derives from Source
+    mysystem = BBH.BlackHoleBinary('Name of my binary')
+        
+    mysystem.Mass1 = 1.0e6  # m1 in SolarMass
+    mysystem.Mass2 = 0.5e6  # m2 in SolarMass
+    ...
+        
+    outputXML = lisaxml.lisaXML('output.xml')
+    outputXML.SourceData(mysystem)
+    outputXML.close()
+        
+    --- Input ---
+        
+    inputXML = lisaxml.readXML('input.xml')
+    # this returns a list, from which we take only the first Source
+    mysystem = inputXML.getLISASources()[0]
+    inputXML.close()
+        
+    # mysystem is now a "BBH" object
+    mass1 = mysystem.Mass1
+    ...
+        
+    # all Source objects support this call to get hp and hc polarizations
+    # as numpy arrays
+    (hp,hc) = mysystem.waveforms(samples,timestep,initialtime)"""
+    
+    def __init__(self,sourcetype,name=''):
+        """Creates a generic Source object. Generally this is called
+        implicitly from specific constructors such as BBH and EMRI."""
+            
+        super(Source,self).__init__()
+            
         # avoid calling setattr
         self.__dict__['xmltype'] = sourcetype
         self.__dict__['name'] = name
@@ -322,7 +469,14 @@ class Source(XMLobject):
 
 # just a generic XML object...
 class XSILobject(XMLobject):
+    """This class represents a lisaXML object with parameters (such as LISA),
+    but without the special properties of Source. [In a future implementation,
+    Source may inherit from XSILobject.]"""
+    
     def __init__(self,xmltype,name=''):
+        """Create an XSILobject. Generally called from the constructors of
+        inhering objects."""
+            
         super(XSILobject,self).__init__()
         
         # avoid calling setattr
@@ -358,12 +512,29 @@ class XSILobject(XMLobject):
     
 
 class LISA(XSILobject):
+    """This class inherits from XMLobject, and it represents the pseudo-LISA
+    geometry. For instance, the standard MLDC pseudo-LISA is created with
+        
+    lisa = lisaxml.LISA('Standard MLDC PseudoLISA')
+    lisa.TimeOffset      = 0; lisa.TimeOffset_Unit      = 'Second'
+    lisa.InitialPosition = 0; lisa.InitialPosition_Unit = 'Radian'
+    lisa.InitialRotation = 0; lisa.InitialRotation_Unit = 'Radian'
+    lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
+        
+    LISA objects are read with readXML.getLISAgeometry() and written
+    with lisaXML.LISAData()."""
+    
     def __init__(self,name=''):
         super(LISA,self).__init__('PseudoLISA',name)
     
 
 class writeXML(object):
+    """The basic class underlying lisaXML, which supports basic formatted-XML
+    output."""
+    
     def __init__(self,filename):
+        """Opens an XML file for writing."""
+        
         if filename:
             # add ".xml" to filename if necessary
             if not re.match('.*\.xml$',filename):
@@ -376,10 +547,14 @@ class writeXML(object):
             self.opened = -1
     
     def __del__(self):
+        """Closes the file if still open."""
+        
         if self.opened == 1:
             self.close()
     
     def close(self):
+        """Closes the file if still open."""
+        
         if self.opened == 1:
             self.f.close()
             self.opened = 0
@@ -388,18 +563,28 @@ class writeXML(object):
     stdindent = 4
     indent = ""  
     def incind(self):
+        """Increase the current indentation level."""
+        
         self.indent += " " * self.stdindent
     
     def decind(self):
+        """Reduce the current indentation level."""
+        
         self.indent = self.indent[0:len(self.indent)-self.stdindent]
     
     def iprint(self,s):
+        """Print a string at the current indentation level, and adds a newline
+        if not already included in the string."""
+        
         if self.opened != 0 and len(s) > 0:
             print >> self.f, self.indent + s,
             if s[-1] != '\n':
                 print >> self.f
     
     def doattrs(self,attrs):
+        """Handles the attributes of an element, putting Name first if it's
+        there."""
+        
         string = ''
         
         if len(attrs) > 0:
@@ -415,7 +600,7 @@ class writeXML(object):
         return string
     
     def opentag(self,tag,attrs):
-        """Open an XML element; take dictionary for attributes""" 
+        """Open an XML element; take dictionary for attributes.""" 
         
         string = '<' + tag + self.doattrs(attrs) + '>'
         
@@ -423,14 +608,14 @@ class writeXML(object):
         self.incind()
     
     def singletag(self,tag,attrs):
-        """Do an XML singleton; take dictionary for attributes"""
+        """Do an XML singleton; take dictionary for attributes."""
         
         string = '<' + tag + self.doattrs(attrs) + '/>'
         
         self.iprint(string)
     
     def coupletag(self,tag,attrs,thevalue):
-        """Do inline XML open/close tag"""
+        """Do inline XML open/close tag."""
         
         string = '<' + tag + self.doattrs(attrs) + '>'     
         string += str(thevalue)
@@ -439,7 +624,7 @@ class writeXML(object):
         self.iprint(string)
     
     def closetag(self,tag):
-        """Close an XML element"""
+        """Close an XML element."""
         
         string = '</' + tag + '>'
         
@@ -447,7 +632,7 @@ class writeXML(object):
         self.iprint(string)    
     
     def content(self,thevalue):
-        """Output XML characters"""
+        """Output XML characters, adding indentation."""
         # try to keep indentation for multiline content
         
         for line in str(thevalue).split('\n'):
@@ -475,6 +660,8 @@ class writeXML(object):
     
 
 class lisaXML(writeXML):
+    """The Python object representation of an output lisaXML file"""
+    
     def __init__(self,filename,author='',date='',comments=''):
         """Create lisaXML file with metadata [author,date,comments];
            date should be given as ISO-8601."""
@@ -501,22 +688,20 @@ class lisaXML(writeXML):
         self.theNoiseData = []
         self.theTDIData = []
     
-    def doComment(self,comments):
-        return ('Comment', {}, [comments])
-    
     def SourceData(self,source,name='',comments=''):
-        """Add a SourceData entry describing a synthlisa source to
-           a lisaXML file object."""
+        """Add a source (e.g., BBH, EMRI, GalacticBinary) to a lisaXML file object.
+        See lisaxml.Source."""
         
         self.theSourceData.append(source.XML(self,name,comments))
     
     def TDIData(self,observable,name='',comments=''):
-        """Add a TDIData entry describing a set of TDI observables."""
+        """Add a TDI Observable object to the lisaXML file. See lisaxml.Observable."""
         
         self.theTDIData.append(observable.XML(self,name,comments))
     
     def LISAData(self,lisa,name='',comments=''):
-        """Add a LISAData entry describing the LISA geometry."""
+        """Add a LISAData entry describing the LISA geometry. See lisaxml.LISA."""
+        
         self.theLISAData.append(lisa.XML(self,name,comments))
     
     def close(self):
@@ -586,6 +771,12 @@ class lisaXML(writeXML):
         
         writeXML.close(self)
     
+    def doComment(self,comments):
+        """Add Comment element (internal function)"""
+        
+        return ('Comment', {}, [comments])
+    
+
 
 # now to map a returned Source into a synthlisa object, I can just modify
 # the synthlisa constructor to get what it needs... and then a "synthesize"
