@@ -86,7 +86,7 @@ samples = int( (options.duration + options.prebuffer + options.postbuffer) / opt
 if options.poldebug == True and mysystem.xmltype == 'ExtremeMassRatioInspiral':
     (hp0,hc0) = mysystem.waveforms(samples,options.timestep,initialtime,debug=-1)
 else:
-    (hp0,hc0) = mysystem.waveforms(samples,options.timestep,initialtime,debug=0)
+    (hp0,hc0) = mysystem.waveforms(samples,options.timestep,initialtime)
 
 if options.debug == True and mysystem.xmltype == 'ExtremeMassRatioInspiral':
     (Ap,Ac) = mysystem.waveforms(samples,options.timestep,initialtime,debug=1)
