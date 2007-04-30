@@ -130,20 +130,21 @@ class Table(XMLobject):
         
         # initially support only Remote/Text
         
-        try:
-            # delete textfile if it exists
+        if os.path.abspath(textfile) != self.StreamName:        
             try:
-                os.unlink(textfile)
-            except:
-                pass
+                # delete textfile if it exists
+                try:
+                    os.unlink(textfile)
+                except:
+                    pass
             
-            # copy files below 50M, symlink otherwise
-            if os.stat(self.StreamName)[stat.ST_SIZE] < 50000000:
-                shutil.copy(self.StreamName,textfile)
-            else:
-                os.symlink(self.StreamName,textfile)
-        except IOError:
-            raise IOError, 'Table.XML(): I have a problem copying data file %s to %s' % (self.StreamName,textfile)
+                # copy files below 50M, symlink otherwise
+                if os.stat(self.StreamName)[stat.ST_SIZE] < 50000000:
+                    shutil.copy(self.StreamName,textfile)
+                else:
+                    os.symlink(self.StreamName,textfile)
+            except IOError:
+                raise IOError, 'Table.XML(): I have a problem copying data file %s to %s' % (self.StreamName,textfile)
             
         stream = ('Stream', {'Type': 'Remote', 'Encoding': 'Text'}, [os.path.basename(textfile)])
         
@@ -181,6 +182,51 @@ class PlaneWaveTable(XMLobject):
             xmlfile.textfiles += 1
         
         return ('XSIL', xsildict, params)
+    
+    def getSources(self):
+        """Is a generator that instantiates sources from the Table, one by
+        one..."""
+        
+        tablename  = self.name
+        
+        sourcetype = self.SourceType
+        try:
+            module = __import__(SourceClassModules[sourcetype])
+            retobj = getattr(module,sourcetype)
+        except KeyError:
+            raise NotImplementedError, 'PlaneWaveTable.getSources(): unknown object type %s' % sourcetype
+        
+        sourceparameters = self.Table.parameters
+        # for the moment we'll assume that all parameters have their default units
+        # of course, this is dangerous...
+        
+        counter = 1
+        for line in open(self.Table.StreamName,'r'):
+            newobject = retobj(name='Object #%d from table %s' % (counter,tablename))
+            
+            # skip line if we don't have enough parameters
+            lineparameters = line.split()
+            if len(sourceparameters) != len(lineparameters):
+                break
+            
+            for (p,v) in zip(sourceparameters,lineparameters):
+                # should be more sophisticated in treating type here...
+                value = v
+
+                for t in (int,float,str):
+                    try:
+                        value = t(v)
+                    except ValueError:
+                        pass
+                    else:
+                        break
+                        
+                setattr(newobject,p,value)
+            
+            counter = counter + 1
+            yield newobject
+        
+        return
     
 
 class TimeSeries(XMLobject):
@@ -350,7 +396,8 @@ class Source(XMLobject):
     All Source objects should support the function call
         waveforms(samples,timestep,initialtime)
     (where timestep and initialtime are in seconds) to return hp and hc
-    time series as numpy arrays.
+    time series as numpy arrays. [Note: waveforms currently assumes that
+    all parameters have their default units.]
         
     --- Output ---
     import BBH
@@ -384,7 +431,7 @@ class Source(XMLobject):
     def __init__(self,sourcetype,name=''):
         """Creates a generic Source object. Generally this is called
         implicitly from specific constructors such as BBH and EMRI."""
-            
+        
         super(Source,self).__init__()
             
         # avoid calling setattr
