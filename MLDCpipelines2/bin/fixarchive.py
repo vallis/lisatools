@@ -14,11 +14,21 @@ if len(sys.argv) < 2:
 archive = sys.argv[1]
 
 if '.tar.gz' in archive:
-    challengename = os.path.basename(re.sub('\.tar\.gz','',archive))
-    backup = re.sub('\.tar\.gz','-backup.tar.gz',archive)
+    pass
+elif '.tar' in archive:
+    run('gzip %(archive)s')
+    archive = archive + '.gz'
 else:
-    print "Please give filename of tar-gzipped archive"
+    print "Please give filename of tarred or tarred-gzipped archive"
     sys.exit(0)
+
+challengename = os.path.basename(re.sub('\.tar\.gz','',archive))
+backup = re.sub('\.tar\.gz','-backup.tar.gz',archive)
+backupxml = re.sub('\.tar\.gz','-backup.xml',archive)
+
+prefix = os.path.dirname(__file__)
+if prefix:
+    prefix = prefix + '/'
 
 # untar and make a copy
 run('mkdir %(challengename)s')
@@ -26,7 +36,12 @@ run('tar zxvf %(archive)s -C %(challengename)s')
 run('mv %(archive)s %(backup)s')
 
 # fix the primary binary
-run('fixbinary.py %(challengename)s/%(challengename)s-0.bin %(challengename)s/%(challengename)s-0.bin')
+run('%(prefix)sfixbinary.py %(challengename)s/%(challengename)s-0.bin %(challengename)s/%(challengename)s-0.bin')
+
+# fix the EMRI entries in the key file
+run('mv %(challengename)s/%(challengename)s.xml %(challengename)s/%(challengename)s.xml.old')
+run('%(prefix)sfixemri2.py %(challengename)s/%(challengename)s.xml.old %(challengename)s/%(challengename)s.xml')
+run('mv %(challengename)s/%(challengename)s.xml.old %(backupxml)s')
 
 # remove the spurious binary if present
 if os.path.isfile('%(challengename)s/%(challengename)s-nonoise-0.bin' % globals()) and ('nonoise' not in challengename):

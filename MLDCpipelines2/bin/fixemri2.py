@@ -36,14 +36,14 @@ infile  = sys.argv[1]
 outfile = sys.argv[2]
 
 inputXML = lisaxml.readXML(infile)
-outputXML = lisaxml.lisaXML(outfile,comments='Updated Apr 2007 to fix EMRI parameters, no changes to signals')
+outputXML = lisaxml.lisaXML(outfile,comments='Updated Apr 2007 to fix timestamps and EMRI parameters, no changes to signals')
 
 outputXML.LISAData(inputXML.getLISAgeometry())
 
 allsources = inputXML.getLISASources()
 
 for source in allsources:
-    if source.xmltype == 'ExtremeMassRatioInspiral':
+    if hasattr(source,'xmltype') and source.xmltype == 'ExtremeMassRatioInspiral':
         print "---- Analyzing source %s ----" % source.name
         
         thetas = 0.5*pi - source.EclipticLatitude
@@ -139,3 +139,8 @@ for source in allsources:
         source.Polarization = 0
 
     outputXML.SourceData(source)
+
+tdi = inputXML.getTDIObservables()[0]
+
+if tdi:
+    outputXML.TDIData(tdi)
