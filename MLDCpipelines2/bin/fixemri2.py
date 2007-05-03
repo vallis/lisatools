@@ -19,7 +19,7 @@ def RotationMatrix(theta,phi,psi):
               cos(psi) + (1 - cos(psi))*(cos(theta)*cos(theta))] ]
 
 def Rotate(rm,v):
-    return [ sum(rm[i][j] * v[j] for j in range(0,3)) for i in range(0,3)]
+    return [ sum([rm[i][j] * v[j] for j in range(0,3)]) for i in range(0,3)]
 
 def AngleToVector(theta,phi):
     return [ sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta) ]
