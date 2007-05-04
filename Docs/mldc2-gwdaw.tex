@@ -73,12 +73,12 @@ The first round of MLDCs~\cite{MLDCLISA06a,MLDCLISA06b} has just been completed.
 The Challenge-1 data sets contained single sources, or sets of several ($\approx 20$) signals well separated in parameter space; an exception were two data sets containing $\approx 50$ signals from Galactic binaries, concentrated in frequency bands of width 30 $\mu$Hz and 3 $\mu$Hz. Challenge 1 focused on only two signal classes: Galactic stellar-mass binaries and massive--black-hole (MBH) binary inspirals. Indeed, the key goal of this first round of challenges was the development and validation of source-specific data-analysis techniques for the sources featured in the LISA mission's minimum science requirements. Challenge 2 has a much more realistic flavour: it includes millions of Galactic binaries,
 as we expect in reality, in addition to multiple massive--black-hole binaries and extreme--mass-ratio inspirals (EMRIs). Thus, Challenge 2 requires analysts to tackle the \emph{global analysis} of many simultaneous and superimposed signals, in the presence of the most complex sources (EMRIs) that we expect to observe with LISA.
 
-Challenge 2 includes five single-source data sets (Challenge 1.3),\footnote{These data sets are still identified as 1.X, since training data sets for EMRIs were distributed with Challenge 1; blind data sets are however being released only now. For consistency with previous documents, we maintain the original nomenclature.} dedicated specifically to EMRIs, and two multi-source data sets (Challenge 2.1 and 2.2). The data sets are all $\approx 2$ years long: namely, they contain $2^{22}$ data points sampled at a cadence of 15 s. More specifically, the data sets are as follows: 
+Challenge 2 includes five single-source data sets (Challenge 1.3),\footnote{These data sets are still identified as 1.3.X, since training data sets for EMRIs were distributed with Challenge 1; blind data sets are however being released only now. For consistency with previous documents, we maintain the original nomenclature.} dedicated specifically to EMRIs, and two multi-source data sets (Challenge 2.1 and 2.2). The data sets are all $\approx 2$ years long: namely, they contain $2^{22}$ data points sampled at a cadence of 15 s. More specifically, the data sets are as follows: 
 %
 \begin{itemize}
 \item \emph{Challenge 1.3} consists of five data sets, each containing a GW signal from a single EMRI with signal-to-noise ratio (SNR)\footnote{We compute SNRs for single unequal-Michelson TDI variables, selecting for each source the variable ($X$, $Y$, or $Z$) that yields the highest SNR.} between 40 and 110;
-\item \emph{Challenge 2.1} contains signals from (i) a full population of Galactic binary systems (about 26 million sources), including (ii) 20 ``verification binaries'';
-\item \emph{Challenge 2.2} contains signals from (i) a full population of Galactic binary systems (about 26 million sources), including (ii) 20 ``verification binaries''; (iii) an undisclosed number (between 4 and 6) of MBH binaries with SNRs between $\approx 10$ and $\approx 2000$ and different coalescence times (not all within the two years of observation); and (iv) 5 EMRIs, with SNRs in the range $\approx 30\mbox{--}100$.
+\item \emph{Challenge 2.1} contains signals from (i) a full population of Galactic binary systems (about 26 million sources), including (ii) 25 ``verification binaries'';
+\item \emph{Challenge 2.2} contains signals from (i) a full population of Galactic binary systems (about 26 million sources), including (ii) 25 ``verification binaries''; (iii) an undisclosed number (between 4 and 6) of MBH binaries with SNRs between $\approx 10$ and $\approx 2000$ and different coalescence times (not all within the two years of observation); and (iv) 5 EMRIs, with SNRs between 30 and 100.
 \end{itemize}
 %
 Details about the ranges from which the source parameters were drawn randomly are given in table~\ref{t:MLDC2}. Figure \ref{f:C2.2} shows a representative Challenge-2.2 data set (not used in the actual challenge). Since data sets 2.1 and 2.2 contain signals from millions of Galactic binaries, the Task Force has identified four restricted frequency bands on which analysis should concentrate first, and over which the evaluation of responses will be carried out in much more depth: these windows  are 0.2985 mHz $\le f \le$ 0.3015 mHz, 0.9985 mHz $\le f \le$ 1.0015 mHz, 2.9985 mHz $\le f \le$ 3.0015 mHz, and 5.9985 mHz $\le f \le$ 6.0015 mHz.  
@@ -105,13 +105,13 @@ Dataset & Sources & Parameters \\
 & \textit{Galactic binaries} & drawn from population (see Sec~\ref{ss:galaxy})\\
 &\multicolumn{1}{r}{$\sim 3\times 10^7$ sources} & \\[3pt]
 & \textit{Verification binaries} & parameters in XML file posted on~\cite{MLDCweb}\\
-&\multicolumn{1}{r}{20 sources} \\
+&\multicolumn{1}{r}{25 sources} \\
 \mr
 \textbf{2.2}
 & \textit{Galactic binaries} & drawn from population (see Sec~\ref{ss:galaxy})\\
 &\multicolumn{1}{r}{$\sim 3\times 10^7$ sources} \\[3pt]
 & \textit{Verification binaries} & parameters in XML file posted on~\cite{MLDCweb} \\
-&\multicolumn{1}{r}{20 sources} & \\[3pt]
+&\multicolumn{1}{r}{25 sources} & \\[3pt]
 & \textit{MBH binaries} & $m_1/10^6\,M_\odot \in U[1,5]$, $m_2/m_1 \in U[1,4]$ \\
 &\multicolumn{1}{r}{\ldots source n.\ 1} &  $t_c \in U[60,90]$ days, SNR $\sim 2000$ \\
 &\multicolumn{1}{r}{\ldots source n.\ 2} &  $t_c \in U[750,780]$ days, SNR $\sim 20$ \\
@@ -254,7 +254,7 @@ Initial GW phase    & $\phi_0$      & \texttt{InitialPhase} & \texttt{Radian} \\
 \end{indented}
 \end{table}
 
-Data sets 2.1 and 2.2 contain 20 ``verification binaries,'' defined as systems whose location and orbital period are exactly known (conceptually, from electromagnetic observations); the remaining four parameters are selected randomly. We consider five real known systems and then select 15 more from a synthetic model of the Galaxy (see below). The verification binaries have the same sky locations, frequencies and amplitudes as those used in Challenge 1. In addition to verification binaries, about $26$ million
+Data sets 2.1 and 2.2 contain 25 ``verification binaries,'' defined as systems whose location and orbital period are exactly known (conceptually, from electromagnetic observations); the remaining four parameters are selected randomly. We consider five real known systems and then select 15 more from a synthetic model of the Galaxy (see below). The verification binaries have the same sky locations, frequencies and amplitudes as those used in Challenge 1. In addition to verification binaries, about $26$ million
 white-dwarf binaries are included from the population-synthesis model. The same set of stellar mass binaries have been used in the training sets for Challenges 2.1 and 2.2 to allow participants to compare the source recovery with and without signals of other types being present. Different realizations of the stellar-mass binaries are used in each of the blind data sets.
 
 \subsection{Galactic model}
@@ -390,7 +390,7 @@ The overall amplitude is given by
 \begin{equation} \label{calA}
 {\cal A}\equiv (2\pi \nu M)^{2/3}\frac{\mu}{D}.
 \end{equation}
-In practice, we truncate the sums in (\ref{harmonics}) at $n=4$ if $e < 0.136$, otherwise at $n = 30 e$.
+In practice, we truncate the sums in (\ref{harmonics}) at $n=4$ when $e(t) < 0.136$, otherwise at $n = 30 \, e(t)$.
 
 The angular-momentum direction vector $\hat L$ is not constant, since $\hat L$ precesses about the MBH spin
 direction $\hat S$.  Let $\theta_L(t),\phi_L(t)$ be the angles specifying the instantaneous direction of $\hat L$, and let $\hat z$ be a unit vector normal to the ecliptic. One then obtains
@@ -479,7 +479,7 @@ Equation (\ref{eq:hab}) expresses the waveform in terms of time-varying polariza
 }\right).
 \end{equation}
 
-The algorithm for constructing the MLDC EMRI waveforms works as follows. We fix a fiducial frequency $\nu_0$ at $t_0 = 0$ and choose the waveform parameters $\mu,\, M,\,S/M^2,\,e_0,\,\tilde\gamma_0,\,\Phi_0,\,\cos\theta_S,\,\phi_S,\,\cos\lambda,\,\alpha_0,\cos\theta_K,\,\phi_K$ and $D$. We then (i) solve the ODEs (\ref{Phidot})--(\ref{alphadot}) for $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, $\alpha(t)$; (ii) use $e(t)$ and $\nu(t)$ to calculate $a_n(t), b_n(t), c_n(t)$ in (\ref{abc}); (iii) calculate $\theta_L(t),\phi_L(t)$ using (\ref{relations3}), and then obtain $\gamma(t)$ from $\tilde\gamma(t)$ using (\ref{beta})--(\ref{sinbeta}); (iv) compute the amplitude coefficients $A_n^{+,\times}$ using (\ref{A}) and (\ref{LdotN}); (v) calculate $\psi$ using (\ref{psiSL}); (vi) finally, compute $h_{+,\times}(t)$ from\footnote{The data sets distributed for Challenge 2 reflect an additional polarization rotation (\ref{eq:polrot}) by a randomly chosen angle. It was realized after the Challenge-2 release that this polarization angle is effectively degenerate with $\theta_K$, $\phi_K$, $\lambda$ and $\alpha_0$, so it is not possible to determine it from the analysis of data; thus, its value is being disclosed on the MLDC website \cite{MLDCweb}.}
+The algorithm for constructing the MLDC EMRI waveforms works as follows. We fix a fiducial frequency $\nu_0$ at $t_0 = 0$ and choose the waveform parameters $\mu,\, M,\,S/M^2,\,e_0,\,\tilde\gamma_0,\,\Phi_0,\,\cos\theta_S,\,\phi_S,\,\cos\lambda,\,\alpha_0,\cos\theta_K,\,\phi_K$ and $D$. We then (i) solve the ODEs (\ref{Phidot})--(\ref{alphadot}) for $\Phi(t)$, $\nu(t)$, $\tilde\gamma(t)$, $e(t)$, $\alpha(t)$; (ii) use $e(t)$ and $\nu(t)$ to calculate $a_n(t), b_n(t), c_n(t)$ in (\ref{abc}); (iii) calculate $\theta_L(t),\phi_L(t)$ using (\ref{relations3}), and then obtain $\gamma(t)$ from $\tilde\gamma(t)$ using (\ref{beta})--(\ref{sinbeta}); (iv) compute the amplitude coefficients $A_n^{+,\times}$ using (\ref{A}) and (\ref{LdotN}); (v) calculate $\psi$ using (\ref{psiSL}); (vi) finally, compute $h_{+,\times}(t)$ from\footnote{The data sets initially distributed for Challenge 2 reflect an additional polarization rotation (\ref{eq:polrot}) by a randomly chosen angle. It was then realized that this polarization angle is effectively degenerate with $\theta_K$, $\phi_K$ and $\alpha_0$, so it is not possible to determine it from the analysis of data. The dataset key files (but not the TDI data) were then modified with values of $\theta_K$, $\phi_K$ and $\alpha_0$ that would have produced the \emph{same} gravitational waveforms without the additional polarization rotation.}
 \begin{eqnarray}\label{final}
 h_+(t) = A^+(t) \cos 2\psi(t) + A^{\times}(t) \sin 2\psi(t), \nonumber \\
 h_{\times}(t) = - A^+(t) \sin 2\psi(t) + A^{\times}(t) \cos 2\psi(t).
@@ -488,7 +488,7 @@ h_{\times}(t) = - A^+(t) \sin 2\psi(t) + A^{\times}(t) \cos 2\psi(t).
 The lisaXML standard parameters for Challenge-2 \texttt{ExtremeMassRatioInspiral} sources are listed in tables \ref{tab:common} and \ref{tab:emri}.
 %
 \begin{table}
-\caption{\texttt{ExtremeMassRatioInspiral} source parameters. Note that EMRIs do not use the nonprecessing-binary inclination $\iota$
+\caption{\texttt{ExtremeMassRatioInspiral} source parameters. Note that EMRIs do not use the nonprecessing-binary inclination $\iota$ or polarization angle $\psi$.
 Be aware of the collision between the symbols for the EMRI compact-object mass ($\mu$) and opening angle ($\lambda$), the binary reduced mass (again $\mu$), and the ecliptic longitude (again $\lambda$). Note that $\nu$ is called ``Azimuthal orbital frequency'' in the XML file and it is referred to as a radial orbital frequency in \cite{BC}.
 If we reduce the equations to nonspinning MBH and circular orbits, then 
 the orbital frequency corresponds to $\nu + \dot{\tilde{\gamma}}/{2\pi}$.
@@ -543,7 +543,7 @@ CC's and MV's work was performed at the Jet Propulsion Laboratory, California In
 %OK
 \bibitem{MLDCLISA06a} Arnaud K A \textit{et al} 2006 \textit{Laser Interferometer Space Antenna: 6th Int. LISA Symp.} (19--23 Jun 2006 Greenbelt, MD) ed S M Merkowitz and J C Livas (Melville, NY: AIP) p 619
 %OK
-\bibitem{MLDCLISA06b} Arnaud K A \textit{et al} 2006 \textit{Laser Interferometer Space Antenna: 6th Int. LISA Symp.} (19--23 Jun 2006 Greenbelt, MD) ed S M Merkowitz and J C Livas (Melville, NY: AIP) p 625 (long version with lisaXML description: \textit{Preprint} \url{gr-qc/0609106})
+\bibitem{MLDCLISA06b} Arnaud K A \textit{et al} 2006 \textit{Laser Interferometer Space Antenna: 6th Int. LISA Symp.} (19--23 Jun 2006 Greenbelt, MD) ed S M Merkowitz and J C Livas (Melville, NY: AIP) p 625 (long version with lisaXML description: \textit{Preprint} gr-qc/0609106)
 %OK
 \bibitem{MLDC1-gwdaw} Arnaud K A {\it et al.} 2007 in this volume (\textit{Preprint} gr-qc/0701139)
 %
@@ -575,7 +575,7 @@ CC's and MV's work was performed at the Jet Propulsion Laboratory, California In
 %OK
 \bibitem{gijs} Nelemans G, Yungelson L R and Portegies Zwart S F 2001 \emph{Astron. Astrophys.} \textbf{375} 890
 %OK
-\bibitem{cornishlittenberg} Cornish N J and Littenberg T, {\em in preparation}
+\bibitem{cornishlittenberg} Cornish N J and Littenberg T (\textit{Preprint} arXiv:0704.1808)
 %
 \bibitem{Blanchet} Blanchet L, Faye G, Iyer B R and Joguet B 2002 \emph{Phys. Rev. D} \textbf{65} 061501; erratum-ibid. 2005 \textbf{71} 129902(E)
 %OK
