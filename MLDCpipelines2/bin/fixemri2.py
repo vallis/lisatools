@@ -140,7 +140,7 @@ for source in allsources:
 
     outputXML.SourceData(source)
 
-tdi = inputXML.getTDIObservables()[0]
+tdi = inputXML.getTDIObservables()
 
 if tdi:
-    outputXML.TDIData(tdi)
+    outputXML.TDIData(tdi[0])
