@@ -771,11 +771,16 @@ class lisaXML(writeXML):
         self.coupletag('Param',{'Name': 'GenerationDate', 'Type': 'ISO-8601'},
                                self.date)
         
-        if self.comments:
-            self.comments += '\n\n'
+        # add a lisaXML statement
         
-        self.comments += 'lisaXML 1.0 [M. Vallisneri, June 2006]'
-                
+        lisaxmlstring = 'lisaXML 1.0 [M. Vallisneri, June 2006]'
+        
+        if lisaxmlstring not in self.comments:
+            if self.comments:
+                self.comments += '\n\n'
+            
+            self.comments += lisaxmlstring
+            
         self.outputrxp(self.doComment(self.comments))
         
         if self.theLISAData:
@@ -864,6 +869,8 @@ class readXML:
         self.directory = os.path.dirname(filename)
         
         self.tw = xmlutils.TagWrapper(tree)
+        
+        self.setMetaData()
     
     def close(self):
         pass
@@ -884,6 +891,23 @@ class readXML:
     def getDim(self,node):
         return int(str(node))
     
+    def setMetaData(self):
+        self.Author, self.GenerationDate, self.Comment = '', '', ''
+        
+        for node in self.tw:
+            if node.tagName == 'Param':
+                if node.Name == 'Author':
+                    self.Author = str(node)
+                elif node.Name == 'GenerationDate':
+                    self.GenerationData = str(node)
+                    try:
+                        self.GenerationData_Type = str(node.Type)
+                    except:
+                        pass
+            elif node.tagName == 'Comment':
+                self.Comment = str(node)
+    
+    # capitalization isn't ideal here...
     def getLISAgeometry(self):
         # use the first LISA found...
         for node in self.tw:
