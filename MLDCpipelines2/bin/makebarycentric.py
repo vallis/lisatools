@@ -113,7 +113,9 @@ for mysystem, cnt in zip(allsystems,range(len(allsystems))):
     if len(allsystems) == 1:
         oneoutputfile = outputfile
     else:
-        if '.xml' in outputfile:
+        if '-barycentric.xml' in outputfile:
+            oneoutputfile = re.sub('-barycentric\.xml','-%d-barycentric.xml' % cnt,outputfile)
+        elif '.xml' in outputfile:
             oneoutputfile = re.sub('\.xml','-%d.xml' % cnt,outputfile)
         else:
             oneoutputfile = outputfile + ('-%d' % cnt)
