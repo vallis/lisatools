@@ -51,9 +51,19 @@ try:
 except IndexError:
     tdi = None        
 
+# take author and comments, if any, from MERGED.xml
+
+author = mergedtdifile.Author
+if not author:
+    author = 'Michele Vallisneri (through mergeXML.py)'
+
+# it would be nice also to collect comments from the additional files...
+# but lisaxml.py does not currently support this!
+comments = mergedtdifile.Comment
+
 mergedtdifile.close()
 
-newmergedtdifile = lisaxml.lisaXML(mergedfile)
+newmergedtdifile = lisaxml.lisaXML(mergedfile,author=author,comments=comments)
 
 for inputfile in inputfiles:
     inputtdifile = lisaxml.readXML(inputfile)
@@ -112,7 +122,7 @@ if lisa:
 if tdi:
     newmergedtdifile.TDIData(tdi)
     
-mergedtdifile.close()
+newmergedtdifile.close()
 
 sys.exit(0) 
            
