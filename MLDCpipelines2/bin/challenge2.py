@@ -80,6 +80,10 @@ parser.add_option("-L", "--lisasim",
                   action="store_true", dest="lisasimonly", default=False,
                   help="run only the LISA Simulator")
 
+parser.add_option("-f", "--keyFile",
+                  type="string", dest="sourcekeyfile", default=None,
+                  help="get source descriptions from key file, not CHALLENGE.py script")
+
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
@@ -127,6 +131,8 @@ timestep = options.timestep
 duration = options.duration
 makemode = options.makemode
 
+sourcekeyfile = options.sourcekeyfile
+
 step1time = time.time()
 
 # --------------------------------------------------------------------------------------
@@ -137,7 +143,7 @@ step1time = time.time()
 # makemode won't regenerate sources, so at least step 1 must be completed
 # before running in make mode
 
-if (not makemode):
+if (not makemode) and (not sourcekeyfile):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
 
@@ -151,6 +157,15 @@ if (not makemode):
         parser.error("I need the challenge script %s!" % sourcescript)
     else:
         run('python %s %s' % (sourcescript,seed))
+elif sourcekeyfile:
+    # convoluted logic, to make sure that the keyfile given is not in Source/ and therefore
+    # deleted
+    run('mv %s %s-backup' % (sourcekeyfile,sourcekeyfile))
+    run('rm -f Source/*.xml')
+    run('rm -f Galaxy/*.xml Galaxy/*.dat')
+    run('mv %s-backup %s' % (sourcekeyfile,sourcekeyfile))
+    
+    run('cp %s Source/%s' % (sourcekeyfile,os.path.basename(sourcekeyfile)))
 
 step2time = time.time()
 
