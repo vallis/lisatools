@@ -24,6 +24,10 @@ parser.add_option("-n", "--noKey",
                   action="store_true", dest="nokey", default=False,
                   help="remove all SourceData information [off by default]")
 
+parser.add_option("-s", "--subtract",
+                  action="store_true", dest="subtract", default=False,
+                  help="subtract (not add) TDI columns [off by default]")
+
 (options, args) = parser.parse_args()
 
 # currently we support only a single source parameter file
@@ -79,7 +83,11 @@ for inputfile in inputfiles:
         for source in sources:
             if hasattr(source,'TimeSeries'):
                 del source.TimeSeries
-            newmergedtdifile.SourceData(source)
+
+            if options.subtract:
+                newmergedtdifile.SourceData(source,comments='Subtracted source')
+            else:
+                newmergedtdifile.SourceData(source)
     
     if not options.keyonly:
         try:
@@ -101,13 +109,23 @@ for inputfile in inputfiles:
 
                 try:
                     if tdi.DataType == 'FractionalFrequency':
-                        tdi.Xf += thistdi.Xf
-                        tdi.Yf += thistdi.Yf
-                        tdi.Zf += thistdi.Zf
+                        if options.subtract:
+                            tdi.Xf -= thistdi.Xf
+                            tdi.Yf -= thistdi.Yf
+                            tdi.Zf -= thistdi.Zf
+                        else:
+                            tdi.Xf += thistdi.Xf
+                            tdi.Yf += thistdi.Yf
+                            tdi.Zf += thistdi.Zf
                     elif tdi.DataType == 'Strain':
-                        tdi.Xs += thistdi.Xs
-                        tdi.Ys += thistdi.Ys
-                        tdi.Zs += thistdi.Zs
+                        if options.subtract:
+                            tdi.Xs -= thistdi.Xs
+                            tdi.Ys -= thistdi.Ys
+                            tdi.Zs -= thistdi.Zs
+                        else:
+                            tdi.Xs += thistdi.Xs
+                            tdi.Ys += thistdi.Ys
+                            tdi.Zs += thistdi.Zs
                     else:
                         raise
                 except:
