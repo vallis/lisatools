@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>MLDC2 result submission</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+
+    <!--<link href="http://www.vallis.org/cgi-bin/style-rotator.cgi?seed=6" rel="Stylesheet" type="text/css" media="screen" />-->
+
+    <style>
+        body { font-family: Helvetica, sans-serif; font-size: 11pt; color: #000;}
+    
+        .sourceclass { width: 720px; border: solid #000 1px; margin: 20px 0px 20px 0px; padding: 10px 10px 10px 10px; }
+        .entry { width: 696px; border: dotted #88a 1px; padding: 2px; }
+    
+        table { width: 700px; color: #800; font-size: 10pt; border-spacing: 0px; border-collapse: collapse; table-layout: fixed; }
+        tr { border: solid #008 1px; }
+        td { width: auto; border: solid #008 1px; margin: 0px; padding: 2px; }
+        td i { color: #000; }
+		h1 { width: 700px; }
+    </style>
+</head>
+
+<body>
+
+    <form enctype = "multipart/form-data" method = "post" action = "http://www.tapir.caltech.edu/~mldc/cgi-bin/post-query.cgi">
+
+        <h1>Mock LISA Data Challenge 1.3.X response entry for collaboration '%shortcollaboration'</h1>
+        <input type="hidden" name="challenge" value="challenge1.3" />
+        <input type="hidden" name="collaboration" value="%shortcollaboration" />
+
+        <p>If you have already input a response set, re-submitting this form will replace it.</p>
+
+        <div class="sourceclass" style="background: #ffe;">
+            <h2>EMRIs</h2>
+
+            <p>Please return EMRI parameter data in the text boxes below, where each row describes a source and contains the following elements:</p>
+            <table>
+                <tr>
+                    <td>source-index (integer)</td>
+                    <td>ecliptic latitude (rad)</td>
+                    <td>ecliptic longitude (rad)</td>
+                    <td>polar angle of spin (rad)</td>
+                    <td>azimuth. angle of spin (rad)</td>
+                    <td>magnitude of SMBH spin (squared mass)</td>
+                    <td>mass of compact object (solar masses)</td>
+                    <td>mass of SMBH (solar masses)</td>
+                    <td><i>...row continues below...</i></td>
+                </tr><tr>
+                    <td></td>
+                    <td><i>...row above continues...</i></td>
+                    <td>initial azimuth. orbital freq. (Hz)</td>
+                    <td>initial azimuth. orbital phase (rad)</td>
+                    <td>initial eccentricity (adim.)</td>
+                    <td>initial tildegamma (rad)</td>
+                    <td>initial alpha (rad)</td>
+                    <td>initial lambda (rad)</td>
+                    <td>distance (parsec)</td>
+                </tr>
+            </table>
+            <p>separate elements with spaces or tabs; use the standard scientific notation (x.xxxE-xx) for numbers, except for source-index, which should be an integer. Use "NaN" for parameters that are not returned.</p>
+			<p><b>Use source indexes 1 to 5 for responses to challenges 1.3.1 to 1.3.5</b></p>
+            <p>If you are providing confidence intervals, upload them as a separate file in the same encoding, but with two numbers for each parameters:</p>
+            <table>
+                <tr>
+                    <td>source-index (integer)</td>
+                    <td>min. ecliptic latitude (rad)</td>
+                    <td>max. ecliptic latitude (rad)</td>
+                    <td>min. ecliptic longitude (rad)</td>
+                    <td>max. ecliptic longitude (rad)</td>
+                    <td><i>...and so on...</i></td>
+                </tr>
+            </table>
+
+			<h3>Challenges 1.3.1-5</h3>
+
+            <div class="entry">                
+            <p>Paste parameter rows here...</p>
+            <textarea name="text-emri" rows="6" cols="80" wrap="off"></textarea>
+
+            <p>...and parameter error rows here...</p>
+            <textarea name="dtext-emri" rows="6" cols="80" wrap="off"></textarea>
+
+            <p>...or upload files...</p>
+
+            <p>Parameter file: <input type="file" name="file-emri" size="48"/>
+            <p>Error file: <input type="file" name="dfile-emri" size="48"/>
+
+            <p>(If you do both, the files will be used.)</p>
+            </div>
+        </div>
+
+        <input type="submit" name = "action" value = "Submit">
+
+    </form>
+
+</body>
+
+</html>

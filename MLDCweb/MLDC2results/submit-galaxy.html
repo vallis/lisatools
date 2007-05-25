@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>MLDC2 result submission</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+
+    <!--<link href="http://www.vallis.org/cgi-bin/style-rotator.cgi?seed=6" rel="Stylesheet" type="text/css" media="screen" />-->
+
+    <style>
+        body { font-family: Helvetica, sans-serif; font-size: 11pt; color: #000;}
+    
+        .sourceclass { width: 720px; border: solid #000 1px; margin: 20px 0px 20px 0px; padding: 10px 10px 10px 10px; }
+        .entry { width: 696px; border: dotted #88a 1px; padding: 2px; }
+    
+        table { width: 700px; color: #800; font-size: 10pt; border-spacing: 0px; border-collapse: collapse; table-layout: fixed; }
+        tr { border: solid #008 1px; }
+        td { width: auto; border: solid #008 1px; margin: 0px; padding: 2px; }
+        td i { color: #000; }
+		h1 { width: 700px; }
+    </style>
+</head>
+
+<body>
+
+    <form enctype = "multipart/form-data" method = "post" action = "http://www.tapir.caltech.edu/~mldc/cgi-bin/post-query.cgi">
+
+        <h1>Mock LISA Data Challenge 2.1 response entry for collaboration '%shortcollaboration'</h1>
+        <input type="hidden" name="challenge" value="challenge2.1" />
+        <input type="hidden" name="collaboration" value="%shortcollaboration" />
+
+        <p>If you have already input a response set, re-submitting this form will replace it.</p>
+
+        <div class="sourceclass" style="background: #eff;">
+            <h2>Galactic binaries</h2>
+            <p>Please return Galactic-binary parameter data as ASCII files, where each row describes a source and contains the following elements:</p>
+            <table>
+                <tr>
+                    <td>source-index (integer)</td>
+                    <td>frequency (Hz)</td>
+                    <td>ecliptic latitude (rad)</td>
+                    <td>ecliptic longitude (ra)</td>
+                    <td>"h" amplitude (adim.)</td>
+                    <td>polarization angle (rad)</td>
+                    <td>inclination angle (rad)</td>
+                    <td>initial phase (rad)</td>
+                </tr>
+            </table>
+            <p>separate elements with spaces or tabs; use the standard scientific notation (x.xxxE-xx) for numbers, except for source-index, which should be an integer.
+                Use "NaN" for parameters that are not returned.</p>
+            <p>If you are providing confidence intervals, upload them as a separate file in the same encoding, but with two numbers for each parameters:</p>
+            <table>
+                <tr>
+                    <td>source-index (integer)</td>
+                    <td>min. frequency (Hz)</td>
+                    <td>max. frequency (Hz)</td>
+                    <td>min. ecliptic latitude (rad)</td>
+                    <td>max. ecliptic latitude (rad)</td>
+                    <td><i>...and so on...</i></td>
+                </tr>
+            </table>
+			<p>Don't forget the source indexes, which should match those in the corresponding parameter file!</p>
+
+            <h3>Full population</h3>
+                <div class="entry">
+                <p>Parameter file: <input type="file" name="file-gb-all" size="48"/></p>
+                <p>Error file: <input type="file" name="file-gb-all-ci" size="48"/></p>
+                </div>
+
+            <h3>1st frequency band ([0.2985,0.3015] mHz)</h3>
+                <div class="entry">
+                <p>Parameter file: <input type="file" name="file-gb-1" size="48"/></p>
+                <p>Error file: <input type="file" name="file-gb-1-ci" size="48"/></p>
+                </div>
+                
+            <h3>2nd frequency band ([0.9985,1.0015] mHz)</h3>
+                <div class="entry">
+                <p>Parameter file: <input type="file" name="file-gb-2" size="48"/></p>
+                <p>Error file: <input type="file" name="file-gb-2-ci" size="48"/></p>
+                </div>
+                
+            <h3>3rd frequency band ([2.9985,3.0015] mHz)</h3>
+                <div class="entry">
+                <p>Parameter file: <input type="file" name="file-gb-3" size="48"/></p>
+                <p>Error file: <input type="file" name="file-gb-3-ci" size="48"/></p>
+                </div>
+                
+            <h3>4th frequency band ([5.9985,6.0015] mHz)</h3>
+                <div class="entry">                
+                <p>Parameter file: <input type="file" name="file-gb-4" size="48"/></p>
+                <p>Error file: <input type="file" name="file-gb-4-ci" size="48"/></p>
+                </div>
+        </div>
+
+        <input type="submit" name = "action" value = "Submit">
+
+    </form>
+
+</body>
+
+</html>
