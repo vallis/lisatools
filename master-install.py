@@ -164,12 +164,13 @@ if ( newer_group(sources,'Galaxy_Maker') or newer_group(sources,'Galaxy_key')  o
 
 # copy every time...
 
-# notes: on OS X, I'm not sure how to differentiate between G4 and G5, so will use G5...
-#        also I don't have an Intel version, so I will still use G5 and count on Rosetta...
-#        (I could check the processor with platform.processor() == 'powerpc')
-
 if platform.system() == 'Darwin':
-    assert(0 == os.system('cp Fast_Response_OSX_G5 Fast_Response'))
+    if platform.processor() == 'i386':
+        assert(0 == os.system('cp Fast_Response_OSX_Intel Fast_Response'))
+    else:
+        # assume platform.processor() == 'powerpc'
+        # I'm not sure how to differentiate between G4 and G5, so will use G5...
+        assert(0 == os.system('cp Fast_Response_OSX_G5 Fast_Response'))
 elif platform.system() == 'Linux':
     assert(0 == os.system('cp Fast_Response_LINUX_X86_32 Fast_Response'))
 elif 'CYGWIN' in platform.system():
