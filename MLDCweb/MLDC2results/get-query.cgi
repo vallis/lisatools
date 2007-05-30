@@ -6,6 +6,7 @@ import sys
 import cgi
 import os
 import re
+import time
 
 sys.stderr = sys.stdout
 print "Content-type: text/html\n"
@@ -33,6 +34,8 @@ elif '2.1' in submit:
     viewpage = htmldir + 'submit-galaxy.html'
 elif '2.2' in submit:
     viewpage = htmldir + 'submit-enchilada.html'
+elif 'write-up' in submit:
+    viewpage = 'writeup'
 
 # now save the collaboration name and authors to a text file
 
@@ -54,5 +57,29 @@ notefile.close()
 
 # -> output HTML to the browser
 
-for line in open(viewpage,'r'):
-    print re.sub('%shortcollaboration',shortcollaboration,line),
+if viewpage == 'writeup':
+    if data.has_key('writeup') and data['writeup'].filename:
+        if '.tar.gz' in data['writeup'].filename:
+            suffix = '.tar.gz'
+        elif '.tar' in data['writeup'].filename:
+            suffix = '.tar'
+        elif '.tgz' in data['writeup'].filename:
+            suffix = '.tar.gz'
+        elif '.zip' in data['writeup'].filename:
+            suffix = '.zip'
+        else:
+            suffix = '.file'
+            
+        datedwriteup = datadir + shortcollaboration + '-writeup-' + time.strftime('%y%m%d-%H%M%S',time.localtime()) + suffix
+        
+        outputfile = open(datedwriteup,'w')
+        
+        for line in data['writeup'].file:
+            outputfile.write(line)
+            
+        outputfile.close()
+        
+        print "Thanks! I've received file %s. Now you can go back and upload your recovered parameters (if you haven't already)." % data['writeup'].filename
+else:
+    for line in open(viewpage,'r'):
+        print re.sub('%shortcollaboration',shortcollaboration,line),
