@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{epstopdf}
+\usepackage{url}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \title{MLDC Round 2: Guidelines for returning results}
@@ -12,9 +13,12 @@
 \begin{document}
 \maketitle
 \section{Introduction}
-The assessment for round 2 of the Mock LISA Data Challenge will be substantially more automated than the previous assessment. Consequently we need to specify the exact format for returning results for assessment. In this brief note, we outline this format. Results will be returned in ascii files with a single source on each row and columns for each parameter. The ordering of the parameters will follow the ordering given in the key files for the challenges. {\bf NOTE THAT THE ORDERING OF RETURNED PARAMETERS IS DIFFERENT FROM THE FIRST ROUND OF CHALLENGES!} For those groups that return only a subset of the full parameterization for each source, missing parameters will be indicated by NaN. 
+The assessment for round 2 of the Mock LISA Data Challenge will be substantially more automated than the previous assessment. Consequently we need to specify the exact format for returning results for assessment. In this brief note, we outline this format. Results will be returned using the web interface at the URL \url{http://www.tapir.caltech.edu/~mldc/submit.html}
+by either pasting text or uploading ascii files with a single source on each row, and columns for each parameter. The same interface can be used also to upload your technical write-up of your challenge work. LaTeX is favored, but not required; please update all files needed to reproduce printable output in a single tar or zip archive.
 
-If a group can return $2\sigma$ confidence intervals, these should be returned in a separate ascii file which has the same ordering of parameters, but two columns for each parameter with the first column giving the low end of the confidence interval and the second column giving the high end of the confidence interval. Again, missing parameters will be indicated by NaN. If the confidence intervals are determined through a posterior distrubtions (e.g.: through an MCMC code), then the lower bound on the confidence interval will be found by integrating the posterior distribution from the bottom up to the value that gives an integral of 0.02275. The upper bound is then found by integrating from the bottom up to the value that gives an integral of 0.97725. For example, the lower ($\mathcal{A}_{\rm min}$) and upper ($\mathcal{A}_{\rm max}$) bounds on the confidence interval for the amplitude $\mathcal{A}$ are found from the posterior distribution $P(\mathcal{A})$ by:
+The ordering of the parameters will follow the ordering given in the key files for the challenges. {\bf NOTE THAT THE ORDERING OF RETURNED PARAMETERS IS DIFFERENT FROM THE FIRST ROUND OF CHALLENGES!} For those groups that return only a subset of the full parameterization for each source, missing parameters should be indicated by NaN. 
+
+If a group can return $2\sigma$ confidence intervals, these should be returned in a separate text field or ascii file which has the same ordering of parameters, but two columns for each parameter with the first column giving the low end of the confidence interval and the second column giving the high end of the confidence interval. Again, missing parameters will be indicated by NaN. If the confidence intervals are determined through a posterior distribution (e.g.: through an MCMC code), then the lower bound on the confidence interval will be found by integrating the posterior distribution from the bottom up to the value that gives an integral of 0.02275. The upper bound is then found by integrating from the bottom up to the value that gives an integral of 0.97725. For example, the lower ($\mathcal{A}_{\rm min}$) and upper ($\mathcal{A}_{\rm max}$) bounds on the confidence interval for the amplitude $\mathcal{A}$ are found from the posterior distribution $P(\mathcal{A})$ by:
 \begin{eqnarray}
 0.02275 & = & \int_{-\infty}^{\mathcal{A}_{\rm min}}{P(\mathcal{A})d\mathcal{A}} \\
 \nonumber \\
@@ -27,68 +31,72 @@ If the confidence intervals are found through a Fisher Information Matrix method
 \end{eqnarray}
 If other methods are used, please describe them in detail in the summary of your technique.
 
-Entry files can be returned for the full binary population or for the restricted frequency bands where a more in-depth analysis may be done. The massive black hole and EMRI results will also be returned in separate files. Groups are asked to adopt the following naming convention for these files. Each group should choose an alphanumeric identifier to describe itself. All files will begin with this identifier. The source class will follow the identifier, using LMB for Galactic binaries, MBH for massive black holes, and EMRI for extreme mass ratio inspirals. For Galactic binaries, a further code of W1, W2, W3, or W4 will be used to identify the specific window used (ALL will be used for the full population). The EMRI files returned for Challenge 1.3.x data sets will include an identifier of 13X. Finally, if the file is a confidence interval file, then it will end with CI. Thus, if the XYZ group returned a Galactic binary file for the lowest frequency band, the file would be named {\tt XYZ\_LMB\_W1}. The corresponding confidence interval file would be named {\tt XYZ\_LMB\_W1\_CI}. An EMRI file returned for Challenge 1.3.2 would be named {\tt XYZ\_EMRI\_132}.
+Since recovered Galactic binaries can be a large number, parameters should be
+input for these by uploading files, which can be returned for the full binary population and/or for the restricted frequency bands where a more in-depth analysis may be done.
+% The massive black hole and EMRI results will also be returned in separate files. Groups are asked to adopt the following naming convention for these files.
+Each group should choose a simple alphanumeric identifier (perhaps an acronym) to describe itself. All the files generated by the web interface will begin with this identifier.
+% The source class will follow the identifier, using LMB for Galactic binaries, MBH for massive black holes, and EMRI for extreme mass ratio inspirals. For Galactic binaries, a further code of W1, W2, W3, or W4 will be used to identify the specific window used (ALL will be used for the full population). The EMRI files returned for Challenge 1.3.x data sets will include an identifier of 13X. Finally, if the file is a confidence interval file, then it will end with CI. Thus, if the XYZ group returned a Galactic binary file for the lowest frequency band, the file would be named {\tt XYZ\_LMB\_W1}. The corresponding confidence interval file would be named {\tt XYZ\_LMB\_W1\_CI}. An EMRI file returned for Challenge 1.3.2 would be named {\tt XYZ\_EMRI\_132}.
 
+Please direct any questions to \url{vallis@vallis.org}.
 
 \section{Examples}
 \subsection{Galactic Binaries}
 We expect there to be up to tens of thousands of returned sources over the entire frequency band. Entries returning the full parameterization of a set of resolved binaries should return an ascii file with one row per binary and the parameters for each binary in columns in the same order as the key files (which can be read from the training sets). Thus, an entry has the format:
-\begin{table}[h]
-   \centering
-   \caption{Ordering and units for Galactic Binaries}
-   \begin{tabular}{ccccccc}
+\begin{center}
+   % \caption{Ordering and units for Galactic Binaries}
+   \begin{tabular}{cccccccc}
       \hline
-      $f$ & $\beta$ & $\lambda$ & $\mathcal{A}$ & $\psi$ & $\iota$ & $\phi_0$ \\
+      source index & $f$ & $\beta$ & $\lambda$ & $\mathcal{A}$ & $\psi$ & $\iota$ & $\phi_0$ \\
       \hline
-      Hz & rad & rad & 1 & rad & rad & rad \\
+      & Hz & rad & rad & 1 & rad & rad & rad \\
       \hline
    \end{tabular}
    \label{galacticbinaries}
-\end{table}
+\end{center}
+The source index should be a unique integer for each source, starting with 1.
 
-For the restricted frequency bands where we will do a more in-depth assessment, groups are encouraged to return $2\sigma$ confidence intervals for their parameterizations as described above.
-
-Entries returning the confidence intervals for the restricted frequency bands will consist of an ascii file with one row per binary and the lower and upper bounds on the confidence intervals for each parameter in the same order as used for the full parameterization files. Thus, an entry has the format:
-\begin{table}[h]
-	\centering
-	\caption{Ordering for Confidence Interval Entries}
-	\begin{tabular}{cccccccccccccc}
+Groups are also encouraged to return $2\sigma$ confidence intervals for their parameterizations. Entries describing these will consist of an ascii file with one row per binary and the lower and upper bounds on the confidence intervals for each parameter in the same order as used for the full parameterization files. A source index is also included, and uniquely identifies each source with respect to the parameterization file. Thus, an entry has the format:
+\begin{center}
+	\footnotesize
+	% \caption{Ordering for Confidence Interval Entries}
+	\begin{tabular}{ccccccccccccccc}
 	\hline
-	$f_{\rm min}$ & $f_{\rm max}$ & $\beta_{\rm min}$ & $\beta_{\rm max}$ & $\lambda_{\rm min}$ & $\lambda_{\rm max}$ & $\mathcal{A}_{\rm min}$ & $\mathcal{A}_{\rm max}$ & $\psi_{\rm min}$ & $\psi_{\rm max}$ & $\iota_{\rm min}$ & $\iota_{\rm max}$ & $\phi_{0~{\rm min}}$ & $\phi_{0~{\rm max}}$ \\
+	source index & $f_{\rm min}$ & $f_{\rm max}$ & $\beta_{\rm min}$ & $\beta_{\rm max}$ & $\lambda_{\rm min}$ & $\lambda_{\rm max}$ & $\mathcal{A}_{\rm min}$ & $\mathcal{A}_{\rm max}$ & $\psi_{\rm min}$ & $\psi_{\rm max}$ & $\iota_{\rm min}$ & $\iota_{\rm max}$ & $\phi_{0~{\rm min}}$ & $\phi_{0~{\rm max}}$ \\
 	\hline
 	\end{tabular}
 	\label{galacticconfidence}
-\end{table}
+\end{center}
 If confidence intervals are not supplied for some parameters, enter NaN in their place.
 
 \subsection{Massive Black Holes}
-Massive black hole results will also be returned in ascii files with one row per massive black hole. The parameters will be in the order listed in the training set key files. If any parameters are missing or not returned in the analysis, enter NaN. The MBH entries will then have the format:
-\begin{table}[h]
-	\centering
-	\caption{Ordering for Massive Black Hole Binary Entries}
-	\begin{tabular}{ccccccccc}
+Massive-black-hole--binary results will also be returned using one row per source. The parameters will be in the order listed in the training set key files. If any parameters are missing or not returned in the analysis, enter NaN. The MBH entries will then have the format:
+\begin{center}
+	% \caption{Ordering for Massive Black Hole Binary Entries}
+	\begin{tabular}{cccccccccc}
 		\hline
-		$\beta$ & $\lambda$ & $\psi$ & $\iota$ & $D$ & $m_1$ & $m_2$ & $t_{\rm c}$ & $\Phi_0$ \\
+		source index & $\beta$ & $\lambda$ & $\psi$ & $\iota$ & $D$ & $m_1$ & $m_2$ & $t_{\rm c}$ & $\Phi_0$ \\
 		\hline
 	\end{tabular}
 	\label{mbhentries}
-\end{table}
+\end{center}
 
-If applicable, groups can also return a $2\sigma$ confidence interval entry for the massive black holes. This should be a separate ascii file with upper and lower bounds returned in the same order as shown in Table~\ref{mbhentries}. The confidence intervals should be calculated using the same methods described. Any missing confidence intervals should be entered as NaN.
+If applicable, groups can also return a $2\sigma$ confidence interval entry for the massive black holes. This should be a separate ascii file with upper and lower bounds returned in the same order as shown the table above. The confidence intervals should be calculated using the same methods described. Any missing confidence intervals should be entered as NaN.
 
 \subsection{Extreme-Mass-Ratio Inspirals}
-For challenges 1.3.x, each entry should consist of a single row for the EMRI in the data set. The ordering of parameters will follow the ordering given in the training keys. Again, if a parameter is not returned, it should be entered as NaN in the ascii file. The ordering of parameters is given by:
-\begin{table}[h]
-	\centering{Ordering for EMRI Entries}
-	\begin{tabular}{ccccccccccccccc}
+Also for EMRIs, the ordering of parameters will follow the ordering given in the training keys. Again, if a parameter is not returned, it should be entered as NaN in the ascii file. The ordering of parameters is given by:
+\begin{center}
+	% \centering{Ordering for EMRI Entries}
+	\begin{tabular}{cccccccccccccccc}
 		\hline
-		$\beta$ & $\lambda$ & $\theta_K$ & $\phi_K$ & $|S|/M^2$ & $\mu$ & $M$ & $\nu_0$ & $\Phi_0$ & $e_0$ & $\tilde{\gamma}_0$ & $\alpha_0$ & $\lambda_{\rm SL}$ & $D$ \\
+		source index & $\beta$ & $\lambda$ & $\theta_K$ & $\phi_K$ & $|S|/M^2$ & $\mu$ & $M$ & $\nu_0$ & $\Phi_0$ & $e_0$ & $\tilde{\gamma}_0$ & $\alpha_0$ & $\lambda_{\rm SL}$ & $D$ \\
 		\hline
 	\end{tabular}
 	\label{emrientries}
-\end{table}
-The relationship between the parameters and the lisaXML descriptors (that are listed in the key files) can be found in arXiv:gr-qc/0701170v2. We note that the {\tt EclipticLongitude} and {\tt LambdaAngle} are both described by $\lambda$, and so we have used $\lambda_{\rm SL}$ for {\tt LambdaAngle}. For challenge 2.2, a single entry containing all EMRIs listed in separate rows should be returned.
+\end{center}
+The relationship between the parameters and the lisaXML descriptors (that are listed in the key files) can be found in \url{arXiv:gr-qc/0701170}. We note that the {\tt EclipticLongitude} and {\tt LambdaAngle} are both described by $\lambda$, and so we have used $\lambda_{\rm SL}$ for {\tt LambdaAngle} in the table above.
 
-If applicable, groups can also return a $2\sigma$ confidence interval entry for the EMRIs. This should be a separate ascii file and the upper and lower bounds are computed using the same methods described above. Any missing confidence intervals should be entered as NaN.
+For challenges 1.3.X, make a single entry (file or text field), using source indices 1 to 5, corresponding to the five subchallenges.
+For challenge 2.2 also make a single entry with all recovered EMRIs.
+If applicable, groups can also return a $2\sigma$ confidence interval entry for the EMRIs, as outlined above for MBH binaries. 
 
 \end{document}
