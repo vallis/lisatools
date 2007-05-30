@@ -33,11 +33,14 @@ challenge = data['challenge'].value
 collaboration = data['collaboration'].value
 
 outputfilename = collaboration + '-' + challenge + '.xml'
-initialcomment = "Please VERIFY the accuracy of the values given below, and READ the generation log; GO BACK and REPOST if you need to make corrections.\n"
+initialcomment = "This is the XML solution file for %s.\n" % challenge
 
 outputfile = lisaxml.lisaXML(datadir + outputfilename,author=collaboration,comments=initialcomment)
 
-outputfile.comments += " \n> Begin XML generation log\n"
+outputfile.comments += " \n"
+outputfile.comments += "Please VERIFY the accuracy of the values given below, and READ the generation log; GO BACK and REPOST if you need to make corrections.\n"
+outputfile.comments += " \n"
+outputfile.comments += "> Begin XML generation log\n"
 
 # process GB
 
@@ -67,11 +70,11 @@ for suffix in ['all','all-ci','1','1-ci','2','2-ci','3','3-ci','4','4-ci']:
             try:
                 pars = map(paramcheck,line.split())
             
-                if pars[0] in gbsources:
-                    outputfile.comments += "--> Duplicated source index %s on line %s of GB file %s; therefore...\n" % (pars[0],linecnt,data[gbfilename].filename)
+                if int(pars[0]) in gbsources:
+                    outputfile.comments += "--> Duplicated source index %s on line %s of GB file %s; therefore...\n" % (int(pars[0]),linecnt,data[gbfilename].filename)
                     raise            
                 else:
-                    gbsources.append(pars[0])
+                    gbsources.append(int(pars[0]))
 
                 if 'ci' in suffix:
                     if len(pars) != 15:
@@ -152,6 +155,8 @@ if data.has_key('file-smbh') and data['file-smbh'].filename:
 elif data.has_key('text-smbh') and data['text-smbh'].value:
     outputfile.comments += "-> Found SMBH specification in text form\n"
     bbhdata = data['text-smbh'].value.split('\n')
+
+bbhsourcelist = {}
     
 if bbhdata:
     linecnt = 1
@@ -165,7 +170,7 @@ if bbhdata:
 
             # check for duplicates
             if sysname in bbhsources:
-                outputfile.comments += "--> Duplicated source index %s on line %s of the SMBH specification; therefore...\n" % (pars[0],linecnt)
+                outputfile.comments += "--> Duplicated source index %s on line %s of the SMBH specification; therefore...\n" % (int(pars[0]),linecnt)
                 raise
             
             mysystem = BBH.BlackHoleBinary(sysname)
@@ -182,19 +187,88 @@ if bbhdata:
 
             if len(pars) > 10:
                 outputfile.comments += "--> Ignoring extra params %s in line %s of the SMBH specification\n" % (pars[10:],linecnt)
-
-            outputfile.SourceData(mysystem,name=sysname)
         except:
             if line.split():
-                outputfile.comments += "--> I have problems processing line %s of the SMBH specification (wrong syntax or not enough parameters); I'll drop it\n" % linecnt
+                outputfile.comments += "--> I have problems processing line %s of the SMBH specification (wrong syntax or not enough parameters or duplicate source index); I'll drop it\n" % linecnt
 
             pass
         else:
             bbhsources.append(sysname)
+            bbhsourcelist[sysname] = mysystem
             
         linecnt += 1
 
     outputfile.comments += "--> Read %s SMBH sources\n" % len(bbhsources)
+
+    bbherrordata = None
+
+    if data.has_key('file-smbh-ci') and data['file-smbh-ci'].filename:
+        outputfile.comments += "-> Found SMBH confidence-interval specification in uploaded file %s\n" % data['file-smbh-ci'].filename
+        if data.has_key('text-smbh-ci') and data['text-smbh-ci'].value:
+            outputfile.comments += "--> (Neglecting all content in text form)\n"
+        bbherrordata = data['file-smbh-ci'].file
+    elif data.has_key('text-smbh-ci') and data['text-smbh-ci'].value:
+        outputfile.comments += "-> Found SMBH confidence-interval specification in text form\n"
+        bbherrordata = data['text-smbh-ci'].value.split('\n')
+
+    if bbherrordata:
+        linecnt = 1
+        bbherrorsources = []
+
+        for line in bbherrordata:
+            try:
+                pars = map(paramcheck,line.split())
+
+                sysname = 'SMBH-%s' % int(pars[0])
+
+                # check if it exists...
+                if sysname not in bbhsourcelist:
+                    outputfile.comments += "--> Confidence interval specification for unspecified source index %s on line %s; therefore...\n" % (int(pars[0]),linecnt)
+                    raise
+                elif sysname in bbherrorsources:
+                    outputfile.comments += "--> Duplicated source index %s on line %s; therefore...\n" % (int(pars[0]),linecnt)
+                    raise                    
+
+                mysystem = bbhsourcelist[sysname]
+
+                mysystem.EclipticLatitudeMin           = pars[1];  mysystem.EclipticLatitudeMax           = pars[2]
+                mysystem.EclipticLongitudeMin          = pars[3];  mysystem.EclipticLongitudeMax          = pars[4]
+                mysystem.PolarizationMin               = pars[5];  mysystem.PolarizationMax               = pars[6]
+                mysystem.InclinationMin                = pars[7];  mysystem.InclinationMax                = pars[8]
+                mysystem.DistanceMin                   = pars[9];  mysystem.DistanceMax                   = pars[10]
+                mysystem.Mass1Min                      = pars[11]; mysystem.Mass1Max                      = pars[12]
+                mysystem.Mass2Min                      = pars[13]; mysystem.Mass2Max                      = pars[14]
+                mysystem.CoalescenceTimeMin            = pars[15]; mysystem.CoalescenceTimeMax            = pars[16]
+                mysystem.InitialAngularOrbitalPhaseMin = pars[17]; mysystem.InitialAngularOrbitalPhaseMax = pars[18]
+
+                mysystem.EclipticLatitudeMin_Unit  = 'Radian'    ; mysystem.EclipticLatitudeMax_Unit  = 'Radian' 
+                mysystem.EclipticLongitudeMin_Unit = 'Radian'    ; mysystem.EclipticLongitudeMax_Unit = 'Radian'    
+                mysystem.PolarizationMin_Unit      = 'Radian'    ; mysystem.PolarizationMax_Unit      = 'Radian'    
+                mysystem.InclinationMin_Unit       = 'Radian'    ; mysystem.InclinationMax_Unit       = 'Radian'    
+                mysystem.DistanceMin_Unit          = 'Parsec'    ; mysystem.DistanceMax_Unit          = 'Parsec'
+                mysystem.Mass1Min_Unit             = 'SolarMass' ; mysystem.Mass1Max_Unit             = 'SolarMass'
+                mysystem.Mass2Min_Unit             = 'SolarMass' ; mysystem.Mass2Max_Unit             = 'SolarMass'
+                mysystem.CoalescenceTimeMin_Unit   = 'Second'    ; mysystem.CoalescenceTimeMax_Unit   = 'Second'
+                mysystem.InitialAngularOrbitalPhaseMin_Unit = 'Radian'; mysystem.InitialAngularOrbitalPhaseMax_Unit = 'Radian'   
+
+                if len(pars) > 19:
+                    outputfile.comments += "--> Ignoring extra params %s in line %s\n" % (pars[19:],linecnt)
+            except:
+                if line.split():
+                    outputfile.comments += "--> I have problems processing line %s of the SMBH confidence-interval specification; I'll drop it\n" % linecnt
+
+                pass
+            else:
+                bbherrorsources.append(sysname)
+                outputfile.comments += "--> Added confidence interval specification for source index %s\n" % int(pars[0])
+
+        linecnt += 1
+
+    bbhsourcelistsort = bbhsourcelist.keys()
+    bbhsourcelistsort.sort()
+
+    for sysname in bbhsourcelistsort:
+        outputfile.SourceData(bbhsourcelist[sysname],name=sysname)
 
 # process EMRI
 
@@ -209,6 +283,8 @@ elif data.has_key('text-emri') and data['text-emri'].value:
     outputfile.comments += "-> Found EMRI specification in text form\n"
     emridata = data['text-emri'].value.split('\n')
     
+emrisourcelist = {}
+    
 if emridata:
     linecnt = 1
     emrisources = []
@@ -220,15 +296,13 @@ if emridata:
             sysname = 'EMRI-%s' % int(pars[0])
 
             if challenge == 'challenge1.3' and (int(pars[0]) < 1 or int(pars[5]) > 5):
-                outputfile.comments += "--> Source index %s not between 1 and 5 on line %s of the EMRI specification; therefore...\n" % (pars[0],linecnt)
+                outputfile.comments += "--> Source index %s not between 1 and 5 on line %s of the EMRI specification; therefore...\n" % (int(pars[0]),linecnt)
                 raise                
 
             # check for duplicates
             if sysname in emrisources:
-                outputfile.comments += "--> Duplicated source index %s on line %s of the EMRI specification; therefore...\n" % (pars[0],linecnt)
+                outputfile.comments += "--> Duplicated source index %s on line %s of the EMRI specification; therefore...\n" % (int(pars[0]),linecnt)
                 raise
-            else:
-                emrisources.append(sysname)
             
             mysystem = EMRI.ExtremeMassRatioInspiral(sysname)
 
@@ -250,17 +324,91 @@ if emridata:
 
             if len(pars) > 15:
                 outputfile.comments += "--> Ignoring extra params %s in line %s of the EMRI specification\n" % (pars[15:],linecnt)
-
-            outputfile.SourceData(mysystem,name=sysname)
         except:
             if line.split():
                 outputfile.comments += "--> I have problems processing line %s of the EMRI specification (wrong syntax or not enough parameters or duplicate source index); I'll drop it\n" % linecnt
 
             pass
+        else:
+            emrisources.append(sysname)
+            emrisourcelist[sysname] = mysystem
             
         linecnt += 1
 
     outputfile.comments += "--> Read %s EMRI sources\n" % len(emrisources)
+
+    emrierrordata = None
+
+    if data.has_key('file-emri-ci') and data['file-emri-ci'].filename:
+        outputfile.comments += "-> Found EMRI confidence-interval specification in uploaded file %s\n" % data['file-emri-ci'].filename
+        if data.has_key('text-emri-ci') and data['text-emri-ci'].value:
+            outputfile.comments += "--> (Neglecting all content in text form)\n"
+        emrierrordata = data['file-emri-ci'].file
+    elif data.has_key('text-emri-ci') and data['text-emri-ci'].value:
+        outputfile.comments += "-> Found EMRI confidence-interval specification in text form\n"
+        emrierrordata = data['text-emri-ci'].value.split('\n')
+
+    if emrierrordata:
+        linecnt = 1
+        emrierrorsources = []
+
+        for line in emrierrordata:
+            try:
+                pars = map(paramcheck,line.split())
+
+                sysname = 'EMRI-%s' % int(pars[0])
+
+                # check if it exists...
+                if sysname not in emrisourcelist:
+                    outputfile.comments += "--> Confidence interval specification for unspecified source index %s on line %s; therefore...\n" % (int(pars[0]),linecnt)
+                    raise
+                elif sysname in emrierrorsources:
+                    outputfile.comments += "--> Duplicated source index %s on line %s; therefore...\n" % (int(pars[0]),linecnt)
+                    raise
+
+                mysystem = emrisourcelist[sysname]
+
+                paramlist = (('EclipticLatitude',                 'Radian'     ),
+                             ('EclipticLongitude',                'Radian'     ),
+                             ('PolarAngleOfSpin',                 'Radian'     ),
+                             ('AzimuthalAngleOfSpin',             'Radian'     ),
+                             ('Spin',                             'MassSquared'),
+                             ('MassOfCompactObject',              'SolarMass'  ),
+                             ('MassOfSMBH',                       'SolarMass'  ),
+                             ('InitialAzimuthalOrbitalFrequency', 'Hertz'      ),
+                             ('InitialAzimuthalOrbitalPhase',     'Radian'     ),
+                             ('InitialEccentricity',              'Unit'       ),
+                             ('InitialTildeGamma',                'Radian'     ),
+                             ('InitialAlphaAngle',                'Radian'     ),
+                             ('LambdaAngle',                      'Radian'     ),
+                             ('Distance',                         'Parsec'     ))
+
+                paramcount = 1
+                for paramtuple in paramlist:
+                    setattr(mysystem,paramtuple[0]+'Min',pars[paramcount])
+                    setattr(mysystem,paramtuple[0]+'Max',pars[paramcount+1])
+
+                    setattr(mysystem,paramtuple[0]+'Min_Unit',paramtuple[1])
+                    setattr(mysystem,paramtuple[0]+'Max_Unit',paramtuple[1])
+
+                    paramcount += 2
+                
+                if len(pars) > 29:
+                    outputfile.comments += "--> Ignoring extra params %s in line %s\n" % (pars[29:],linecnt)
+            except:
+                if line.split():
+                    outputfile.comments += "--> I have problems processing line %s of the EMRI confidence-interval specification; I'll drop it\n" % linecnt
+
+                pass
+            else:
+                emrierrorsources.append(sysname)
+                outputfile.comments += "--> Added confidence interval specification for source index %s\n" % int(pars[0])
+
+    emrisourcelistsort = emrisourcelist.keys()
+    emrisourcelistsort.sort()
+
+    for sysname in emrisourcelistsort:
+        outputfile.SourceData(emrisourcelist[sysname],name=sysname)
 
 outputfile.comments += '> All done\n'
 outputfile.comments += ' \n'
@@ -279,9 +427,6 @@ idfile = collaboration + '-id.txt'
 
 os.chdir('/home/mldc')
 os.system('tar zcvf %(datedtarfile)s %(outputfilename)s %(idfile)s %(allgbfiles)s > /dev/null' % globals())
-
-# TODO errors for SMBH and EMRIs
-# TODO (perhaps) check for index correspondence between 
 
 # -> output XML to the browser
 
