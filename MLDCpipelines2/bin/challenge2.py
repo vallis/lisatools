@@ -156,8 +156,8 @@ if (not makemode) and (not sourcekeyfile):
     if not os.path.isfile(sourcescript):
         parser.error("I need the challenge script %s!" % sourcescript)
     else:
-        run('python %s %s' % (sourcescript,seed))
-elif sourcekeyfile:
+        run('python %s %s %s' % (sourcescript,seed,options.istraining))
+elif (not makemode) and sourcekeyfile:
     # convoluted logic, to make sure that the keyfile given is not in Source/ and therefore
     # deleted
     run('mv %s %s-backup' % (sourcekeyfile,sourcekeyfile))
