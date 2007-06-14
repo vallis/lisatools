@@ -6,6 +6,7 @@ import sys
 import cgi
 import os
 import time
+import string
 
 sys.stderr = sys.stdout
 print "Content-type: text/xml\n"
@@ -21,6 +22,18 @@ def paramcheck(par):
         return par
     else:
         return float(par)
+
+def paramcheck2(line):
+    pars = line.split()
+    
+    retpars = []    
+    for i in range(len(pars)):
+        if '#' in pars[i]:
+            return retpars, string.join(pars[i:])
+        else:
+            retpars.append(paramcheck(pars[i]))
+
+    return retpars, ''
 
 # -> setup parameters
 datadir = '/home/mldc/'
@@ -68,7 +81,8 @@ for suffix in ['all','all-ci','1','1-ci','2','2-ci','3','3-ci','4','4-ci']:
     
         for line in data[gbfilename].file:
             try:
-                pars = map(paramcheck,line.split())
+                pars, parscomment = paramcheck2(line)
+                # pars = map(paramcheck,line.split())
             
                 if int(pars[0]) in gbsources:
                     outputfile.comments += "--> Duplicated source index %s on line %s of GB file %s; therefore...\n" % (int(pars[0]),linecnt,data[gbfilename].filename)
@@ -157,6 +171,7 @@ elif data.has_key('text-smbh') and data['text-smbh'].value:
     bbhdata = data['text-smbh'].value.split('\n')
 
 bbhsourcelist = {}
+bbhcomments = {}
     
 if bbhdata:
     linecnt = 1
@@ -164,7 +179,8 @@ if bbhdata:
 
     for line in bbhdata:
         try:
-            pars = map(paramcheck,line.split())
+            pars, parscomment = paramcheck2(line)
+            # pars = map(paramcheck,line.split())
 
             sysname = 'SMBH-%s' % int(pars[0])
 
@@ -195,6 +211,7 @@ if bbhdata:
         else:
             bbhsources.append(sysname)
             bbhsourcelist[sysname] = mysystem
+            bbhcomments[sysname] = parscomment
             
         linecnt += 1
 
@@ -217,7 +234,8 @@ if bbhdata:
 
         for line in bbherrordata:
             try:
-                pars = map(paramcheck,line.split())
+                pars, parscomment = paramcheck2(line)
+                # pars = map(paramcheck,line.split())
 
                 sysname = 'SMBH-%s' % int(pars[0])
 
@@ -259,6 +277,8 @@ if bbhdata:
 
                 pass
             else:
+                if parscomment:
+                    bbhcomments[sysname] += '\n' + parscomment
                 bbherrorsources.append(sysname)
                 outputfile.comments += "--> Added confidence interval specification for source index %s\n" % int(pars[0])
 
@@ -268,7 +288,7 @@ if bbhdata:
     bbhsourcelistsort.sort()
 
     for sysname in bbhsourcelistsort:
-        outputfile.SourceData(bbhsourcelist[sysname],name=sysname)
+        outputfile.SourceData(bbhsourcelist[sysname],name=sysname,comments=bbhcomments[sysname])
 
 # process EMRI
 
@@ -284,6 +304,7 @@ elif data.has_key('text-emri') and data['text-emri'].value:
     emridata = data['text-emri'].value.split('\n')
     
 emrisourcelist = {}
+emricomments = {}
     
 if emridata:
     linecnt = 1
@@ -291,13 +312,14 @@ if emridata:
 
     for line in emridata:
         try:
-            pars = map(paramcheck,line.split())
-
+            # pars = map(paramcheck,line.split())
+            pars, parscomment = paramcheck2(line)
+                
             sysname = 'EMRI-%s' % int(pars[0])
 
-            if challenge == 'challenge1.3' and (int(pars[0]) < 1 or int(pars[5]) > 5):
-                outputfile.comments += "--> Source index %s not between 1 and 5 on line %s of the EMRI specification; therefore...\n" % (int(pars[0]),linecnt)
-                raise                
+            # if challenge == 'challenge1.3' and (int(pars[0]) < 1 or int(pars[0]) > 5):
+            #     outputfile.comments += "--> Source index %s not between 1 and 5 on line %s of the EMRI specification; therefore...\n" % (int(pars[0]),linecnt)
+            #     raise                
 
             # check for duplicates
             if sysname in emrisources:
@@ -332,6 +354,7 @@ if emridata:
         else:
             emrisources.append(sysname)
             emrisourcelist[sysname] = mysystem
+            emricomments[sysname] = parscomment
             
         linecnt += 1
 
@@ -354,7 +377,8 @@ if emridata:
 
         for line in emrierrordata:
             try:
-                pars = map(paramcheck,line.split())
+                # pars = map(paramcheck,line.split())
+                pars, parscomment = paramcheck2(line)
 
                 sysname = 'EMRI-%s' % int(pars[0])
 
@@ -402,13 +426,15 @@ if emridata:
                 pass
             else:
                 emrierrorsources.append(sysname)
+                if parscomment:
+                    emricomments[sysname] += '\n' + parscomment
                 outputfile.comments += "--> Added confidence interval specification for source index %s\n" % int(pars[0])
 
     emrisourcelistsort = emrisourcelist.keys()
     emrisourcelistsort.sort()
 
     for sysname in emrisourcelistsort:
-        outputfile.SourceData(emrisourcelist[sysname],name=sysname)
+        outputfile.SourceData(emrisourcelist[sysname],name=sysname,comments=emricomments[sysname])
 
 outputfile.comments += '> All done\n'
 outputfile.comments += ' \n'
