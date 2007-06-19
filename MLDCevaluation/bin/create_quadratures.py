@@ -16,44 +16,21 @@ if (len(sys.argv) < 2):
     sys.exit(1)
 
 xmlInput = sys.argv[1]
+outputname1 = xmlInput[:-4]+"_0.xml" 
 
 inputXML = lisaxml.readXML(xmlInput)
-mysystem = inputXML.getLISASources()[0]
+mysystems = inputXML.getLISASources()
 inputXML.close()
 
-Zerosystem = mysystem
-
-if (  re.search('Challenge1.2', xmlInput) != None):
-    print "creating quadratures for BBH waveform " 
-    Zerosystem.InitialAngularOrbitalPhase = 0.0
-elif(  re.search('Challenge1.1.1', xmlInput) != None):
-    Zerosystem.InitialPhase = 0.0
-else:
-   print "unknown challenge name", challengename
-   sys.exit(1)
-
-
-outputname1 = xmlInput[:-4]+"_0.xml" 
- 
-# write out the XML file
-
-
 outputXML1 = lisaxml.lisaXML(outputname1,author='Stas Babak')
-outputXML1.SourceData(Zerosystem)
+
+
+Zerosystems = mysystems
+
+for system in Zerosystems:
+  system.InitialAngularOrbitalPhase = 0.0
+  outputXML1.SourceData(system)
+
 outputXML1.close()
 
-# the same for pi/2
 
-Piby2system = mysystem
-if (  re.search('Challenge1.2', xmlInput) != None):
-    Piby2system.InitialAngularOrbitalPhase = math.pi/4.0
-elif(  re.search('Challenge1.1.1', xmlInput) != None):
-    Piby2system.InitialPhase = math.pi/4.0
-else:
-   print "unknown challenge name", challengename
-   sys.exit(1)
-
-outputname2 = xmlInput[:-4]+"_piby2.xml"
-outputXML2 = lisaxml.lisaXML(outputname2,author='Stas Babak')
-outputXML2.SourceData(Piby2system)
-outputXML2.close()
