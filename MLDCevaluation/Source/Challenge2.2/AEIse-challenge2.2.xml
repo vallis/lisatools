@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">AEIse</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2007-06-15T18:29:38PDT</Param>
+    <Comment>
+        This is the XML solution file for challenge2.2.
+         
+        Please VERIFY the accuracy of the values given below, and READ the generation log; GO BACK and REPOST if you need to make corrections.
+         
+        > Begin XML generation log
+        -> Found SMBH specification in text form
+        --> Read 5 SMBH sources
+        -> Found EMRI specification in text form
+        --> Read 0 EMRI sources
+        > All done
+         
+        Your submission was received on 07/06/15 at 18:29:38 PDT and it can be retrieved at the URL
+         http://www.tapir.caltech.edu/~mldc/submit/AEIse-challenge2.2-070615-182938.tar.gz
+         
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="SourceData">
+        <XSIL Name="SMBH-1" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.02062456321
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                2.277737861
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0.4011344367
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                0.8223419215
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                840989555.2
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                1786099.661
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1001702.803
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                10282601.58
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                1.213
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Comment>
+                # Could be secondary maximum, chain still had a slop, so it didn't converged to const. Didn't have time to run longer Didn't check opposite sky loc
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-2" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.06843538221
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.4970056964
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                1.67746
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.563820268
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                5099648966.0
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                4381936.509
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1256136.305
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                19475535.34
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                5.93068
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Comment>
+                # Could be secondary maximum, chain still had a slop, so it didn't converged to const. Didn't have time to run longer Didn't check opposite sky loc
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-3" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.3617308758
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                3.569596872
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                1.160678522
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.062256067
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                10692663270.0
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                2856959.441
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1204274.399
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                49560038.57
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                4.496222
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Comment>
+                # Could be secondary maximum, chain still had a slop, so it didn't converged to const. Didn't have time to run longer Didn't check opposite sky loc
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-41" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.209291659
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.928669965
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                5.09996
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.9213804
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                2345928082.0
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                3494849.719
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1108542.239
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                65775336.0
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.40922431
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Comment>
+                #The secondary max, sky flip, SNR ~23.37, chain is still running, the best result so far
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-42" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -1.210959488
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                4.069295961
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                1.184973117
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.213256237
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                2343777364.0
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                3505180.676
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1105850.245
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                65775090.81
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                2.115144
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Comment>
+                #The prim. max for SMBH4 SNR~23.58, chain is still running, the best result so far
+            </Comment>
+        </XSIL>
+    </XSIL>
+</XSIL>

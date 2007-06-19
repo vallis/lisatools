@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">JPLCT</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2007-06-15T17:51:41PDT</Param>
+    <Comment>
+        This is the XML solution file for challenge2.2.
+         
+        Please VERIFY the accuracy of the values given below, and READ the generation log; GO BACK and REPOST if you need to make corrections.
+         
+        > Begin XML generation log
+        -> Found GB specification for full GB population in uploaded file MLDC_22_JPL_MT_full_MLDC_format
+        --> First readable line (1) is:
+        1 1.181550936671e-04 1.083927462585e+00 5.702702491447e+00 4.529789253130e-21 3.021295351579e+00 1.233091214206e+00 2.566839130496e+00
+        --> Read data for 18461 sources from GB file MLDC_22_JPL_MT_full_MLDC_format
+        -> Found SMBH specification in text form
+        --> Read 5 SMBH sources
+        > All done
+         
+        Your submission was received on 07/06/15 at 17:51:53 PDT and it can be retrieved at the URL
+         http://www.tapir.caltech.edu/~mldc/submit/JPLCT-challenge2.2-070615-175153.tar.gz
+         
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="SourceData">
+        <XSIL Name="GB-all" Type="PlaneWaveTable">
+            <Param Name="SourceType" Type="String">
+                GalacticBinary
+            </Param>
+            <Table>
+                <Column Name="Index" Type="double" Unit="1"/>
+                <Column Name="Frequency" Type="double" Unit="Hz"/>
+                <Column Name="EclipticLatitude" Type="double" Unit="Radian"/>
+                <Column Name="EclipticLongitude" Type="double" Unit="Radian"/>
+                <Column Name="Amplitude" Type="double" Unit="1"/>
+                <Column Name="Polarization" Type="double" Unit="Radian"/>
+                <Column Name="Inclination" Type="double" Unit="Radian"/>
+                <Column Name="InitialPhase" Type="double" Unit="Radian"/>
+                <Dim Name="Length">
+                    18461
+                </Dim>
+                <Dim Name="Records">
+                    8
+                </Dim>
+                <Stream Type="Remote" Encoding="Text">
+                    JPLCT-challenge2.2-gb-all.txt
+                </Stream>
+            </Table>
+        </XSIL>
+        <XSIL Name="SMBH-1" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -1.0082493
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                1.33424
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                -0.150423661506
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                0.78562727406
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                3315247140.75
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                1330513.0
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1327328.4
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                10282632.0
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                6.2674581553
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-21" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.27981
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                4.573049
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                -6.22747192139
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.57966728295
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                12044801644.3
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                4535448.63533
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1219353.06528
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                19476158.975
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                5.81156236347
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Comment>
+                # This parameter set is the more likely of the dual entries for SMBHB #2, by the relative likelihood ratio: 1.1776:1
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-22" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.270917
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                1.448111
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                -0.0574263095293
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.5659900014
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                11954917249.5
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                4534122.37676
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1219372.34811
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                19475427.1868
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                5.63924103329
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-3" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.506521
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                5.145457
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                -5.77853115446
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                2.10882162881
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                38735853843.8
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                2529004.09091
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1348309.50494
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                49559909.284
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.916953300545
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-4" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -1.205
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                3.998
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                -5.1993353299
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.25126553335
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                9027754621.75
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                4110720.0
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                972008.0
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                65763807.0
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                4.32752628903
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>

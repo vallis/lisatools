@@ -1,0 +1,608 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">BBGP</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2007-06-15T19:09:58PDT</Param>
+    <Comment>
+        This is the XML solution file for challenge1.3.
+         
+        Please VERIFY the accuracy of the values given below, and READ the generation log; GO BACK and REPOST if you need to make corrections.
+         
+        > Begin XML generation log
+        -> Found EMRI specification in uploaded file BBGP_EMRI.dat
+        --> I have problems processing line 5 of the EMRI specification (wrong syntax or not enough parameters or duplicate source index); I'll drop it
+        --> Read 11 EMRI sources
+        > All done
+         
+        Your submission was received on 07/06/15 at 19:09:58 PDT and it can be retrieved at the URL
+         http://www.tapir.caltech.edu/~mldc/submit/BBGP-challenge1.3-070615-190958.tar.gz
+         
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="SourceData">
+        <XSIL Name="EMRI-11" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.35028289499
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.3773984177
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.325674202
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0.3943020953
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.6066248263
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.753427238
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                10262287.65
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0001867550655
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                0.47726541118
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.1656822036
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                5.61022267578
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                4.75662309218
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.9813923496
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                356462881.4
+            </Param>
+            <Comment>
+                # Secondary SNR = 89.9133454
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-12" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.32221425099
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.2485820758
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.364294908
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0.4092479414
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.6088062935
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.755132074
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                10262110.86
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0001867691296
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                3.10513732718
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.1656628656
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                0.18976995018
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                5.92945931288
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.9813684034
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                356583216.8
+            </Param>
+            <Comment>
+                # Secondary SNR = 89.60026853
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-13" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.16863638199
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.1615485878
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.103370095
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0.1439823481
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.5817143256
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.769375716
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                10104556.96
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0001917568061
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                1.97620005518
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.154567785
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                1.31758896218
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                3.12158022618
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.6104463973
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                506379403.9
+            </Param>
+            <Comment>
+                # Secondary SNR = 87.38242027
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-14" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.1687336789
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.1620125331
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.102756264
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0.1342001808
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.5816517019
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.768981656
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                10115356.62
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0001917519998
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                2.27755828618
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.153563881
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                6.08461532708
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                1.01653475828
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.6062906679
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                510306604.3
+            </Param>
+            <Comment>
+                # Secondary SNR = 86.87784739
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-16" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.26255290399
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.446137095
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                2.029694369
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                1.22673877
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.5753240811
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.726322225
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                9879002.899
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0001957899983
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                5.96177795168
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.156419664
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                5.80877108118
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                0.53589685618
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.07562907589
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                308109668.0
+            </Param>
+            <Comment>
+                # Secondary SNR = 86.02339304
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-21" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.01292377099
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                6.276117705
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.321989179
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0.1182161286
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.538642996
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.49457019
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                5177826.085
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0003343383276
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                5.27147897618
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.2270219144
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                2.54498458918
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                2.2307851718
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.5796417927
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                2800151874.0
+            </Param>
+            <Comment>
+                # Secondary SNR = 54.08613927
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-22" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.12065286099
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.2383478539
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.54959862
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                2.794620301
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.542016608
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.40192344
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                5046155.786
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0003394359786
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                3.18738924118
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.2431280562
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                6.20555825716
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                5.78703317978
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.2443042236
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                2291933945.0
+            </Param>
+            <Comment>
+                # Secondary SNR = 52.101032
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-23" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.89954785029
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.1773905174
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.085601796
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                2.78060396
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.5194169018
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.31256674
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                4936396.039
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0003412216821
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                1.53977666918
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.2492733794
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                3.18163353018
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                2.20317478218
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.09676575702
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                1712960498.0
+            </Param>
+            <Comment>
+                # Secondary SNR = 45.48115707
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-41" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.6570428663
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                5.823476934
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                2.752414319
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                5.141966264
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.5958069512
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.31891028
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                981702.8053
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0008465406942
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                2.56399453218
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.4065400054
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                5.87056676648
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                1.77598715418
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                1.901591246
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                13265230860.0
+            </Param>
+            <Comment>
+                # Secondary SNR = 25.64908123
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-42" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.1768027622
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                5.484816501
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.211352453
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                2.430337663
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.6088374812
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.08767015
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                1015687.014
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0008391131507
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                6.2234733
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.4019070379
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                1.475268083
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                3.855120057
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                2.11953425
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                15599622760.0
+            </Param>
+            <Comment>
+                # Secondary SNR = 18.039147
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-43" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.3644679778
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                2.237122568
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.701441822
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                2.217550451
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.5966903002
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.14236155
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                1023712.801
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0008332186721
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                4.16387725118
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.4008250004
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                3.9092606072
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                5.61546286658
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                2.220436243
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                15950081150.0
+            </Param>
+            <Comment>
+                # Secondary SNR = 17.87106284
+            </Comment>
+        </XSIL>
+    </XSIL>
+</XSIL>

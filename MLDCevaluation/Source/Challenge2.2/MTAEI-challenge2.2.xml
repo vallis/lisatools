@@ -1,0 +1,889 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">MTAEI</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2007-06-15T16:35:29PDT</Param>
+    <Comment>
+        This is the XML solution file for challenge2.2.
+         
+        Please VERIFY the accuracy of the values given below, and READ the generation log; GO BACK and REPOST if you need to make corrections.
+         
+        > Begin XML generation log
+        -> Found SMBH specification in uploaded file MBH_2.2.txt
+        --> Read 9 SMBH sources
+        -> Found SMBH confidence-interval specification in uploaded file MBH_Ranges.dat
+        --> Added confidence interval specification for source index 11
+        --> Added confidence interval specification for source index 21
+        --> Added confidence interval specification for source index 22
+        --> Added confidence interval specification for source index 31
+        --> Added confidence interval specification for source index 32
+        --> Added confidence interval specification for source index 41
+        --> Added confidence interval specification for source index 42
+        --> Added confidence interval specification for source index 51
+        --> Added confidence interval specification for source index 52
+        > All done
+         
+        Your submission was received on 07/06/15 at 16:35:29 PDT and it can be retrieved at the URL
+         http://www.tapir.caltech.edu/~mldc/submit/MTAEI-challenge2.2-070615-163529.tar.gz
+         
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="SourceData">
+        <XSIL Name="SMBH-11" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.692700750205
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                1.4689619569
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0.086013766441
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                0.70431196284
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                3915075092.76
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                1330023.6992
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1327295.2965
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                10282759.593
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                2.704302
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                -0.729795125715
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                -0.664934495715
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                1.44607418626
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                1.47845268626
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                1329445.12382
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                1335786.3245
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                1321666.72921
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1327972.57203
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                10282746.3094
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                10282767.8052
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # The Big Kahuna. Not bimodal. SNR = 2560.2
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-21" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.217325
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                1.522777
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                1.499579
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.564472
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                11788935789.3
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                4544718.7587
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1216783.09598
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                19475427.6016
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.723084
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                -0.318832329636
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                -0.166547819804
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                1.39223723541
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                1.62182263047
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                4529125.26573
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                4562662.37119
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                1212682.30801
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1220407.789
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                19475372.8842
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                19475465.9587
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # Bimodal sky location, 50%. SNR = 174.822
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-22" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.230905
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                4.649536
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                1.638429
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.581021
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                11770076039.6
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                4545903.35468
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1216818.94546
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                19476118.1952
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.921975
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                0.159029973955
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                0.315483693955
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                4.51686242722
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                4.74649045909
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                4529489.65509
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                4562641.46204
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                1212978.49223
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1220529.51008
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                19476076.8133
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                19476175.0159
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # Bimodal sky location, 50%. SNR = 174.826
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-31" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.705082
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                3.234389
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                2.613873
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.060096
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                62138030228.8
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                2533675.81135
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1344721.85869
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                49560277.7013
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.132536
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                -1.28748073646
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                -0.189155336457
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                2.90340500453
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                3.70109366048
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                2510194.388
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                2565228.88249
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                1329996.39789
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1356287.76749
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                49560072.296
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                49560428.9471
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # Bimodal sky location, 50%. SNR = 118.1814
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-32" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.768137
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.205037
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0.465334
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                2.07347
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                62041284813.7
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                2538834.91945
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1342222.53374
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                49559570.2067
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.123147
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                0.165811484561
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                1.39967317215
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                -0.226281225042
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                0.837204612064
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                2503136.97268
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                2565697.59476
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                1328916.49739
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1361289.16338
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                49559444.2869
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                49559941.0194
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # Bimodal sky location, 50%. SNR = 118.1809
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-41" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.200954
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.85434
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0.377832
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.919866
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                9390358831.13
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                3886350.2703
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1015986.1226
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                65773615.5225
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                2.23158
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                1.12326502295
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                1.26738532295
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                0.63379056702
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                1.24241392702
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                3027282.52499
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                4264122.87379
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                944271.833032
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1258014.75358
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                65764091.113
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                65796985.0221
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # Bimodal sky location, 50%. SNR = 24.820
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-42" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -1.184575
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                3.976801
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                1.18519
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.223886
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                9278141443.56
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                4017751.91278
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                989429.084798
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                65768558.1125
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                0.574591
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                -1.27521664586
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                -1.09104531339
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                3.74046634045
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                4.35842052045
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                3136398.59284
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                4283293.45084
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                940008.185
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1223444.20753
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                65761357.1221
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                65794846.2735
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # Bimodal sky location, 50%. SNR = 24.835
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-51" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.766092
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                2.722699
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0.283507
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.346108
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                12163173386.2
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                1292008.0807
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                1258621.58153
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                72254091.2348
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                2.621543
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                -1.00941415068
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                -0.512358446286
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                2.4058179674
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                3.05409000952
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                1608182.99226
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                3018460.31881
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                612810.205637
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1252923.36441
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                72166944.5468
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                72256367.7233
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # NOT A POSITIVE DETECTION. Candidate Source, would wait for more data before claining detection (meger is 108 days away). Bimodal sky location, 50%. SNR = 7.32
+            </Comment>
+        </XSIL>
+        <XSIL Name="SMBH-52" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.779784
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                5.928699
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                2.8421
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.796687
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                12288632609.3
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                1659453.23546
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                992260.481718
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                72251955.1873
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                2.728169
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7
+            </Param>
+            <Param Name="EclipticLatitudeMin" Unit="Radian">
+                0.348070108616
+            </Param>
+            <Param Name="EclipticLatitudeMax" Unit="Radian">
+                1.06935411862
+            </Param>
+            <Param Name="EclipticLongitudeMin" Unit="Radian">
+                5.56663234587
+            </Param>
+            <Param Name="EclipticLongitudeMax" Unit="Radian">
+                6.18614806247
+            </Param>
+            <Param Name="PolarizationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="PolarizationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InclinationMax" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="DistanceMin" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="DistanceMax" Unit="Parsec">
+                NaN
+            </Param>
+            <Param Name="Mass1Min" Unit="SolarMass">
+                1566664.21951
+            </Param>
+            <Param Name="Mass1Max" Unit="SolarMass">
+                2980359.42246
+            </Param>
+            <Param Name="Mass2Min" Unit="SolarMass">
+                618180.373811
+            </Param>
+            <Param Name="Mass2Max" Unit="SolarMass">
+                1081837.43392
+            </Param>
+            <Param Name="CoalescenceTimeMin" Unit="Second">
+                72177085.5164
+            </Param>
+            <Param Name="CoalescenceTimeMax" Unit="Second">
+                72271104.6149
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMin" Unit="Radian">
+                NaN
+            </Param>
+            <Param Name="InitialAngularOrbitalPhaseMax" Unit="Radian">
+                NaN
+            </Param>
+            <Comment>
+                # NOT A POSITIVE DETECTION. Candidate Source, would wait for more data before claining detection (meger is 108 days away). Bimodal sky location, 50%. SNR = 7.29
+            </Comment>
+        </XSIL>
+    </XSIL>
+</XSIL>

@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">MT</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2007-06-15T23:12:53PDT</Param>
+    <Comment>
+        This is the XML solution file for challenge1.3.
+         
+        Please VERIFY the accuracy of the values given below, and READ the generation log; GO BACK and REPOST if you need to make corrections.
+         
+        > Begin XML generation log
+        -> Found EMRI specification in uploaded file entry.dat
+        --> Read 3 EMRI sources
+        > All done
+         
+        Your submission was received on 07/06/15 at 23:12:53 PDT and it can be retrieved at the URL
+         http://www.tapir.caltech.edu/~mldc/submit/MT-challenge1.3-070615-231253.tar.gz
+         
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="SourceData">
+        <XSIL Name="EMRI-11" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.170081046804
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                3.62556678703
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.12062980683
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0.866353153129
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.668746572379
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.52968846669
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                9578069.37845
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000189947946
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                2.6791952568
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.214829676992
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                6.14342100167
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                5.65285598077
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.972873769814
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                275279747.642
+            </Param>
+            <Comment>
+                # Best Fit, SNR = 75.2. May well be a secondary maxima. Chain still converging.
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-12" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.038220537166
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                3.37706033067
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.94349950454
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0.562377476646
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.667974841736
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.55659898172
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                9598511.25777
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000189945927
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                2.68641375739
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.213328882772
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                1.82715112996
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                4.3851222265
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.96608585776
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                272904315.964
+            </Param>
+            <Comment>
+                # One of the many secondaries, SNR = 74.6. Many others like it. Chain still converging.
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-21" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.254132914597
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                5.99113895366
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.8030172099
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                2.83929930221
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.503015321557
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.93361676674
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                5182937.00398
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000319319116
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                3.74308653589
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.264466660026
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                5.01899819535
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                0.773519316846
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                1.28067069517
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                1059676553.86
+            </Param>
+            <Comment>
+                # Run not finished, two stages in hierachy still to go. Looks to be stuck on some tertiary maxima. SNR is poor (SNR = 42.1). Some parameters likely to be in the right ballpark as many chains converged on same M, lambda, e0.
+            </Comment>
+        </XSIL>
+    </XSIL>
+</XSIL>
