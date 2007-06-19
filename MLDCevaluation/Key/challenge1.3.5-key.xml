@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author"></Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2007-06-16T17:58:22EDT</Param>
+    <Comment>
+        Updated Apr 2007 to fix timestamps and EMRI parameters, no changes to signals
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="LISAData">
+        <XSIL Name="Standard MLDC PseudoLISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="EMRI-1.3.5" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.327517977558
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                4.18168893259
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                2.19384085737
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                5.27935012606
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.608487628498
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.81442135024
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                1033612.9566
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000857770706751
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                2.06342015049
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.352229151521
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                0.105283877952
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                5.86790163269
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                2.29066377862
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                2709744614.68
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>
