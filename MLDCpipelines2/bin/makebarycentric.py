@@ -66,7 +66,9 @@ inputXML = lisaxml.readXML(inputfile)
 
 allsystems = inputXML.getLISASources()
 
-for mysystem, cnt in zip(allsystems,range(len(allsystems))):
+for cnt in range(len(allsystems)):
+    mysystem = allsystems[0]
+
     # print out parameters
 
     if options.verbose:
@@ -123,5 +125,7 @@ for mysystem, cnt in zip(allsystems,range(len(allsystems))):
     outputXML = lisaxml.lisaXML(oneoutputfile,author='Michele Vallisneri')
     outputXML.SourceData(mysystem)
     outputXML.close()
+
+    del allsystems[0]
 
 inputXML.close()
