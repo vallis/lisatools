@@ -214,7 +214,7 @@
             <td><b>Parameter Table</b></td>
             <xsl:if test="Stream/@Type = 'Remote'">
                 <td>Filename</td>
-                <td><xsl:value-of select="Stream"/></td>                     
+                <td><a href="{Stream}"><xsl:value-of select="Stream"/></a></td>                     
             </xsl:if>
             <xsl:if test="Stream/@Type = 'Local'">
                 <td>(see XML source)</td><td></td>
@@ -276,7 +276,7 @@
                     <tr>
                         <td><b>Array Stream: <xsl:value-of select="./@Name"/></b></td>
                         <td>Filename</td>
-                        <td><xsl:value-of select="./Stream[@Type='Remote']"/></td>
+                        <td><a href="{Stream}"><xsl:value-of select="./Stream[@Type='Remote']"/></a></td>
                     </tr><tr>
                         <td></td>
                         <td>Encoding</td>                                         
