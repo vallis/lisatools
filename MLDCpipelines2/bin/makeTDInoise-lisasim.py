@@ -13,10 +13,10 @@ import lisaxml
 
 def run(command,quiet = False):
     commandline = command % globals()
-    print "----> %s" % commandline
     
     try:
         if not quiet:
+            print "----> %s" % commandline
             assert(os.system(commandline) == 0)
         else:
             assert(os.system(commandline + ' > /dev/null') == 0)
