@@ -94,4 +94,21 @@ for xmlfile in glob.glob(barycentric):
 
 #### call evaluation script for synthetic LISA data
 
+keyTdis = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
 
+if (challengename == "Challenge1.3"):
+   tdis =  glob.glob('TDI/'+challengename+'/*challenge1.3-*frequency.xml')
+   for keyTDI in (keyTdis):
+       if(re.search('1.3.1', keyTDI) != None):
+           dataTdi = 'Data/challenge1.3.1-frequency/challenge1.3.1-frequency.xml'
+       elif (re.search('1.3.2', keyTDI) != None):
+           dataTdi = 'Data/challenge1.3.2-frequency/challenge1.3.2-frequency.xml'
+       elif (re.search('1.3.4', keyTDI) != None):
+           dataTdi = 'Data/challenge1.3.4-frequency/challenge1.3.4-frequency.xml'
+       run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+
+if (challengename == "Challenge2.2"):
+   tdis = glob.glob('TDI/'+challengename+'/*challenge2.2-*frequency.xml')
+   dataTdi = 'Data/challenge2.2-frequency/challenge2.2-frequency.xml'
+   for KeyTDI in (keyTdis):
+      run('bin/evaluate-syntheticLISA2.py --maxPhase --Galaxy  %(dataTdi)s %(KeyTDI)s %(tdis)s')
