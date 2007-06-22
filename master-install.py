@@ -47,7 +47,11 @@ pythonlib = get_python_lib(prefix=libdir)
 if pythonlib not in sys.path:
     print "!!! You need to add %s to PYTHONPATH (use export or setenv)" % pythonlib
     print "    (sorry, I can't do it from here, it wouldn't stick...)"
+    print "    (if you're on a 64-bit platform, you should add also %s)" % get_python_lib(prefix=libdir,plat_specific=True)
     sys.exit(1)
+
+# note: the plat_specific=True location is used for all C extensions... may need to check if that
+# should be used in one of the setup.py files
 
 here = os.getcwd()
 
