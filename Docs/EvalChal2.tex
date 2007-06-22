@@ -1,0 +1,77 @@
+\documentclass[prd,aps,amsfonts,amsmath, nofootinbib]{revtex4}
+\input{epsf}
+\usepackage{graphicx}
+\usepackage{thumbpdf}
+%\usepackage{pdfsync}
+%\usepackage[pdftex]{graphicx}
+
+
+\def\be{\begin{equation}}
+\def\en{\end{equation}}
+\def\bea{\begin{eqnarray}}
+\def\ena{\end{eqnarray}}
+
+\begin{document}
+\title{Preliminary evaluation of MLDC SMBH and EMRI challenges: 
+Round 2}
+\author{S. Babak, E. Porter, M. Vallisneri}
+\maketitle
+
+\section{EMRI}
+
+Challenge on EMRI contained contained 5 data sets: 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5.
+There collaborations have returned results. Two collaborations have returned full set of parameters and one has returned only partial list.
+
+For the full parameter set we have computed the same evaluating
+parameters as in the challenge 1 for SMBH.
+First we have  used two orthogonal streams with equal and uncorrelated noise:
+
+\bea
+A = (2X - Y - Z)/3; \;\;\;\; E = (Z - Y)/\sqrt{3}
+\ena
+and an approximate expression for the noise 
+\bea
+S = 2(S_X - S_{XY})/3
+\ena
+We have computed the following quantities. The $\chi^2$ per degree
+of freedom
+\bea
+d\chi^{2} = \frac{(A_{key}- A_{rec}|A_{key}- A_{rec}) +
+(E_{key} - E_{rec}|E_{key} - E_{rec})}
+{D}
+\ena
+
+The next value is recovered combined SNR:
+\bea
+SNR  = \sqrt{SNR_A^2 + SNR_E^2},\\
+SNR_A = \frac{(A_{data}|A_{rec})}{\sqrt{(A_{rec}|A_{rec})}},\;\;\;
+SNR_E= \frac{(E_{data}|E_{rec})}{\sqrt{(E_{rec}|E_{rec})}}
+\ena
+Together with this we also compare the noiseless injected signal with
+the recovered one. Here we compute several overlaps:
+\bea
+O_A = \frac{(A_{key}|A_{rec})}{\sqrt{(A_{rec}|A_{rec})(A_{key}|A_{key})}}, \;\;
+O_E = \frac{(E_{key}|E_{rec})}{\sqrt{(E_{rec}|E_{rec})(E_{key}|E_{key})}}
+\ena
+
+Results are summarized in the table below
+\begin{table}
+\caption{\label{OlapsTable1.2.1} Inner products for challenge 1.3.1}
+\begin{ruledtabular}
+\begin{tabular}{|c|c|c|c|c|c|}
+Entry & $d\chi^2$ & $SNR_A$ & $SNR_E$ & SNR & $O_A$ & $O_E$\\
+\hline
+Key & 0.5824 & 0.41182 & 667.734 &  -- & -- & -- & -- & -- \\
+BBGP & 0.67193 & 0.47606 & 528.023 & 0.79153 & 0.79051 &
+0.41694 & 0.000128 & 0.99994\\
+MT & 0.58451 & 0.41331 & 664.471 & 0.9944 & 0.9958 & 0.0112 &  0.00909 & 0.9955\\
+\hline
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+
+
+
+\end{document}
+
