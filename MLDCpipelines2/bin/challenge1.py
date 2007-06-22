@@ -20,23 +20,27 @@ seed = int(sys.argv[1])
 
 random.seed(seed)
 
-seed111a,seed111at = randint(1,100000), randint(1,100000)
-seed111b,seed111bt = randint(1,100000), randint(1,100000)
-seed111c,seed111ct = randint(1,100000), randint(1,100000)
 
-seed112,seed112t = randint(1,100000), randint(1,100000)
+def twoseeds():
+    return randint(1,1000000), randint(1,1000000)
 
-seed121,seed121t = randint(1,100000), randint(1,100000)
-seed122,seed122t = randint(1,100000), randint(1,100000)
+seed111a,seed111at = twoseeds()
+seed111b,seed111bt = twoseeds()
+seed111c,seed111ct = twoseeds()
 
-seed131,seed131t = randint(1,100000), randint(1,100000)
-seed132,seed132t = randint(1,100000), randint(1,100000)
-seed133,seed133t = randint(1,100000), randint(1,100000)
-seed134,seed134t = randint(1,100000), randint(1,100000)
-seed135,seed135t = randint(1,100000), randint(1,100000)
+seed112,seed112t = twoseeds()
+seed113,seed113t = twoseeds()
+seed114,seed114t = twoseeds()
+seed115,seed115t = twoseeds()
 
-run('bin/challenge2.py            --duration=31457280 --seed=%(seed112)s  challenge1.1.2' % globals())
-run('bin/challenge2.py --training --duration=31457280 --seed=%(seed112t)s challenge1.1.2' % globals())
+seed121,seed121t = twoseeds()
+seed122,seed122t = twoseeds()
+
+seed131,seed131t = twoseeds()
+seed132,seed132t = twoseeds()
+seed133,seed133t = twoseeds()
+seed134,seed134t = twoseeds()
+seed135,seed135t = twoseeds()
 
 
 run('bin/challenge2.py            --duration=31457280 --seed=%(seed111a)s  challenge1.1.1a' % globals())
@@ -48,12 +52,25 @@ run('bin/challenge2.py --training --duration=31457280 --seed=%(seed111bt)s chall
 run('bin/challenge2.py            --duration=31457280 --seed=%(seed111c)s  challenge1.1.1c' % globals())
 run('bin/challenge2.py --training --duration=31457280 --seed=%(seed111ct)s challenge1.1.1c' % globals())
 
+run('bin/challenge2.py            --duration=31457280 --seed=%(seed112)s  challenge1.1.2' % globals())
+run('bin/challenge2.py --training --duration=31457280 --seed=%(seed112t)s challenge1.1.2' % globals())
+
+run('bin/challenge2.py            --duration=31457280 --seed=%(seed113)s  challenge1.1.3' % globals())
+run('bin/challenge2.py --training --duration=31457280 --seed=%(seed113t)s challenge1.1.3' % globals())
+
+run('bin/challenge2.py            --duration=31457280 --seed=%(seed114)s  challenge1.1.4' % globals())
+run('bin/challenge2.py --training --duration=31457280 --seed=%(seed114t)s challenge1.1.4' % globals())
+
+run('bin/challenge2.py            --duration=31457280 --seed=%(seed115)s  challenge1.1.5' % globals())
+run('bin/challenge2.py --training --duration=31457280 --seed=%(seed115t)s challenge1.1.5' % globals())
+
 
 run('bin/challenge2.py            --duration=31457280 --seed=%(seed121)s  challenge1.2.1' % globals())
 run('bin/challenge2.py --training --duration=31457280 --seed=%(seed121t)s challenge1.2.1' % globals())
 
 run('bin/challenge2.py            --duration=31457280 --seed=%(seed122)s  challenge1.2.2' % globals())
 run('bin/challenge2.py --training --duration=31457280 --seed=%(seed122t)s challenge1.2.2' % globals())
+
 
 run('bin/challenge2.py            --duration=62914560 --seed=%(seed131)s  challenge1.3.1' % globals())
 run('bin/challenge2.py --training --duration=62914560 --seed=%(seed131t)s challenge1.3.1' % globals())
