@@ -130,7 +130,7 @@ class Table(XMLobject):
         
         # initially support only Remote/Text
         
-        if os.path.abspath(textfile) != self.StreamName:        
+        if os.path.abspath(textfile) != self.StreamName:
             try:
                 # delete textfile if it exists
                 try:
@@ -156,12 +156,14 @@ class PlaneWaveTable(XMLobject):
     PlaneWaveTable.Table) a table of source parameters, but carries additional
     parameters, such as SourceType."""
     
-    def __init__(self,name=''):
+    def __init__(self,name='',textfilename=''):
         """Creates a PlaneWaveTable object."""
         
         super(PlaneWaveTable,self).__init__()
         
         self.__dict__['name'] = name
+        # this is a bit of a hack... it allows passing the name of the final text data file
+        self.__dict__['textfilename'] = textfilename
     
     def XML(self,xmlfile,name=None,comments=''):
         """Returns a nested-tuple representation of a PlaneWaveTable object."""
@@ -177,7 +179,10 @@ class PlaneWaveTable(XMLobject):
         
         if hasattr(self,'Table'):
             # need to pass filename for copy
-            params.append(self.Table.XML(re.sub('\.xml$','',xmlfile.filename) + '-' + str(xmlfile.textfiles) + '.txt'))
+            if self.textfilename:
+                params.append(self.Table.XML(self.textfilename))
+            else:
+                params.append(self.Table.XML(re.sub('\.xml$','',xmlfile.filename) + '-' + str(xmlfile.textfiles) + '.txt'))
             
             xmlfile.textfiles += 1
         
@@ -212,7 +217,7 @@ class PlaneWaveTable(XMLobject):
             for (p,v) in zip(sourceparameters,lineparameters):
                 # should be more sophisticated in treating type here...
                 value = v
-
+                
                 for t in (int,float,str):
                     try:
                         value = t(v)
@@ -1049,7 +1054,10 @@ class readXML:
                 module = __import__(SourceClassModules[sourcetype])
                 retobj = getattr(module,sourcetype)(objectname)
             except KeyError:
-                raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (sourcetype,objectname)                                
+                raise NotImplementedError, 'readXML.processObject(): unknown object type %s for object %s' % (sourcetype,objectname)
+            except ImportError:
+                print 'readXML.processObject(): cannot import module %s for object type %s, I will make it a generic source' % (SourceClassModules[sourcetype],sourcetype)
+                retobj = Source(sourcetype,objectname)                            
         elif objecttype == 'PlaneWaveTable':
             retobj = PlaneWaveTable(objectname)
             retobj.SourceType = sourcetype
