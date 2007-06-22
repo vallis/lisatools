@@ -92,5 +92,5 @@ for source in chosensources:
     written += 1
     binaryseed += 1
 
-# run('rm ../MLDCwaveforms/Galaxy/Data/Galaxy_%(seed)s.dat ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%(seed)s.dat ../MLDCwaveforms/Galaxy/Data/count_%(seed)s.dat')
-# run('rm Galaxy/*.xml Galaxy/*.dat')
+run('rm ../MLDCwaveforms/Galaxy/Data/Galaxy_%(seed)s.dat ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%(seed)s.dat ../MLDCwaveforms/Galaxy/Data/count_%(seed)s.dat')
+run('rm Galaxy/*.xml Galaxy/*.dat')
