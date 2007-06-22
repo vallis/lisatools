@@ -56,20 +56,158 @@ O_E = \frac{(E_{key}|E_{rec})}{\sqrt{(E_{rec}|E_{rec})(E_{key}|E_{key})}}
 
 Results are summarized in the table below
 \begin{table}
-\caption{\label{OlapsTable1.2.1} Inner products for challenge 1.3.1}
+\caption{\label{OlapsTable1.3.1} Inner products for challenge 1.3.1}
 \begin{ruledtabular}
-\begin{tabular}{|c|c|c|c|c|c|}
-Entry & $d\chi^2$ & $SNR_A$ & $SNR_E$ & SNR & $O_A$ & $O_E$\\
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+Entry & Index & $d\chi^2$ & $SNR_A$ & $SNR_E$ & SNR & $O_A$ & $O_E$\\
 \hline
-Key & 0.5824 & 0.41182 & 667.734 &  -- & -- & -- & -- & -- \\
-BBGP & 0.67193 & 0.47606 & 528.023 & 0.79153 & 0.79051 &
-0.41694 & 0.000128 & 0.99994\\
-MT & 0.58451 & 0.41331 & 664.471 & 0.9944 & 0.9958 & 0.0112 &  0.00909 & 0.9955\\
+Key  & -- & -- & 92.22 & 93.01 & 130.98  & -- & -- \\
+\hline
+BBGP & 1  &  1022.81 & -53.92 & -51.94 & 74.87 & -0.57 & -0.56 \\
+     & 2  &  442.23  &  52.05 & 51.14  & 72.98 & 0.55 & 0.55 \\
+     & 3  &  448.40  &  52.12 & 50.50  & 72.57 & 0.55 & 0.55 \\
+     & 4  &  448.25  &  52.35 & 50.24  & 72.56 & 0.55 & 0.55 \\
+     & 5  &  448.55  &  50.93 & 48.87  & 70.58 & 0.54 & 0.53 \\
+\hline
+MT   & 1  & 419.16 & 51.065 & 54.85 & 74.94 & 0.55 & 0.58 \\
+     & 2  & 412.47 & 55.66  & 52.96 & 76.83 & 0.59 & 0.57 \\
 \hline
 \end{tabular}
 \end{ruledtabular}
 \end{table}
 
+\begin{table}
+\caption{\label{OlapsTable1.3.2} Inner products for challenge 1.3.2}
+\begin{ruledtabular}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+Entry & Index & $d\chi^2$ & $SNR_A$ & $SNR_E$ & SNR & $O_A$ & $O_E$\\
+\hline
+Key  & -- & -- & 95.88 & 99.15 & 137.92 & -- & -- \\
+\hline
+BBGP & 1  & 721.88 & 33.31 & -30.69 & 45.3 & 0.35 & -0.31 \\
+     & 2  & 630.52  & 30.79  & 29.45 & 42.61 &  0.31 & 0.29 \\
+     & 3  & 791.46  & -26.67 & -26.65 & 37.7 & -0.26 & -0.27 \\
+\hline
+MT   & 1  & 633.9 & 30.65  & 23.77 & 38.79 & 0.33 & 0.24 \\
+\hline
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\begin{table}
+\caption{\label{OlapsTable1.3.4} Inner products for challenge 1.3.4}
+\begin{ruledtabular}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+Entry & Index & $d\chi^2$ & $SNR_A$ & $SNR_E$ & SNR & $O_A$ & $O_E$\\
+\hline
+Key  & -- & -- &  81.92 & 82.03 & 115.93 & -- & -- \\
+\hline
+BBGP & 1  & 514.72 & -11.80 & -15.97 & 19.86 & -0.15 & -0.18 \\
+     & 2  &  478.26  & 13.77 & 8.73 & 16.30 & 0.16 & 0.11 \\
+     & 3  & 498.46  & -10.6 & -7.94 & 13.24 & -0.11 &  -0.10 \\
+\hline
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+
+\section{SMBHs}
+
+The evaluation for SMBH signals in challenge2.2 was done similar to EMRI,
+with one addition we have computed also overlap maximized over initial 
+orbital phase:
+
+\bea
+max_{\phi_0}(O_X) = \sqrt{(X_{rec}|X_{key}(\phi_0 = 0))^2 +
+(X_{rec}|X_{key}(\phi_0 = \pi/2))^2}\\
+min_{\phi_0}(O_{dX}) = \frac{ (X_{rec}|X_{rec}) + (X_{key}|X_{key}) -
+2 max_{\phi_0}(X_{rec}|X_{key})}{\sqrt{(X_{rec}|X_{rec})(X_{key}|X_{key})}}
+\ena
+
+There were three entries with fill parameter set and one entry only with 
+some parameters.
+There was 4 SMBH signals in the data and we will call them BBH1, BBH2, BBH4, BBH5
+(as in the key file). Participants were allowed to submit two entries for
+each signal (antipodal sky position) if recovered detection statistic was close.
+
+Results are summarized in the table below.
+
+\begin{table}
+\caption{\label{BBH1} Inner products for BBH1}
+\begin{ruledtabular}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+Entry & Index & $d\chi^2$ & $SNR_A$ & $SNR_E$ & $SNR$ & $O_A$ & $O_E$ & $max_{\phi_0}(O_X)$\\
+\hline
+Key & -- & -- & 1919.7 & 2006.1 & 2776.61 & -- & -- & -- \\
+\hline
+MTAEI & 1 & 49.23 & 1919.7 & 2006.0 & 2776.54 & 1.0 & 0.99999 & 1.0   \\
+\hline
+AEIse & 1 & 9938438.6 & -1665.5  & -1744.84 & 2412.13 & -0.87 & -0.87 &  0.92  \\
+\hline
+JPLCT & 1 &  291.55  & 1919.16 & 2005.24 & 2775.64 & 0.9998   &  0.9996  & 0.9998 \\
+\hline
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\begin{table}
+\caption{\label{BBH2} Inner products for BBH2}
+\begin{ruledtabular}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+Entry & Index & $d\chi^2$ & $SNR_A$ & $SNR_E$ & $SNR$ & $O_A$ & $O_E$ & $max_{\phi_0}(O_X)$\\
+\hline
+Key & -- & -- & 12.16 & 21.28 & 24.51 & -- & -- & -- \\
+\hline
+MTAEI & 1 & 0.41 & 11.93 & 21.16 & 24.30 & 0.994 & 0.994 & 0.995 \\
+      & 2 & 0.55 & 11.84 & 21.13 & 24.23 & 0.992 & 0.992 & 0.992 \\
+\hline
+AEIse & 1 & 804.91 & -11.26  & -20.69 & 23.56 &  -0.94 & -0.96 & 0.96 \\
+      & 2 & 324.1 & 11.21 & 20.50 & 23.37 & 0.96 & 0.94 & 0.97 \\
+\hline
+JPLCT & 1 & 0.76 & 11.80 & 21.25 & 24.31 & 0.975 & 0.991 & 0.978\\
+\hline
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\begin{table}
+\caption{\label{BBH4} Inner products for BBH4}
+\begin{ruledtabular}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+Entry & Index & $d\chi^2$ & $SNR_A$ & $SNR_E$ & $SNR$ & $O_A$ & $O_E$ & $max_{\phi_0}(O_X)$\\
+\hline
+Key & -- & -- & 198.80 & 14.86 & 199.35 & -- & -- & -- \\
+\hline
+MTAEI & 1 & 0.60 & 198.81 & 14.88 & 199.37 & 0.99996 & 0.995 & 0.99996 \\
+      & 2 & 0.79 & 198.80 & 14.78 & 199.35 & 0.9999  & 0.992 &  0.99996\\
+\hline
+AEIse & 1 & 29719.31 & 81.11 & 6.57 & 81.38 & 0.41  & 0.36 & 0.994 \\
+\hline
+JPLCT & 1 & 0.91 & 198.79 & 14.78 & 199.34 & 0.99993 &  0.988 & 0.99996\\
+      & 2 & 0.96 & 198.79 & 14.87 & 199.34 & 0.99992 & 0.989 & 0.99994 \\
+\hline
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+\begin{table}
+\caption{\label{BBH5} Inner products for BBH5}
+\begin{ruledtabular}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+Entry & Index & $d\chi^2$ & $SNR_A$ & $SNR_E$ & $SNR$ & $O_A$ & $O_E$ & $max_{\phi_0}(O_X)$\\
+\hline
+Key & -- & -- & 101.61 & 79.59 & 129.07 & -- & -- & -- \\
+\hline
+MTAEI & 1 & 1.88 & 101.58 & 79.59 & 129.05 & 0.9996 & 0.9993 & 0.9996 \\
+      & 2 & 2.0 & 101.56 & 79.57 & 129.02 & 0.9995  & 0.9993 & 0.9996 \\
+\hline
+AEIse & 1 & 11946.0 & 53.94 & 42.29 & 68.54 & 0.52 & 0.51 &  0.98  \\
+\hline
+JPLCT & 1 & 3.69 & 101.46 & 79.59 & 128.96 & 0.998 & 0.999  &  0.998\\
+\hline
+\end{tabular}
+\end{ruledtabular}
+\end{table}
 
 
 
