@@ -336,8 +336,10 @@ run('rm -f Dataset/'+challengename+'*.xml Dataset/'+challengename+'*.bin Dataset
 
 # do synthlisa first
 
+secretseed = ', source seed = %s,  noise seed = %s' % (seed,seednoise)
+
 if options.istraining:
-    globalseed = ', source seed = %s,  noise seed = %s' % (seed,seednoise)
+    globalseed = secretseed
 else:
     globalseed = ''
 
@@ -376,7 +378,7 @@ if dosynthlisa:
 
     lisaxml.lisaXML(keyfile,
                     author="MLDC Task Force",
-                    comments='XML key for challenge 2' + globalseed).close()
+                    comments='XML key for challenge 2' + secretseed).close()
 
     # add signals and noise to the no-noise and with-noise files
     # omit keys if we're not doing training
@@ -455,7 +457,7 @@ if lisasimdir:
     # do key file, but only if synthlisa has not run, otherwise it will be erased
 
     if not dosynthlisa:
-        lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + globalseed).close()
+        lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + secretseed).close()
 
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
