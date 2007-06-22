@@ -96,7 +96,7 @@ if (challengename == "Challenge2.2"):
        for xmlKey in [xmlKey1, "Key/challenge2.2BBH-key_0.xml"]:
             baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
             run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
-       barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+       barycentric = 'Barycentric/'+challengename+'/*key-*barycentric.xml'
        for baryxmlfile in glob.glob(barycentric):
             tdiKeyFile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryxmlfile))
             run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFile)s')
