@@ -28,7 +28,6 @@ parser.add_option("-P", "--nProc",
 nproc = options.nproc
 seed = args[0]
 
-sys.exit(0)
 
 # only one argument, and it's the superglobal seed...
 seed = int(sys.argv[1])
