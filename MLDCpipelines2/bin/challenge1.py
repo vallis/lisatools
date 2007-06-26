@@ -28,12 +28,13 @@ parser.add_option("-P", "--nProc",
 nproc = options.nproc
 seed = args[0]
 
+#print "seed = ", seed
+#print "nproc = ", nproc
 
 # only one argument, and it's the superglobal seed...
-seed = int(sys.argv[1])
+#seed = int(sys.argv[1])
 
 random.seed(seed)
-
 
 def twoseeds():
     return randint(1,1000000), randint(1,1000000)
