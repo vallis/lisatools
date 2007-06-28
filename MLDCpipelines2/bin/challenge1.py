@@ -100,4 +100,4 @@ run('bin/challenge.py -P %(nproc)s            --duration=62914560 --seed=%(seed1
 run('bin/challenge.py -P %(nproc)s --training --duration=62914560 --seed=%(seed134t)s  challenge1.3.4'  % globals())
                                                                                            
 run('bin/challenge.py -P %(nproc)s            --duration=62914560 --seed=%(seed135)s   challenge1.3.5'  % globals())
-run('bin/challenge.py -P %(nproc)s --training --duration=62914560 --seed=%(seed135t)s  challenge1.3.6'  % globals())
+run('bin/challenge.py -P %(nproc)s --training --duration=62914560 --seed=%(seed135t)s  challenge1.3.5'  % globals())
