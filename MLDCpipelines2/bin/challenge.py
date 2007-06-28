@@ -144,6 +144,10 @@ parser.add_option("-n", "--seedNoise",
                   type="int", dest="seednoise", default=None,
                   help="noise-specific seed (int) [will use global seed (-s/--seed) if not given]")
 
+parser.add_option("-N","--noNoise",
+                  action="store_true", dest="nonoise", default=False,
+                  help="do not include noise [default False]")
+
 parser.add_option("-m", "--make",
                   action="store_true", dest="makemode", default=False,
                   help="run in make mode (use already-generated source key files and intermediate products; needs same seeds)")
@@ -221,6 +225,7 @@ timestep = options.timestep
 duration = options.duration
 makemode = options.makemode
 istraining = options.istraining
+donoise = not options.nonoise
 
 sourcekeyfile = options.sourcekeyfile
 
@@ -301,7 +306,7 @@ if dosynthlisa:
 
         if (not makemode) or newer(xmlfile,tdifile):
             # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
-            if os.path.isfile('Galaxy/Galaxy.xml'):
+            if glob.glob('Galaxy/*.xml'):
                 prun('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
             else:
                 prun('bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
@@ -309,7 +314,7 @@ if dosynthlisa:
     # now run noise generation...
     noisefile = 'TDI/tdi-frequency-noise.xml'
     # note that we're not checking whether the seed is the correct one
-    if (not makemode) or (not os.path.isfile(noisefile)):
+    if donoise and ((not makemode) or (not os.path.isfile(noisefile))):
         prun('bin/makeTDInoise-synthlisa.py --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
 
     pwait()
@@ -330,7 +335,7 @@ if lisasimdir:
     
     slnoisefile = 'TDI/tdi-strain-noise.xml'
 
-    if (not makemode) or (not os.path.isfile(slnoisefile)):
+    if donoise and ((not makemode) or (not os.path.isfile(slnoisefile))):
         prun('bin/makeTDInoise-lisasim.py --lisasimDir=%(lisasimdir)s --seedNoise=%(seednoise)s %(slnoisefile)s')
     
     pwait()
@@ -341,14 +346,17 @@ step5time = time.time()
 # STEP 5: run Fast Galaxy
 # -----------------------
 
-# eventually this should be able to run files from a key alone... that is, make makeTDIsignals-Galaxy standalone...
+# should avoid running both SL and LS if only one is requested...
 
-# hmm... are we telling everybody the seed with the filename of the galaxy?
-# no, I think lisaxml later changes the name, doesn't it?
+if glob.glob('Galaxy/*.xml'):
+    for xmlfile in glob.glob('Galaxy/*.xml'):
+        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
+        lstdifile = 'TDI/' + re.sub('.xml','-tdi-strain.xml',os.path.basename(xmlfile))
 
-if os.path.isfile('Galaxy/Galaxy.xml'):
-    if (not makemode) or (newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-frequency.xml') or newer('Galaxy/Galaxy.xml','TDI/Galaxy-tdi-strain.xml')):
-        run('bin/makeTDIsignals-Galaxy.py %s' % seed)
+        if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
+            prun('bin/makeTDIsignals-Galaxy2.py %s %s %s' % (xmlfile,sltdifile,lstdifile))
+
+    pwait()
 
 step6time = time.time()
 
@@ -416,12 +424,14 @@ if dosynthlisa:
         if glob.glob('TDI/*-tdi-frequency.xml'):
             run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-frequency.xml')
 
-        run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+        if donoise:
+            run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
     else:
         if glob.glob('TDI/*-tdi-frequency.xml'):
             run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-frequency.xml')
 
-        run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+        if donoise:
+            run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
 
     # create the key with all source info
 
@@ -436,7 +446,9 @@ if dosynthlisa:
     withnoisefile = os.path.basename(withnoisefile)
 
     run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
+
+    if donoise:
+        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
 
     os.chdir('..')
 
@@ -477,11 +489,15 @@ if lisasimdir:
     if istraining:
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-strain.xml')
-        run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+
+        if donoise:
+            run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
     else:
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-strain.xml')
-        run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+        
+        if donoise:
+            run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
 
     # do key file, but only if synthlisa has not run, otherwise it will be erased
 
@@ -499,7 +515,9 @@ if lisasimdir:
     withnoisefile = os.path.basename(withnoisefile)
 
     run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
+
+    if donoise:
+        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
 
     os.chdir('..')
 
