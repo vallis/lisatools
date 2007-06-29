@@ -74,7 +74,7 @@ challengename = args[0]
 timestep = options.timestep
 duration = options.duration
 
-
+"""
 ##### I : creating barycentric data
 
 sources = "Source/"+ challengename + '/' + "/*xml"
@@ -83,17 +83,27 @@ for xmlfile in glob.glob(sources):
     run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 
 
-#### II : creating TDI files for all barycentric files using synthetic LISA
+#### IIa : creating TDI files for all barycentric files using synthetic LISA
 
 barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
 for xmlfile in glob.glob(barycentric):
     if (re.search('key', xmlfile) == None):
          tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
          run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+"""
+
+#### IIb : creating TDI files for all barycentric files using LISA simulator
+
+barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+for xmlfile in glob.glob(barycentric):
+    if (re.search('key', xmlfile) == None):
+         tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(xmlfile))
+         run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/local_data_300GB/stas/lisasimulator-2year/  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
+
 
 
 #### call evaluation script for synthetic LISA data
-
+"""
 keyTdis = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
 
 if (challengename == "Challenge1.3"):
@@ -112,3 +122,4 @@ if (challengename == "Challenge2.2"):
    dataTdi = 'Data/challenge2.2-frequency/challenge2.2-frequency.xml'
    for KeyTDI in (keyTdis):
       run('bin/evaluate-syntheticLISA2.py --maxPhase --Galaxy  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+"""      
