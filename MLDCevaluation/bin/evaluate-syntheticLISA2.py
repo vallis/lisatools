@@ -19,6 +19,9 @@ import numpy.fft as FFT
 fHigh = 1.e-2
 fLow = 1.e-5
 
+spr = "     "
+
+
 ## overlap maximized over the phase
 ## first argument is a signal second is zero phase template
 def MaxInnerProd(ser1, ser2, PSD):
@@ -92,15 +95,15 @@ def ComputeNorm(ser, sampling, PSD):
      ser2 = synthlisa.spect(ser, sampling,0)
      norm = 0.0
      indx = 0
-    # fout = open("dChiTest.dat", 'w')
+     #fout = open("psdTest.dat", 'w')
      for i in xrange(size/2-1):
         if (ser2[i][0] > fLow and ser2[i][0]<= fHigh):
 	    norm += ser2[i][1]/PSD[i]
-#	    record = str(ser2[i][0]) + "    " + str(2.0*norm) + "\n"
+#	    record = str(ser2[i][0]) + spr + str(PSD[i]) + spr + str(2.0*norm) + "\n"
 #	    fout.write(record)
 	    indx = indx + 1
      norm = sqrt(2.0*norm)
- #    fout.close()     
+#    fout.close()     
      #print "indx = ", indx
      #norm = sqrt(2.0 *numpy.sum(ser2[1:,1]/PSD))
      return norm
@@ -193,11 +196,20 @@ sampling = tdi.TimeSeries.Cadence
 X = tdi.Xf
 A = (2.0*tdi.Xf -tdi.Yf - tdi.Zf)/3.0
 E = (tdi.Zf - tdi.Yf)/math.sqrt(3.0)
-XX = synthlisa.spect(X, sampling, 0)
-fr = XX[1:,0]
+#XX = synthlisa.spect(X, sampling, 0)
+#fr = XX[1:,0]
 
-
-
+Specdat = synthlisa.spect(Adata,sampling,0)
+fr = Specdat[1:,0]
+PSDdat = Specdat[1:,1] 
+"""
+Sigfilout = open("AEsigCheck1.dat", 'w') 
+for i in xrange(len(A)):
+   record = str(sampling*float(i)) + spr + str(A[i]) + spr + str(E[i]) + "\n"
+   Sigfilout.write(record)
+Sigfilout.close()   
+sys.exit(0);
+"""
 
 # Compute noise spectral density
 
@@ -218,11 +230,15 @@ Sa = 2.0 * (Sx - Sxy)/3.0
 # for fractional frequency fluctuations
 
 # conversion LS to SL (incl.deriv.) -- TDI response function Michelson to X,Y,Z
-Sgal = (2.0 * L)**2 * (2*pi*fr)**2 * 4.0 * numpy.sin(om*L)**2 * (
-         numpy.piecewise(fr,(fr >= 1.0e-4  ) & (fr < 1.0e-3  ),[lambda f: 10**-44.62 * f**-2.3, 0]) + \
-         numpy.piecewise(fr,(fr >= 1.0e-3  ) & (fr < 10**-2.7),[lambda f: 10**-50.92 * f**-4.4, 0]) + \
-         numpy.piecewise(fr,(fr >= 10**-2.7) & (fr < 10**-2.4),[lambda f: 10**-62.8  * f**-8.8, 0]) + \
-         numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )
+Sgal = (16./3.)*numpy.sin(om*L)**2 * (2.*L*om)**2 * (
+     numpy.piecewise(fr,(fr >= 1.0e-4  ) & (fr <= 4.0e-4  ),[lambda f: 2.5e-36*(f/1.0e-4)**-1.83, 0]) + \
+     numpy.piecewise(fr,(fr > 4.0e-4  ) & (fr <= 1.15e-3  ),[lambda f: 1.95e-37*(f/4.0e-4)**-2.93, 0]) + \
+     numpy.piecewise(fr,(fr > 1.15e-3  ) & (fr <= 2.0e-3  ),[lambda f: 8.86e-39*(f/1.15e-3)**-4.11, 0]) + \
+     numpy.piecewise(fr,(fr > 2.0e-3  ) & (fr <= 2.3e-3  ),[lambda f: 9.0e-40*(f/2.0e-3)**-7.09, 0]) + \
+     numpy.piecewise(fr,(fr > 2.3e-3  ) & (fr <= 2.5e-3  ),[lambda f: 3.34e-40*(f/2.3e-3)**-13.15, 0]) + \
+     numpy.piecewise(fr,(fr > 2.5e-3  ) ,[lambda f: 1.12e-40*(f/2.5e-3)**-23.0, 0]) 
+)
+
 
 SnX = Sx
 SnA = Sa
@@ -231,8 +247,18 @@ if (options.gal):
     SnA = Sa + Sgal   # for galaxy Sxy = -1/2 Sx
 
 
-normX = ComputeNorm(X,sampling, SnX)
+foutS = open("PsdTest.dat",'w')
+for i in xrange(len(fr)):
+   record = str(fr[i]) + spr + str(PSDdat[i]) + spr + str(SnA[i]) + "\n"
+   foutS.write(record)
+foutS.close()
+
+sys.exit(0)
+   
+
+
 normA = ComputeNorm(A,sampling, SnA)
+normX = ComputeNorm(X,sampling, SnX)
 normE = ComputeNorm(E,sampling, SnA)
 
 
@@ -266,12 +292,12 @@ if (re.search('challenge1.3', Injfile) != None):
    chi2 = 0.5*(SnrA + SnrE)/(ind - Dfr)
    #Computing combined SNR
 
-   SnrA = sampling*InnerProd(Adata, A, SnA)/normA
-   SnrE = sampling*InnerProd(Edata, E, SnA)/normE
-   print "SnrA = ", SnrA, "  SnrE = ", SnrE
+   SnrA = sampling*InnerProd(Adata, A, SnA)
+   SnrE = sampling*InnerProd(Edata, E, SnA)
+   print "SnrA = ", SnrA/normA, "  SnrE = ", SnrE/normE
    #print "normA = ", normA, "  normE = ", normE
    #print "innerProda = ",  sampling*InnerProd(Adata, A, Sa), "innerProde = ",  sampling*InnerProd(Edata, E, Se)
-   Snr = sqrt(SnrA**2 + SnrE**2)
+   Snr = (SnrA + SnrE)/sqrt(normA*normA + normE*normE)
    print 80*'='
    print "using key file we get"
    #print "xi = ", xi2
@@ -351,7 +377,7 @@ elif (re.search('challenge2.2', Injfile) != None):
        BBH = 4
   elif (Tc >= 4.e7 and Tc<=5.e7):
        BBH = 5
-  elif (Tc>=6.e7):
+  elif (Tc>=6.e7 and  Tc < 6.7e7 ):
        BBH = 2
   #############################################
   ## Computing chi^2 and SNR with the key file
@@ -371,12 +397,12 @@ elif (re.search('challenge2.2', Injfile) != None):
   chi2 = 0.5*(SnrA + SnrE)/(ind - Dfr)
   #Computing combined SNR
 
-  SnrA = sampling*InnerProd(Adata, A, SnA)/normA
-  SnrE = sampling*InnerProd(Edata, E, SnA)/normE
-  print "SnrA = ", SnrA, "  SnrE = ", SnrE
+  SnrA = sampling*InnerProd(Adata, A, SnA)
+  SnrE = sampling*InnerProd(Edata, E, SnA)
+  print "SnrA = ", SnrA/normA, "  SnrE = ", SnrE/normE
   #print "normA = ", normA, "  normE = ", normE
   #print "innerProda = ",  sampling*InnerProd(Adata, A, Sa), "innerProde = ",  sampling*InnerProd(Edata, E, Se)
-  Snr = sqrt(SnrA**2 + SnrE**2)
+  Snr = (SnrA + SnrE)/sqrt(normA*normA + normE*normE)
   print 80*'='
   print "using key file we get"
   #print "xi = ", xi2
@@ -402,7 +428,7 @@ elif (re.search('challenge2.2', Injfile) != None):
            src = 4
        elif (Tc >= 4.e7 and Tc<=5.e7):
            src = 5
-       elif (Tc>=6.e7):
+       elif (Tc>=6.e7 and Tc < 6.7e7):
            src = 2
        print "BBH # ", BBH, " src # ", src 
        if (src == BBH):
@@ -413,6 +439,11 @@ elif (re.search('challenge2.2', Injfile) != None):
 	   normXs = ComputeNorm(Xs, sampling, SnX)
            normAs = ComputeNorm(As, sampling, SnA)
            normEs = ComputeNorm(Es, sampling, SnA)
+           Resfilout = open("AEresCheck1.dat", 'w') 
+           for i in xrange(len(A)):
+              record = str(sampling*float(i)) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
+              Resfilout.write(record)
+           Resfilout.close() 
 	 
 	   ### computing chi^2
 
@@ -436,12 +467,12 @@ elif (re.search('challenge2.2', Injfile) != None):
            print "d_chi^2 = ", d_chi2, SnrAdif/Dfr, SnrEdif/Dfr
            #Computing combined SNR
  
-           SnrAs = sampling*InnerProd(Adata, As, SnA)/normAs
-           SnrEs = sampling*InnerProd(Edata, Es, SnA)/normEs
+           SnrAs = sampling*InnerProd(Adata, As, SnA)
+           SnrEs = sampling*InnerProd(Edata, Es, SnA)
 
-           Snrs = sqrt(SnrAs**2 + SnrEs**2)
+           Snrs = (SnrAs + SnrEs)/sqrt(normAs*normAs + normEs*normEs)
 
-           print "SNRA = ", SnrAs, " SNRE = ", SnrEs
+           print "SNRA = ", SnrAs/normAs, " SNRE = ", SnrEs/normEs
            print "combined SNR  = ", Snrs
         
            # Computing overlaps
