@@ -199,6 +199,7 @@ E = (tdi.Zf - tdi.Yf)/math.sqrt(3.0)
 #XX = synthlisa.spect(X, sampling, 0)
 #fr = XX[1:,0]
 
+
 Specdat = synthlisa.spect(Adata,sampling,0)
 fr = Specdat[1:,0]
 PSDdat = Specdat[1:,1] 
@@ -210,6 +211,17 @@ for i in xrange(len(A)):
 Sigfilout.close()   
 sys.exit(0);
 """
+
+if (re.search('challenge1.3', Injfile) != None):
+   IndX = len(A)
+   for i in xrange(len(A)-1, 1, -1):
+      if (A[i] != 0.0):
+         IndX = i
+         print "IndX = ", IndX 
+      break
+   A[IndX-20:] = 0.0
+   E[IndX-20:] = 0.0
+
 
 # Compute noise spectral density
 
@@ -246,7 +258,7 @@ if (options.gal):
     SnX = Sx + Sgal
     SnA = Sa + Sgal   # for galaxy Sxy = -1/2 Sx
 
-
+"""
 foutS = open("PsdTest.dat",'w')
 for i in xrange(len(fr)):
    record = str(fr[i]) + spr + str(PSDdat[i]) + spr + str(SnA[i]) + "\n"
@@ -254,7 +266,7 @@ for i in xrange(len(fr)):
 foutS.close()
 
 sys.exit(0)
-   
+"""   
 
 
 normA = ComputeNorm(A,sampling, SnA)
@@ -327,6 +339,18 @@ if (re.search('challenge1.3', Injfile) != None):
           Xs = Dettdi.Xf
           As = (2.0*Dettdi.Xf - Dettdi.Yf - Dettdi.Zf)/3.0
           Es = (Dettdi.Zf - Dettdi.Yf)/math.sqrt(3.0)
+          IndX = len(As)
+          for i in xrange(len(As)-1, 1, -1):
+            if (As[i] != 0.0):
+               IndX = i
+               break
+          As[IndX-25:] = 0.0
+          Es[IndX-25:] = 0.0
+	#  foutT = open("TruncTest.dat", 'w')
+	#  for i in xrange(len(As)):
+	##     record = str(i) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
+	#     foutT.write(record)
+	#  foutT.close()
 	  normXs = ComputeNorm(Xs, sampling, SnX)
           normAs = ComputeNorm(As, sampling, SnA)
           normEs = ComputeNorm(Es, sampling, SnA)
@@ -353,11 +377,11 @@ if (re.search('challenge1.3', Injfile) != None):
           print "d_chi^2 = ", d_chi2, SnrAdif/Dfr, SnrEdif/Dfr
           #Computing combined SNR
 
-          SnrAs = sampling*InnerProd(Adata, As, SnA)/normAs
-          SnrEs = sampling*InnerProd(Edata, Es, SnA)/normEs
+          SnrAs = sampling*InnerProd(Adata, As, SnA)
+          SnrEs = sampling*InnerProd(Edata, Es, SnA)
 
-          Snrs = sqrt(SnrAs**2 + SnrEs**2)
-
+          Snrs = (SnrAs + SnrEs)/sqrt(normAs*normAs + normEs*normEs)
+          print "SNRA = ", SnrAs/normAs, "SNRE = ", SnrEs/normEs
           print "combined SNR  = ", Snrs
         
           # Computing overlaps
@@ -439,11 +463,11 @@ elif (re.search('challenge2.2', Injfile) != None):
 	   normXs = ComputeNorm(Xs, sampling, SnX)
            normAs = ComputeNorm(As, sampling, SnA)
            normEs = ComputeNorm(Es, sampling, SnA)
-           Resfilout = open("AEresCheck1.dat", 'w') 
-           for i in xrange(len(A)):
-              record = str(sampling*float(i)) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
-              Resfilout.write(record)
-           Resfilout.close() 
+      #     Resfilout = open("AEresCheck1.dat", 'w') 
+      #     for i in xrange(len(A)):
+      ##        record = str(sampling*float(i)) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
+      #        Resfilout.write(record)
+       #    Resfilout.close() 
 	 
 	   ### computing chi^2
 
@@ -486,6 +510,7 @@ elif (re.search('challenge2.2', Injfile) != None):
            if options.phasemax:
               Nind = Injfile[-19:-18]
               injfile =  Injfile[:-20]+'_0-'+Nind+'-tdi-frequency.xml'
+              injfile =  Injfile[:-18]+'_0'+'-tdi-frequency.xml'
               Injtdifile = lisaxml.readXML(injfile)
               tdi0 = Injtdifile.getTDIObservables()[0]
               X0 = tdi0.Xf
