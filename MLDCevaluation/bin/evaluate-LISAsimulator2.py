@@ -257,20 +257,19 @@ if (options.gal):
     SnX = SnX + Sgal
     SnA = SnA + Sgal   # for galaxy Sxy = -1/2 Sx
 
-fout = open("NewGalaxy.dat", 'w')
-for i in xrange(len(fr)):
-  record = str(fr[i]) + "    " + str(SnX[i]) + "    " + str(SnA[i]) + "\n"
-  fout.write(record)
-fout.close()
-sys.exit(0)
+#fout = open("NewGalaxy.dat", 'w')
+#for i in xrange(len(fr)):
+#  record = str(fr[i]) + "    " + str(SnX[i]) + "    " + str(SnA[i]) + "\n"
+#  fout.write(record)
+#fout.close()
+#sys.exit(0)
 
-foutS = open("PsdTest.dat",'w')
-for i in xrange(len(fr)):
-   record = str(fr[i]) + spr + str(PSDdat[i]) + spr + str(SnA[i]) + "\n"
-   foutS.write(record)
-foutS.close()
+#foutS = open("PsdTest.dat",'w')
+#for i in xrange(len(fr)):
+#   record = str(fr[i]) + spr + str(PSDdat[i]) + spr + str(SnA[i]) + "\n"
+#   foutS.write(record)
+#foutS.close()
 
-sys.exit(0)
    
 
 
@@ -309,12 +308,12 @@ if (re.search('challenge1.3', Injfile) != None):
    chi2 = 0.5*(SnrA + SnrE)/(ind - Dfr)
    #Computing combined SNR
 
-   SnrA = sampling*InnerProd(Adata, A, SnA)/normA
-   SnrE = sampling*InnerProd(Edata, E, SnA)/normE
-   print "SnrA = ", SnrA, "  SnrE = ", SnrE
+   SnrA = sampling*InnerProd(Adata, A, SnA)
+   SnrE = sampling*InnerProd(Edata, E, SnA)
+   print "SnrA = ", SnrA/normA, "  SnrE = ", SnrE/normE
    #print "normA = ", normA, "  normE = ", normE
    #print "innerProda = ",  sampling*InnerProd(Adata, A, Sa), "innerProde = ",  sampling*InnerProd(Edata, E, Se)
-   Snr = sqrt(SnrA**2 + SnrE**2)
+   Snr = (SnrA + SnrE)/sqrt(normA*normA + normE*normE)
    print 80*'='
    print "using key file we get"
    #print "xi = ", xi2
@@ -370,11 +369,12 @@ if (re.search('challenge1.3', Injfile) != None):
           print "d_chi^2 = ", d_chi2, SnrAdif/Dfr, SnrEdif/Dfr
           #Computing combined SNR
 
-          SnrAs = sampling*InnerProd(Adata, As, SnA)/normAs
-          SnrEs = sampling*InnerProd(Edata, Es, SnA)/normEs
+          SnrAs = sampling*InnerProd(Adata, As, SnA)
+          SnrEs = sampling*InnerProd(Edata, Es, SnA)
 
-          Snrs = sqrt(SnrAs**2 + SnrEs**2)
+          Snrs = (SnrAs + SnrEs)/sqrt(normAs*normAs + normEs*normEs)
 
+          print "SNRA = ", SnrAs/normAs, "  SNRE = ", SnrEs/normEs
           print "combined SNR  = ", Snrs
         
           # Computing overlaps
@@ -456,11 +456,11 @@ elif (re.search('challenge2.2', Injfile) != None):
 	   normXs = ComputeNorm(Xs, sampling, SnX)
            normAs = ComputeNorm(As, sampling, SnA)
            normEs = ComputeNorm(Es, sampling, SnA)
-           Resfilout = open("AEresCheck1.dat", 'w') 
-           for i in xrange(len(A)):
-              record = str(sampling*float(i)) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
-              Resfilout.write(record)
-           Resfilout.close() 
+ #          Resfilout = open("AEresCheck1.dat", 'w') 
+ #          for i in xrange(len(A)):
+ #             record = str(sampling*float(i)) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
+ #             Resfilout.write(record)
+ #          Resfilout.close() 
 	 
 	   ### computing chi^2
 
@@ -484,12 +484,12 @@ elif (re.search('challenge2.2', Injfile) != None):
            print "d_chi^2 = ", d_chi2, SnrAdif/Dfr, SnrEdif/Dfr
            #Computing combined SNR
  
-           SnrAs = sampling*InnerProd(Adata, As, SnA)/normAs
-           SnrEs = sampling*InnerProd(Edata, Es, SnA)/normEs
+           SnrAs = sampling*InnerProd(Adata, As, SnA)
+           SnrEs = sampling*InnerProd(Edata, Es, SnA)
 
-           Snrs = sqrt(SnrAs**2 + SnrEs**2)
+           Snrs = (SnrAs + SnrEs)/sqrt(normAs*normAs + normEs*normEs)
 
-           print "SNRA = ", SnrAs, " SNRE = ", SnrEs
+           print "SNRA = ", SnrAs/normAs, " SNRE = ", SnrEs/normEs
            print "combined SNR  = ", Snrs
         
            # Computing overlaps
