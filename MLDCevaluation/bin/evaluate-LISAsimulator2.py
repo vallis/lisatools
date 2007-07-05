@@ -501,8 +501,9 @@ elif (re.search('challenge2.2', Injfile) != None):
            print "overlap between E tdis  = ", olapE
 
            if options.phasemax:
-              Nind = Injfile[-19:-18]
-              injfile =  Injfile[:-20]+'_0-'+Nind+'-tdi-frequency.xml'
+              Nind = Injfile[-16:-15]
+              injfile =  Injfile[:-17]+'_0-'+Nind+'-tdi-strain.xml'
+              injfile =  Injfile[:-15]+'_0'+'-tdi-strain.xml'
               Injtdifile = lisaxml.readXML(injfile)
               tdi0 = Injtdifile.getTDIObservables()[0]
               X0 = tdi0.Xs

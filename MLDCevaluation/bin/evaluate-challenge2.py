@@ -98,7 +98,7 @@ barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
 for xmlfile in glob.glob(barycentric):
     if (re.search('key', xmlfile) == None):
          tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(xmlfile))
-         run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/local_data_300GB/stas/lisasimulator-2year/  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
+         run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/home/stas/lisasimulator-2year/  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
 """
 
 """
@@ -132,16 +132,16 @@ if (challengename == "Challenge1.3"):
    tdis =  glob.glob('TDI/'+challengename+'/*challenge1.3-*strain.xml')
    for keyTDI in (keyTdis):
        if(re.search('1.3.1', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.1-frequency/challenge1.3.1-strain.xml'
+           dataTdi = 'Data/challenge1.3.1-strain/challenge1.3.1-strain.xml'
        elif (re.search('1.3.2', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.2-frequency/challenge1.3.2-strain.xml'
+           dataTdi = 'Data/challenge1.3.2-strain/challenge1.3.2-strain.xml'
        elif (re.search('1.3.4', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.4-frequency/challenge1.3.4-strain.xml'
-       run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+           dataTdi = 'Data/challenge1.3.4-strain/challenge1.3.4-strain.xml'
+       run('bin/evaluate-LISAsimulator2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
 
 if (challengename == "Challenge2.2"):
    tdis = glob.glob('TDI/'+challengename+'/*challenge2.2-*strain.xml')
-   dataTdi = 'Data/challenge2.2-frequency/challenge2.2-strain.xml'
+   dataTdi = 'Data/challenge2.2-strain/challenge2.2-strain.xml'
    for KeyTDI in (keyTdis):
-      run('bin/evaluate-syntheticLISA2.py --maxPhase --Galaxy  %(dataTdi)s %(KeyTDI)s %(tdis)s')
-      
+      run('bin/evaluate-LISAsimulator2.py --maxPhase --Galaxy  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+   

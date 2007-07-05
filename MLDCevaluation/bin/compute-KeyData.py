@@ -86,21 +86,22 @@ if (challengename == "Challenge1.3"):
    for xmlKey in KeysChal1_3:
        baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
   #     run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
-       tdiKeyFile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryKeyFile))
-   #    run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryKeyFile)s %(tdiKeyFile)s')
-       run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/local_data_300GB/stas/lisasimulator-2year/  --duration=%(duration)s  %(baryKeyFile)s %(tdiKeyFile)s')
+       tdiKeyFileF = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryKeyFile))
+       tdiKeyFileS = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(baryKeyFile))
+       run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryKeyFile)s %(tdiKeyFileF)s')
+       run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/home/stas/lisasimulator-2year/  --duration=%(duration)s  %(baryKeyFile)s %(tdiKeyFileS)s')
 
 if (challengename == "Challenge2.2"):
        xmlKey1 = "Key/challenge2.2BBH-key.xml"
        run("bin/create_quadratures.py %s" % xmlKey1)
        for xmlKey in [xmlKey1, "Key/challenge2.2BBH-key_0.xml"]:
             baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
-            run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
-       barycentric = 'Barycentric/'+challengename+'/*key-*barycentric.xml'
+       #     run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
+       barycentric = 'Barycentric/'+challengename+'/*key_*barycentric.xml'
        for baryxmlfile in glob.glob(barycentric):
             tdiKeyFileF = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryxmlfile))
             tdiKeyFileS = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(baryxmlfile))
 	    if (re.search('key', baryxmlfile) != None):
-               run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
-               run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/local_data_300GB/stas/lisasimulator-2year/  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
+        #       run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
+               run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/home/stas/lisasimulator-2year/  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
 
