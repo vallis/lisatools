@@ -1,0 +1,15 @@
+gcc -O2 bright_cut.c template.o dfour1.c nrutil2.c AEnoise.c -lm -o bright_cut
+
+gcc MLDC2_sortkey.c nrutil2.c -lm -o MLDC2_sortkey
+
+gcc MLDC2_sortentry.c nrutil2.c -lm -o MLDC2_sortentry
+
+gcc MLDC2_windows.c -lm -o MLDC2_windows
+
+gcc -O2 -o MLDC2_BIC  MLDC2_BIC.c template.o nrutil2.c AEnoise.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm
+
+gcc -O2 -o MLDC2_BIC_key  MLDC2_BIC_key.c template.o nrutil2.c AEnoise.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm
+
+gcc MLDC2_pairing.c template.o dfour1.c nrutil2.c AEnoise.c -lm -o MLDC2_pairing
+
+gcc MLDC2_metric.c Fisher.o template.o dfour1.c nrutil2.c  AEnoise.c -lm -o MLDC2_metric

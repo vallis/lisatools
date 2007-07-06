@@ -1,0 +1,93 @@
+Before getting started running this evaluation package be sure to
+download all the galaxy key files and LISA Simulator xml files. For
+Challenge 2.2 you will also need to subtract the MBHs.
+
+Begin by compiling all the codes with
+
+./Compile
+
+Next you can either run the Initialization script, or go straight
+to the Challenge 2.1 evaluation using the Evaluation script. The
+Initialization script uses the full galaxy key file to produce a
+comprehensive list of bright sources (SNR > 2 wrt to a good estimate
+of the instrument + confusion noise). It then takes this list of
+bright sources and runs a BIC analysis to produce a list of
+"resolvable" sources. To run on Challenge 2.1 you might type
+
+sh Initialize.csh challenge2.1-strain.xml challenge2.1-key-0.txt Bright2.1.dat Key2.1
+
+The file Bright2.1.dat is then used in the evaluation of entries. The codes in
+Initialize.csh produce a bunch of files. The most useful is probably Key2.1_Sn.dat.
+It has five columns. The first is frequency, the second is the reference Sn(f),
+the third is the residual in the A channel, S_A(f), the fourth is the residual in the
+E channel, S_E(f), and the fifth column is the cross spectrum of the resdiual,
+S_AE(f). To save time, the brights file produced by the Initialize.csh script,
+Bright2.1.dat, has been included in this distribution, so you can skip the (very slow)
+initialization step and proceed with the evaluation.
+
+The evaluation script runs several codes and dumps out a huge amount of data into
+various files. To run on the PrixWhelanAEI entry for Challenge 2.1, for example, type
+
+sh Evaluation.csh challenge2.1-strain.xml Brights2.1.dat PrixWhelanAEI-challenge2.1-gb-all.txt PrixWhelanAEI2.1
+
+The files
+
+PrixWhelanAEI2.1_report.dat
+PrixWhelanAEI2.1_report_1.dat
+PrixWhelanAEI2.1_report_2.dat
+PrixWhelanAEI2.1_report_3.dat
+PrixWhelanAEI2.1_report_4.dat
+
+Are report cards produced by the MLDC2_pairing code. This code compare recovered sources to the brights file using
+noise weighted residual to do the pairing and full templates to compute the correlations. The _1, _2 etc reports
+are for the focus windows. PrixWhelanAEI2.1_report.dat is for all the sources. The columns are:
+
+| # rec | # inj | nwr | correlation | SNR rec | SNR inj | d_f * T | d_theta | d_phi | d_A/A | d_iota | d_psi | d_phase |
+
+Here # rec is the name of the recovered source and # inj is the line in Bright2.1.dat file where the closest match
+was found. The quantity "nwr" is noise weighted residual. The other columns should be pretty self explanatory.
+
+The files
+
+PrixWhelan2.1_correlation_histograms.dat 
+PrixWhelan2.1_parameter_histograms.dat
+
+contain histogram data (or sometimes binned counts) of the correlations and the parameter errors.
+
+The files
+
+PrixWhelanAEI2.1_metric_report.dat
+PrixWhelanAEI2.1_metric_report_1.dat
+PrixWhelanAEI2.1_metric_report_2.dat
+PrixWhelanAEI2.1_metric_report_3.dat
+PrixWhelanAEI2.1_metric_report_4.dat
+
+are produced by the doppler metric pairing code. The columns are:
+ 
+| # rec | # inj | M-distance | correlation | SNR rec | SNR inj | d_f * T | d_theta | d_phi | d_A/A | d_iota | d_psi | d_phase |
+
+here M-distance is the doppler metric distance between the injected and recovered source. The correlation is computed
+using the metric, but the correlation summary stats at the end of the file refer to the full correlation computed using
+the templates.
+
+The metric correlation histograms and binned counts are in
+
+PrixWhelanAEI_metric_correlation.dat
+
+The remaining files are mostly produced by the BIC analysis. The most interesting are
+
+PrixWhelanAEI_Sn.dat
+
+which gives the residuals (see above for the description of Key2.1_Sn.dat), and the lists
+of keepers and rejects.The files
+
+PrixWhelanAEI2.1_rejects.dat
+PrixWhelanAEI2.1_keepers.dat
+
+are for the full entry, while PrixWhelanAEI2.1_rejects_W1.dat etc are for the various
+focus windows.
+
+There are several other files produced that are not described in this README, and many
+mysterious messages that will get printed to the screen as the codes are run. If you want
+to know what all the files and messages mean there is always the source code.....
+
