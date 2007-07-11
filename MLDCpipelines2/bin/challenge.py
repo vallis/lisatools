@@ -368,12 +368,13 @@ step6time = time.time()
 
 # first empty the Dataset directory (do not remove tar.gz)
 run('rm -f Dataset/'+challengename+'*.xml Dataset/'+challengename+'*.bin Dataset/'+challengename+'*.txt')
+# run('rm -f Dataset/*.xml Dataset/*.bin Dataset/*.txt')
 
 # improve dataset metadata here
 
 # do synthlisa first
 
-secretseed = ', source seed = %s,  noise seed = %s' % (seed,seednoise)
+secretseed = 'source seed = %s,  noise seed = %s' % (seed,seednoise)
 
 if istraining:
     globalseed = secretseed
@@ -407,15 +408,15 @@ if dosynthlisa:
 
     lisaxml.lisaXML(nonoisefile,
                     author="MLDC Task Force",
-                    comments='No-noise dataset for challenge 2 (synthlisa version)' + globalseed).close()
+                    comments='No-noise dataset for %s (synthlisa version), %s' % (challengename,globalseed)).close()
 
     lisaxml.lisaXML(withnoisefile,
                     author="MLDC Task Force",
-                    comments='Full dataset for challenge 2 (synthlisa version)' + globalseed).close()
+                    comments='Full dataset for %s (synthlisa version), %s' % (challengename,globalseed)).close()
 
     lisaxml.lisaXML(keyfile,
                     author="MLDC Task Force",
-                    comments='XML key for challenge 2' + secretseed).close()
+                    comments='XML key for %s, %s' % (challengename,secretseed)).close()
 
     # add signals and noise to the no-noise and with-noise files
     # omit keys if we're not doing training
@@ -478,11 +479,11 @@ if lisasimdir:
     
     lisaxml.lisaXML(nonoisefile,
                     author = 'MLDC task force',
-                    comments='No-noise dataset for challenge 2 (lisasim version)' + globalseed).close()
+                    comments='No-noise dataset for %s (lisasim version), %s' % (challengename,globalseed)).close()
 
     lisaxml.lisaXML(withnoisefile,
                     author = 'MLDC task force',
-                    comments='Full dataset for challenge 2 (lisasim version)' + globalseed).close()
+                    comments='Full dataset for %s (lisasim version), %s' % (challengename,globalseed)).close()
 
     # add signals and noise
 
@@ -502,7 +503,7 @@ if lisasimdir:
     # do key file, but only if synthlisa has not run, otherwise it will be erased
 
     if not dosynthlisa:
-        lisaxml.lisaXML(keyfile,comments='XML key for challenge 2' + secretseed).close()
+        lisaxml.lisaXML(keyfile,comments='XML key for %s, %s' % (challengename,secretseed)).close()
 
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
@@ -521,8 +522,8 @@ if lisasimdir:
 
     os.chdir('..')
 
-run('rm Dataset/lisa-xml.xsl')
-run('rm Dataset/lisa-xml.css')
+# run('rm Dataset/lisa-xml.xsl')
+# run('rm Dataset/lisa-xml.css')
 
 step7time = time.time()
 
