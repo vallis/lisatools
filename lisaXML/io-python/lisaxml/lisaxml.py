@@ -7,6 +7,7 @@ import numpy
 
 import convertunit
 
+import glob
 import sys
 import os
 import os.path
@@ -730,6 +731,18 @@ class lisaXML(writeXML):
         
         self.comments = comments
         self.theSourceData = []
+        
+        # remove all bin and txt files (at least the first 100)
+        
+        basename = re.sub('\.xml$','',self.filename)
+        
+        for binfile in (glob.glob(basename + '-[0-9].bin') + glob.glob(basename + '-[0-9][0-9].bin')):
+            if os.path.isfile(binfile):
+                os.unlink(binfile)
+                
+        for txtfile in (glob.glob(basename + '-[0-9].txt') + glob.glob(basename + '-[0-9][0-9].txt')):
+            if os.path.isfile(txtfile):
+                os.unlink(txtfile)
         
         # for later use
         
