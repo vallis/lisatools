@@ -168,6 +168,10 @@ parser.add_option("-P", "--nProc",
                   type="int", dest="nproc", default=1,
                   help="run in parallel on nproc CPUs [default 1]")
 
+# parser.add_option("-C", "--clean",
+#                   action="store_true", dest="cleandataset", default=False,
+#                   help="remove files included in dataset archives from Dataset")
+
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
@@ -364,10 +368,6 @@ step6time = time.time()
 # STEP 6: assemble datasets
 # -------------------------
 
-# ignore make mode here, we'll always repackage everything
-
-# first empty the Dataset directory (do not remove tar.gz)
-run('rm -f Dataset/'+challengename+'*.xml Dataset/'+challengename+'*.bin Dataset/'+challengename+'*.txt')
 # run('rm -f Dataset/*.xml Dataset/*.bin Dataset/*.txt')
 
 # improve dataset metadata here
@@ -388,18 +388,18 @@ if dosynthlisa:
     # set filenames
 
     if istraining:
-        nonoisefile   = 'Dataset/' + challengename + '-frequency-nonoise-training.xml'
-        withnoisefile = 'Dataset/' + challengename + '-frequency-training.xml'
+        nonoisefile   = 'Dataset/' + challengename + '-training-nonoise-frequency.xml'
+        withnoisefile = 'Dataset/' + challengename + '-training-frequency.xml'
 
-        nonoisetar    = challengename + '-frequency-nonoise-training.tar.gz'
-        withnoisetar  = challengename + '-frequency-training.tar.gz'
+        nonoisetar    = challengename + '-training-nonoise-frequency.tar.gz'
+        withnoisetar  = challengename + '-training-frequency.tar.gz'
 
-        keyfile       = 'Dataset/' + challengename + '-key-training.xml'
+        keyfile       = 'Dataset/' + challengename + '-training-key.xml'
     else:
-        nonoisefile   = 'Dataset/' + challengename + '-frequency-nonoise.xml'
+        nonoisefile   = 'Dataset/' + challengename + '-nonoise-frequency.xml'
         withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
 
-        nonoisetar    = challengename + '-frequency-nonoise.tar.gz'
+        nonoisetar    = challengename + '-nonoise-frequency.tar.gz'
         withnoisetar  = challengename + '-frequency.tar.gz'
 
         keyfile       = 'Dataset/' + challengename + '-key.xml'
@@ -459,18 +459,18 @@ if lisasimdir:
     # set filenames
 
     if istraining:
-        nonoisefile   = 'Dataset/' + challengename + '-strain-nonoise-training.xml'
-        withnoisefile = 'Dataset/' + challengename + '-strain-training.xml'
+        nonoisefile   = 'Dataset/' + challengename + '-training-nonoise-strain.xml'
+        withnoisefile = 'Dataset/' + challengename + '-training-strain.xml'
 
-        nonoisetar    = challengename + '-strain-nonoise-training.tar.gz'
-        withnoisetar  = challengename + '-strain-training.tar.gz'
+        nonoisetar    = challengename + '-training-nonoise-strain.tar.gz'
+        withnoisetar  = challengename + '-training-strain.tar.gz'
 
-        keyfile       = 'Dataset/' + challengename + '-key-training.xml'
+        keyfile       = 'Dataset/' + challengename + '-training-key.xml'
     else:
-        nonoisefile   = 'Dataset/' + challengename + '-strain-nonoise.xml'
+        nonoisefile   = 'Dataset/' + challengename + '-nonoise-strain.xml'
         withnoisefile = 'Dataset/' + challengename + '-strain.xml'
 
-        nonoisetar    = challengename + '-strain-nonoise.tar.gz'
+        nonoisetar    = challengename + '-nonoise-strain.tar.gz'
         withnoisetar  = challengename + '-strain.tar.gz'
 
         keyfile       = 'Dataset/' + challengename + '-key.xml'
