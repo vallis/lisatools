@@ -7,10 +7,11 @@ import numpy
 
 import convertunit
 
-import glob
 import sys
 import os
 import os.path
+import glob
+import urllib
 import stat
 import shutil
 import time
@@ -239,7 +240,7 @@ class TimeSeries(XMLobject):
     """This class derives from XMLobject, and it represents a TimeSeries
     holding numpy arrays for an Observable or Source object."""
     
-    def __init__(self,arrays,name='',unit=''):
+    def __init__(self,arrays,name='',unit='',Cadence=None,TimeOffset=None):
         """Create a TimeSeries object. "arrays" must be a numpy 1D array, or a list
         or tuple of numpy arrays of the same length. "name" must be given as a 
         comma separated list of observable names. The attributes TimeOffset and
@@ -259,6 +260,13 @@ class TimeSeries(XMLobject):
         
         self.__dict__['name'] = name
         self.__dict__['unit'] = unit
+        
+        if Cadence != None:
+            self.Cadence = Cadence
+        
+        if TimeOffset != None:
+            self.TimeOffset = TimeOffset
+        
     
     def XML(self,filename,encoding='Binary'):
         """Returns a nested-tuple representation of a TimeSeries object."""
@@ -319,44 +327,59 @@ class Observable(XMLobject):
         
     --- Output ---
     The following is an example of setting up an Observable object to write it
-    to a lisaXML file object (using TDIData()).
-        
-    tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
-        
-    # or 'Strain'
-    tdiobs.DataType = 'FractionalFrequency'
-        
-    # where t, X, Y, Z are numpy 1D arrays
-    tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
-    tdiobs.TimeSeries.Cadence    = timestep
-    tdiobs.TimeSeries.TimeOffset = inittime
+    to a lisaXML file object (using TDIData()). Suppose you have numpy arrays
+    of your (Synthetic LISA) data in t, Xf, Yf, Zf, and that their cadence
+    (in seconds) is in 'cad', their time offset (in seconds) is in 'timeoff':
+    
+    ts = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf',Cadence=cad,TimeOffset=timeoff)
+    to = lisaxml.Observable(TimeSeries=ts,DataType='FractionalFrequency')
         
     lisaXMLinstance.TDIData(tdiobs)
         
     --- Input ---
     Observable.TimeSeries is also available upon reading from a readXML file
-    object (using getTDIObservables(), which returns a list of Observable
+    object (using TDIData, which returns a list of Observable
     objects). In that case the individual numpy arrays can be accessed as
     attributes of TimeSeries.
         
     # get the first Observable object
-    tdiobs = readXMLinstance.getTDIObservables()[0]
+    tdiobs = readXMLinstance.TDIData[0]
         
     length     = tdiobs.TimeSeries.Length
     timestep   = tdiobs.TimeSeries.Cadence
     timeoffset = tdiobs.TimeSeries.TimeOffset
         
-    t  = timeoffset.t
-    Xf = timeoffset.Xf
-    Yf = timeoffset.Yf
-    Zf = timeoffset.Zf"""
+    t  = tdiobs.t
+    Xf = tdiobs.Xf
+    Yf = tdiobs.Yf
+    Zf = tdiobs.Zf"""
     
-    def __init__(self,name=''):
+    def __init__(self,name='',TimeSeries=None,DataType=None):
         """Creates an Observable object."""
         
         super(Observable,self).__init__()
         
         self.__dict__['name'] = name
+        
+        if TimeSeries:
+            self.__dict__['TimeSeries'] = TimeSeries
+            
+            if not self.name:
+                # inherit the name of the TimeSeries, if given...
+                self.__dict__['name'] = self.TimeSeries.name
+            
+        if DataType:
+            self.DataType = DataType
+        else:
+            # try to guess it...
+            isf = ('Xf' in self.name) or ('Yf' in self.name) or ('Zf' in self.name)
+            iss = ('Xs' in self.name) or ('Ys' in self.name) or ('Zs' in self.name)
+        
+            if isf and (not iss):
+                self.DataType = 'FractionalFrequency'
+            elif iss and (not isf):
+                self.DataType = 'Strain'
+        
     
     def XML(self,xmlfile,name=None,comments=''):
         """Add a TDI observable section to an XML output file."""
@@ -863,21 +886,32 @@ class lisaXML(writeXML):
 # I can have LISA and Noise objects inherit from XMLobject, then it should
 # be easy to deal with them...
 
-class readXML:
-    def __init__(self,filename):
+# remote http requests are enabled only for the main xml and binary files
+
+# ticket: ordering of columns may not be applied when loading table of parameters
+
+class readXML(object):
+    def __init__(self,filename,validate=False):
         p = pyRXP.Parser()        
         
-        f = open(filename)
-        lines = f.read()
-        f.close()
+        if 'http://' in filename:
+            lines = urllib.urlopen(filename).read()
+        else:
+            lines = open(filename).read()
         
         try:
+            if not validate:
+                # disable validation
+                raise
+        
             tree = p(lines)
-        except pyRXP.error:
-            print "XML validation error! (Or perhaps I couldn't access the DTD)."
-            print "I'll try to use the file anyway by removing the DTD..."
+        except:
+            # validation was disabled, or pyRXP failed, probably on DTD
+            # so try calling pyRXP without validation
             
-            lines = re.sub('<!DOCTYPE XSIL SYSTEM ".*">','',lines)
+            p.TrustSDD = 0
+            p.Validate = 0
+        
             tree = p(lines)
         
         if tree[0] != 'XSIL':
@@ -936,6 +970,7 @@ class readXML:
                                 return self.processObject(node2)
         
         return None
+    LISAData = property(getLISAgeometry)
     
     def getLISASources(self):
         result = []
@@ -951,6 +986,7 @@ class readXML:
                                 result.append(r)
         
         return result
+    SourceData = property(getLISASources)
     
     def getTDIObservables(self):
         result = []
@@ -965,6 +1001,7 @@ class readXML:
                             result.append(r)
         
         return result
+    TDIData = property(getTDIObservables)
     
     def reprvalue(self,param):
         """Turn a string into something we can work with!"""
@@ -1002,13 +1039,18 @@ class readXML:
             # assume length of doubles is 8 (generic?)
             readlength = 8 * length * records 
         
-            if self.directory:
+            if 'http://' in self.directory:
+                binaryfile = urllib.urlopen(self.directory + '/' + content,'r')
+            else:
                 try:
+                    if not self.directory:
+                        raise
+                        
                     binaryfile = open(self.directory + '/' + content,'r')
                 except:
+                    # if we cannot find the binary relative to the xml,
+                    # try relative to the working directory
                     binaryfile = open(content,'r')
-            else:
-                binaryfile = open(content,'r')
         
             readbuffer = numpy.fromstring(binaryfile.read(readlength),'double')
             binaryfile.close()
@@ -1050,6 +1092,7 @@ class readXML:
             objecttype = None
         
         objectparams = {}
+        objectparamlist = []
         
         # get the type and all other parameters
         
@@ -1059,6 +1102,8 @@ class readXML:
                     sourcetype = self.getParam(node2)[0]
                 else:
                     objectparams[node2.Name] = self.getParam(node2)
+                    # need this to set parameters in the order they're given...
+                    objectparamlist.append(node2.Name)
         
         # create the object, importing the right module
         
@@ -1084,7 +1129,7 @@ class readXML:
         # now assign attributes
         # units go in AttributeName_Unit
         
-        for param in objectparams:
+        for param in objectparamlist:
             try:
                 setattr(retobj,param,self.reprvalue(objectparams[param]))
                 setattr(retobj,param + '_Unit',objectparams[param][1])
@@ -1113,6 +1158,7 @@ class readXML:
                      len(columnnames) == len(retobj.TimeSeries.Arrays) ):
                     
                     for col in range(len(columnnames)):
+                        # for convenience, also to the outlying Observable or SampledPlaneWave object
                         if not hasattr(retobj,columnnames[col]):
                             retobj.__dict__[columnnames[col]] = retobj.TimeSeries.Arrays[col]
                         
