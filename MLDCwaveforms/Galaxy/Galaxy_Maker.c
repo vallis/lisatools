@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <gsl/gsl_rng.h>
+
 #include "LISAconstants.h"
 #include <stdio.h>
 #include <stddef.h>
@@ -12,9 +14,10 @@
 #include "NoiseParameters.h"
 #include "extras.h"
 
+
+
 /*************  PROTOTYPE DECLARATIONS FOR EXTERNAL FUNCTIONS  **************/
 
-double ran2(long*);
 void KILL(char*);
 void indexx(unsigned long n, double *arr, unsigned long *indx);
 
@@ -44,7 +47,19 @@ int main(int argc,char **argv)
 
   rSeed = atoi(argv[1]);
 
-  if(rSeed > 0) rSeed *= -1;
+/*  if(rSeed < 0) rSeed *= -1; looks like it works with both positive
+     and negative seeds */
+
+  const gsl_rng_type * Tor;
+  gsl_rng * rnd;
+  gsl_rng_env_setup();
+  Tor = gsl_rng_default;
+  rnd = gsl_rng_alloc(Tor);
+  gsl_rng_set(rnd, rSeed);
+
+/*  double u = gsl_rng_uniform (rnd); generating random uniform number 0-1 
+  printf ("Stas %.5f\n", gsl_rng_uniform (rnd)); */
+  
 
   sprintf(Gfile, "Data/Galaxy_%s.dat", argv[1]);
 
@@ -90,10 +105,10 @@ int main(int argc,char **argv)
 
        /* Calculate the instrinsic amplitude */
        A = Afac*pow(pi*f,(2.0/3.0))/DL * pow(Mc*Mfac, 5.0/3.0);
-       x = 1.0-2.0*ran2(&rSeed);
+       x = 1.0-2.0*gsl_rng_uniform(rnd);
        iota = acos(x);
-       psi = pi*ran2(&rSeed);
-       phase = 2.0*pi*ran2(&rSeed);
+       psi = pi*gsl_rng_uniform(rnd);
+       phase = 2.0*pi*gsl_rng_uniform(rnd);
        fprintf(Output, "%.16f %f %f %e %f %f %f\n", f, theta, phi, A, iota, psi, phase);
        fprintf(Output2, "%.16f %f %f %e %f %f %f\n", f, theta, phi, A, iota, psi, phase);
      }
@@ -114,7 +129,7 @@ int main(int argc,char **argv)
 
        /* random +/- 100/year tweak to the frequencies */
 
-       f = pow(10.0,logf)+100.0*(1.0-2.0*ran2(&rSeed))/year;
+       f = pow(10.0,logf)+100.0*(1.0-2.0*gsl_rng_uniform(rnd))/year;
 
       conf = 0.0;
 
@@ -158,13 +173,13 @@ int main(int argc,char **argv)
 
        if(phi<0.0) phi += 2.0*pi;
 
-       x = 1.0-2.0*ran2(&rSeed);
+       x = 1.0-2.0*gsl_rng_uniform(rnd);
 
        iota = acos(x);
   
-       psi = pi*ran2(&rSeed);
+       psi = pi*gsl_rng_uniform(rnd);
 
-       phase = 2.0*pi*ran2(&rSeed);
+       phase = 2.0*pi*gsl_rng_uniform(rnd);
 
        BS = A*sqrt(T)/(sqrt(Sn));
 
@@ -229,7 +244,8 @@ int main(int argc,char **argv)
     }
 
    fclose(Output);
-
+   
+   gsl_rng_free(rnd);
 
    return;
 
