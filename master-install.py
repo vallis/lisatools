@@ -164,6 +164,25 @@ if ( newer_group(sources,'Galaxy_Maker') or newer_group(sources,'Galaxy_key')  o
      newer_group(sources,'Fast_XML_LS')  or newer_group(sources,'Fast_XML_SL') or
                                             newer_group(sources,'DataImport') ):
     print "    (recompiling Galaxy)"
+    if(os.path.isfile('Compile')):
+       tmpfile = "tmpCompile"
+       fileIn = "Compile"
+       fin = open(fileIn, 'r')
+       fout = open(tmpfile, 'w')
+       gslinclds =  " -I"+gsldir+"include"
+       gsladdlibs = " -L"+gsldir+"lib -lgsl -lgslcblas"
+       for eachline in fin:
+          if (re.search("Galaxy_Maker", eachline)):
+	    if (not re.search("-lgsl", eachline)):
+                eachline = eachline[:-1] + gslinclds + gsladdlibs + "\n"
+	  fout.write(eachline)
+       fin.close()
+       fout.close()
+       cmnd = 'mv '+tmpfile+' '+fileIn
+       os.system(cmnd)
+       cmnd2 = 'chmod 700 ' + fileIn 
+       os.system(cmnd2)
+ 
     assert(0 == os.system('./Compile'))
 
 # copy every time...
