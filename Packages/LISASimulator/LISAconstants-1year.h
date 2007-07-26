@@ -53,8 +53,9 @@
 #define NFFT 2097152
 /* #define NFFT 262144 */
 
- /* Observation length */
-#define T 31457280.0
+ /* Observation length: made into a constant since the #define interfered with GSL */
+static const double T = 31457280.0;
+/* #define T 31457280.0 */
 /* #define T 3932160.0 */
 
  /* Increment of time between data sample points for the detector */

@@ -51,8 +51,9 @@
  /* Number of data points to be FFTed */
 #define NFFT 4194304
 
- /* Observation length */
-#define T 62914560.0
+ /* Observation length: made into a constant since the #define interfered with GSL */
+static const double T = 62914560.0;
+/* #define T 62914560.0 */
 
  /* Increment of time between data sample points for the detector */
 #define dt 15.0
