@@ -146,11 +146,11 @@ mysystem.InitialAlphaAngle		          = al_in   # initial azimuthal direction of
 
 # save also the final parameters (Units must be given for the parameters to be written to XML)
 
-mysystem.PlungeTime                 = Tend         ; mysystem.PlungeTime                 = 'Second'                 
-mysystem.FinalEccentricity          = e_in         ; mysystem.FinalEccentricity          = '1'
-mysystem.FinalTildeGamma            = GammaAtPlunge; mysystem.FinalTildeGamma            = 'Radian'
-mysystem.FinalAzimuthalOrbitalPhase = PhiAtPlunge  ; mysystem.FinalAzimuthalOrbitalPhase = 'Radian'
-mysystem.FinalAlphaAngle            = AlphaAtPlunge; mysystem.FinalAlphaAngle            = 'Radian'
+mysystem.PlungeTime                 = Tend         ; mysystem.PlungeTime_Unit                 = 'Second'                 
+mysystem.FinalEccentricity          = e_in         ; mysystem.FinalEccentricity_Unit          = '1'
+mysystem.FinalTildeGamma            = GammaAtPlunge; mysystem.FinalTildeGamma_Unit            = 'Radian'
+mysystem.FinalAzimuthalOrbitalPhase = PhiAtPlunge  ; mysystem.FinalAzimuthalOrbitalPhase_Unit = 'Radian'
+mysystem.FinalAlphaAngle            = AlphaAtPlunge; mysystem.FinalAlphaAngle_Unit            = 'Radian'
 
 extraparcomment = """The parameters at plunge (PlungeTime, FinalEccentricity, FinalTildeGamma,
 FinalAzimuthalOrbitalPhase, FinalAlphaAngle) are redundant and are provided
