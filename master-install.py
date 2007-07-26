@@ -228,8 +228,10 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
     assert(0 == os.system('tar zxf %s -C .' % lisasimtar))
     assert(0 == os.system('mv %s lisasimulator-1year' % lisasimdir))
 
-    # copy modified LISAconstants.h file
+    # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
     assert(0 == os.system('cp %s lisasimulator-1year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-1year.h')))
+    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/InstrumentNoise.c')))
+    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Compile')))
 
     # patch IO on cygwin
     if 'CYGWIN' in platform.system():
@@ -237,7 +239,7 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
 
     # compile and setup
     os.chdir('lisasimulator-1year')
-    assert(0 == os.system('./Compile'))
+    assert(0 == os.system('./Compile --gsl=' + gsldir))
     assert(0 == os.system('./Setup'))
     os.chdir('../..')
 
@@ -252,8 +254,10 @@ if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
     assert(0 == os.system('tar zxf %s -C .' % lisasimtar))
     assert(0 == os.system('mv %s lisasimulator-2year' % lisasimdir))
 
-    # copy modified LISAconstants.h file
+    # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
     assert(0 == os.system('cp %s lisasimulator-2year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-2year.h')))
+    assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/InstrumentNoise.c')))
+    assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Compile')))
 
     # patch IO on cygwin
     if 'CYGWIN' in platform.system():
@@ -261,7 +265,7 @@ if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
 
     # compile and setup
     os.chdir('lisasimulator-2year')
-    assert(0 == os.system('./Compile'))
+    assert(0 == os.system('./Compile --gsl=' + gsldir))
     assert(0 == os.system('./Setup'))
     os.chdir('../..')
 
