@@ -15,6 +15,7 @@ import urllib
 import stat
 import shutil
 import time
+import string
 import re
 
 # if we have traits, import xmltraits.py
@@ -87,11 +88,6 @@ class XMLobject(object):
             unit = 'default'
         
         return "%s (%s)" % (value,unit)
-    
-    def doComment(self,comments):
-        """Add Comment element (internal function)"""
-        
-        return ('Comment', {}, [comments])
     
 
 class Table(XMLobject):    
@@ -466,6 +462,7 @@ class Source(XMLobject):
         # avoid calling setattr
         self.__dict__['xmltype'] = sourcetype
         self.__dict__['name'] = name
+        # TO DO: name would be better as 'Name'
     
     def XML(self,xmlfile,name=None,comments=''):
         """Add a Source-like object to an XML output file."""
@@ -535,15 +532,19 @@ class Source(XMLobject):
         
         # handle comments
         
-        if comments:
-            params.append(self.doComment(comments))
+        if hasattr(self,'Comment') and self.Comment:
+            self.Comment = self.Comment + '\n' + comments
+        else:
+            self.__dict__['Comment'] = comments
+        
+        if self.Comment:
+            params.append(('Comment', {}, [self.Comment]))
         
         # we're done...
         
         return ('XSIL', xsildict, params)
     
 
-# just a generic XML object...
 class XSILobject(XMLobject):
     """This class represents a lisaXML object with parameters (such as LISA),
     but without the special properties of Source. [In a future implementation,
@@ -552,7 +553,7 @@ class XSILobject(XMLobject):
     def __init__(self,xmltype,name=''):
         """Create an XSILobject. Generally called from the constructors of
         inhering objects."""
-            
+        
         super(XSILobject,self).__init__()
         
         # avoid calling setattr
@@ -577,18 +578,13 @@ class XSILobject(XMLobject):
             else:
                 params.append(('Param', {'Name': parname}, [getattr(self,parname)]))
         
-        # handle comments
-        
-        if comments:
-            params.append(self.doComment(comments))
-        
         # we're done...
         
         return ('XSIL', xsildict, params)
     
 
 class LISA(XSILobject):
-    """This class inherits from XMLobject, and it represents the pseudo-LISA
+    """This class inherits from XSILobject, and it represents the pseudo-LISA
     geometry. For instance, the standard MLDC pseudo-LISA is created with
         
     lisa = lisaxml.LISA('Standard MLDC PseudoLISA')
@@ -598,11 +594,14 @@ class LISA(XSILobject):
     lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
         
     LISA objects are read with readXML.getLISAgeometry() and written
-    with lisaXML.LISAData()."""
+    with lisaXML.LISAData().
+        
+    Doctests: see readXML.getLISAGeometry().
+    """
     
     def __init__(self,name=''):
         super(LISA,self).__init__('PseudoLISA',name)
-    
+
 
 class writeXML(object):
     """The basic class underlying lisaXML, which supports basic formatted-XML
@@ -734,6 +733,7 @@ class writeXML(object):
             # I am a singleton
             self.singletag(rxpexp[0],rxpexp[1])
     
+
 
 class lisaXML(writeXML):
     """The Python object representation of an output lisaXML file"""
@@ -891,11 +891,52 @@ class lisaXML(writeXML):
 # ticket: ordering of columns may not be applied when loading table of parameters
 
 class readXML(object):
+    """This is the Python object representation of an input lisaXML file. This
+       class parses lisaXML files and provides access to their contained LISA,
+       Source, and TDI data. This is obtained by accessing class attributes:
+       
+       exampleXML = lisaxml.readXML('example.xml')
+       
+       lisa        = exampleXML.LISAData   # returns a LISA object
+       sources     = exampleXML.SourceData # returns a list of Source objects
+       observables = example.TDIData       # returns a list of Observable objects
+       
+       Note that the lists may be lists of a single element, which is then
+       accessed by sources[0] or observables[0].
+       
+       In addition, the attributes Author, Date, and Comment may be used to access
+       the file metadata. If more than one comment is present in the XML, they will be
+       collated into a single string."""
+    
     def __init__(self,filename,validate=False):
-        p = pyRXP.Parser()        
+        """Initialize a readXML object. 'filename' may point to a local file, or
+        (if it begins with http://) to a remote file to be downloaded from the web.
+        Setting 'validate' to true enables the validation of the XML with any DTD
+        statement that it may contain.
+         
+        Doctests:
+         
+        >>> readXMLobj = readXML('test.xml')
+        >>> readXMLobj.Author
+        'Michele Vallisneri'
+        >>> readXMLobj.GenerationDate, readXMLobj.GenerationDate_Type
+        ('2007-07-20T15:47:29PDT', 'ISO-8601')
+        >>> readXMLobj.Comment
+        'lisaXML 1.0 [M. Vallisneri, June 2006]\\nA second test comment.'
+        >>> readXMLobj.ExtraParameter, readXMLobj.ExtraParameter_Unit
+        (3.1400000000000001, 'Second')
+        >>> readXMLobj = readXML('http://www.vallis.org/test.xml')
+        """
         
+        p = pyRXP.Parser()
+        
+        # read from the web or from local file
         if 'http://' in filename:
             lines = urllib.urlopen(filename).read()
+            
+            # TO DO: could use better recognition of 404-file non found
+            if '<?xml' not in lines:
+                raise IOError
         else:
             lines = open(filename).read()
         
@@ -906,6 +947,7 @@ class readXML(object):
         
             tree = p(lines)
         except:
+            # [TO DO: catch this exception more specifically]
             # validation was disabled, or pyRXP failed, probably on DTD
             # so try calling pyRXP without validation
             
@@ -918,61 +960,98 @@ class readXML(object):
             print 'Not a LISA XSIL file!'
             raise TypeError
         
+        # save the location of the file and its parsed tree representation
         self.directory = os.path.dirname(filename)
-        
         self.tw = xmlutils.TagWrapper(tree)
         
-        self.setMetaData()
-    
-    def close(self):
-        pass
-    
-    def getTime(self,node):
-        try:
-            # keep Time as string, get Type if provided
-            return (str(node),node.Type)
-        except AttributeError:
-            return (str(node),)
-    
-    def getParam(self,node):
-        try:
-            return [str(node),node.Unit]
-        except AttributeError:
-            return [str(node),None]
-    
-    def getDim(self,node):
-        return int(str(node))
-    
-    def setMetaData(self):
+        # gather meta data from the file
         self.Author, self.GenerationDate, self.Comment = '', '', ''
         
+        # TO DO: this could be refactored by making readXML inherit from XMLobject
         for node in self.tw:
             if node.tagName == 'Param':
-                if node.Name == 'Author':
-                    self.Author = str(node)
-                elif node.Name == 'GenerationDate':
-                    self.GenerationData = str(node)
-                    try:
-                        self.GenerationData_Type = str(node.Type)
-                    except:
-                        pass
+                if not hasattr(self,node.Name) or getattr(self,node.Name) == '':
+                    setattr(self,node.Name,self.__reprvalue((str(node),hasattr(node,'Unit') and str(node.Unit) or '')))
+                    
+                    if hasattr(node,'Unit'):
+                        setattr(self,node.Name + '_Unit',str(node.Unit))                    
+                    
+                    if hasattr(node,'Type'):
+                        setattr(self,node.Name + '_Type',str(node.Type))                        
             elif node.tagName == 'Comment':
-                self.Comment = str(node)
+                if self.Comment:
+                    self.Comment += ('\n' + str(node))
+                else:
+                    self.Comment = str(node)
     
-    # capitalization isn't ideal here...
-    def getLISAgeometry(self):
+    def close(self):
+        """It is not necessary to close the readXML object; 'del' can be used to
+           destroy it if it is necessary to reclaim memory."""
+        pass
+    
+        
+    def getMetaData(self):
+        """Returns Author, GenerationData, Comment (may be empty strings if
+           not provided). The preferred interface is to access the readXML
+           instance attributes Author, GenerationData, and Comment directly.
+           Some notes:
+           
+           - If more than one Comment element is present in the XML, they are
+             concatenated in a single newline-separated string.
+           
+           - If the Type of GenerationData is given, it is available as
+             the readXML attribute GenerationData_Type.
+             
+           - If other Param elements are present at the root level of the XML
+             file, they are assigned to the readXML attribute of the same Name,
+             unless that attribute is already being used for system purposes."""
+        
+        return self.Author, self.GenerationData, self.Comment
+    
+    def getLISAGeometry(self):
+        """Return the first LISA object defined in the XML. It's better to access
+           the LISAData attribute directly.
+           
+           Doctests:
+           
+           >>> readXMLobj = readXML('test.xml')
+           >>> lisa = readXMLobj.LISAData
+           >>> lisa.name
+           'Standard MLDC LISA'
+           >>> lisa.Armlength, lisa.Armlength_Unit
+           (16.6782, 'Second')
+           """
         # use the first LISA found...
         for node in self.tw:
             if node.tagName == 'XSIL':
                 if node.Type == 'LISAData':
                     for node2 in node:
                         if node2.tagName == 'XSIL' and node2.Type == 'PseudoLISA':
-                                return self.processObject(node2)
+                                return self.__processObject(node2)
         
         return None
-    LISAData = property(getLISAgeometry)
     
+    LISAData = property(getLISAGeometry)
     def getLISASources(self):
+        """Return a list of Source objects defined in the XML. It's better to access
+           the LISASource attribute directly.
+           
+           Doctests:
+           
+           >>> readXMLobj = readXML('test.xml')
+           >>> sources = readXMLobj.SourceData
+           >>> len(sources)
+           2
+           >>> sources[0].name, sources[0].xmltype, type(sources[0])
+           ('Galactic binary 1.1.1a', 'GalacticBinary', <class 'GalacticBinary.GalacticBinary'>)
+           >>> sources[0].Frequency, sources[0].Frequency_Unit
+           (0.0010627314430000001, 'Hertz')
+           >>> sources[1].name, sources[1].xmltype, type(sources[1])
+           ('SMBH binary 1.2.1', 'BlackHoleBinary', <class 'BBH.BlackHoleBinary'>)
+           >>> sources[1].CoalescenceTime, sources[1].CoalescenceTime_Unit
+           (13374027.9811, 'Second')
+        """
+         
         result = []
         
         for node in self.tw:
@@ -981,14 +1060,33 @@ class readXML(object):
                     for node2 in node:
                         if node2.tagName == 'XSIL':
                             if node2.Type in ('PlaneWave','SampledPlaneWave','PlaneWaveTable'):
-                                r = self.processObject(node2)
+                                r = self.__processObject(node2)
                                 
                                 result.append(r)
         
         return result
-    SourceData = property(getLISASources)
     
+    SourceData = property(getLISASources)
     def getTDIObservables(self):
+        """Return a list of the Observable objects defined in the XML. It's
+           better to access the TDIData attribute directly...
+           
+           Doctests:
+           
+           >>> readXMLobj = readXML('test.xml')
+           >>> tdiobs = readXMLobj.TDIData
+           >>> len(tdiobs)
+           1
+           >>> tdiobs[0].name, tdiobs[0].DataType, type(tdiobs[0]) == Observable
+           ('t,Xf,Yf,Zf', 'FractionalFrequency', True)
+           >>> tdiobs[0].TimeSeries.Cadence, tdiobs[0].TimeSeries.TimeOffset
+           (15, 0)
+           >>> tdiobs[0].t
+           array([ 101.,  201.,  301.,  401.])
+           >>> tdiobs[0].Xf
+           array([ 102.,  202.,  302.,  402.])
+           """
+        
         result = []
         
         for node in self.tw:
@@ -996,17 +1094,29 @@ class readXML(object):
                 if node.Type == 'TDIData':
                     for node2 in node:
                         if node2.tagName == 'XSIL' and node2.Type == 'TDIObservable':
-                            r = self.processObject(node2)
+                            r = self.__processObject(node2)
                             
                             result.append(r)
         
         return result
+    
     TDIData = property(getTDIObservables)
     
-    def reprvalue(self,param):
-        """Turn a string into something we can work with!"""
+    # internal (TO DO: may want to define these as __private!):
+    def __getParam(self,node):
+        """[Internal] Return parameter value as (str,unit) or (str,) tuple."""
+        
+        try:
+            return [str(node),node.Unit]
+        except AttributeError:
+            return [str(node),None]
+    
+    def __reprvalue(self,param):
+        """[Internal] Turn a ('value','unit') pair into something we can work with!
+           Will try (int,float,str) in order, unless Unit/Type is given as string."""
+        
         if param[1] == 'String':
-            return param[0]
+            return str(param[0])
         
         for t in (int,float,str):
             try:
@@ -1018,14 +1128,16 @@ class readXML(object):
         
         raise ValueError
     
-    def processTimeSeries(self,node):
+    def __processTimeSeries(self,node):
+        """[Internal] Reads array objects from file for a TimeSeries object."""
+        
         dim = {}
         
         for node2 in node:
             if node2.tagName == 'Array':
                 for node3 in node2:
                     if node3.tagName == 'Dim':
-                        dim[node3.Name] = self.getDim(node3)
+                        dim[node3.Name] = int(str(node3))
                     elif node3.tagName == 'Stream':
                         encoding = node3.Encoding
                         stype    = node3.Type
@@ -1065,7 +1177,7 @@ class readXML(object):
                 content = string.join(content.split(delchar),' ')
                 
                 # there may be a more efficient way to initialize an array
-                readbuffer = numpy.array(map(float,datastring.split()),'d')
+            readbuffer = numpy.array(map(float,content.split()),'d')
         else:
             # support only remote binary and local text
             raise NotImplementedError
@@ -1078,7 +1190,10 @@ class readXML(object):
             return [readbuffer[:,i] for i in range(records)]
             # previously: return tuple(readbuffer[:,i] for i in range(records))
     
-    def processObject(self,node):
+    def __processObject(self,node):
+        """[Internal] Makes an XMLObject from XML data. Currently handles
+           PlaneWave, SampledPlaneWave, PlaneWaveTable, TDIObservable, PseudoLISA."""
+        
         # get the name of the object
         
         try:
@@ -1099,9 +1214,9 @@ class readXML(object):
         for node2 in node:
             if node2.tagName == 'Param':
                 if node2.Name == 'SourceType':
-                    sourcetype = self.getParam(node2)[0]
+                    sourcetype = self.__getParam(node2)[0]
                 else:
-                    objectparams[node2.Name] = self.getParam(node2)
+                    objectparams[node2.Name] = self.__getParam(node2)
                     # need this to set parameters in the order they're given...
                     objectparamlist.append(node2.Name)
         
@@ -1131,7 +1246,7 @@ class readXML(object):
         
         for param in objectparamlist:
             try:
-                setattr(retobj,param,self.reprvalue(objectparams[param]))
+                setattr(retobj,param,self.__reprvalue(objectparams[param]))
                 setattr(retobj,param + '_Unit',objectparams[param][1])
             except ValueError:
                 raise ValueError, 'readXML.processObject(): cannot interpret value %s for parameter %s in object %s' % (objectparams[param],param,objectname)
@@ -1140,13 +1255,13 @@ class readXML(object):
         
         for node2 in node:
             if node2.tagName == 'XSIL' and node2.Type == 'TimeSeries':      
-                retobj.TimeSeries = TimeSeries(self.processTimeSeries(node2),node2.Name)
+                retobj.TimeSeries = TimeSeries(self.__processTimeSeries(node2),node2.Name)
                 
                 for node3 in node2:
                     if node3.tagName == 'Param':
-                        objectparam = self.getParam(node3)
+                        objectparam = self.__getParam(node3)
                             
-                        setattr(retobj.TimeSeries,node3.Name,self.reprvalue(objectparam))
+                        setattr(retobj.TimeSeries,node3.Name,self.__reprvalue(objectparam))
                         setattr(retobj.TimeSeries,node3.Name + '_Unit',objectparam[1])
                 
                 # if TimeSeries name is understandable (comma-separated, etc.) and names
@@ -1211,5 +1326,29 @@ class readXML(object):
                     
                 break
         
+        # look for comment
+        
+        for node2 in node:
+            if node2.tagName == 'Comment':
+                if hasattr(retobj,'Comment') and retobj.Comment:
+                    retobj.Comment = retobj.Comment + '\n' + str(node2)
+                else:
+                    retobj.__dict__['Comment'] = str(node2)
+        
         return retobj
     
+    
+    # deprecated:
+    def getLISAgeometry(self):
+        """[Deprecated] see getLISAGeometry()"""
+        
+        return self.getLISAGeometry()
+    
+
+
+def _test():
+    import doctest
+    doctest.testmod()
+
+if __name__ == "__main__":
+    _test()
