@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+
+import sys
+import os
+
+gsldir = None
+
+for arg in sys.argv:
+    if arg.startswith('--gsl='):
+        gsldir = arg.split('=',1)[1]
+
+if gsldir:
+    setpath = ' -I%(gsldir)s/include -L%(gsldir)s/lib' % globals()
+else:
+    setpath = ''
+
+# Compile The LISA Simulator codes
+
+   # Interferometer setup codes
+
+assert(0 == os.system('gcc -O3 -o UnitVectors UnitVectors.c SpacecraftPositions.c -lm'))
+
+assert(0 == os.system('gcc -O3 -o Vertex1Times Vertex1Times.c SpacecraftPositions.c -lm'))
+assert(0 == os.system('gcc -O3 -o Vertex2Times Vertex2Times.c SpacecraftPositions.c -lm'))
+assert(0 == os.system('gcc -O3 -o Vertex3Times Vertex3Times.c SpacecraftPositions.c -lm'))
+
+   # Instrument Noise codes
+
+assert(0 == os.system('gcc -O3 -o InstrumentNoise InstrumentNoise.c -lgsl -lgslcblas -lm' + setpath))
+
+assert(0 == os.system('gcc -O3 -o Vertex1Noise Vertex1Noise.c -lm'))
+assert(0 == os.system('gcc -O3 -o Vertex2Noise Vertex2Noise.c -lm'))
+assert(0 == os.system('gcc -O3 -o Vertex3Noise Vertex3Noise.c -lm'))
+
+  # Example of Input File Generation codes
+
+assert(0 == os.system('gcc -O2 -o galactic_params galactic_params.c IO/lisaxml.c IO/ezxml.c -lm'))
+
+assert(0 == os.system('gcc -O2 -o galactic_barycenter galactic_barycenter.c IO/lisaxml.c IO/xmlbinary.c IO/readxml.c IO/ezxml.c -lm'))
+
+   # Gravitational Wave Detection codes
+
+assert(0 == os.system('gcc -O2 -o GWconverter GWconverter.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm'))
+
+assert(0 == os.system('gcc -O3 -o Vertex1Signals Vertex1Signals.c SpacecraftPositions.c -lm'))
+assert(0 == os.system('gcc -O3 -o Vertex2Signals Vertex2Signals.c SpacecraftPositions.c -lm'))
+assert(0 == os.system('gcc -O3 -o Vertex3Signals Vertex3Signals.c SpacecraftPositions.c -lm'))
+
+   # Output Bundle code
+
+assert(0 == os.system('gcc -O2 -o Package Package.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm'))
+
+   # Data Analysis codes
+
+assert(0 == os.system('gcc -O2 -o DataAnalysis DataAnalysis.c IO/lisaxml.c IO/ezxml.c IO/xmlbinary.c IO/readxml.c -lm'))
