@@ -21,39 +21,7 @@ import lisaxml
 import numpy
 import math
 
-SourceClassModules = {}
-SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
 lisaxml.SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
-
-class XMLobject(object):
-    def __init__(self):
-        self.__dict__['parameters'] = []
-
-    def __setattr__(self,attr,value):
-        self.__dict__[attr] = value
-
-        if (not attr in self.parameters) and (not '_Unit' in attr):
-            self.parameters.append(attr)
-
-class Source(XMLobject):
-    def __init__(self,sourcetype,name=''):
-        super(Source,self).__init__()
-
-        # avoid calling setattr
-        self.__dict__['xmltype'] = sourcetype
-        self.__dict__['name'] = name
-
-    def parstr(self,attr):
-        value = getattr(self,attr)
-
-        try:
-            unit = getattr(self,attr+'_Unit')
-        except AttributeError:
-            unit = 'default'
-
-        return "%s (%s)" % (value,unit)
-
-
 
 class ExtremeMassRatioInspiral(lisaxml.Source):
     """Returns a MLDC source that models the waveform emitted by the
@@ -61,7 +29,6 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
 
     # this is the list of parameters that will be recorded in the lisaXML SourceData sections
     # give ParameterName, DefaultUnit, DefaultValue (a string), Description
-
 
     outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
                   ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
@@ -77,26 +44,25 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
                   ('InitialTildeGamma',                'Radian',        None, 'initial position of pericenter, as angle between LxS and pericenter'),
                   ('InitialAlphaAngle',                'Radian',        None, 'initial azimuthal direction of L (in the orbital plane)'),
                   ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
-                  ('Distance',                         'Parsec',        None, 'standard source distance')
-            )
+                  ('Distance',                         'Parsec',        None, 'standard source distance'))
 
     def  __init__(self,name=''):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
         
-        self.samples = None
-        self.deltat  = None
-        self.inittime = None
+        self.__samples = None
+        self.__deltat  = None
+        self.__inittime = None
     
     def waveforms(self,samples,deltat,inittime,debug=0):
-        if samples != self.samples or deltat != self.deltat or inittime != self.inittime:
-            self.samples, self.deltat, self.inittime = samples, deltat, inittime
+        if samples != self.__samples or deltat != self.__deltat or inittime != self.__inittime:
+            self.__samples, self.__deltat, self.__inittime = samples, deltat, inittime
 
-            self.emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
+            self.__emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
             
-            self.emri.SetSourceLocation(math.pi/2.0 - self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
+            self.__emri.SetSourceLocation(math.pi/2.0 - self.EclipticLatitude, self.EclipticLongitude, self.PolarAngleOfSpin, \
                                         self.AzimuthalAngleOfSpin, self.Distance)
             
-            self.emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
+            self.__emri.EvolveOrbit(inittime, self.InitialAzimuthalOrbitalFrequency, self.InitialEccentricity, self.InitialTildeGamma,\
                                   self.InitialAzimuthalOrbitalPhase, self.InitialAlphaAngle, self.LambdaAngle)
         
         hp = numpy.empty(samples,'d')
@@ -105,7 +71,7 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
         # don't apply polarization here since it comes in at the level of makebarycentric.py
         # wavelen = emri.GetWaveform(self.Polarization, hp, hc)
 
-        wavelen = self.emri.GetWaveform(0, hp, hc, debug)
+        wavelen = self.__emri.GetWaveform(0, hp, hc, debug)
 
         hp[wavelen:] = 0.0
         hc[wavelen:] = 0.0
