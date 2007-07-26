@@ -124,12 +124,10 @@ nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*
 #print "Tend = ", Tend
 #print 30*"="
 
-
 # estimating initial (t=0) orbital elements
-
-[nu_in, e_in, gam_in, phi_in, al_in] = EMRI.EMRIEstimateInitialOrbit(mysystem.Spin,mysystem.MassOfCompactObject,\
-		                              mysystem.MassOfSMBH,Tend,e_lso,GammaAtPlunge,PhiAtPlunge,AlphaAtPlunge,\
-					      mysystem.LambdaAngle)
+[nu_in, e_in, gam_in,
+ phi_in, al_in] = EMRI.EMRIEstimateInitialOrbit(mysystem.Spin,mysystem.MassOfCompactObject,mysystem.MassOfSMBH,
+                                                Tend,e_lso,GammaAtPlunge,PhiAtPlunge,AlphaAtPlunge,mysystem.LambdaAngle)
 
 #print "============== Initial parameters ===================="
 #print "e_in = ", e_in
@@ -141,11 +139,22 @@ nu_lso =  math.pow((1.0-e_lso*e_lso)/(6.0+2.0*e_lso), 1.5)/(2.0*math.pi*MBHmass*
 #print 30*"="
 
 mysystem.InitialAzimuthalOrbitalFrequency = nu_in   # initial azimuthal orbital frequecy in Hz
-mysystem.InitialEccentricity		  = e_in    # initial orbital eccentricity
+mysystem.InitialEccentricity		      = e_in    # initial orbital eccentricity
 mysystem.InitialAzimuthalOrbitalPhase     = phi_in  # initial azimuthal orbital phase in Rad
-mysystem.InitialTildeGamma 		  = gam_in  # initial position of pericenter, as angle between LxS and pericenter
-mysystem.InitialAlphaAngle		  = al_in   # initial azimuthal direction of L (in the orbital plane)
+mysystem.InitialTildeGamma 		          = gam_in  # initial position of pericenter, as angle between LxS and pericenter
+mysystem.InitialAlphaAngle		          = al_in   # initial azimuthal direction of L (in the orbital plane)
 
+# save also the final parameters (Units must be given for the parameters to be written to XML)
+
+mysystem.PlungeTime                 = Tend         ; mysystem.PlungeTime                 = 'Second'                 
+mysystem.FinalEccentricity          = e_in         ; mysystem.FinalEccentricity          = '1'
+mysystem.FinalTildeGamma            = GammaAtPlunge; mysystem.FinalTildeGamma            = 'Radian'
+mysystem.FinalAzimuthalOrbitalPhase = PhiAtPlunge  ; mysystem.FinalAzimuthalOrbitalPhase = 'Radian'
+mysystem.FinalAlphaAngle            = AlphaAtPlunge; mysystem.FinalAlphaAngle            = 'Radian'
+
+extraparcomment = """The parameters at plunge (PlungeTime, FinalEccentricity, FinalTildeGamma,
+FinalAzimuthalOrbitalPhase, FinalAlphaAngle) are redundant and are provided
+only for convenience in checking search codes against training sets."""
 
 if options.verbose:
     for p in mysystem.parameters:
@@ -154,5 +163,5 @@ if options.verbose:
 # write out the XML file
 
 outputXML = lisaxml.lisaXML(outXMLfile,author='Stas Babak')
-outputXML.SourceData(mysystem,name=options.sourceName)
+outputXML.SourceData(mysystem,name=options.sourceName,comments=extraparcomment)
 outputXML.close()
