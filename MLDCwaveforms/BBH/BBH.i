@@ -32,43 +32,7 @@ import lisaxml
 import numpy
 import math
 
-SourceClassModules = {}
-SourceClassModules['BlackHoleBinary'] = 'BBH'
-
 lisaxml.SourceClassModules['BlackHoleBinary'] = 'BBH'
-
-# these two classes originally defined in lisaxml;
-# but here we do not wish to depend on that
-
-class XMLobject(object):
-    def __init__(self):
-        self.__dict__['parameters'] = []
-    
-    def __setattr__(self,attr,value):
-        self.__dict__[attr] = value
-        
-        if (not attr in self.parameters) and (not '_Unit' in attr):
-            self.parameters.append(attr)
-    
-
-class Source(XMLobject):
-    def __init__(self,sourcetype,name=''):
-        super(Source,self).__init__()
-        
-        # avoid calling setattr
-        self.__dict__['xmltype'] = sourcetype
-        self.__dict__['name'] = name
-    
-    def parstr(self,attr):
-        value = getattr(self,attr)
-        
-        try:
-            unit = getattr(self,attr+'_Unit')
-        except AttributeError:
-            unit = 'default'
-        
-        return "%s (%s)" % (value,unit)
-    
 
 # generic CoherentWave
 
@@ -130,7 +94,11 @@ class BlackHoleBinary(lisaxml.Source,CoherentWave):
         super(BlackHoleBinary, self).__init__('BlackHoleBinary',name)
         
         # for CoherentWave (avoid adding to Source.parameters)
+        # TO DO: I think this is redundant...
         self.__dict__['lastcomputed'] = (0,0,0)
+        
+        # pre-define variables here so that they won't be included in parameters when they are set
+        self.phic = self.fc = self.a = None
     
     def waveforms(self,samples,deltat,inittime):
         bbh = BBHChallenge1(self.Mass1,self.Mass2)
@@ -205,6 +173,8 @@ class BlackHoleBinary(lisaxml.Source,CoherentWave):
             self.fc[wavelen:]   = 0.0
             
             print "Phase on first sample is", self.phic[0]
+            
+            # TO DO: where's the return statement?
     
     
     def hp(self,samples,deltat,zerotime):
