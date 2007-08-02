@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">
+        Michele Vallisneri
+    </Param>
+    <Param Name="GenerationDate" Type="ISO-8601" Unit="ISO-8601">
+        2007-07-24T15:50:02PDT
+    </Param>
+    <Param Name="ExtraParameter" Unit="Second">
+        3.14
+    </Param>
+    <Comment>
+        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="LISAData">
+        <XSIL Name="Standard MLDC LISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="Galactic binary 1.1.1a" Type="PlaneWave">
+            <Param Name="SourceType">
+                GalacticBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.9806443268
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                5.088599
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                3.703239
+            </Param>
+            <Param Name="Frequency" Unit="Hertz">
+                0.001062731443
+            </Param>
+            <Param Name="InitialPhase" Unit="Radian">
+                4.895102
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                0.8126248
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+                2.389986344e-22
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH binary 1.2.1" Type="PlaneWave">
+            <Param Name="SourceType">
+                BlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.492288604192
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.865776910149
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                3.23421975172
+            </Param>
+            <Param Name="TimeOffset" Unit="Second">
+                -900
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                2897164.79667
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                727048.270035
+            </Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                13374027.9811
+            </Param>
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">
+                3.52650977523
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                8000000000.0
+            </Param>
+            <Param Name="Inclination" Unit="Radian">
+                1.9443881493
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+            <Param Name="TruncationTime" Unit="Second">
+                0.0
+            </Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7.0
+            </Param>
+            <Param Name="MaxDuration" Unit="Second">
+                31458180
+            </Param>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="TDIData">
+        <XSIL Name="t,Xf,Yf,Zf" Type="TDIObservable">
+            <Param Name="DataType">
+                FractionalFrequency
+            </Param>
+            <XSIL Name="t,Xf,Yf,Zf" Type="TimeSeries">
+                <Param Name="TimeOffset" Type="Second">
+                    0
+                </Param>
+                <Param Name="Cadence" Unit="Second">
+                    15
+                </Param>
+                <Param Name="Duration" Unit="Second">
+                    60
+                </Param>
+                <Array Name="t,Xf,Yf,Zf" Type="double">
+                    <Dim Name="Length">
+                        4
+                    </Dim>
+                    <Dim Name="Records">
+                        4
+                    </Dim>
+                    <Stream Type="Local" Delimiter=" " Encoding="Text">
+                        1.010000e+02 1.020000e+02 1.030000e+02 1.040000e+02 
+                        2.010000e+02 2.020000e+02 2.030000e+02 2.040000e+02 
+                        3.010000e+02 3.020000e+02 3.030000e+02 3.040000e+02 
+                        4.010000e+02 4.020000e+02 4.030000e+02 4.040000e+02 
+                    </Stream>
+                </Array>
+            </XSIL>
+        </XSIL>
+    </XSIL>
+</XSIL>
