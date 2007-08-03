@@ -50,6 +50,10 @@ if pythonlib not in sys.path:
     print "    (if you're on a 64-bit platform, you should add also %s)" % get_python_lib(prefix=libdir,plat_specific=True)
     sys.exit(1)
 
+# grab SVN revision
+
+assert(0 == os.system("svn info | grep Revision | sed 's/Revision:/lisatoolsrevision =/g' > MLDCpipelines2/bin/lisatoolsrevision.py"))
+
 # note: the plat_specific=True location is used for all C extensions... may need to check if that
 # should be used in one of the setup.py files
 

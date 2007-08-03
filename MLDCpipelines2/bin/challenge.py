@@ -374,12 +374,20 @@ step6time = time.time()
 
 # do synthlisa first
 
-secretseed = ', source seed = %s,  noise seed = %s' % (seed,seednoise)
+secretseed = ', source seed = %s, noise seed = %s' % (seed,seednoise)
 
 if istraining:
     globalseed = secretseed
 else:
     globalseed = ''
+
+# add SVN revision number
+
+import lisatoolsrevision
+lisatoolsrev = ', LISAtools SVN revision %s' % lisatoolsrevision.lisatoolsrevision
+
+secretseed += lisatoolsrev
+globalseed += lisatoolsrev
 
 run('cp Template/lisa-xml.xsl Dataset/.')
 run('cp Template/lisa-xml.css Dataset/.')
