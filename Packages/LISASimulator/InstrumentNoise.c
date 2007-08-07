@@ -87,8 +87,7 @@ int main(int argc,char **argv)
 
   rSeed = atoi(argv[1]);
 
-/* if(rSeed < 0) rSeed *= -1; looks like it works with both positive
-     and negative seeds */
+  if(rSeed < 0) rSeed *= -1;
 
   const gsl_rng_type * Tor;
   gsl_rng * rnd;
