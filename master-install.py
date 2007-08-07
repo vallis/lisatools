@@ -45,9 +45,11 @@ if gsldir == None:
 pythonlib = get_python_lib(prefix=libdir)
 
 if pythonlib not in sys.path:
-    print "!!! You need to add %s to PYTHONPATH (use export or setenv)" % pythonlib
-    print "    (sorry, I can't do it from here, it wouldn't stick...)"
-    print "    (if you're on a 64-bit platform, you should add also %s)" % get_python_lib(prefix=libdir,plat_specific=True)
+    print "!!! You need to add %s to PYTHONPATH; use the lines" % pythonlib
+    print "    export PYTHONPATH=%s:$PYTHONPATH (in bash)" % pythonlib
+    print "    setenv PYTHONPATH %s:$PYTHONPATH (in tcsh)" % pythonlib    
+    print "    (Sorry, I can't do it from here, it wouldn't stick...)"
+    print "    If you're on a 64-bit platform, you should add also %s." % get_python_lib(prefix=libdir,plat_specific=True)
     sys.exit(1)
 
 # grab SVN revision
@@ -234,6 +236,7 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
 
     # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
     assert(0 == os.system('cp %s lisasimulator-1year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-1year.h')))
+    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/NoiseParameters.h')))
     assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/InstrumentNoise.c')))
     assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Compile')))
 
@@ -260,6 +263,7 @@ if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
 
     # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
     assert(0 == os.system('cp %s lisasimulator-2year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-2year.h')))
+    assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/NoiseParameters.h')))
     assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/InstrumentNoise.c')))
     assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Compile')))
 

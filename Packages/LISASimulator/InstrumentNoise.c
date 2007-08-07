@@ -24,6 +24,7 @@
 #include "NoiseParameters.h"
 
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 /*************  PROTOTYPE DECLARATIONS FOR EXTRENAL FUNCTIONS  **************/
 
@@ -267,7 +268,7 @@ void AccNoise(double* n_ij, long Ntot, gsl_rng * rnd)
 {
 
           /* -------------  DECLARATION OF VARIABLES  ------------- */
-
+          
  /* Filename character array */
   char* Filename;
 
@@ -346,7 +347,7 @@ void AccStream(double* n_ij, double Sn, long Ntot, gsl_rng * rnd)
 
   NP = (long)pow(2.0,floor(log((double)Ntot)/log(2.0))+1.0);
 
-  SF = (double*) malloc (NP*sizeof(double));
+  SF = (double*)malloc(NP*sizeof(double));
 
   /* kill everything below 1e-5 */
   amin = (long)((1.0e-5*dt)*(double)(2*NP));
@@ -354,12 +355,15 @@ void AccStream(double* n_ij, double Sn, long Ntot, gsl_rng * rnd)
           /* -------------------  CALCULATIONS  ------------------- */
 
   fac = (1.0/(double)(NP))*sqrt(2.0*T*Sn)/dt;
+
   for (a = 0 ; a < amin ; a++) SF[a] = 0.0;
+
   for (a = amin ; a < NP-1 ; a++)
    {
      f = (double)(a)/(dt*(double)(2*NP));
      SF[a] = fac*pow(2.0*pi*f,-2.0)*gsl_ran_gaussian(rnd,1.0)+2.0*pi*1.0e-4*fac*pow(2.0*pi*f,-3.0)*gsl_ran_gaussian(rnd,1.0);
    }
+
   SF[NP-1] = 0.0;
   drealft(SF-1, NP, -1);
   for (a = 0 ; a < Ntot ; a++) n_ij[a] = SF[a];
