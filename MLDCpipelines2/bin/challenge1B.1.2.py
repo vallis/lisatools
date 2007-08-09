@@ -42,7 +42,8 @@ for line in gfile:
     
     (freq, lat, lon, amp) = pars[0:4]
 
-    run('%(mydir)s/makesource-GalacticBinary.py --seed=%(binaryseed)s --amplitude=%(amp)s --latitude=%(lat)s --longitude=%(lon)s --centerf=%(freq)s --deltaf=0.0 --sourceName="Verification binary #%(written)s" Source/GB1.1.2-%(written)s.xml' % globals())
+    swritten = '%02d' % written
+    run('%(mydir)s/makesource-GalacticBinary.py --seed=%(binaryseed)s --amplitude=%(amp)s --latitude=%(lat)s --longitude=%(lon)s --centerf=%(freq)s --deltaf=0.0 --sourceName="Verification binary #%(swritten)s" Source/GB1.1.2-%(swritten)s.xml' % globals())
 
     written += 1
     binaryseed += 1

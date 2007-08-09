@@ -87,7 +87,8 @@ binaryseed = seed + 1
 for source in chosensources:
     (freq, lat, lon, amp) = source[0:4]
 
-    run('%(mydir)s/makesource-GalacticBinary.py --seed=%(binaryseed)s --amplitude=%(amp)s --latitude=%(lat)s --longitude=%(lon)s --centerf=%(freq)s --deltaf=0.0 --sourceName="GB #%(written)s" Source/GB1.1.5-%(written)s.xml' % globals())
+    swritten = '%02d' % written
+    run('%(mydir)s/makesource-GalacticBinary.py --seed=%(binaryseed)s --amplitude=%(amp)s --latitude=%(lat)s --longitude=%(lon)s --centerf=%(freq)s --deltaf=0.0 --sourceName="GB #%(swritten)s" Source/GB1.1.5-%(swritten)s.xml' % globals())
 
     written += 1
     binaryseed += 1
