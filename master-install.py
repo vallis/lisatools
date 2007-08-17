@@ -262,11 +262,16 @@ if newsynthlisa:
 
 print "--> Checking LISA Simulator"
 
-lisasimtar = os.path.abspath('Packages/Simulator-2.1.1b.tar.gz')
-lisasimdir = 'Simulator2.1.1'
+package, packageversion = findpackage('Simulator')
+packagedir = re.sub('.tar.gz','',package)
 
+lisasimtar = 'Packages/' + package
+lisasimdir = packagedir
+
+# still will not upgrade automatically, need to save the version number somewhere...
+# could compact into a single installation section, iterating over '1year', '2year'
 if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
-    print "--> Installing LISA Simulator (1-year version)"
+    print "--> Installing LISA Simulator (1-year version) from %s" % package
 
     if newlisasim and os.path.isdir(libdir + '/lisasimulator-1year'):
         assert(0 == os.system('rm -rf %s' % libdir + '/lisasimulator-1year'))
@@ -293,7 +298,7 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
     os.chdir('../..')
 
 if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
-    print "--> Installing LISA Simulator (2-year version)"
+    print "--> Installing LISA Simulator (2-year version) from %s" % package
 
     if newlisasim and os.path.isdir(libdir + '/lisasimulator-2year'):
         assert(0 == os.system('rm -rf %s' % libdir + '/lisasimulator-2year'))
