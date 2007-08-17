@@ -141,7 +141,7 @@ if ret == 0:
     # if we can, compare it with what we have and update it if necessary
     swigversion = re.search('SWIG Version ([0-9\.]*)',stdo).group(1)
     if LooseVersion(swigversion) < LooseVersion(packageversion):
-        print "---> I am finding version %s, but I'll install the newer %s" % (packageversion,swigversion)
+        print "---> I am finding version %s, but I'll install the newer %s" % (swigversion,packageversion)
         ret = 1
 else:
     print "---> I can't find it, I'd better install it! (from %s)" % package
@@ -150,7 +150,7 @@ if ret:
     # first check if libdir/bin is on the path
     bindir = libdir + '/bin'
     if bindir not in os.getenv('PATH'):
-        print "!!! You need to add %s to the PATH (use export or setenv)" % bindir
+        print "!!! You need to put %s in front of the PATH (use export or setenv)" % bindir
         print "    (sorry, I can't do it from here, it wouldn't stick...)"
         sys.exit(1)
     
@@ -242,7 +242,7 @@ try:
     
     synthlisaversion = synthlisa.version.version_short
     if LooseVersion(synthlisaversion) < LooseVersion(packageversion):
-        print "---> I am finding version %s, but I'll install the newer %s" % (packageversion,synthlisaversion)
+        print "---> I am finding version %s, but I'll install the newer %s" % (synthlisaversion,packageversion)
         newsynthlisa = True
 except:
     newsynthlisa = True
