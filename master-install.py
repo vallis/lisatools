@@ -11,9 +11,28 @@ import os
 import glob
 import platform
 import re
+import subprocess
 
 from distutils.sysconfig import get_python_lib
 from distutils.dep_util import newer, newer_group
+from distutils.version import LooseVersion
+
+def runcommand(command):
+    """Runs a command and returns a 2-tuple of stdout and stderr."""
+    
+    sp = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)    
+    stdout,stderr = sp.communicate()
+    
+    return sp.returncode, stdout, stderr
+
+def findpackage(package):
+    """Looks for a package, returns the newest version with its version number."""
+    
+    files = [ re.sub('Packages/','',match) for match in glob.glob('Packages/' + package + '*.tar.gz') ]
+    filesandversions = [ (onefile,re.match('.*-([0-9\.]*).tar.gz',onefile).group(1)) for onefile in files ]
+    filesandversions.sort(lambda x,y: cmp(x[1],y[1]),reverse=True) # sort by decreasing version number
+    
+    return filesandversions[0]
 
 libdir = None
 gsldir = None
@@ -109,10 +128,25 @@ except:
     assert(0 == os.system('rm -rf pyRXP-1.11-20061017'))
     os.chdir(here)
 
-# check if we have SWIG, install it otherwise 
+# check if we have SWIG, install it if not, or if it needs upgrading
+# use this template for more version checking!
 
 print "--> Checking SWIG"
-if os.system('swig -version > /dev/null') != 0:
+package, packageversion = findpackage('swig')
+packagedir = re.sub('.tar.gz','',package)
+
+# see if we can get the SWIG version currently installed
+ret, stdo, stde = runcommand('swig -version')
+if ret == 0:
+    # if we can, compare it with what we have and update it if necessary
+    swigversion = re.search('SWIG Version ([0-9\.]*)',stdo).group(1)
+    if LooseVersion(swigversion) < LooseVersion(packageversion):
+        print "---> I am finding version %s, but I'll install the newer %s" % (packageversion,swigversion)
+        ret = 1
+else:
+    print "---> I can't find it, I'd better install it! (from %s)" % package
+
+if ret:
     # first check if libdir/bin is on the path
     bindir = libdir + '/bin'
     if bindir not in os.getenv('PATH'):
@@ -122,13 +156,13 @@ if os.system('swig -version > /dev/null') != 0:
     
     print "--> Installing SWIG"
     os.chdir('Packages')
-    assert(0 == os.system('tar zxf swig-1.3.29.tar.gz'))
-    os.chdir('swig-1.3.29')
+    assert(0 == os.system('tar zxf %s' % package))
+    os.chdir(packagedir)
     assert(0 == os.system('./configure --prefix=%s' % libdir))
     assert(0 == os.system('make'))
     assert(0 == os.system('make install'))
     os.chdir('..')
-    assert(0 == os.system('rm -rf swig-1.3.29'))
+    assert(0 == os.system('rm -rf %s' % packagedir))
     os.chdir(here)
     
 # install/check install for lisaxml
@@ -200,20 +234,28 @@ os.chdir(here)
 # install/check install for synthlisa
 
 print "--> Checking synthLISA"
+package, packageversion = findpackage('synthLISA')
+packagedir = re.sub('.tar.gz','',package)
+
 try:
-    assert(not newsynthlisa)
     import synthlisa
+    
+    synthlisaversion = synthlisa.version.version_short
+    if LooseVersion(synthlisaversion) < LooseVersion(packageversion):
+        print "---> I am finding version %s, but I'll install the newer %s" % (packageversion,synthlisaversion)
+        newsynthlisa = True
 except:
+    newsynthlisa = True
+    print "---> I can't find it, I'd better install it! (from %s)" % package
+     
+if newsynthlisa:
     print "--> Installing Synthetic LISA"
     os.chdir('Packages')
-    # find the latest .tar.gz
-    synthlisatargz = glob.glob('synthLISA-*.tar.gz')[-1]
-    assert(0 == os.system('tar zxf %s' % synthlisatargz))
-    synthlisatar = re.sub('\.tar\.gz','',synthlisatargz)
-    os.chdir(synthlisatar)
+    assert(0 == os.system('tar zxf %s' % package))
+    os.chdir(packagedir)
     assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
     os.chdir('..')
-    assert(0 == os.system('rm -rf %s' % synthlisatar))
+    assert(0 == os.system('rm -rf %s' % packagedir))
     os.chdir(here)
 
 # install/check install for LISA Simulator
