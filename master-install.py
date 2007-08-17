@@ -29,7 +29,7 @@ def findpackage(package):
     """Looks for a package, returns the newest version with its version number."""
     
     files = [ re.sub('Packages/','',match) for match in glob.glob('Packages/' + package + '*.tar.gz') ]
-    filesandversions = [ (onefile,re.match('.*-([0-9\.]*).tar.gz',onefile).group(1)) for onefile in files ]
+    filesandversions = [ (onefile,re.match('.*-([0-9a-z\.]*).tar.gz',onefile).group(1)) for onefile in files ]
     filesandversions.sort(lambda x,y: cmp(x[1],y[1]),reverse=True) # sort by decreasing version number
     
     return filesandversions[0]
