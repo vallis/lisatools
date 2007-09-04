@@ -1,0 +1,9 @@
+#summary Links to other Mock LISA Data Challenges (MLDC) pages.
+#labels Featured
+
+= Links =
+
+  * The MLDC [http://www.tapir.caltech.edu/dokuwiki/listwg1b:home wiki] (see in particular the page about [http://www.tapir.caltech.edu/dokuwiki/listwg1b:pipeline2 installing lisatools])
+  * The official MLDC website at [http://astrogravs.nasa.gov/docs/mldc Astrogravs]
+  * The [http://gravity.psu.edu/mailman/listinfo/lisatools-mldc formulation] and [http://gravity.psu.edu/mailman/listinfo/lisatools-challenge challenge] mailing lists
+
