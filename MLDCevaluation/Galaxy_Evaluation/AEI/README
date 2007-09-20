@@ -1,0 +1,42 @@
+This directory contains two tools:
+
+1. Octave script to match up returned white-dwarf binary signals with
+sources in the key.
+
+2. Matplotlib (python) scripts to plot parameter errors.
+
+== Documentation of compareMLDC2Results2Key.m : ==
+
+Usage:
+
+compareResults2Key_pipeline2.m <res-file> <key-file> [ <coincMismatch> ]
+
+Sample usage:
+
+./compareMLDC2Results2Key.m \
+   ./PrixWhelanAEI-challenge2.1-gb-all.txt \
+   ./KEY_NEW_Final_Challenge-2.1_LISAsim_Targeted_Challenge_all.dat
+
+This script compares an MLDC results file with a key file, pairing off
+candidate signals with injected sources.
+
+The results file is in standard MLDC format, with columns:
+##  i, candList{i}.Freq,  candList{i}.Delta, candList{i}.Alpha, Amplitude, Polarization, Inclination, InitialPhase
+
+The key file is in our internal format, with columns:
+%%         Freq            Lat            Long                2F                A1              A2              A3              A4           Ad         Bd         Cd   Sinv_Tsft
+
+A1, A2, A3, and A4 are the four components of the amplitude vector
+A_mu, and are constructed from the four amplitude parameters.  Ad, Bd,
+Cd and Sinv_Tsft are quantities used to construct the LWL "metric" on
+the amplitude parameter space, and 2F is the length of the A_mu vector
+in this metric.
+
+We've provided a key, constructed from the "bright sources" file
+challenge2.1-key-0.txt and called it
+
+KEY_NEW_Final_Challenge-2.1_LISAsim_Targeted_Challenge_all.dat
+
+(the LISAsim_Targeted in the name is because we did a targeted search
+using the LISA simulator data to get the metric for each set of
+doppler parameters).
