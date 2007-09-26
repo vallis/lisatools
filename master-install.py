@@ -278,7 +278,7 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
 
     # untar
     os.chdir(libdir)
-    assert(0 == os.system('tar zxf %s -C .' % lisasimtar))
+    assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
     assert(0 == os.system('mv %s lisasimulator-1year' % lisasimdir))
 
     # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
@@ -305,7 +305,7 @@ if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
 
     # untar
     os.chdir(libdir)
-    assert(0 == os.system('tar zxf %s -C .' % lisasimtar))
+    assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
     assert(0 == os.system('mv %s lisasimulator-2year' % lisasimdir))
 
     # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
