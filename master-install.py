@@ -40,6 +40,7 @@ gsldir = None
 newsynthlisa = False
 newlisasim   = False
 dotraits     = False
+installgsl   = False
 
 for arg in sys.argv:
     if arg.startswith('--prefix='):             # main library dir
@@ -52,6 +53,8 @@ for arg in sys.argv:
         newlisasim = True
     elif arg.startswith('--traits'):            # include experimental traits functionality
         dotraits = True
+    elif arg.startswith('--installgsl'):        # force GSL install
+        installgsl = True    
 
 if libdir == None:
     print "!!! You need to specify a master lib dir with --prefix=<libdir>"
@@ -83,17 +86,24 @@ here = os.getcwd()
 # check if we have GSL, install it otherwise
 
 print "--> Checking GSL"
-if not os.path.isfile(gsldir + '/bin/gsl-config'):
-    print "--> Installing GSL"
-    os.chdir('Packages')
-    assert(0 == os.system('tar zxf gsl-1.8.tar.gz'))
-    os.chdir('gsl-1.8')
-    assert(0 == os.system('./configure --prefix=%s' % gsldir))
-    assert(0 == os.system('make'))
-    assert(0 == os.system('make install'))
-    os.chdir('..')
-    assert(0 == os.system('rm -rf gsl-1.8'))
-    os.chdir(here)
+if not os.path.isfile(gsldir + '/bin/gsl-config') or installgsl:
+    if installgsl == True:
+        print "--> Installing GSL"
+        os.chdir('Packages')
+        assert(0 == os.system('tar zxf gsl-1.8.tar.gz'))
+        os.chdir('gsl-1.8')
+        assert(0 == os.system('./configure --prefix=%s' % gsldir))
+        assert(0 == os.system('make'))
+        assert(0 == os.system('make install'))
+        os.chdir('..')
+        assert(0 == os.system('rm -rf gsl-1.8'))
+        os.chdir(here)
+    else:
+        print "!!! I cannot find GSL on your system. If you have it, please specify"
+        print "    its location with --gsl=GSLDIR (for instance, --gsl=/usr/local if"
+        print "    the GSL libraries are in /usr/local/lib). Otherwise, I can install"
+        print "    v1.8 for you if you give me the --installgsl option."
+        sys.exit(1)
 
 # check if we have numpy, install it otherwise
 
