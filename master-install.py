@@ -41,6 +41,7 @@ newsynthlisa = False
 newlisasim   = False
 dotraits     = False
 installgsl   = False
+installswig  = False
 
 for arg in sys.argv:
     if arg.startswith('--prefix='):             # main library dir
@@ -55,6 +56,8 @@ for arg in sys.argv:
         dotraits = True
     elif arg.startswith('--installgsl'):        # force GSL install
         installgsl = True    
+    elif arg.startswith('--installswig'):       # force SWIG install
+        installswig = True
 
 if libdir == None:
     print "!!! You need to specify a master lib dir with --prefix=<libdir>"
@@ -82,6 +85,15 @@ assert(0 == os.system("svn info | grep Revision | sed 's/Revision:/lisatoolsrevi
 # should be used in one of the setup.py files
 
 here = os.getcwd()
+
+# check that our Python is high enough. Currently requiring 2.4
+
+pythonversion = sys.version.split()[0]
+if LooseVersion(pythonversion) < LooseVersion('2.4'):
+    print "!!! I need a more recent Python (>= 2.4). You should get it from python.org."
+    print "    (It could also be already in your system, but the PATH set up so that"
+    print "     the shell gets to an older Python first.)"
+    sys.exit(1)
 
 # check if we have GSL, install it otherwise
 
@@ -146,17 +158,23 @@ package, packageversion = findpackage('swig')
 packagedir = re.sub('.tar.gz','',package)
 
 # see if we can get the SWIG version currently installed
+
 ret, stdo, stde = runcommand('swig -version')
 if ret == 0:
-    # if we can, compare it with what we have and update it if necessary
-    swigversion = re.search('SWIG Version ([0-9\.]*)',stdo).group(1)
-    if LooseVersion(swigversion) < LooseVersion(packageversion):
-        print "---> I am finding version %s, but I'll install the newer %s" % (swigversion,packageversion)
-        ret = 1
+    try:
+        # if we can, compare it with what we have and update it if necessary
+        swigversion = re.search('SWIG Version ([0-9\.]*)',stdo).group(1)
+        if LooseVersion(swigversion) < LooseVersion(packageversion):
+            print "---> I am finding version %s, but I'll install the newer %s" % (swigversion,packageversion)
+            ret = 1
+    except:
+        print "!!! I cannot determine the SWIG version; currently lisatools is shipping"
+        print "    with %s. If you are having problems with SWIG, please force its" % package
+        print "    install by giving the --installswig option to master-install.py"
 else:
     print "---> I can't find it, I'd better install it! (from %s)" % package
 
-if ret:
+if ret or installswig:
     # first check if libdir/bin is on the path
     bindir = libdir + '/bin'
     if bindir not in os.getenv('PATH'):
