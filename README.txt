@@ -1,4 +1,4 @@
-Welcome to lisatools! If you've successfully checked out this archive from the googlecode SVN, you’re almost ready to run the master installer script in lisatools. Before you do that, you will need to decide where the compiled lisatools libraries should be installed (for instance, /usr/local, or /home/yourname), and set some environment variables. For instance,
+Welcome to lisatools! If you've successfully checked out this archive from the googlecode SVN, you’re almost ready to run the master installer script in lisatools. Before you do that, you will need to decide where the compiled lisatools libraries should be installed (for instance, /usr/local, or /home/yourname, or /Users/yourname on OS X), and set some environment variables. For instance,
 
 export LISATOOLS=/home/yourname
 export PYTHONPATH=$LISATOOLS/lib/python2.X/site-packages:$PYTHONPATH
