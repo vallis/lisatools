@@ -62,13 +62,13 @@ typedef struct {
    
 typedef struct LISASource {
     char *Name;
-    
-    double EclipticLatitude; 
-    double EclipticLongitude;                 
-    double Polarization;   
-    
-    TimeSeries *TimeSeries;
-    
+
+    double EclipticLatitude;
+    double EclipticLongitude;
+    double Polarization;
+
+    struct TimeSeries *TimeSeries;
+
     struct LISASource *NextSource;
 } LISASource;
 
