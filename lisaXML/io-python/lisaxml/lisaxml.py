@@ -43,6 +43,7 @@ except:
 SourceClassModules = {}
 
 SourceClassModules['BlackHoleBinary'] = 'BBH'
+SourceClassModules['SpinBlackHoleBinary'] = 'BBH'
 SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
 SourceClassModules['GalacticBinary'] = 'GalacticBinary'
 
