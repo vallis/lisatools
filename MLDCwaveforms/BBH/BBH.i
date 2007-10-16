@@ -215,7 +215,6 @@ class SpinBlackHoleBinary(lisaxml.Source):
     
     def  __init__(self,name=''):
         super(SpinBlackHoleBinary, self).__init__('SpinBlackHoleBinary',name)
-         print "Stas test"
 
         # pre-define variables here if used later, so that they will not be included in parameters when they are set
     
@@ -234,7 +233,7 @@ class SpinBlackHoleBinary(lisaxml.Source):
         hp = numpy.empty(samples,'d')
         hc = numpy.empty(samples,'d')
 
-        wavelength = sbbh.ComputeWaveform(self.AmplPNorder, self.TaperApplied, hp, hc)
+        wavelen = sbbh.ComputeWaveform(self.AmplPNorder, self.TaperApplied, hp, hc)
 
         hp[wavelen:] = 0.0
         hc[wavelen:] = 0.0

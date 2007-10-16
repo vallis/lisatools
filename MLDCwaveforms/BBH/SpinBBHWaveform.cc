@@ -218,14 +218,14 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
          tn.resize(0);
          Phase_n.resize(0);
          freq_n.resize(0);
-         io.resize(0);
-         al.resize(0);
-         s1x.resize(0);
-         s1y.resize(0);
-         s1z.resize(0);
-         s2x.resize(0);
-         s2y.resize(0);
-         s2z.resize(0);
+         io_n.resize(0);
+         al_n.resize(0);
+         s1x_n.resize(0);
+         s1y_n.resize(0);
+         s1z_n.resize(0);
+         s2x_n.resize(0);
+         s2y_n.resize(0);
+         s2z_n.resize(0);
      
          t = 0.0;
          iota = iota0;
@@ -518,8 +518,7 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
     LISAWPAssert(runDone, "You must compute inspiraling trajectory first");
 
     int size = time.size();
-    std::cout << "Stas test: " << size << "  " << Phase.size() << "  " << io.size() \
-        << "   " << al.size() << std::endl;
+    
     if (!nonspin){
        LISAWPAssert(Phase.size() == size && io.size() == size && al.size() == size, "Sizes do not match");
     }else{
@@ -666,7 +665,7 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
  
     }
    
-    return(size);
+    return((int)size);
 
 }
 
