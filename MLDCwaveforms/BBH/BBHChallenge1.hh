@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define CVSHEADER "$Header: Exp $" 
 */
 
-#ifndef SPINBBHWAVEFORMHH
-#define SPINBBHWAVEFORMHH
+#ifndef BBHWAVEFORMHH
+#define BBHWAVEFORMHH
 
 #include <iostream>
 #include <fstream>

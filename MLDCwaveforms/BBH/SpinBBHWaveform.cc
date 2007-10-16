@@ -518,6 +518,8 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
     LISAWPAssert(runDone, "You must compute inspiraling trajectory first");
 
     int size = time.size();
+    std::cout << "Stas test: " << size << "  " << Phase.size() << "  " << io.size() \
+        << "   " << al.size() << std::endl;
     if (!nonspin){
        LISAWPAssert(Phase.size() == size && io.size() == size && al.size() == size, "Sizes do not match");
     }else{

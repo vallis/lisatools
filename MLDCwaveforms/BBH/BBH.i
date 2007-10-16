@@ -25,7 +25,6 @@
 // the CPP wrapper file
 
 %include "BBHChallenge1.hh"
-
 %include "SpinBBHWaveform.hh"
 
 // and here we can add some Python to the interface code
@@ -216,6 +215,7 @@ class SpinBlackHoleBinary(lisaxml.Source):
     
     def  __init__(self,name=''):
         super(SpinBlackHoleBinary, self).__init__('SpinBlackHoleBinary',name)
+         print "Stas test"
 
         # pre-define variables here if used later, so that they will not be included in parameters when they are set
     

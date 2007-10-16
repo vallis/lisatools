@@ -95,9 +95,6 @@ namespace LISAWP{
    
    int ComputeWaveform(int order, double taper, double* hPlus, long hPlusLength,\
                     double* hCross, long hCrossLength);
-
-
-   double EstimateTc(double omega0, std::string order);
    
    private:
 
