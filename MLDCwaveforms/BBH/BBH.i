@@ -1,6 +1,7 @@
 %module BBH
 %{
 #include "BBHChallenge1.hh"
+#include "SpinBBHWaveform.hh"
 %}
 
 // the following three lines allow the automatic conversion of a numpy array
@@ -25,6 +26,8 @@
 
 %include "BBHChallenge1.hh"
 
+%include "SpinBBHWaveform.hh"
+
 // and here we can add some Python to the interface code
 
 %pythoncode %{
@@ -33,6 +36,8 @@ import numpy
 import math
 
 lisaxml.SourceClassModules['BlackHoleBinary'] = 'BBH'
+
+lisaxml.SourceClassModules['SpinBlackHoleBinary'] = 'sBBH'
 
 # generic CoherentWave
 
@@ -97,7 +102,7 @@ class BlackHoleBinary(lisaxml.Source,CoherentWave):
         # TO DO: I think this is redundant...
         self.__dict__['lastcomputed'] = (0,0,0)
         
-        # pre-define variables here so that they won't be included in parameters when they are set
+        # pre-define variables here so that they will not be included in parameters when they are set
         self.phic = self.fc = self.a = None
     
     def waveforms(self,samples,deltat,inittime):
@@ -174,7 +179,7 @@ class BlackHoleBinary(lisaxml.Source,CoherentWave):
             
             print "Phase on first sample is", self.phic[0]
             
-            # TO DO: where's the return statement?
+            # TO DO: where is the return statement?
     
     
     def hp(self,samples,deltat,zerotime):
@@ -183,4 +188,57 @@ class BlackHoleBinary(lisaxml.Source,CoherentWave):
     def hc(self,samples,deltat,zerotime):
         return 2.0 * math.cos(math.pi - self.Inclination)
     
+
+class SpinBlackHoleBinary(lisaxml.Source):
+    """Returns a MLDC source that models the waveform emitted by the
+	 spinning black hole binaries."""
+    # this is the list of parameters that will be recorded in the lisaXML SourceData sections
+    # give ParameterName, DefaultUnit, DefaultValue (a string), Description
+
+    outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
+                  ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
+                  ('Spin1Z',                           'Unit',          None, 'initial cosine of the polar angle of the first spin'),
+                  ('Spin2Z',                           'Unit',          None, 'initial cosine of the polar angle of the second spin'),
+                  ('AzimuthalAngleOfSpin1',            'Radian',        None, 'initial azimuthal direction of first spin'),
+                  ('AzimuthalAngleOfSpin2',            'Radian',        None, 'initial azimuthal direction of second spin'),
+                  ('Spin1',                            'MassSquared',   None, 'magnitude of (specific) of first spin'),
+                  ('Spin2',                            'MassSquared',   None, 'magnitude of (specific) of second spin'),
+                  ('Mass1',                            'SolarMass',     None, 'mass of the first object'),
+                  ('Mass2',                            'SolarMass',     None, 'mass of the secondary object'),
+                  ('CoalescenceTime',                  'Second',        None, 'time of coalescence'),
+                  ('PhaseAtCoalescence',               'Radian',        None, 'GW phase at coalescence (excluding modulation)'),
+                  ('InitialPolarAngleL',               'Radian',        None, 'initial polar angle of the angular orbital momentum L_N'),
+                  ('InitialAzimuthalAngleL',           'Radian',        None, 'initial azimuthal direction of L_N'),
+                  ('Distance',                         'Parsec',        None, 'standard source distance'),
+                  ('TaperApplied',                     'TotalMass',     '7',  'tapering parameter'),
+                  ('AmplPNorder',                      'Unit',          '0',  'Post-Newtonian order of the amplitude corrections, phase is hardcoded to 2PN'))
+
+    def  __init__(self,name=''):
+         super(SpinBlackHoleBinary, self).__init__('SpinBlackHoleBinary',name)
+         self.__samples = None
+         self.__deltat  = None
+         self.__inittime = None
+
+    def waveforms(self,samples,deltat,inittime):
+         self.__samples, self.__deltat, self.__inittime = samples, deltat, inittime
+
+         sbbh = SpinBBHWaveform(self.Mass1,self.Mass2,self.Spin1,self.Spin2,deltat)      
+
+         sbbh.ComputeInspiral(inittime, self.CoalescenceTime, self.PhaseAtCoalescence,\
+self.InitialPolarAngleL, self.InitialAzimuthalAngleL, self.Spin1Z, self.AzimuthalAngleOfSpin1,\
+self.Spin2Z,  self.AzimuthalAngleOfSpin2, inittime + deltat*(samples-1))
+
+         sbbh.SetObserver(0.5*math.pi - self.EclipticLatitude, self.EclipticLongitude, self.Distance)
+
+         hp = numpy.empty(samples,'d')
+         hc = numpy.empty(samples,'d')
+
+         wavelength = sbbh.ComputeWaveform(self.AmplPNorder, self.TaperApplied, hp, hc)
+
+         hp[wavelen:] = 0.0
+         hc[wavelen:] = 0.0
+
+         return (hp,hc)   
+    
+
 %}

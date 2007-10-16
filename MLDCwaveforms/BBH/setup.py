@@ -7,9 +7,9 @@ author      = 'Stas Babak'
 email       = 'stba@aei.mpg.de'
 url         = 'http://svn.sourceforge.net/viewvc/lisatools'
 
-csourcefiles = ['BBHChallenge1.cc', 'Constants.cc']
+csourcefiles = ['BBHChallenge1.cc', 'Constants.cc', 'BaseIntegr.cc', 'Matrix.cc', 'IndexSet.cc', 'SpinBBHWaveform.cc']
 sourcefiles  = csourcefiles + ['BBH.i']
-headers      = ['BBHChallenge1.hh', 'Constants.hh', 'Macros.hh']
+headers      = ['BBHChallenge1.hh', 'Constants.hh', 'Macros.hh', 'BaseIntegr.hh', 'Matrix.hh', 'IndexSet.hh', 'SpinBBHWaveform.hh']
 
 # please don't change anything below without contacting vallis@vallis.org
 
