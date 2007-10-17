@@ -197,8 +197,8 @@ class SpinBlackHoleBinary(lisaxml.Source):
     
     outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
                   ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
-                  ('Spin1Z',                           'Unit',          None, 'initial cosine of the polar angle of the first spin'),
-                  ('Spin2Z',                           'Unit',          None, 'initial cosine of the polar angle of the second spin'),
+                  ('PolarAngleOfSpin1',                'Radian',        None, 'initial  polar angle of the first spin'),
+                  ('PolarAngleOfSpin2',                'Radian',        None, 'initial  polar angle of the second spin'),
                   ('AzimuthalAngleOfSpin1',            'Radian',        None, 'initial azimuthal direction of first spin'),
                   ('AzimuthalAngleOfSpin2',            'Radian',        None, 'initial azimuthal direction of second spin'),
                   ('Spin1',                            'MassSquared',   None, 'magnitude of (specific) of first spin'),
@@ -224,8 +224,8 @@ class SpinBlackHoleBinary(lisaxml.Source):
         sbbh.ComputeInspiral(inittime,
                              self.CoalescenceTime,self.PhaseAtCoalescence,
                              self.InitialPolarAngleL,self.InitialAzimuthalAngleL,
-                             self.Spin1Z,self.AzimuthalAngleOfSpin1,
-                             self.Spin2Z,self.AzimuthalAngleOfSpin2,
+                             self.PolarAngleOfSpin1,self.AzimuthalAngleOfSpin1,
+                             self.PolarAngleOfSpin2,self.AzimuthalAngleOfSpin2,
                              inittime + deltat*(samples-1))
 
         sbbh.SetObserver(0.5*math.pi - self.EclipticLatitude, self.EclipticLongitude, self.Distance)

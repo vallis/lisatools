@@ -74,8 +74,8 @@ namespace LISAWP{
     * @paaram maxDuration maximum duration from t=0 (needed if Tc outside observation time)
     */
     
-   void ComputeInspiral(double t0, double Tc, double phiC, double iota0, double alpha0, \
-                     double S1z0, double phiS10, double S2z0, double phiS20, double maxDuration);
+   void ComputeInspiral(double t0, double tc, double phiC, double iota0, double alpha0, \
+                     double thetaS10, double phiS10, double thetaS20, double phiS20, double maxDuration);
 
    /** define direction to the detector/baricenter 
     * @param theta_s colatitude position of the source
@@ -147,7 +147,7 @@ namespace LISAWP{
    
    /** computes derivatives */
    
-   virtual void Derivs(double x, Matrix<double> y, Matrix<double>&dydx, int n);
+   virtual void Derivs(double x, Matrix<double> y, Matrix<double> &dydx, int n);
 
    /** Computes PPN orbital frequency (no spin, analyt.)
     * @param t time at which freq will be computed

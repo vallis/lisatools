@@ -52,8 +52,8 @@ SpinBBHWaveform::SpinBBHWaveform(double mass1, double mass2, double chi1, double
 }
 
 
-void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double iota0, double alpha0, \
-                                       double S1z0, double phiS10,  double S2z0, double phiS20, \
+void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double iota0, double alpha0, \
+                                       double thetaS10, double phiS10,  double thetaS20, double phiS20, \
                                        double maxDuration){
 
   LISAWPAssert( S1z >= -1.0 && S1z <=1.0, "S1z is outside [-1,1]" );
@@ -67,6 +67,8 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
   Lnx = sin(iota)*cos(alpha);
   Lny = sin(iota)*sin(alpha);
   Lnz = cos(iota);
+  
+  Tc = tc;
 
   if(iota == 0.0){
      nonspin = true;
@@ -78,18 +80,17 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
         alpha = 0.0;
   }
   
-  S1z = S1z0;
-  double thetaS1 = acos(S1z0);
-  S1x = sin(thetaS1)*cos(phiS10);
-  S1y = sin(thetaS1)*sin(phiS10);
-  S2z = S2z0;
-  double thetaS2 = acos(S2z0);
-  S2x = sin(thetaS2)*cos(phiS20);
-  S2y = sin(thetaS2)*sin(phiS20);
-
+  S1z = cos(thetaS10);
+  S1x = sin(thetaS10)*cos(phiS10);
+  S1y = sin(thetaS10)*sin(phiS10);
+  S2z = cos(thetaS20);
+  S2x = sin(thetaS20)*cos(phiS20);
+  S2y = sin(thetaS20)*sin(phiS20);
+ 
   om = ComputeOrbFreq(0.0, Tc);
   om_prev = om;
   Phi = ComputeOrbPhase(om, PhiOrbC);
+  
   
   // Computing direction of the total angular momentum
   
@@ -164,6 +165,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
      // ---------------------------------
      //  ***   backward integration  ***
      // ---------------------------------
+ 
   if (t0 < 0.0){
          back = true;
          while (t >= t0){
@@ -180,6 +182,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
              S2x = coordn(8);
              S2y = coordn(9);
              S2z = coordn(10);
+             
              // computing phase and freq.
              t = t - dt;
              om = ComputeOrbFreq(t, Tc);
@@ -202,6 +205,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
          }    
          for(int i = 0; i < (int)tn.size(); i++){
               int k = tn.size() - i -1;
+            //  std::cout << "Stas: " << freq_n[k] << std::endl;
               time.push_back(tn[k]);
               Phase.push_back(Phase_n[k]);  
               freq.push_back(freq_n[k]);
@@ -234,12 +238,12 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
          Lnx = sin(iota)*cos(alpha);
          Lny = sin(iota)*sin(alpha);
          Lnz = cos(iota);
-         S1z = S1z0;
-         S1x = sin(thetaS1)*cos(phiS10);
-         S1y = sin(thetaS1)*sin(phiS10);
-         S2z = S2z0;
-         S2x = sin(thetaS2)*cos(phiS20);
-         S2y = sin(thetaS2)*sin(phiS20);
+         S1z = cos(thetaS10);
+         S1x = sin(thetaS10)*cos(phiS10);
+         S1y = sin(thetaS10)*sin(phiS10);
+         S2z = cos(thetaS20);
+         S2x = sin(thetaS20)*cos(phiS20);
+         S2y = sin(thetaS20)*sin(phiS20);
          om = ComputeOrbFreq(t, Tc);
          
          coord0(0) = iota;
@@ -303,7 +307,6 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double Tc, double phiC, double
        MECO = CheckMECO();
        if (MECO){
           std::cout << "*** we reached merger condition at t = " << t << std::endl;
-          Tc = t;
           break;
        }
        coord0 = coordn;  //take the final coordinates as initial for the next step
@@ -365,11 +368,12 @@ bool SpinBBHWaveform::CheckMECO(){
 }
 
 
-void SpinBBHWaveform::Derivs(double x, Matrix<double> y, Matrix<double>&dydx, int n){
+void SpinBBHWaveform::Derivs(double x, Matrix<double> y, Matrix<double>& dydx, int n){
 
     double Mom, Mom13;	
     double SpinOrb, SpinSpin, PN0, PN2, PN3, PN4;
     double VecS1x, VecS1y, VecS1z, VecS2x, VecS2y, VecS2z, VecLx, VecLy, VecLz;
+	
 	
     iota = y(0);
     alpha = y(1);
@@ -382,6 +386,7 @@ void SpinBBHWaveform::Derivs(double x, Matrix<double> y, Matrix<double>&dydx, in
     S2x = y(8);
     S2y = y(9);
     S2z = y(10);
+    
 
     if (fabs(Lnx - sin(iota)*cos(alpha)) >= 1.e-3 || fabs(Lny - sin(iota)*sin(alpha)) >= 1.e-3 || \
         fabs(Lnz - cos(iota)) >= 1.e-3){
@@ -391,7 +396,7 @@ void SpinBBHWaveform::Derivs(double x, Matrix<double> y, Matrix<double>&dydx, in
     }
     
     om = ComputeOrbFreq(x, Tc);
-    
+
     Mom = om*M;
     Mom13 = pow(Mom, 1./3.);
     
@@ -424,7 +429,8 @@ void SpinBBHWaveform::Derivs(double x, Matrix<double> y, Matrix<double>&dydx, in
     dydx(0) = VecLy*cos(alpha) - VecLx*sin(alpha);
      
     dydx(1) = VecLz - (cos(iota)/sin(iota))*( VecLx*cos(alpha) + VecLy*sin(alpha) );
-
+    
+ 
     dydx(2) = VecLy*Lnz - VecLz*Lny;
     dydx(3) = VecLz*Lnx - VecLx*Lnz;
     dydx(4) = VecLx*Lny - VecLy*Lnx;
@@ -457,9 +463,12 @@ double SpinBBHWaveform::ComputeOrbFreq(double t, double tc){
     	                  x2*LS2*(113.0*m2M2 + 75.0*eta) );
     sigma = (1./48.0)*eta*x1*x2*( -247.0*S1S2 + 721.0*LS1*LS2 );
     
+    
     double tau = 0.2*eta*(tc-t)/M;
     double tau38 = pow(tau, -0.375);
     double tau14 = pow(tau, -0.25);
+    
+ //   std::cout << "stas check: " << beta << "  " << sigma << "   " << tau << std::endl;
     
     double x = 0.125*tau38*(1.0 + (743./2688. + 11.*eta/32.)*tau14 - \
             0.3*(LISAWP_PI - 0.25*beta)*tau38 + (1855099./14450688. + \
@@ -662,6 +671,13 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
         *hCross = -hp*sin(2.0*psi) + hc*cos(2.0*psi);
         hPlus++;
         hCross++;
+        
+/*        if(kk < 20){
+            std::cout << M << "  " << om << std::endl;
+            std::cout << kk << "   " << hPlus[kk] << "   " << hCross[kk] << \
+                     "   " << hp << "    " << hc << "   " << Mom23 << "   " << Qp <<\
+                     "   " << Qc << std::endl;
+        }*/
  
     }
    
