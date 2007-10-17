@@ -97,13 +97,17 @@ for cnt in range(len(allsystems)):
         (ga,al) = mysystem.waveforms(samples,options.timestep,initialtime,debug=2)
         (ps,pl) = mysystem.waveforms(samples,options.timestep,initialtime,debug=3)
 
-    # impose polarization on waveform
-
-    pol = mysystem.Polarization
-
-    hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
-    hc = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
-
+    # impose polarization on waveform if given
+    
+    if hasattr(mysystem,'Polarization'):
+        pol = mysystem.Polarization
+        
+        hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
+        hc = -math.sin(2*pol) * hp0 + math.cos(2*pol) * hc0
+    else:
+        hp = hp0
+        hc = hc0
+    
     if options.debug == True and mysystem.xmltype == 'ExtremeMassRatioInspiral':
         mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc,Ap,Ac,ga,al,ps,pl),'hp,hc,Ap,Ac,gamma,alpha,psi,psisl')
     else:
