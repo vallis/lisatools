@@ -214,6 +214,11 @@ print "--> Installing/refreshing BBH"
 assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
 os.chdir(here)
 
+os.chdir('MLDCwaveforms/FastBBH')
+print "--> Installing/refreshing FastBBH"
+assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
+os.chdir(here)
+
 # install/check install for EMRI waveform
 
 os.chdir('MLDCwaveforms/EMRI')
