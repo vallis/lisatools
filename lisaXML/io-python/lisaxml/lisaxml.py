@@ -44,6 +44,7 @@ SourceClassModules = {}
 
 SourceClassModules['BlackHoleBinary'] = 'BBH'
 SourceClassModules['SpinBlackHoleBinary'] = 'BBH'
+SourceClassModules['FastSpinBlackHoleBinary'] = 'FastBBH'
 SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
 SourceClassModules['GalacticBinary'] = 'GalacticBinary'
 
