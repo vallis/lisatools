@@ -6,6 +6,7 @@ __version__='$Id:  $'
 
 import lisaxml
 import BBH     # later may be MLDC/BBH?
+import FastBBH
 
 import sys
 import getopt
@@ -54,6 +55,10 @@ parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
 
+parser.add_option("-F", "--FastBBH",
+                  action="store_true", dest="fastbbh", default=False,
+                  help="use Fast SMBH code [off by default]")
+
 (options, args) = parser.parse_args()
 
 # see if we have all we need
@@ -80,7 +85,10 @@ random.seed(options.seed)
 
 # create the source object
 
-mysystem = BBH.SpinBlackHoleBinary('SpinBlackHoleBinary')
+if options.fastbbh:
+    mysystem = FastBBH.FastSpinBlackHoleBinary('FastSpinBlackHoleBinary')
+else:
+    mysystem = BBH.SpinBlackHoleBinary('SpinBlackHoleBinary')
 
 # see list of standard parameters in relevant .i file (such as BBH.i)
 # note that nonstandard units may be forced by setting attributes that end in _Unit
@@ -89,8 +97,8 @@ mysystem = BBH.SpinBlackHoleBinary('SpinBlackHoleBinary')
 
 mysystem.EclipticLatitude           = 0.5*math.pi - math.acos(random.uniform(-1.0,1.0)) # ecliptic latitude in Radian [-pi,pi]
 mysystem.EclipticLongitude          = random.uniform(0.0,2.0*math.pi)                   # ecliptic longitude in Radian [0,2*pi]
-mysystem.Spin1Z			    = random.uniform(-1.0, 1.0)				# initial cosine of the polar angle of the first spin [-1,1]
-mysystem.Spin2Z			    = random.uniform(-1.0, 1.0)				# initial cosine of the polar angle of the second spin [-1,1]
+mysystem.PolarAngleOfSpin1			= math.acos(random.uniform(-1.0, 1.0))				# initial polar angle of the first spin
+mysystem.PolarAngleOfSpin2			= math.acos(random.uniform(-1.0, 1.0))				# initial polar angle of the second spin
 mysystem.AzimuthalAngleOfSpin1	    = random.uniform(0.0, 2.0*math.pi)			# initial azimuthal direction of first spin
 mysystem.AzimuthalAngleOfSpin2	    = random.uniform(0.0, 2.0*math.pi)			# initial azimuthal direction of second spin
 mysystem.Spin1                      = random.uniform(0.1, 0.95)				# magnitude of first spin in M^2
