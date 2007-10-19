@@ -1,0 +1,49 @@
+The Fast_Galaxy code bundle is a stand alone package for generating
+noise free responses to a galactic population of white dwarf binaries.
+The code generates both phase (LISA Simulator style) and frequency
+(Synthetic LISA style) responses. These noise free responses have to
+be combined with suitable noise files using the lisatools xml merge routines.
+
+Generating a complete, galaxy only, Challenge or Training data set
+is very easy. The package unpacks into its own directory. The next
+step is to go to http://www.astro.ru.nl/~nelemans/Neil/ and download
+the files AMCVn_GWR_MLDC.dat.bz2 and dwd_GWR_MLDC.dat.bz2. Unpack
+these files using bunzip2 and put them in the Data sub-directory.
+These a big files!
+
+(We will soon have verification binaries for challenge 3, but
+these are not included at this stage).
+
+The code is currently hard-wired to produce a 2-year data set at
+15 second cadence. These settings can be changed by editing
+Constants.h.
+
+To compile all the codes type
+
+./Compile
+
+then run
+
+./Galaxy3.csh 12345 Training_3.1
+
+(The number 12345 is a random number seed - chose whatever you want).
+The code will take several hours to run. Once it is done you should find a
+collection of xml and bin files in the XML subdirectory. For the example
+given above you would find
+
+XML
+
+Training_3.1_LISAsim_noisefree.xml 
+Training_3.1_synthLISA_noisefree.xml
+Training_3.1_key.xml
+Training_3.1_LISAsim_noisefree.bin
+Training_3.1_synthLISA_noisefree.bin
+
+Data 
+
+Galaxy_12345.dat
+Galaxy_Bright_12345.dat
+
+The names should be pretty self explanatory. You have the noise free X,Y,Z signals
+for both LISA Simulator and Synthetic LISA, and the full list of sources, and
+a list of the brighter sources (not all of which will be resolvable).
