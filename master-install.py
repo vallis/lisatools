@@ -226,6 +226,20 @@ print "--> Installing/refreshing EMRI"
 assert(0 == os.system('python setup.py install --prefix=%s --with-gsl=%s' % (libdir,gsldir)))
 os.chdir(here)
 
+# install/check install for Galaxy3 TDI
+
+os.chdir('MLDCwaveforms/Galaxy3')
+print "--> Installing/refreshing Galaxy3"
+
+sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.c') + glob.glob('../../lisaXML/io-C/*.h')
+
+if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3')
+     or newer_group(sources,'Galaxy_key3') or newer_group(sources,'Fast_XML_LS3') 
+     or newer_group(sources,'Fast_XML_SL3') or newer_group(sources,'DataImport') ):
+    print "    (recompiling Galaxy3)"
+    assert(0 == os.system('./Compile --gsl=' + gsldir))
+os.chdir(here)
+
 # install/check install for Galaxy TDI
 
 os.chdir('MLDCwaveforms/Galaxy')
@@ -233,28 +247,11 @@ print "--> Installing/refreshing Galaxy"
 
 sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.c') + glob.glob('../../lisaXML/io-C/*.h')
 
-if ( newer_group(sources,'Galaxy_Maker') or newer_group(sources,'Galaxy_key')  or
-     newer_group(sources,'Fast_XML_LS')  or newer_group(sources,'Fast_XML_SL') or
-                                            newer_group(sources,'DataImport') ):
+if ( newer_group(sources,'Fast_Response') or newer_group(sources,'Galaxy_Maker')
+     or newer_group(sources,'Galaxy_key')  or newer_group(sources,'Fast_XML_LS')
+     or newer_group(sources,'Fast_XML_SL') or newer_group(sources,'DataImport') ):
     print "    (recompiling Galaxy)"
     assert(0 == os.system('./Compile --gsl=' + gsldir))
-
-# copy every time...
-
-if platform.system() == 'Darwin':
-    if platform.processor() == 'i386':
-        assert(0 == os.system('cp Fast_Response_OSX_Intel Fast_Response'))
-    else:
-        # assume platform.processor() == 'powerpc'
-        # I'm not sure how to differentiate between G4 and G5, so will use G5...
-        assert(0 == os.system('cp Fast_Response_OSX_G5 Fast_Response'))
-elif platform.system() == 'Linux':
-    assert(0 == os.system('cp Fast_Response_LINUX_X86_32 Fast_Response'))
-elif 'CYGWIN' in platform.system():
-    print "!!! I'm on cygwin... I'm skipping Galaxy for the moment."
-else:
-    print "!!! Can't determine platform/processor, or don't have Fast_Response executable!" 
-    sys.exit(1)
 
 if not os.path.isfile('Data/dwd_GWR_all_pars.dat') and (not 'CYGWIN' in platform.system()):
     print "    (downloading Nelemans galaxy (388M), this will take a while...)"
