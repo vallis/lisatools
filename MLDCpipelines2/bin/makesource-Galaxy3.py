@@ -52,7 +52,7 @@ outputfile = args[0]
 
 # try to find the Galaxy code
 
-galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy')
+galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy3')
 
 if not os.path.isfile(galaxydir + '/Fast_Response3'):
     print "Cannot find the fast Galaxy code! Try re-running master-install.py."
