@@ -23,6 +23,6 @@ setup(name = 'lisaxml',
       author = 'M. Vallisneri',
       author_email = 'vallis@vallis.org',
       url = 'http://svn.sourceforge.net/viewvc/lisatools',
-      packages = ['lisaxml'],
+      packages = ['lisaxml','lisaxml2'],
       data_files = [(install_path + '/lisaxml', ['test.xml'])]
       )
