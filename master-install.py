@@ -42,6 +42,7 @@ newlisasim   = False
 dotraits     = False
 installgsl   = False
 installswig  = False
+downloadgalaxy = False
 
 for arg in sys.argv:
     if arg.startswith('--prefix='):             # main library dir
@@ -58,6 +59,8 @@ for arg in sys.argv:
         installgsl = True    
     elif arg.startswith('--installswig'):       # force SWIG install
         installswig = True
+    elif arg.startswith('--downloadgalaxy'):    # force Galaxy download
+        downloadgalaxy = True
 
 if libdir == None:
     print "!!! You need to specify a master lib dir with --prefix=<libdir>"
@@ -96,6 +99,7 @@ if LooseVersion(pythonversion) < LooseVersion('2.4'):
     sys.exit(1)
 
 # check if we have GSL, install it otherwise
+# TO DO: would be nice to check with pkg-config
 
 print "--> Checking GSL"
 if not os.path.isfile(gsldir + '/bin/gsl-config') or installgsl:
@@ -238,6 +242,30 @@ if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3
      or newer_group(sources,'Fast_XML_SL3') or newer_group(sources,'DataImport') ):
     print "    (recompiling Galaxy3)"
     assert(0 == os.system('./Compile --gsl=' + gsldir))
+
+# previously the download was disabled for cygwin. But it may just be a question of requiring curl,
+# or replacing it... (not 'CYGWIN' in platform.system())
+
+if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
+    if downloadgalaxy == True:
+        print "    (downloading Nelemans AMCV galaxy (791M), this will take a while...)"
+        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/AMCVn_GWR_MLDC.dat.bz2  > data/AMCVn_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 data/AMCVn_GWR_MLDC.dat.bz2'))
+    else:
+        print "!!! If you want to generate galactic backgrounds, you'll need to download"
+        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
+        print "    for you if you give me the --downloadgalaxy option."
+
+if not os.path.isfile('Data/dwd_GWR_MLDC.dat'):
+    if downloadgalaxy == True:
+        print "    (downloading Nelemans dwd galaxy (427M), this will take a while...)"
+        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/dwd_GWR_MLDC.dat.bz2  > data/dwd_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 data/dwd_GWR_MLDC.dat.bz2'))
+    else:
+        print "!!! If you want to generate galactic backgrounds, you'll need to download"
+        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
+        print "    for you if you give me the --downloadgalaxy option."
+
 os.chdir(here)
 
 # install/check install for Galaxy TDI
@@ -253,12 +281,20 @@ if ( newer_group(sources,'Fast_Response') or newer_group(sources,'Galaxy_Maker')
     print "    (recompiling Galaxy)"
     assert(0 == os.system('./Compile --gsl=' + gsldir))
 
-if not os.path.isfile('Data/dwd_GWR_all_pars.dat') and (not 'CYGWIN' in platform.system()):
-    print "    (downloading Nelemans galaxy (388M), this will take a while...)"
-    assert(0 == os.system('curl http://www.physics.montana.edu/faculty/cornish/LISA/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
-    assert(0 == os.system('gunzip dwd_GWR_all_pars.dat.gz'))
-    assert(0 == os.system('mv dwd_GWR_all_pars.dat Data/.'))
+# previously the download was disabled for cygwin. But it may just be a question of requiring curl,
+# or replacing it... (not 'CYGWIN' in platform.system())
 
+if not os.path.isfile('Data/dwd_GWR_all_pars.dat'):
+    if downloadgalaxy == True:
+        print "    (downloading Nelemans challenge 2 galaxy (388M), this will take a while...)"
+        assert(0 == os.system('curl http://www.physics.montana.edu/faculty/cornish/LISA/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
+        assert(0 == os.system('gunzip dwd_GWR_all_pars.dat.gz'))
+        assert(0 == os.system('mv dwd_GWR_all_pars.dat Data/.'))
+    else:
+        print "!!! If you want to generate galactic backgrounds, you'll need to download"
+        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
+        print "    for you if you give me the --downloadgalaxy option."
+        
 os.chdir(here)
 
 # install/check install for synthlisa
