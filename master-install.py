@@ -12,6 +12,7 @@ import glob
 import platform
 import re
 import subprocess
+import urllib
 
 from distutils.sysconfig import get_python_lib
 from distutils.dep_util import newer, newer_group
@@ -36,12 +37,14 @@ def findpackage(package):
 
 libdir = None
 gsldir = None
+fftwdir = None
 
 newsynthlisa = False
 newlisasim   = False
 dotraits     = False
 installgsl   = False
 installswig  = False
+installfftw  = False
 downloadgalaxy = False
 
 for arg in sys.argv:
@@ -49,6 +52,8 @@ for arg in sys.argv:
         libdir = arg.split('=', 1)[1]
     elif arg.startswith('--gsl='):              # use pre-installed GSL
         gsldir = arg.split('=',1)[1]
+    elif arg.startswith('--fftw='):             # use pre-installed FFTW
+        fftwdir = arg.split('=',1)[1]        
     elif arg.startswith('--newsynthlisa'):      # force synthlisa reinstallation
         newsynthlisa = True
     elif arg.startswith('--newlisasim'):        # force lisasim reinstallation
@@ -59,6 +64,8 @@ for arg in sys.argv:
         installgsl = True    
     elif arg.startswith('--installswig'):       # force SWIG install
         installswig = True
+    elif arg.startswith('--installfftw'):       # force FFTW install
+        installfftw = True        
     elif arg.startswith('--downloadgalaxy'):    # force Galaxy download
         downloadgalaxy = True
 
@@ -69,6 +76,9 @@ if libdir == None:
 
 if gsldir == None:
     gsldir = libdir
+
+if fftwdir == None:
+    fftwdir = libdir
 
 pythonlib = get_python_lib(prefix=libdir)
 
@@ -119,6 +129,34 @@ if not os.path.isfile(gsldir + '/bin/gsl-config') or installgsl:
         print "    its location with --gsl=GSLDIR (for instance, --gsl=/usr/local if"
         print "    the GSL libraries are in /usr/local/lib). Otherwise, I can install"
         print "    v1.8 for you if you give me the --installgsl option."
+        sys.exit(1)
+
+fftw3package = 'fftw-3.1.2'
+fftw3tar = fftw3package + '.tar.gz'
+
+print "--> Checking FFTW"
+if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
+    if installfftw == True:
+        print "--> Installing FFTW"
+        os.chdir('Packages')
+        if not os.path.isfile(fftw3tar):
+            print "---> Downloading from www.fftw.org (2.6M)..."
+            urllib.urlretrieve('http://www.fftw.org/' + fftw3tar,fftw3tar)
+        print "---> Compiling FFTW (this may take a while...)"
+        assert(0 == os.system('tar zxf %s' % fftw3tar))
+        os.chdir(fftw3package)
+        assert(0 == os.system('./configure --prefix=%s' % fftw3dir))
+        assert(0 == os.system('make'))
+        assert(0 == os.system('make install'))
+        os.chdir('..')
+        assert(0 == os.system('rm -rf %s' % fftw3package))
+        assert(0 == os.system('rm -rf %s' % fftw3tar))        
+        os.chdir(here)
+    else:
+        print "!!! I cannot find FFTW3 on your system. If you have it, please specify"
+        print "    its location with --fftw=FFTWDIR (for instance, --fftw=/usr/local if"
+        print "    the FFTW3 libraries are in /usr/local/lib). Otherwise, I can install"
+        print "    v3.1.2 for you if you give me the --installfftw option."
         sys.exit(1)
 
 # check if we have numpy, install it otherwise
@@ -241,7 +279,7 @@ if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3
      or newer_group(sources,'Galaxy_key3') or newer_group(sources,'Fast_XML_LS3') 
      or newer_group(sources,'Fast_XML_SL3') or newer_group(sources,'DataImport') ):
     print "    (recompiling Galaxy3)"
-    assert(0 == os.system('./Compile --gsl=' + gsldir))
+    assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
 # previously the download was disabled for cygwin. But it may just be a question of requiring curl,
 # or replacing it... (not 'CYGWIN' in platform.system())
@@ -279,7 +317,7 @@ if ( newer_group(sources,'Fast_Response') or newer_group(sources,'Galaxy_Maker')
      or newer_group(sources,'Galaxy_key')  or newer_group(sources,'Fast_XML_LS')
      or newer_group(sources,'Fast_XML_SL') or newer_group(sources,'DataImport') ):
     print "    (recompiling Galaxy)"
-    assert(0 == os.system('./Compile --gsl=' + gsldir))
+    assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
 # previously the download was disabled for cygwin. But it may just be a question of requiring curl,
 # or replacing it... (not 'CYGWIN' in platform.system())
