@@ -145,7 +145,7 @@ if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
         print "---> Compiling FFTW (this may take a while...)"
         assert(0 == os.system('tar zxf %s' % fftw3tar))
         os.chdir(fftw3package)
-        assert(0 == os.system('./configure --prefix=%s' % fftw3dir))
+        assert(0 == os.system('./configure --prefix=%s' % fftwdir))
         assert(0 == os.system('make'))
         assert(0 == os.system('make install'))
         os.chdir('..')
