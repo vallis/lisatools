@@ -22,6 +22,11 @@ typedef struct
   double InitialAzimuthalAngleL;
   double TaperApplied;
   double AmplPNorder;
+  double Tpad;
+  double Tobs;
+  double TimeSample;
+  double Rmin;
+  double TaperSteepness;
 } SBH_structure;
 
 void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc);
