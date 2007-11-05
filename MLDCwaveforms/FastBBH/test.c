@@ -18,11 +18,7 @@ int main(int argc,char *argv)
   int n;
   FILE *Out;
 
-  dt = 15.0;
-  n = (int)((Tobs + 2.0*Tpad)/dt);  // note, this should be made more general.
 
-  hp = dvector(0, n-1);
-  hc = dvector(0, n-1);
 
   SBH.Mass1 = 2906387.81661;
   SBH.Mass1 = 1056812.14434;
@@ -41,6 +37,16 @@ int main(int argc,char *argv)
   SBH.PhaseAtCoalescence = 3.1710410372;
   SBH.TaperApplied = 7.0;
   SBH.AmplPNorder = 0.0;
+  SBH.TimeSample = 15.0;
+  SBH.Tobs = 62914560.0;
+  SBH.Tpad = 900.0;
+  SBH.Rmin = 6.0;
+  SBH.TaperSteepness = 150.0;
+
+  n = (int)((SBH.Tobs + 2.0*SBH.Tpad)/SBH.TimeSample);
+
+  hp = dvector(0, n-1);
+  hc = dvector(0, n-1);
 
   SBH_Barycenter(SBH, hp, hc);
 
@@ -48,7 +54,7 @@ int main(int argc,char *argv)
 
   for(i = 0; i < n; i++)
     { 
-      fprintf(Out,"%.12e %.12e %.12e\n", (-Tpad+(double)(i)*dt), hp[i], hc[i]);
+      fprintf(Out,"%.12e %.12e %.12e\n", (-SBH.Tpad+(double)(i)*SBH.TimeSample), hp[i], hc[i]);
     }
 
   fclose(Out);
