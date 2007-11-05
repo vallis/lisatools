@@ -1,16 +1,12 @@
 // All of the defined parameters.  (Most are not used.)
-
-#define Tobs 62914560.0 // Observation length
-#define Tpad 900.0 // Input Signal Padding
-
 #define SECSYR 3.15581497632e7  // Number of seconds in a sidereal year 
 #define SECSMTH 2.629743834e6   // Number of seconds in a month           
 #define CLIGHT 2.99792458e8     // Speed of light in m/s      
-#define G 6.67259e-11           // Newton's constant          
-#define TSUN 4.92569043916e-6   // mass to seconds conversion
+#define G 6.67259e-11           // Newton's constant 
+#define TSUN  4.92549232189886339689643862e-6  // mass to seconds conversion
 #define AU 1.4959787e11         // Astronomical Unit in meters
 #define EULER 0.577215664901532860606512  // Euler's constant           
-#define MSOLAR 1.989e30         // Mass of the sun in kg      
+#define MSOLAR 1.98892e30         // Mass of the sun in kg               
 #define ln2 0.693147180559945   // ln 2
 #define ln32 0.405465108108164  // ln(3/2)
 #define PI 3.1415926535897931159979634685442      // Pi                        
@@ -26,7 +22,7 @@
 #define RAU 499.0047815         // 1 AU in seconds           
 #define HUBBLE 2.30095130563e-18 // Hubble constant 71 km/s/Mpc
 #define LMF 3.16887646154e-8    // LISA modulation frequency              
-#define xmax 0.166666666666667  // max m/r = 1/6
+
 
 // Cash-Karp Runge-Kutta parameters:
 
