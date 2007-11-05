@@ -28,7 +28,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double thomasval, maxerr, oldh, finalthomas;
   double A, B, C, D, deltat;
   double Ax, ci, si, ci2, si2, ci4, si4, ci6, OPhase;
-  double x, xrt, taper;
+  double x, xrt, taper, xold, xmax;
   double tmax, fmax, VAmp, r;
   double shp, shc, c2psi, s2psi;
 
@@ -61,9 +61,10 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   FILE *Out;
 
-  dt = 15.0;
-  n = (int)((Tobs + 2.0*Tpad)/dt);  // note, this should be made more general.
+  dt = SBH.TimeSample;
+  n = (int)((SBH.Tobs + 2.0*SBH.Tpad)/SBH.TimeSample);
   VAmp = 2.0*SBH.AmplPNorder;
+  xmax = 1.0/SBH.Rmin;
 
   tdvals = dvector(0, n-1);
   interpmul = dvector(0, n-1);
@@ -146,8 +147,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   // Set up range of integration.  The extra Tpad=900 s is more than enough for the light travel time across the LISA orbit.
 
-  tcurrent = -Tpad/TSUN;
-  tmax = Tobs + Tpad;  // will decrease if fmax lies within integration range
+  tcurrent = -SBH.Tpad/TSUN;
+  tmax = SBH.Tobs + SBH.Tpad;  // will decrease if xmax lies within integration range
   if(tc > tmax) tmax = tc;
   tfinal = tmax/TSUN;
 
@@ -159,8 +160,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   calcLcrossN(LcrossN, LSvals, N);
   thomasderiv = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
 
-  for(i = 0; i < 9; i++) LSvals[i] -= Tpad*derivvals[i];  // back up the initial values to time -Tpad
-  thomasval = -Tpad*thomasderiv;
+  for(i = 0; i < 9; i++) LSvals[i] -= SBH.Tpad*derivvals[i];  // back up the initial values to time -Tpad
+  thomasval = -SBH.Tpad*thomasderiv;
 
   index = 0;  // index for the various storage vectors
   hcurrent = RK_H;
@@ -293,8 +294,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   
   // End precession. 
   
-  t = -Tpad;
-  dt = (Tobs+2.0*Tpad)/(double)(n);
+  t = -SBH.Tpad;
+  dt = (SBH.Tobs+2.0*SBH.Tpad)/(double)(n);
   
   index = 0;
 
@@ -326,21 +327,16 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  interpsigma[i] = A*sigmavec[index] + B*sigmavec[index+1] + C*sigmay2[index] + D*sigmay2[index+1];
 
 	  interpthomas[i] = A*thomasvec[index] + B*thomasvec[index+1] + C*thomasy2[index] + D*thomasy2[index+1];
-	  
-	  f = Freq(tdvals[i], Mtot, Mchirp, eta, interpbeta[i], interpsigma[i], tc);
-	  
-	  finalthomas = interpthomas[i];  /* Note: current version can not handle tc > Tobs as we don't continue
-                                             integration to find thomas phase at merger */
 	 
 	}
       t += dt;
 
       // printf("%e %e %e %e %e %e\n", tdvals[i], interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);
     }
-
-  if(tc > Tobs) finalthomas = thomasvec[idxm];
   
   // Now calculate the waveform:
+
+  xold = 0.0;
 
   for(i = 0; i < n; i++)
     { 
@@ -353,15 +349,16 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  phiL = interpphil[i];
 	  beta = interpbeta[i];
 	  sigma = interpsigma[i];
-	  thomas = finalthomas-interpthomas[i];
+	  thomas = -interpthomas[i];
 
 	  f = Freq(td, Mtot, Mchirp, eta, beta, sigma, tc);
 	    
 	    x = pow(PI*Mtot*f*TSUN,2./3.);
 
-	    if(x < xmax)   // should always be true
+	    if((x < xmax) && (x > xold) )
 	      {
 	    
+	    xold = x;
 	    Phi15 = p150 - p15*beta;
 	    Phi20 = p200 - p20*(15./32.*sigma);
 	    
@@ -369,7 +366,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	    
 	    LdotN = costhetaL*costheta + sinthetaL*sintheta*cos(phiL - phi);
 	  
-	    taper = 0.5*(1.+tanh(150.*(1./SBH.TaperApplied-x)));
+	    taper = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
 
             Ax = 2.*Amp*pow(PI*f,2./3.)*taper;
 
@@ -462,7 +459,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
             hc[i] = -shp*s2psi + shc*c2psi;
 
 	      }
-           else {  // x > xmax
+           else {  // x > xmax or anti-chirping
 
         	hp[i] = 0.;
 	        hc[i] = 0.;
