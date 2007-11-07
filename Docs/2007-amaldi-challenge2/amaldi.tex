@@ -48,8 +48,7 @@ Domon et Leonie Duquet, 75025 Paris Cedex 13, France}
 \ead{Michele.Vallisneri@jpl.nasa.gov}
 
 \begin{abstract}
-The Mock LISA Data Challenges are a program to demonstrate LISA data-analysis capabilities and to encourage their development. Each round of challenges consists of several data sets containing simulated instrument noise and gravitational-wave sources of undisclosed parameters. Participants are asked to analyze the data sets and report the maximum information about source parameters. The  
-challenges are being released in rounds of increasing complexity and realism, and so far they have already demonstrated the recovery of model signals from supermassive black-hole binaries, from ~ 20,000 overlapping Galactic white-dwarf binaries, and from the extreme--mass-ratio inspirals of compact objects into central galactic black holes. We discuss the results and details of the program.
+The Mock LISA Data Challenges are a program to demonstrate LISA data-analysis capabilities and to encourage their development. Each round of challenges consists of several data sets containing simulated instrument noise and gravitational-wave sources of undisclosed parameters. Participants are asked to analyze the data sets and report the maximum information about source parameters. The challenges are being released in rounds of increasing complexity and realism: in this proceeding we present the results of Challenge 2, which demonstrated the recovery of signals from supermassive black-hole binaries, from ~20,000 overlapping Galactic white-dwarf binaries, and from the extreme--mass-ratio inspirals of compact objects into central galactic black holes.
 \end{abstract}
 
 \vspace{-12pt}
@@ -64,14 +63,10 @@ The Laser Interferometer Space Antenna (LISA), a NASA/ESA space mission to detec
 The idea of the Mock LISA Data Challenges (MLDCs) arose in late 2005 from this realization. The MLDCs have the purpose of encouraging and tracking progress in LISA data-analysis development, and (as a useful byproduct) of prototyping a computational infrastructure for LISA data analysis, which includes common data formats, standard models of the LISA orbits, noises and measurement, descriptions of the waveforms and populations of targeted GW sources, and so on.
 The MLDCs are a coordinated (but voluntary) effort in the GW community, whereby a task force chartered by the LISA International Science Team periodically issues a number of datasets with 
 synthetic noise and GW signals from sources of undisclosed parameters; challenge participants return detection candidates and parameter estimates, together with descriptions of their search methods. These results are then compiled and compared to the previously secret challenge ``key''.
-%
-\begin{figure}
-\caption{Mock LISA Data Challenges timeline.\label{fig:timeline}}
-\end{figure}
 
-Figure \ref{fig:timeline} shows the timeline and progression of MLDCs. Challenge 1 (see Refs.\ YYY and ZZZ) tackled the detection and parameter characterization of \emph{verification binaries} (Galactic binaries of known frequency and position); of loud unknown Galactic binaries, either alone or in small, moderately interfering groups; and of relatively loud inspirals of supermassive--black-hole (MBH)  binaries. All sources were represented by moderately idealized waveforms, and they were staged on instrument noise alone. Altogether, Challenge 1 successfully demonstrated the detection of all three source classes. Ten research collaborations participated, adopting a variety of methods (template-bank, stochastic and genetic matched filtering; time--frequency; tomography; Hilbert transform); despite the short timescale, all challenges were ``solved'' by at least one group, although some searches locked on strong secondary maxima of parameter probabilities. More important, Challenge 1 helped set the playing field and the computational tools for the more realistic Challenge 2.
+Challenge 1, issued in Jun 2006 with results due in Dec 2006 (see Refs.\ YYY and ZZZ), tackled the detection and parameter characterization of \emph{verification binaries} (Galactic binaries of known frequency and position); of loud unknown Galactic binaries, either alone or in small, moderately interfering groups; and of relatively loud inspirals of supermassive--black-hole (MBH)  binaries. All sources were represented by moderately idealized waveforms, and they were staged on instrument noise alone. Altogether, Challenge 1 successfully demonstrated the detection of all three source classes. Ten research collaborations participated, adopting a variety of methods (template-bank, stochastic and genetic matched filtering; time--frequency; tomography; Hilbert transform); despite the short timescale, all challenges were ``solved'' by at least one group, although some searches locked on strong secondary maxima of parameter probabilities. More important, Challenge 1 helped set the playing field and the computational tools for the more realistic Challenge 2.
 
-Challenge 2 raised the bar by proposing a data set (2.1) containing a full population of Galactic binary systems (about 26 million sources); a data set (2.2) containing a different realization of this Galaxy, plus 4--6 MBH binary inspirals with single-interferometer signal-to-noise ratios (SNRs) between 10 and 2000 and different coalescence times, and 5 EMRIs with SNRs between 30 and 100; and five data sets (denoted 1.3.1--5, since they were actually released at the time of Challenge 1) of a single EMRI over instrument noise alone. See Ref.\ WWW for more details about the signal models and the exact content of the data sets. Thirteen collaborations participated (comprising all the researchers listed as participants in the byline, and most task force members), submitting a total of 22 entries. Altogether, Challenge 2 successfully demonstrated the identification of $\sim 20,000$ Galactic binaries, the accurate parameter estimation of MBH inspirals, and the positive detection of EMRIs. In the rest of this paper, we describe some Challenge-2 highlights. The full set of responses, together with write-ups by all participating groups, can be found at the URL XXX; some groups are also contributing proceedings from this conference to JPCS (Ref.\ YYY).
+Challenge 2, issued in Jan 2007 with results due at this conference, raised the bar by proposing data set 2.1, containing a full population of Galactic binary systems (about 26 million sources); data set 2.2, containing a different realization of this Galaxy, plus 4--6 MBH binary inspirals with single-interferometer signal-to-noise ratios (SNRs) between 10 and 2000 and different coalescence times, and 5 EMRIs with SNRs between 30 and 100; and five data sets (denoted 1.3.1--5, since they were actually released at the time of Challenge 1) of a single EMRI over instrument noise alone. See Ref.\ WWW for more details about the signal models and the exact content of the data sets. Thirteen collaborations participated (comprising all the researchers listed as participants in the byline, and most task force members), submitting a total of 22 entries. Altogether, Challenge 2 successfully demonstrated the identification of $\sim 20,000$ Galactic binaries, the accurate parameter estimation of MBH inspirals, and the positive detection of EMRIs. In the rest of this paper, we describe some Challenge-2 highlights. The full set of responses, together with write-ups by all participating groups, can be found at the URL XXX; some groups are also contributing proceedings from this conference to JPCS (Ref.\ YYY).
 
 \section{Data sets 2.1 and 2.2: The Galaxy}
 
@@ -90,7 +85,7 @@ Evaluating the performance of these searches brings up a problem of principle: t
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{correlation}
 \includegraphics[width=0.5\textwidth]{dcorrelation}
-\caption{XXX\label{fig:correlation}}
+\caption{Correlation analysis of Challenge-2.1 Galactic-binary catalogs. Left panel: associated by correlation; right panel: associated by Doppler metric.\label{fig:correlation}}
 \end{figure}
 
 One way to proceed is to associate the reported and true sources that have the strongest signal correlation (limiting the search to the ``bright'' $\mathrm{SNR} > 2$ true sources that could in principle have been found) [[can true sources be ``reused'' in this association?]]: in the left panel of figure \ref{fig:correlation} we show the distribution of correlations generated in this process for data set 2.1. Another way is to associate reported and true sources that minimize the \emph{Doppler metric} that spans the frequency--sky-location subspace of the full parameter space, and automatically maximizes correlation over the \emph{extrinsic parameters} (amplitude, polarization, inclination, initial phase): the right panel of figure \ref{fig:correlation} shows the resulting distribution of correlations. The UTB entry, which includes frequency and sky position but not the extrinsic parameters, can only be plotted this way. Generally, this is a softer criterion, and all searches do better (especially the PrixWhelanAEI entry, whose long-wavelength approximation for the LISA response is prone to extrinsic-parameter errors).
@@ -98,12 +93,12 @@ One way to proceed is to associate the reported and true sources that have the s
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{intrinsic}
 \includegraphics[width=0.5\textwidth]{extrinsic}
-\caption{XXX\label{fig:paramerrors}}
+\caption{Recovered SNRs and intrinsic and extrinsic parameter errors for Challenge-2.1 Galactic-binary catalogs. True sources and templates are associated by correlation, except for the UTB catalog, for which they are associated by Doppler metric.\label{fig:paramerrors}}
 \end{figure}
 
 Figure \ref{fig:paramerrors} shows the SNRs of the recovered sources and the errors for the intrinsic and extrinsic parameters, computed after associating sources by correlation (and by Doppler metric only for the UTB entry), again for data set 2.1. The error in frequency is in most cases within a small fraction of a Fourier bin; the errors in sky position are within a few degrees; by contrast the errors in the amplitude and in the (extrinsic) orientation angles are larger. The $\phi_0$ graph for the PrixWhelanAEI suggests a systematic error in the definition of initial phase. [[Was there some correspondence about this?]]
 
-These challenges demonstrated a solid capability in analyzing signals from the Galaxy and resolving a large number of binaries. At the same time, they emphasized the difficulty of determining when a source is resolvable, and of defining (at least operationally) a notion of \emph{identity} for recovered sources. These problems deserve careful, targeted work.
+These challenges demonstrated a solid capability in analyzing signals from the Galaxy and resolving a large number of binaries; deciding how well they were recovered is not an easy question to answer, because of the difficulty of defining (at least operationally) a notion of \emph{identity} for recovered sources. These problems deserve careful, targeted work.
 
 \section{Data set 2.2: MBH binaries (over the Galaxy)}
 
@@ -117,13 +112,39 @@ Four groups reported parameters for the MBH binaries in the 2.2 data set:
 All the four MBH binaries in the data set (MBH-1, 2, 4 and 5, with total SNRs $\sim$ 2583, 25, 174 and 117) were positively detected by AEIse, MTAEI, and JPLCT; the TF method used by LisaFrance identified MBH-1 and 4, but not MBH-2, and could report only a time of coalescence for MBH-5.
 %
 \begin{table}
-MBH-1. First line: true parameters and SNR. Then parameter errors and recovered SNR.
-\caption{\label{tab:mbh1}}
+\caption{\label{tab:mbh1}%
+Recovered SNR and parameter errors for MBH-1. All parameters are defined as in tables 2 and 4 of \cite{gwdaw2}, except for $\mu = m_1 m_2 / (m_1 + m_2)$, $M_c = (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$, and $\phi_c$ defined as the GW phase at coalescence. All errors on angles are given in radians; the true (optimal) SNR is \textbf{2583.42}.}
+\small%
+\begin{tabular}{@{}l|r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r}
+\br
+           & SNR & $\Delta M_c/M_c$ & $\Delta \mu/\mu$ & $\Delta t_c/t_c$ & $\Delta \beta$ & $\Delta \lambda$ & $\Delta D / D$ & $\Delta \iota$ & $\Delta \psi$ & $\Delta \phi_c$ \\
+           &     & $\times 10^{-5}$ & $\times 10^{-5}$ & $\times 10^{-6}$ & $\times 10^{-1}$ & $\times 10^{-2}$ & $\times 10^{-2}$ & $\times 10^{-2}$ & $\times 10^{-1}$ & $\times 10^{-1}$ \\
+\mr
+AEIse      & 2247.60 &  147.0 & 3386.2 & 19.0 & $-5.07$ & $-82.1$ & 77.8 & $-6.86$ &  13.8 & $-6.82$ \\
+MTAEI      & 2583.34 &    7.9 &    9.1 &  3.6 & 1.65 &  $-1.2$ &  3.5 &  4.94 &   1.2 & $-7.70$ \\
+JPLCT      & 2582.42 &   27.5 &   28.7 & 16.0 & 4.81 &  12.2 & 12.3 & $-3.19$ & $-12.1$ &  7.45 \\
+lisaFrance & \multicolumn{1}{c}{--} & 2944.6 &   72.7 & 67.8 & \multicolumn{1}{c}{--}    &  \multicolumn{1}{c}{--}   & \multicolumn{1}{c}{--}   & \multicolumn{1}{c}{--}    & \multicolumn{1}{c}{--}    &  \multicolumn{1}{c}{--}   \\
+\br
+\end{tabular}
+% note: I'm inverting the \theta errors because we quote \beta
 \end{table}
 %
 \begin{table}
-MBH-4. As above, but give also the relative odds reported by the collaborations for the multiple candidates.
-\caption{\label{tab:mbh4}}
+\caption{Recovered SNR and parameter errors for MBH-4, given as in table \ref{tab:mbh1}. The true (optimal) SNR is \textbf{174.12}.\label{tab:mbh4}}
+\small%
+\begin{tabular}{@{}l|r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r}
+\br
+           & SNR & $\Delta M_c/M_c$ & $\Delta \mu/\mu$ & $\Delta t_c/t_c$ & $\Delta \beta$ & $\Delta \lambda$ & $\Delta D / D$ & $\Delta \iota$ & $\Delta \psi$ & $\Delta \phi_c$ \\
+           &     & $\times 10^{-6}$ & $\times 10^{-4}$ & $\times 10^{-6}$ & $\times 10^{-2}$ & $\times 10^{-2}$ & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times 10^{-1}$ \\
+\mr
+AEIse       & 81.38     &   1396.3  &  149.9 &   3.4 & $-12.5$ & $ 104.7$ &  574.0 &  $  3.5$ &   $-185.4$ & $  8.1$ \\
+MTAEI       & 174.13    &    148.8  &   21.3 &   2.1 & $2.4$ & $   2.1$ &   15.1 &  $  2.8$ &   $  -7.5$ & $  1.7$ \\
+            & 174.11    &     17.1  &   20.5 &  33.3 & $-42.4$ & $-310.6$ &   16.7 &  $-13.7$ &   $-146.3$ & $ -6.3$ \\
+JPLCT       & 174.11    &      4.2  &    9.5 &   2.1 & $7.8$ & $   9.6$ &    1.2 &  $  1.3$ &   $ -21.3$ & $ -5.4$ \\
+            & 174.12    &    124.7  &    9.0 &  35.4 & $-47.3$ & $-302.9$ &    6.3 &  $-12.4$ &   $1436.4$ & $-12.4$ \\
+lisaFrance  & \multicolumn{1}{c}{--}        &  34394.1  & 1804.1 & 280.8 &  \multicolumn{1}{c}{--}    &  \multicolumn{1}{c}{--}      &  \multicolumn{1}{c}{--}    &    \multicolumn{1}{c}{--}   &   \multicolumn{1}{c}{--}       & \multicolumn{1}{c}{--}      \\
+\br
+\end{tabular}
 \end{table}
 
 Tables \ref{tab:mbh1} and \ref{tab:mbh4} show fractional parameter errors for MBH-1 and 4 (complete results can be found at the URL XXX), together with the SNR recovered by the best-fit candidate of each group, computed as 
@@ -133,23 +154,50 @@ Tables \ref{tab:mbh1} and \ref{tab:mbh4} show fractional parameter errors for MB
 {\sqrt{(A_{best}|A_{best}) + (E_{best}|E_{best})}},
 \end{equation}
 %
-with $(\cdot|\cdot)$ the usual noise-weighted inner product, and $A = (2X - Y - Z)/3$ and $E = (Z-Y)/\sqrt{3}$ two noise-orthogonal TDI observables (see, e.g., VCT). In table \ref{tab:mbh1}, we see that compared to MTAEI, the JPLCT search for MBH-1 locked onto a secondary probability maximum with only slightly lower $\mathrm{SNR}_\mathrm{best}$, but with sky positions off by several degrees, which also led to errors in the other parameters. MBH-4 (table \ref{tab:mbh1}) is an interesting example of a true (at least) bimodal probability distribution. MTAEI and JPLCT reported two candidates at rather different sky locations, with relative probability ratios of 1:1 and 1.18:1, respectively. The position and orientation of this source relative to LISA, which resulted in a very weak signal in one of the noise-orthogonal observables, probably concurred in degrading LISA's sensitivity to sky position.
+with $(\cdot|\cdot)$ the usual noise-weighted inner product, and $A = (2X - Y - Z)/3$ and $E = (Z-Y)/\sqrt{3}$ two noise-orthogonal TDI observables (see, e.g., VCT). In table \ref{tab:mbh1}, we see that compared to MTAEI, the JPLCT search for MBH-1 locked onto a secondary probability maximum with only slightly lower $\mathrm{SNR}_\mathrm{best}$, but with sky positions off by several degrees, which also led to errors in the other parameters (the JPLCT authors think this was caused by first subtracting off a rough match for MBH-1, then subtracting off the resolvable Galactic binaries, and then refining the MBH search). MBH-4 (table \ref{tab:mbh1}) is an interesting example of a true (at least) bimodal probability distribution. MTAEI and JPLCT reported two candidates at rather different sky locations, with relative probability ratios of 1:1 and 1.18:1, respectively. The position and orientation of this source relative to LISA, which resulted in a very weak signal in one of the noise-orthogonal observables, probably concurred in degrading LISA's sensitivity to sky position.
 
 This challenge demonstrated a solid capability in the detection and parameter estimation of MBH inspirals of moderate SNR over a strong Galactic background, at least if the inspirals are close to our idealized model: circular and adiabatic, with negligible spin effects. These restrictions are being relaxed for the upcoming Challenge 3.
 
 \section{Data sets 1.3.X: EMRIs}
 
-[[Develop this in analogy to the MBH section.]]
-
+Three groups reported parameters for the EMRIs in the 1.3.1--1.3.4 data sets. No group tackled the problem of detecting these systems over the Galactic background in data set 2.2.
+%
 \begin{description}
-\item[BBGP] Babak/Barack/Gair/Porter (time-annealed MCMC)
-\item[MT] Cornish (segmented MCMC)
-\item[EtfAG] Gair/Mandel/Wen (TF track search)
+\item[BBGP] Babak and colleagues used MCMC matched filtering, introducing progressively longer templates (a \emph{time-annealed} scheme);
+%
+\item[EtfAG] Gair, Mandel and Wen used a TF track search insensitive to amplitude and orientation parameters;
+%
+\item[MT] Cornish used MCMC matched filtering on month-long segments, which were subsequently strung together for full detections.
 \end{description}
+%
+Table \ref{tab:emri} shows typical recovered SNRs and errors. While it is clear that the matched-filtering searches locked on secondary probability maxima (indeed, several of them with comparable probabilities), the recovered SNRs correspond to solid detections with exceedingly low false-alarm probabilities. The errors are quoted as fractions of the allowed parameter ranges, and they are quite large. Intriguingly, the TF search was an order of magnitude more precise in determining the intrinsic parameters. Altogether, these challenges demonstrated a positive capability of detecting EMRIs, at least if their signals are similar in complexity to the \emph{kludge} waveforms used in this challenge \ref{gwdaw2}, but the prospects for accurate parameter estimation are still uncertain, and a good focus for further challenges.
+%
+\begin{table}
+\caption{Recovered SNRs and parameter errors for the EMRI signal in data set 1.3.1. All errors are given as \emph{fractions of the allowed prior range} for the corresponding parameters (0.15 for $e_0$), except for the errors on $\nu_0$ and $D$. Not all parameters are shown. For their definitions, see tables 2 and 5 of \cite{gwdaw2}. The true (optimal) SNR is \textbf{130.98}.\label{tab:emri}}
+\small%
+\lineup
+\begin{tabular}{@{}l@{\;}|@{\;}l@{\;}@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{}}
+\br
+& SNR & \multicolumn{1}{c}{$\delta \beta$} & \multicolumn{1}{c}{$\delta \lambda$} & \multicolumn{1}{c}{$\delta \theta_K$} & \multicolumn{1}{c}{$\delta \phi_K$} & \multicolumn{1}{c}{$\delta a$} & \multicolumn{1}{c}{$\delta \mu$} & \multicolumn{1}{c}{$\delta M$} & \multicolumn{1}{c}{$\frac{\Delta \nu_0}{\nu_0}$} & \multicolumn{1}{c}{$\delta e_0$} & \multicolumn{1}{c}{$\frac{\Delta D}{D}$} \\
+\mr
+BBGP    & 74.86  & $-0.33 $   & $-0.0095$   & $-0.13 $ & $-0.076$ & $\m 0.28 $ & $-0.15$   & $-0.51$   & $\m 0.017  $ & $\m 0.21 $ &  $-1.21$ \\
+        & 72.96  & $-0.32 $   & $\m 0.011 $ & $-0.15 $ & $-0.078$ & $\m 0.27 $ & $-0.15$   & $-0.51$   & $\m 0.017  $ & $\m 0.21 $ &  $-1.22$ \\
+        & 72.52  & $-0.28 $   & $\m 0.025 $ & $-0.063$ & $-0.036$ & $\m 0.41 $ & $-0.17$   & $-0.35$   & $-0.009  $   & $\m 0.29 $ &  $-2.15$ \\
+        & 72.49  & $-0.28 $   & $\m 0.025 $ & $-0.063$ & $-0.034$ & $\m 0.41 $ & $-0.17$   & $-0.36$   & $-0.009  $   & $\m 0.29 $ &  $-2.17$ \\
+        & 70.59  & $-0.31 $   & $-0.020 $   & $-0.36 $ & $-0.21 $ & $\m 0.44 $ & $-0.12$   & $-0.12$   & $-0.03   $   & $\m 0.28 $ &  $-0.91$ \\
+EtfAG   & \multicolumn{1}{c}{--}  & $\m 0.016$ & $\m 0.0012$ & \multicolumn{1}{c}{--}    & \multicolumn{1}{c}{--}        & $-0.082$   & $\m 0.10 $ & $-0.17$   & $\m 0.0026 $ &  $\m 0.098$ &   \multicolumn{1}{c}{--}   \\
+MT      & 74.85 & $\m 0.15 $ & $\m 0.47  $ & $-0.069$ & $-0.15 $ & $-0.026$   & $\m 0.073$ & $\m 0.18$ & $\m 0.00025$  & $-0.11 $   &  $-0.71$ \\
+        & 76.52  & $\m 0.084$ & $-0.49  $   & $-0.33 $ & $-0.10 $ & $-0.022$   & $\m 0.046$ & $\m 0.16$ & $\m 0.00026$ & $-0.10 $   &  $-0.70$ \\
+\br
+\end{tabular}
+\end{table}
 
 \section{Conclusion}
 
+[Still to be written.]
+
 We're happy:
+
 \begin{itemize}
 \item Participation is strong (but we need more, try 1B!)
 \item A lot of work is being accomplished
@@ -159,19 +207,19 @@ We're happy:
 \item The MLDC infrastructure (LISAtools) can be used for many other experiments outside the mainline challenges
 \end{itemize}
 
-Resources:
-\begin{itemize}
-\item MLDC official site:	\url{astrogravs.nasa.gov/docs/mldc}
-\item MLDC taskforce wiki: \url{www.tapir.caltech.edu/dokuwiki/listwg1b:home}
-\item Mailing lists: \url{lisatools-mldc@gravity.psu.edu} (formulation) \url{lisatools-challenge@gravity.psu.edu} (participants)
-\item LISAtools software (including full MLDC pipeline): \url{lisatools.googlecode.com}
-\end{itemize}
+% Resources:
+% \begin{itemize}
+% \item MLDC official site:	\url{astrogravs.nasa.gov/docs/mldc}
+% \item MLDC taskforce wiki: \url{www.tapir.caltech.edu/dokuwiki/listwg1b:home}
+% \item Mailing lists: \url{lisatools-mldc@gravity.psu.edu} (formulation) \url{lisatools-challenge@gravity.psu.edu} (participants)
+% \item LISAtools software (including full MLDC pipeline): \url{lisatools.googlecode.com}
+% \end{itemize}
 
 % [[After submitting this, we should put evaluation documents on the tapir mldc webpage.]]
 
 \ack
 
-This work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration. MV was supported by LISA Mission Science Office and by JPL's Human Resources Development Fund.
+JC's, CC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration. MV was supported by LISA Mission Science Office and by JPL's Human Resources Development Fund.
 
 % \appendix
 
