@@ -60,20 +60,22 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   LISAWPAssert( S2z >= -1.0 && S2z <=1.0, "S2z is outside [-1,1]" );
   LISAWPAssert(observerSet, "you need to set position of the source");
 
+  PhiOrbC = 0.5*phiC;
+  Tc = tc;
+  om = ComputeOrbFreq(0.0, Tc);
+  om_prev = om;
+  Phi = ComputeOrbPhase(om, PhiOrbC);
+
   // First we need to translate all directions from SSB to source frame
   
   // vectors components in SSB:
-  Lnx = sin(iota)*cos(alpha);
-  Lny = sin(iota)*sin(alpha);
-  Lnz = cos(iota);
-  if(iota == 0.0){
-       nonspin = true;
-       x1 = 0.0;
-       x2 = 0.0;
-  }
+  Lnx = sin(iota0)*cos(alpha0);
+  Lny = sin(iota0)*sin(alpha0);
+  Lnz = cos(iota0);
+  
   if (nonspin == true){
-          iota= 0.0;
-          alpha = 0.0;
+          iota0= 0.0;
+          alpha0 = 0.0;
   }
   S1z = cos(thetaS10);
   S1x = sin(thetaS10)*cos(phiS10);
@@ -88,7 +90,12 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   double Jy = eta*M*M*pow(M*om, -1./3)*Lny + x1*m1*m1*S1y + x2*m2*m2*S2y;
   double Jz = eta*M*M*pow(M*om, -1./3)*Lnz + x1*m1*m1*S1z + x2*m2*m2*S2z;
   double absJ = sqrt(Jx*Jx + Jy*Jy + Jz*Jz);
-  
+ 
+  /*std::cout << "Stas check: " << eta*M*M*pow(M*om, -1./3)*Lnx << "   " << \
+      x1*m1*m1*S1x << "   " << x2*m2*m2*S2x << std::endl;
+  std::cout << "Stas check: " << Lnx << "   " << \
+          S1x << "   " << S2x << std::endl;
+ */
   LISAWPAssert(absJ > 0.0, "total angular momentum iz zero at t=0");
   thetaJ = acos(Jz/absJ);
   if(fabs(thetaJ) <= 1.e-6 || fabs(thetaJ - LISAWP_PI) <= 1.e-6){
@@ -113,6 +120,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   
   n[0] = stS*cos(phiS); n[1] = stS*sin(phiS); n[2] = ctS;
   ez[0] = stJ*cos(phiJ);  ez[1] = stJ*sin(phiJ); ez[2] = ctJ;
+//  std::cout << "ez = " << ez[0] << "  " << ez[1] << "  " << ez[2] << std::endl;
   double stheta = sin(theta);
   LISAWPAssert(stheta != 0.0, "source frame is undefined: source direction is colinear with J");
   ey[0] = (stS*sin(phiS)*ctJ - ctS*stJ*sin(phiJ))/stheta;
@@ -126,6 +134,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   
   // Compute the angles in the source frame
   
+  //std::cout << "Ln = " << Lnx << "  " << Lny << "   " << Lnz << std::endl; 
   double iotaIn = acos(Lnx*ez[0] + Lny*ez[1] + Lnz*ez[2]);
   double LNey = Lnx*ey[0] + Lny*ey[1] + Lnz*ey[2]; 
   double LNex = Lnx*ex[0] + Lny*ex[1] + Lnz*ex[2];
@@ -134,6 +143,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
       std::cout << "Warning: Ln co-alligned with J, alpha will be put to zero" << std::endl;
       alphaIn = 0.0;
   }
+  
   double thetaS1In = acos(S1x*ez[0] + S1y*ez[1] + S1z*ez[2]);
   double S1ey = S1x*ey[0] + S1y*ey[1] + S1z*ey[2];
   double S1ex = S1x*ex[0] + S1y*ey[1] + S1z*ex[2];
@@ -154,19 +164,12 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
     
   iota = iotaIn;
   alpha = alphaIn;
-  PhiOrbC = 0.5*phiC;
+  
 
   Lnx = sin(iota)*cos(alpha);
   Lny = sin(iota)*sin(alpha);
   Lnz = cos(iota);
-  
-  Tc = tc;
 
-  if(iota == 0.0){
-     nonspin = true;
-     x1 = 0.0;
-     x2 = 0.0;
-  }
   if (nonspin == true){
         iota= 0.0;
         alpha = 0.0;
@@ -179,9 +182,9 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   S2x = sin(thetaS2In)*cos(phiS2In);
   S2y = sin(thetaS2In)*sin(phiS2In);
  
-  om = ComputeOrbFreq(0.0, Tc);
-  om_prev = om;
-  Phi = ComputeOrbPhase(om, PhiOrbC);
+  // Ready to start integration
+ 
+ 
 
   om_lso = pow(6,-1.5)/M;
   
@@ -319,6 +322,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
          S2x = sin(thetaS2In)*cos(phiS2In);
          S2y = sin(thetaS2In)*sin(phiS2In);
          om = ComputeOrbFreq(t, Tc);
+         om_prev = om;
          
          coord0(0) = iota;
          coord0(1) = alpha;
