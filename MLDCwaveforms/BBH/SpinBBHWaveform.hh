@@ -111,6 +111,8 @@ namespace LISAWP{
    double theta, dist;
    double beta, sigma;
    double thetaJ, phiJ;
+   double thetaS, phiS;
+   double ctS, stS; 
    std::vector<double> time;
    std::vector<double> Phase;
    std::vector<double> freq;

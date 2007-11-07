@@ -58,10 +58,102 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
 
   LISAWPAssert( S1z >= -1.0 && S1z <=1.0, "S1z is outside [-1,1]" );
   LISAWPAssert( S2z >= -1.0 && S2z <=1.0, "S2z is outside [-1,1]" );
+  LISAWPAssert(observerSet, "you need to set position of the source");
 
+  // First we need to translate all directions from SSB to source frame
+  
+  // vectors components in SSB:
+  Lnx = sin(iota)*cos(alpha);
+  Lny = sin(iota)*sin(alpha);
+  Lnz = cos(iota);
+  if(iota == 0.0){
+       nonspin = true;
+       x1 = 0.0;
+       x2 = 0.0;
+  }
+  if (nonspin == true){
+          iota= 0.0;
+          alpha = 0.0;
+  }
+  S1z = cos(thetaS10);
+  S1x = sin(thetaS10)*cos(phiS10);
+  S1y = sin(thetaS10)*sin(phiS10);
+  S2z = cos(thetaS20);
+  S2x = sin(thetaS20)*cos(phiS20);
+  S2y = sin(thetaS20)*sin(phiS20);
+  
+  // Computing direction of the total angular momentum
+
+  double Jx = eta*M*M*pow(M*om, -1./3)*Lnx + x1*m1*m1*S1x + x2*m2*m2*S2x;
+  double Jy = eta*M*M*pow(M*om, -1./3)*Lny + x1*m1*m1*S1y + x2*m2*m2*S2y;
+  double Jz = eta*M*M*pow(M*om, -1./3)*Lnz + x1*m1*m1*S1z + x2*m2*m2*S2z;
+  double absJ = sqrt(Jx*Jx + Jy*Jy + Jz*Jz);
+  
+  LISAWPAssert(absJ > 0.0, "total angular momentum iz zero at t=0");
+  thetaJ = acos(Jz/absJ);
+  if(fabs(thetaJ) <= 1.e-6 || fabs(thetaJ - LISAWP_PI) <= 1.e-6){
+     phiJ = 0.0;
+  }else{
+     phiJ = atan2(Jy, Jx);
+  }
+  double stJ = sin(thetaJ);
+  double ctJ = cos(thetaJ);
+  double down = ctS*stJ*cos(phiS-phiJ) - ctJ*stS;
+  double up = stJ*sin(phiS - phiJ);
+  psi = atan2(up, down);
+  
+  theta = LISAWP_PI - acos(ctJ*ctS + stJ*stS*cos(phiS - phiJ));
+
+  // compute componenets of the source frame basis in SSB
+
+  std::vector<double> ey(3);
+  std::vector<double> ez(3);
+  std::vector<double> ex(3);
+  std::vector<double> n(3);
+  
+  n[0] = stS*cos(phiS); n[1] = stS*sin(phiS); n[2] = ctS;
+  ez[0] = stJ*cos(phiJ);  ez[1] = stJ*sin(phiJ); ez[2] = ctJ;
+  double stheta = sin(theta);
+  LISAWPAssert(stheta != 0.0, "source frame is undefined: source direction is colinear with J");
+  ey[0] = (stS*sin(phiS)*ctJ - ctS*stJ*sin(phiJ))/stheta;
+  ey[1] = (ctS*stJ*cos(phiS) - stS*ctJ*sin(phiS))/stheta;
+  ey[2] = (stS*stJ*sin(phiJ-phiS))/stheta;
+  
+  double nez = n[0]*ez[0] + n[1]*ez[1] + n[2]*ez[2];
+  ex[0] = (ez[0]*nez - n[0])/stheta;
+  ex[1] = (ez[1]*nez - n[1])/stheta;
+  ex[2] = (ez[2]*nez - n[2])/stheta;
+  
+  // Compute the angles in the source frame
+  
+  double iotaIn = acos(Lnx*ez[0] + Lny*ez[1] + Lnz*ez[2]);
+  double LNey = Lnx*ey[0] + Lny*ey[1] + Lnz*ey[2]; 
+  double LNex = Lnx*ex[0] + Lny*ex[1] + Lnz*ex[2];
+  double alphaIn = atan2(LNey, LNex); 
+  if(fabs(iotaIn) <= 1.e-6 || fabs(iotaIn - LISAWP_PI) <= 1.e-6){
+      std::cout << "Warning: Ln co-alligned with J, alpha will be put to zero" << std::endl;
+      alphaIn = 0.0;
+  }
+  double thetaS1In = acos(S1x*ez[0] + S1y*ez[1] + S1z*ez[2]);
+  double S1ey = S1x*ey[0] + S1y*ey[1] + S1z*ey[2];
+  double S1ex = S1x*ex[0] + S1y*ey[1] + S1z*ex[2];
+  double phiS1In = atan2(S1ey, S1ex);
+  if(fabs(thetaS1In) <= 1.e-6 || fabs(thetaS1In - LISAWP_PI) <= 1.e-6){
+        std::cout << "Warning: S1 co-alligned with J, phiS1 will be put to zero" << std::endl;
+        phiS1In = 0.0;
+  }
+  
+  double thetaS2In = acos(S2x*ez[0] + S2y*ez[1] + S2z*ez[2]);
+  double S2ey = S2x*ey[0] + S2y*ey[1] + S2z*ey[2];
+  double S2ex = S2x*ex[0] + S2y*ey[1] + S2z*ex[2];
+  double phiS2In = atan2(S2ey, S2ex);
+  if(fabs(thetaS2In) <= 1.e-6 || fabs(thetaS2In - LISAWP_PI) <= 1.e-6){
+          std::cout << "Warning: S2 co-alligned with J, phiS2 will be put to zero" << std::endl;
+          phiS2In = 0.0;
+  }
     
-  iota = iota0;
-  alpha = alpha0;
+  iota = iotaIn;
+  alpha = alphaIn;
   PhiOrbC = 0.5*phiC;
 
   Lnx = sin(iota)*cos(alpha);
@@ -80,34 +172,16 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
         alpha = 0.0;
   }
   
-  S1z = cos(thetaS10);
-  S1x = sin(thetaS10)*cos(phiS10);
-  S1y = sin(thetaS10)*sin(phiS10);
-  S2z = cos(thetaS20);
-  S2x = sin(thetaS20)*cos(phiS20);
-  S2y = sin(thetaS20)*sin(phiS20);
+  S1z = cos(thetaS1In);
+  S1x = sin(thetaS1In)*cos(phiS1In);
+  S1y = sin(thetaS1In)*sin(phiS1In);
+  S2z = cos(thetaS2In);
+  S2x = sin(thetaS2In)*cos(phiS2In);
+  S2y = sin(thetaS2In)*sin(phiS2In);
  
   om = ComputeOrbFreq(0.0, Tc);
   om_prev = om;
   Phi = ComputeOrbPhase(om, PhiOrbC);
-  
-  
-  // Computing direction of the total angular momentum
-  
-  double Jx = eta*M*M*pow(M*om, -1./3)*Lnx + S1x + S2x;
-  double Jy = eta*M*M*pow(M*om, -1./3)*Lny + S1y + S2y;
-  double Jz = eta*M*M*pow(M*om, -1./3)*Lnz + S1z + S2z;
-  double absJ = sqrt(Jx*Jx + Jy*Jy + Jz*Jz);
-  
-  LISAWPAssert(absJ > 0.0, "total angular momentum iz zero at t=0");
-  thetaJ = acos(Jz/absJ);
-  if(fabs(thetaJ) <= 1.e-6 || fabs(thetaJ - LISAWP_PI) <= 1.e-6){
-      phiJ = 0.0;
-  }else{
-      phiJ = atan2(Jy, Jx);
-  }
-  
-  
 
   om_lso = pow(6,-1.5)/M;
   
@@ -232,18 +306,18 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
          s2z_n.resize(0);
      
          t = 0.0;
-         iota = iota0;
-         alpha = alpha0;
+         iota = iotaIn;
+         alpha = alphaIn;
 
          Lnx = sin(iota)*cos(alpha);
          Lny = sin(iota)*sin(alpha);
          Lnz = cos(iota);
-         S1z = cos(thetaS10);
-         S1x = sin(thetaS10)*cos(phiS10);
-         S1y = sin(thetaS10)*sin(phiS10);
-         S2z = cos(thetaS20);
-         S2x = sin(thetaS20)*cos(phiS20);
-         S2y = sin(thetaS20)*sin(phiS20);
+         S1z = cos(thetaS1In);
+         S1x = sin(thetaS1In)*cos(phiS1In);
+         S1y = sin(thetaS1In)*sin(phiS1In);
+         S2z = cos(thetaS2In);
+         S2x = sin(thetaS2In)*cos(phiS2In);
+         S2y = sin(thetaS2In)*sin(phiS2In);
          om = ComputeOrbFreq(t, Tc);
          
          coord0(0) = iota;
@@ -418,13 +492,13 @@ void SpinBBHWaveform::Derivs(double x, Matrix<double> y, Matrix<double>& dydx, i
   // modulation of Ln + secular decay
    
     VecLx = Mom*Mom/(2.0*M)* ( (4.0 + 3.0*m2/m1)*x1*m1M2*S1x + (4.0 + 3.0*m1/m2)*x2*m2M2*S2x  -\
-                  3.0*Mom13*eta*x1*x2*( LS2*S1x + LS1*S2x) ) - 32./5.*eta*eta*M*Mom*Mom*Mom13*Lnx;
+            3.0*Mom13*eta*x1*x2*( LS2*S1x + LS1*S2x) );// - 32./5.*eta*eta*M*Mom*Mom*Mom13*Lnx;
 	  
     VecLy = Mom*Mom/(2.0*M)* ( (4.0 + 3.0*m2/m1)*x1*m1M2*S1y + (4.0 + 3.0*m1/m2)*x2*m2M2*S2y  -\
-                  3.0*Mom13*eta*x1*x2*(LS2*S1y + LS1*S2y) ) - 32./5.*eta*eta*M*Mom*Mom*Mom13*Lny;
+            3.0*Mom13*eta*x1*x2*(LS2*S1y + LS1*S2y) );// - 32./5.*eta*eta*M*Mom*Mom*Mom13*Lny;
 	  
     VecLz = Mom*Mom/(2.0*M)* ( (4.0 + 3.0*m2/m1)*x1*m1M2*S1z + (4.0 + 3.0*m1/m2)*x2*m2M2*S2z  -\
-                  3.0*Mom13*eta*x1*x2*(LS2*S1z + LS1*S2z) ) - 32./5.*eta*eta*M*Mom*Mom*Mom13*Lnz;
+            3.0*Mom13*eta*x1*x2*(LS2*S1z + LS1*S2z) );// - 32./5.*eta*eta*M*Mom*Mom*Mom13*Lnz;
 
     dydx(0) = VecLy*cos(alpha) - VecLx*sin(alpha);
      
@@ -491,22 +565,12 @@ double SpinBBHWaveform::ComputeOrbPhase(double om, double phi_C){
 
 void SpinBBHWaveform::SetObserver(double theta_s, double phi_s, double D){
 
-     double ctS = cos(theta_s);
-     double stS = sin(theta_s);
-     double ctJ = cos(thetaJ);
-     double stJ = sin(thetaJ);
+     ctS = cos(theta_s);
+     stS = sin(theta_s);
+     thetaS = theta_s;
+     phiS = phi_s;
      
      dist = D*LISAWP_PC_SI/LISAWP_C_SI; //distance in seconds
-     
-     theta = LISAWP_PI - acos(ctJ*ctS + stJ*stS*cos(phi_s - phiJ));
-     if(fabs(thetaJ) <= 1.e-6 || fabs(thetaJ - LISAWP_PI) <= 1.e-6){
-         psi = 0.5*LISAWP_PI;
-     }else{
-         double up = ctS*stJ*cos(phi_s-phiJ) - ctJ*stS;
-         double down = stJ*sin(phi_s - phiJ);
-         psi = atan2(up, down);
-     }
-   //  std::cout << "Stas: mu/D " << mu/dist << "   " << mu << "     " << dist << std::endl;
      
      observerSet = true;
 
