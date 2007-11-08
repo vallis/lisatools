@@ -17,7 +17,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */          
 /******************  CVS info ************************ 
 #define CVSTAG "$Name:  $"
-#define CVSHEADER "$Header: /afs/aeiw/cvsroot/waves/people/stas/LISAWP/waveforms/src/SpinBBHWaveform.cc,v 1.1 2007/09/18 21:56:08 stba Exp $" 
+#define CVSHEADER "$Header:  Exp $" 
 */
 
 #include "SpinBBHWaveform.hh"
@@ -575,6 +575,8 @@ void SpinBBHWaveform::SetObserver(double theta_s, double phi_s, double D){
      phiS = phi_s;
      
      dist = D*LISAWP_PC_SI/LISAWP_C_SI; //distance in seconds
+     
+     std::cout << "Stas : Ampl = " << mu/D << std::endl;
      
      observerSet = true;
 

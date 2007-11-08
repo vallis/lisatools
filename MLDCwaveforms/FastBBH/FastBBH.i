@@ -87,12 +87,17 @@ class FastSpinBlackHoleBinary(lisaxml.Source):
         SBH.Distance               = self.Distance
         SBH.TaperApplied           = self.TaperApplied
         SBH.AmplPNorder            = self.AmplPNorder
-        
+        SBH.TimeSample             = 15.0
+        SBH.Tobs 				   = 62914560.0
+        SBH.Tpad                   = 900.0
+        SBH.Rmin                   = 6.0
+        SBH.TaperSteepness         = 150.0        
+
         hp = numpy.empty(samples,'d')
         hc = numpy.empty(samples,'d')
                 
         SBH_Barycenter(SBH, hp, hc);
-        
+		
         return (hp,hc)
     
 %}

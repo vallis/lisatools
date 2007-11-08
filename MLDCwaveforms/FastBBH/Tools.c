@@ -76,7 +76,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   // Double Kerr Parameters: m1/Msun, m2/Msun, tc/sec, DL/Gpc, chi1, chi2, cos(theta), cos(thetaL(0)), cos(thetaS1(0)), cos(thetaS2(0)), phi, phiL(0), phiS1(0), phiS2(0), phic.  These are arranged into those with fixed ranges, and those without. Note: I am using redshifted masses. 
 
   m1 = SBH.Mass1;
-  m2 = SBH.Mass1;
+  m2 = SBH.Mass2;
   tc = SBH.CoalescenceTime;
   DL = SBH.Distance/1.0e6;
   chi1 = SBH.Spin1;
@@ -90,7 +90,14 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   phiS10 = SBH.AzimuthalAngleOfSpin1;
   phiS20 = SBH.AzimuthalAngleOfSpin2;
   phic = SBH.PhaseAtCoalescence;
-
+ /* 
+  printf("m1 = %.12e   m2 = %.12e    tc = %.12e   DL =  %.12e   x1 = %.12e    x2 = %.12e \n",\
+      m1, m2, tc, DL, chi1, chi2);
+  printf("theta = %.12e   thetaL = %.12e  thS1 = %.12e  thS2  = %.12e \n", \
+      PI - SBH.EclipticLatitude, SBH.InitialPolarAngleL, SBH.PolarAngleOfSpin1, SBH.PolarAngleOfSpin2);
+  printf("phi = %.12e   phiL = %.12e  phiS1 = %.12e   phiS2 = %.12e  phic = %.12e \n",
+      phi, phiL0, phiS10, phiS20, phic);
+*/
   // Useful functions of these parameters:
 
   Mtot = m1 + m2;
@@ -101,6 +108,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   Mchirp = pow(mu, 0.6)*pow(Mtot, 0.4);
 
   Amp = pow(Mchirp*TSUN,5./3.)/(DL*GPC/CLIGHT);
+  
+ /* printf(" %s   %.12e \n", "Stas: Ampl = ", Amp);*/
 
   fac = eta/(5.0*Mtot*TSUN);
 
@@ -337,11 +346,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   // Now calculate the waveform:
 
   xold = 0.0;
-
   for(i = 0; i < n; i++)
     { 
       td = tdvals[i];
-
       if (td <= tmax) // Make sure we have data for the point.
 	{
 	  costhetaL = interpmul[i];
@@ -393,7 +400,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	   /* dominant harmonic */
 	    shp = Ax*(1.0+ci2)*cPhi[2];
 	    shc = -2.0*Ax*ci*sPhi[2];
-
+            
 
             if(VAmp > 0.0)
 	      {
@@ -473,7 +480,11 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
       }
 
     }
-
+    
+ /*   for(i=90000; i<90010; i++){
+        printf("%d    %.12e  %.12e \n", i, hp[i], hc[i]);
+    }
+*/
   free_dvector(tdvals, 0, n-1);
   free_dvector(interpmul, 0, n-1);
   free_dvector(interpphil, 0, n-1);
