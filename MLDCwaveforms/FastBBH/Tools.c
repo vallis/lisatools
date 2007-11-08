@@ -78,7 +78,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   m1 = SBH.Mass1;
   m2 = SBH.Mass2;
   tc = SBH.CoalescenceTime;
-  DL = SBH.Distance/1.0e6;
+  DL = SBH.Distance/1.0e9;
   chi1 = SBH.Spin1;
   chi2 = SBH.Spin2;
   costheta = sin(SBH.EclipticLatitude);
@@ -109,8 +109,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   Amp = pow(Mchirp*TSUN,5./3.)/(DL*GPC/CLIGHT);
   
- /* printf(" %s   %.12e \n", "Stas: Ampl = ", Amp);*/
-
+ 
   fac = eta/(5.0*Mtot*TSUN);
 
   Phi0 = -2.*pow(fac,0.625);
@@ -376,7 +375,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	    taper = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
 
             Ax = 2.*Amp*pow(PI*f,2./3.)*taper;
-
+         
             ci = LdotN;
             ci2 = ci*ci;
             ci4 = ci2*ci2;
