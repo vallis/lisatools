@@ -59,14 +59,12 @@ class FastSpinBlackHoleBinary(lisaxml.Source):
         # pre-define variables here if used later, so that they will not be included in parameters when they are set
     
     def waveforms(self,samples,deltat,inittime):
-        if samples != 4194424:
-            raise NotImplementedError, "Sorry, FastSpinBlackHoleBinary currently supports only 2-year datasets + padding"
-        
-        if deltat != 15:
-            raise NotImplementedError, "Sorry, FastSpinBlackHoleBinary currently supports only deltat = 15"
-        
-        if inittime != -900:
-            raise NotImplementedError, "Sorry, FastSpinBlackHoleBinary currently supports only 900 s padding"
+#        if samples != 4194424:
+#            raise NotImplementedError, "Sorry, FastSpinBlackHoleBinary currently supports only 2-year datasets + padding"  
+#        if deltat != 15:
+#            raise NotImplementedError, "Sorry, FastSpinBlackHoleBinary currently supports only deltat = 15"    
+#        if inittime != -900:
+#            raise NotImplementedError, "Sorry, FastSpinBlackHoleBinary currently supports only 900 s padding"
         
         SBH = SBH_structure()
         
@@ -87,9 +85,9 @@ class FastSpinBlackHoleBinary(lisaxml.Source):
         SBH.Distance               = self.Distance
         SBH.TaperApplied           = self.TaperApplied
         SBH.AmplPNorder            = self.AmplPNorder
-        SBH.TimeSample             = 15.0
-        SBH.Tobs 				   = 62914560.0
-        SBH.Tpad                   = 900.0
+        SBH.TimeSample             = deltat
+        SBH.Tobs 				   = samples*deltat + 2*inittime
+        SBH.Tpad                   = -inittime
         SBH.Rmin                   = 6.0
         SBH.TaperSteepness         = 150.0        
 
