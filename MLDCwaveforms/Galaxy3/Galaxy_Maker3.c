@@ -66,9 +66,9 @@ int main(int argc,char **argv)
 
   fix = pi/180.0;
 
-  Mfac = Msun*G/(c*c*c);
+  Mfac = Msun*G/(clight*clight*clight);
 
-  Afac =  2.0*c/kpc;
+  Afac =  2.0*clight/kpc;
 
   fNy = 1.0/(2.0*dt);
 
