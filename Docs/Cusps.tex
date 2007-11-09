@@ -1,0 +1,119 @@
+\documentclass[12pt]{article}
+\usepackage{times,latexsym}
+\usepackage{amsmath}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage{epsfig}
+
+\pagestyle{empty}
+\setlength{\parindent}{0.5cm}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.6in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\leftmargin}{0.1in}
+\setlength{\parskip}{0cm}
+\setlength{\evensidemargin}{0in}
+\setlength{\topmargin}{0.1in}
+
+\begin{document} 
+
+\centerline{\Large{Waveform Description for Cosmic String Cusps}}
+
+\bigskip
+
+Cusps are regions on long strings or loops that achieve huge Lorentz
+boosts $\gamma$.
+These boosts, combined with the large mass per unit length of cosmic
+strings, lead to the production of a gravitational radiation. The tip of
+the cusp moves at the speed of light, and a small region of string
+around the cusp has an enormous Lorentz boost. An analytical treatment
+of the gravitational wave bursts produced by cusps has been provided
+by Damour and Vilenkin~\cite{cusp1}. In the limit where the tip of the
+cusp is moving directly toward the observer the resulting
+metric perturbation is a linearly polarized gravitation wave with
+\begin{equation}\label{cusp}
+h(t) = A \vert t - t_\star \vert^{1/3} \, ,
+\end{equation}
+where $t_\star$ is the central time of arrival of the burst and the
+amplitude $A$ is given by~\cite{cusp2}
+\begin{equation}
+A \sim \frac{G \mu L^{2/3}}{D_L} \, .
+\end{equation}
+Here $G$ is Newton's constant, $\mu$ is the mass per unit length of the
+string, $D_L$ is the luminosity distance to the source, and $L$
+is the size of the feature that produces the cusp (eg. the length of
+a cosmic string loop). If the observer's line of sight does not coincide
+with the direction that the cusp is moving, the waveform becomes much more
+complicated, with a mixture of $+$ and $\times$
+polarizations~\cite{cusp3}. If the viewing angle $\alpha$ departs
+only slightly from zero, the waveform remains dominantly linearly
+polarized, and the sharp spike in the waveform (\ref{cusp}) is rounded
+off. In the Fourier domain this has the effect of introducing an
+exponential suppression of power for frequencies above $f_{\rm max}$,
+where $f_{\rm max}$ is related to the viewing angle $\alpha$ and
+feature length $L$ by
+\begin{equation}
+f_{\rm max} = \frac{2}{\alpha^3 L} \, .
+\end{equation}
+
+Following the model used by the LSC, we define our cusp waveforms
+in the Fourier domain according to
+\begin{equation}
+h(f)
+\begin{cases} 
+{\cal A} \left(1 + \left(\frac{f_{\rm low}}{f}\right)^2\right)^{-4}
+\, f^{-4/3}  & f \leq f_{\rm max} \\
+{\cal A} \left(1 + \left(\frac{f_{\rm low}}{f}\right)^2\right)^{-4}
+\exp\left( 1 - \frac{f}{f_{\rm max}}\right) \, f^{-4/3}& f > f_{\rm max}
+\end{cases}
+\end{equation}
+The amplitude ${\cal A}$ has dimensions ${\rm Hz}^{1/3}$, and $f_{\rm low}$
+sets the low frequency cut-off of what is effectively a fourth order
+Butterworth filter. This high pass filter prevents dynamic range issues
+with the inverse Fourier transforms. For the MLDC data sets a reasonable
+value to use is $f_{\rm low} = 1 \times 10^{-5}$ Hz.
+
+The phase of the waveform is set using
+\begin{eqnarray}
+h_R(f) & = & -h(f)\cos(2 \pi f t_\star) \nonumber \\
+h_I(f) & = & h(f) \sin(2 \pi f t_\star) \, .
+\end{eqnarray}
+The waveform is then inverse Fourier transformed to the time domain
+to produce $h(t)$.
+The final step needed to produce the Barycenter waveforms used by
+the simulators is to apply a polarization rotation by angle $\psi$:
+\begin{eqnarray}
+h_+(t) & = & h(t) \cos(2 \psi) \nonumber \\
+h_\times(t) & = & -h(f) \sin(2 \psi) \, .
+\end{eqnarray}
+The orientation of the various LISA arms imparts positional information
+into the measured waveforms, which adds the ecliptic latitude and longitude
+to the collection of parameters required to describe the signal from
+a cosmic string cusp.
+
+To summarize, a cosmic string cusp is described by the six parameters:
+Amplitude ${\cal A}$, Central Time $t_\star$, Maximum Frequency $f_{\rm max}$,
+Polarization $\psi$, Ecliptic Latitude and Ecliptic Longitude.
+
+The amplitude should be chosen to give the desired matched filtered SNR.
+The central time should be chosen uniformly in the observation period.
+The maximum frequency should be chosen between $f_{\rm min}$ and
+$f_{\rm Nyquist}$ (Once $f_{\rm max}$ exceeds the Nyquist frequency it
+can not be determined from the data, so to limit aliasing it is a good
+idea to cap its maximum value at the Nyquist frequency). The polarization
+angle is uniform in the range $[0,\pi]$, and the sky location should be
+uniform in longitude and the sine of the latitude.
+
+
+\begin{thebibliography}{99}
+
+\bibitem{cusp1} T. Damour and A. Vilenkin, Phys. Rev. Lett. {\bf 85}, 3761 (2000).
+\bibitem{cusp2} X. Siemens, J. Creighton, I. Maor, S. Ray Majumder,
+K. Cannon, and J. Read, Phys. Rev. D{\bf 73} 105001 (2006).
+\bibitem{cusp3} X. Siemens and K. D. Olum, Phys. Rev. D{\bf 68}, 085017 (2003).
+
+\end{thebibliography}
+
+
+
+\end{document}
