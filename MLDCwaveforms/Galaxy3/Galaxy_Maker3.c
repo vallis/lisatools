@@ -107,8 +107,8 @@ int main(int argc,char **argv)
        iota = acos(x);
        psi = pi*gsl_rng_uniform(rnd);
        phase = 2.0*pi*gsl_rng_uniform(rnd);
-       fprintf(Output, "%.16f %.16f %f %f %e %f %f %f\n", f, 0.0, theta, phi, A, iota, psi, phase);
-       fprintf(Output2, "%.16f %.16f %f %f %e %f %f %f\n", f, 0.0, theta, phi, A, iota, psi, phase);
+       fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, 0.0, theta, phi, A, iota, psi, phase);
+       fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, 0.0, theta, phi, A, iota, psi, phase);
      }
 
       fclose(Infile);
@@ -183,13 +183,13 @@ int main(int argc,char **argv)
        if(f < fNy)
         {
 	 cnt++;
-         fprintf(Output, "%.16f %.16f %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+         fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
         }
 
        if((Acut > 2.0) && (f < fNy))
 	 {
 	   cntb++;
-           fprintf(Output2, "%.16f %.16f %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+           fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
          }
 
      }
@@ -267,13 +267,13 @@ int main(int argc,char **argv)
        if(f < fNy)
         {
 	 cnt2++;
-         fprintf(Output, "%.16f %.16f %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+         fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
         }
 
        if((Acut > 2.0) && (f < fNy))
 	 {
 	   cntb2++;
-           fprintf(Output2, "%.16f %.16f %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+           fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
          }
 
      }
