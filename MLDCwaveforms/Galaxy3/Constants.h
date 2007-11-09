@@ -21,7 +21,7 @@
           /* ----------------  NATURAL CONSTANTS  ----------------- */
 
  /* Speed of light (m/s) */
-#define c 299792458.
+#define clight 299792458.
 
  /* Number of seconds in a sidereal year */
 #define year 3.15581498e7
