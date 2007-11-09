@@ -1,12 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "nrutil2.h"
+#include "arrays.h"
 #include "Constants.h"
+#include <fftw3.h>
 
 void spacecraft(double t,  double *x, double *y, double *z);
-void dfour1(double *data, unsigned long nn, int isign);
-void drealft(double *data, unsigned long n, int isign);
 void convolve(long N, double *a, long M, double *b, double *cn);
 void XYZ(double ***d, double f0, long q, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
 void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
@@ -26,6 +25,13 @@ int main(int argc,char **argv)
   double fonfs, Sn, Sm, Acut;
   long M, N, q;
   long i, j, k, cnt, mult;
+
+  // used by fftw3
+  fftw_complex *out;
+  fftw_plan plan_reverse;
+  int nc;
+  double *in;
+
   FILE* Infile;
   FILE* Outfile;
 
@@ -38,6 +44,10 @@ int main(int argc,char **argv)
   if((T/year) <= 2.0) mult = 2;
   if((T/year) <= 1.0) mult = 1;
 
+  nc = NFFT/2+1;
+  in = fftw_malloc ( sizeof ( double ) * NFFT);
+  out = fftw_malloc ( sizeof ( fftw_complex ) * nc );
+  plan_reverse = fftw_plan_dft_c2r_1d(NFFT, out, in, FFTW_ESTIMATE);
 
   sprintf(Gfile, "Data/Galaxy_%s.dat", argv[1]);
 
@@ -133,21 +143,6 @@ int main(int argc,char **argv)
 
   printf("Simulation Finished\n");
 
-
-    /* back to the time domain */
-      drealft(XfLS-1, NFFT, -1);     drealft(YfLS-1, NFFT, -1);     drealft(ZfLS-1, NFFT, -1);
-      drealft(XfSL-1, NFFT, -1);     drealft(YfSL-1, NFFT, -1);     drealft(ZfSL-1, NFFT, -1);
-
-  for(i=0; i<NFFT; i++)
-    {
-      XfLS[i] *= 2.0;
-      YfLS[i] *= 2.0;
-      ZfLS[i] *= 2.0;
-      XfSL[i] *= 2.0;
-      YfSL[i] *= 2.0;
-      ZfSL[i] *= 2.0;
-      } 
-
       Outfile = fopen("Data/Sources_LS.txt","w");
       sprintf(Gfile, "Galaxy_LS_%s", argv[1]);
       fprintf(Outfile,"%s\n", Gfile);
@@ -158,40 +153,113 @@ int main(int argc,char **argv)
       fprintf(Outfile,"%s\n", Gfile);
       fclose(Outfile);
 
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = XfLS[2*i];
+      out[i][1] = -XfLS[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
+
       sprintf(Gfile, "Binary/X_Galaxy_LS_%s.bin", argv[1]);
       Outfile = fopen(Gfile,"wb");
-      for (i = 0 ; i < NFFT ; i++) fwrite(&XfLS[i], sizeof(double), 1, Outfile);
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
       fclose(Outfile);
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = YfLS[2*i];
+      out[i][1] = -YfLS[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
 
       sprintf(Gfile, "Binary/Y_Galaxy_LS_%s.bin", argv[1]);
       Outfile = fopen(Gfile,"wb");
-      for (i = 0 ; i < NFFT ; i++) fwrite(&YfLS[i], sizeof(double), 1, Outfile);
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
       fclose(Outfile);
+
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = ZfLS[2*i];
+      out[i][1] = -ZfLS[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
 
       sprintf(Gfile, "Binary/Z_Galaxy_LS_%s.bin", argv[1]);
       Outfile = fopen(Gfile,"wb");
-      for (i = 0 ; i < NFFT ; i++) fwrite(&ZfLS[i], sizeof(double), 1, Outfile);
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
       fclose(Outfile);
+
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = XfSL[2*i];
+      out[i][1] = -XfSL[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
 
       sprintf(Gfile, "Binary/X_Galaxy_SL_%s.bin", argv[1]);
       Outfile = fopen(Gfile,"wb");
-      for (i = 0 ; i < NFFT ; i++) fwrite(&XfSL[i], sizeof(double), 1, Outfile);
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
       fclose(Outfile);
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = YfSL[2*i];
+      out[i][1] = -YfSL[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
 
       sprintf(Gfile, "Binary/Y_Galaxy_SL_%s.bin", argv[1]);
       Outfile = fopen(Gfile,"wb");
-      for (i = 0 ; i < NFFT ; i++) fwrite(&YfSL[i], sizeof(double), 1, Outfile);
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
       fclose(Outfile);
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = ZfSL[2*i];
+      out[i][1] = -ZfSL[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
 
       sprintf(Gfile, "Binary/Z_Galaxy_SL_%s.bin", argv[1]);
       Outfile = fopen(Gfile,"wb");
-      for (i = 0 ; i < NFFT ; i++) fwrite(&ZfSL[i], sizeof(double), 1, Outfile);
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
       fclose(Outfile);
 
       free_dvector(params,0,6);
 
       free_dvector(XfLS,0,NFFT-1);  free_dvector(YfLS,0,NFFT-1);  free_dvector(ZfLS,0,NFFT-1);
       free_dvector(XfSL,0,NFFT-1);  free_dvector(YfSL,0,NFFT-1);  free_dvector(ZfSL,0,NFFT-1);
+
+      fftw_free ( in );
+      fftw_free ( out );
+      fftw_destroy_plan ( plan_reverse ); 
 
 
     return;
@@ -258,6 +326,10 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
   /*   Miscellaneous  */
   double xm, fstep, power;
 
+  // used by fftw3
+  fftw_complex *in, *out;
+  fftw_plan plan_forward;
+
   /*   Allocating Arrays   */
   
   u = dvector(1,3); v = dvector(1,3); k = dvector(1,3);
@@ -283,6 +355,10 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
 
   data12 = dvector(1,2*N); data21 = dvector(1,2*N); data31 = dvector(1,2*N);
   data13 = dvector(1,2*N); data23 = dvector(1,2*N); data32 = dvector(1,2*N); 
+
+  in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+  out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+  plan_forward = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
   
   a12 = dvector(1,2*N+2); a21 = dvector(1,2*N+2); a31 = dvector(1,2*N+2);
   a13 = dvector(1,2*N+2); a23 = dvector(1,2*N+2); a32 = dvector(1,2*N+2);
@@ -368,7 +444,7 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
 
       for(i=1; i<=3; i++) 
         {
-	  kdotx[i] = (x[i]*k[1]+y[i]*k[2]+z[i]*k[3])/c;
+	  kdotx[i] = (x[i]*k[1]+y[i]*k[2]+z[i]*k[3])/clight;
           xi[i]    = t - kdotx[i];
           f[i]     = f0 + fdot*xi[i];
           fonfs[i] = f[i]/fstar;
@@ -444,10 +520,104 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
       data13[2*n-1] = TR[1][3];   data23[2*n-1] = TR[2][3];   data32[2*n-1] = TR[3][2];
       data13[2*n]   = TI[1][3];   data23[2*n]   = TI[2][3];   data32[2*n]   = TI[3][2];
     }
-	 
-  /*   NR FFT   */
-  dfour1(data12, N, -1);  dfour1(data21, N, -1);  dfour1(data31, N, -1);
-  dfour1(data13, N, -1);  dfour1(data23, N, -1);  dfour1(data32, N, -1);
+
+  for(n=1; n<=N; n++)
+    {
+      in[n-1][0] = data12[2*n-1];
+      in[n-1][1] = -data12[2*n];
+    }
+
+  fftw_execute(plan_forward);
+
+  data12[1] = out[0][0];
+  data12[2] = -out[0][1];
+  for(i=2; i<=N; i++)
+    {
+      data12[2*i-1] = out[N+1-i][0];
+      data12[2*i] = -out[N+1-i][1];
+    }
+
+  for(n=1; n<=N; n++)
+    {
+      in[n-1][0] = data21[2*n-1];
+      in[n-1][1] = -data21[2*n];
+    }
+
+  fftw_execute(plan_forward);
+
+  data21[1] = out[0][0];
+  data21[2] = -out[0][1];
+  for(i=2; i<=N; i++)
+    {
+      data21[2*i-1] = out[N+1-i][0];
+      data21[2*i] = -out[N+1-i][1];
+    }
+
+  for(n=1; n<=N; n++)
+    {
+      in[n-1][0] = data13[2*n-1];
+      in[n-1][1] = -data13[2*n];
+    }
+
+  fftw_execute(plan_forward);
+
+  data13[1] = out[0][0];
+  data13[2] = -out[0][1];
+  for(i=2; i<=N; i++)
+    {
+      data13[2*i-1] = out[N+1-i][0];
+      data13[2*i] = -out[N+1-i][1];
+    }
+
+  for(n=1; n<=N; n++)
+    {
+      in[n-1][0] = data31[2*n-1];
+      in[n-1][1] = -data31[2*n];
+    }
+
+  fftw_execute(plan_forward);
+
+  data31[1] = out[0][0];
+  data31[2] = -out[0][1];
+  for(i=2; i<=N; i++)
+    {
+      data31[2*i-1] = out[N+1-i][0];
+      data31[2*i] = -out[N+1-i][1];
+    }
+
+
+  for(n=1; n<=N; n++)
+    {
+      in[n-1][0] = data32[2*n-1];
+      in[n-1][1] = -data32[2*n];
+    }
+
+  fftw_execute(plan_forward);
+
+  data32[1] = out[0][0];
+  data32[2] = -out[0][1];
+  for(i=2; i<=N; i++)
+    {
+      data32[2*i-1] = out[N+1-i][0];
+      data32[2*i] = -out[N+1-i][1];
+    }
+
+
+  for(n=1; n<=N; n++)
+    {
+      in[n-1][0] = data23[2*n-1];
+      in[n-1][1] = -data23[2*n];
+    }
+
+  fftw_execute(plan_forward);
+
+  data23[1] = out[0][0];
+  data23[2] = -out[0][1];
+  for(i=2; i<=N; i++)
+    {
+      data23[2*i-1] = out[N+1-i][0];
+      data23[2*i] = -out[N+1-i][1];
+    }
 
   for(i=1; i<=N; i++)
     {
@@ -481,6 +651,10 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
  
 
   /*   Deallocate Arrays   */
+
+  fftw_destroy_plan(plan_forward);
+  fftw_free(in);
+  fftw_free(out);
   
   free_dvector(u,1,3); free_dvector(v,1,3); free_dvector(k,1,3);
 
@@ -654,8 +828,8 @@ void XYZ(double ***d, double f0, long q, long M, double *XLS, double *XSL, doubl
 
    X = dvector(1,2*M);  Y = dvector(1,2*M);  Z = dvector(1,2*M);
 
-   phiLS = 2.0*pi*f0*(dt/2.0-L/c);
-   phiSL = pi/2.0-2.0*pi*f0*(L/c);
+   phiLS = 2.0*pi*f0*(dt/2.0-L/clight);
+   phiSL = pi/2.0-2.0*pi*f0*(L/clight);
    cLS = cos(phiLS);
    sLS = sin(phiLS);
    cSL = cos(phiSL);
