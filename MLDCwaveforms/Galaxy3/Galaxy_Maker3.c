@@ -9,7 +9,7 @@
 #include "Constants.h"
 #include <stdio.h>
 #include <stddef.h>
-#include "nrutil2.h"
+#include "arrays.h"
 
 
 /*************  PROTOTYPE DECLARATIONS FOR EXTERNAL FUNCTIONS  **************/
