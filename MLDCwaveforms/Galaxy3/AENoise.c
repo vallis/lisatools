@@ -6,7 +6,7 @@
 #include "Constants.h"
 #include <stdio.h>
 #include <stddef.h>
-#include "nrutil2.h"
+#include "arrays.h"
 
 double AEnoise(double f)
 {
