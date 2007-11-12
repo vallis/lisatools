@@ -47,6 +47,8 @@ SourceClassModules['SpinBlackHoleBinary'] = 'BBH'
 SourceClassModules['FastSpinBlackHoleBinary'] = 'FastBBH'
 SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
 SourceClassModules['GalacticBinary'] = 'GalacticBinary'
+SourceClassModules['Stochastic'] = 'Stochastic'
+SourceClassModules['CosmicStringCusp'] = 'CosmicStringCusp'
 
 # could use something here to return a default unit if it is not set...
 # but we would have to look in the source-specific list as well as
