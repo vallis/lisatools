@@ -5,6 +5,22 @@
 #include "Constants.h" 
 #include "Declarations.h"
 
+double *dvector(long nl, long nh)
+/* allocate a double vector with subscript range v[nl..nh] */
+{
+    double *v=0;
+
+    v=(double *)malloc((size_t) ((nh-nl+1+NR_END)*sizeof(double)));
+    if (!v) fprintf(stderr,"allocation failure in dvector()");
+    return v-nl+NR_END;
+}
+
+void free_dvector(double *v, long nl, long nh)
+/* free a double vector allocated with dvector() */
+{
+    free((FREE_ARG) (v+nl-NR_END));
+}
+
 void Cusp_Barycenter(Cusp_structure Cusp, double *hp, double *hc, int n)
 { 
  
