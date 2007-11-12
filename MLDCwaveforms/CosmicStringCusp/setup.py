@@ -8,7 +8,7 @@ email       = 'cornish@physics.montana.edu'
 url         = 'http://lisatools.googlecode.com'
 
 csourcefiles = ['Cusp.c']
-sourcefiles  = csourcefiles + ['FastBBH.i']
+sourcefiles  = csourcefiles + ['CosmicStringCusp.i']
 headers      = ['Constants.h', 'Declarations.h']
 
 # please don't change anything below without contacting vallis@vallis.org
@@ -29,10 +29,13 @@ from distutils.util import get_platform
 
 argv_replace = []
 make_clib = False
+fftwdir = None
 
 for arg in sys.argv:
     if arg == '--make-clib':
         make_clib = True
+    elif arg.startswith('--fftw='):
+        fftwdir = arg.split('=',1)[1]        
     else:
         argv_replace.append(arg)
 
@@ -49,36 +52,47 @@ class swig_build(build):
 class qm_install_lib(install_lib):
     def run(self):
         install_lib.run(self)
-
+        
         if self.distribution.has_c_libraries():
             build_clib = self.get_finalized_command('build_clib')
             libs = build_clib.get_library_names()
-
+            
             clib_dir = build_clib.build_clib
-
+            
             for lib in libs:
                 clib = 'lib' + lib + '.a'
-
+                
                 src_file = os.path.join(clib_dir, clib)
                 dest_file = os.path.join(self.install_dir, clib)
-
+                
                 copy_file(src_file, dest_file)
-
+                
                 if sys.platform[:6] == "darwin":
                     spawn(['ranlib'] + [dest_file])
+    
 
 # get the numpy installation dir so we know where to find the header
 # (an interesting approach)
 
+includedirs, librarydirs, runtimelibrarydirs = [], [], []
+
 from numpy import __path__ as numpypath
-numpyinclude = numpypath[0] + '/core/include'
+includedirs.append(numpypath[0] + '/core/include')
+
+if fftwdir:
+    includedirs.append(fftwdir + '/include')
+    librarydirs.append(fftwdir + '/lib')
+    runtimelibrarydirs.append(fftwdir + '/lib')
 
 # now run the setup
 
 if make_clib == True:
     clibrary = [(modulename,{'sources': csourcefiles,
                              'depends': headers,
-                             'include_dirs': [numpyinclude]})]
+                             'include_dirs': includedirs,
+                             'library_dirs': librarydirs,
+                             'libraries': ['lfftw3'],
+                             'runtime_library_dirs': runtimelibrarydirs})]
 
     # this hack needed on OS X for universal binaries since ar fails if the .a is already present...
 
@@ -100,7 +114,10 @@ setup(name = modulename,
       
       ext_modules = [Extension('_' + modulename,
                                sourcefiles,
-                               include_dirs = [numpyinclude],
+                               include_dirs = includedirs,
+                               library_dirs = librarydirs,
+                               runtime_library_dirs = runtimelibrarydirs,
+                               libraries = ['fftw3'],
                                depends = headers)],
 
       libraries = clibrary,      
