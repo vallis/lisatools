@@ -8,13 +8,18 @@ gsldir = None
 for arg in sys.argv:
     if arg.startswith('--gsl='):
         gsldir = arg.split('=',1)[1]
+    elif arg.startswith('--fftw='):
+        fftwdir = arg.split('=',1)[1]
 
 if gsldir:
     setpath = ' -I%(gsldir)s/include -L%(gsldir)s/lib' % globals()
 else:
     setpath = ''
 
-assert(0 == os.system('gcc -O2 -o Fast_Response3 Fast_Response3.c arrays.c  AENoise.c -lm -lfftw3'))
+if fftwdir != gsldir:
+    setpath += ' -I%(fftwdir)s/include -L%(fftwdir)s/lib' % globals()
+
+assert(0 == os.system('gcc -O2 -o Fast_Response3 Fast_Response3.c arrays.c AENoise.c -lm -lfftw3' + setpath))
 
 assert(0 == os.system('gcc -O2 -o Galaxy_Maker3 Galaxy_Maker3.c arrays.c AENoise.c -lm -lgsl -lgslcblas' + setpath))
 
