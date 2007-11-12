@@ -256,6 +256,11 @@ print "--> Installing/refreshing BBH"
 assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
 os.chdir(here)
 
+os.chdir('MLDCwaveforms/CosmicStringCusp')
+print "--> Installing/refreshing CosmicStringCusp"
+assert(0 == os.system('python setup.py install --prefix=%s --fftw=%s' % (libdir,fftwdir)))
+os.chdir(here)
+
 os.chdir('MLDCwaveforms/FastBBH')
 print "--> Installing/refreshing FastBBH"
 assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
