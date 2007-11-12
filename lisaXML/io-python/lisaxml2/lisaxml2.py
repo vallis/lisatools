@@ -43,8 +43,11 @@ SourceClassModules = {}
 
 SourceClassModules['BlackHoleBinary'] = 'BBH'
 SourceClassModules['SpinBlackHoleBinary'] = 'BBH'
+SourceClassModules['FastSpinBlackHoleBinary'] = 'FastBBH'
 SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
 SourceClassModules['GalacticBinary'] = 'GalacticBinary'
+SourceClassModules['Stochastic'] = 'Stochastic'
+SourceClassModules['CosmicStringCusp'] = 'CosmicStringCusp'
 
 class XMLobject(object):
     """This class is used to manage attributes for XSIL objects: it keeps a list
