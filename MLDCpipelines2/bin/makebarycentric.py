@@ -99,7 +99,7 @@ for cnt in range(len(allsystems)):
 
     # impose polarization on waveform if given
     
-    if hasattr(mysystem,'Polarization'):
+    if hasattr(mysystem,'Polarization') and (not hasattr(mysystem,'dopolarization') or not mysystem.dopolarization):
         pol = mysystem.Polarization
         
         hp =  math.cos(2*pol) * hp0 + math.sin(2*pol) * hc0
