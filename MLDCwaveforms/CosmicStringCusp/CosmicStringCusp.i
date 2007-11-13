@@ -42,6 +42,8 @@ class CosmicStringCusp(lisaxml.Source):
                   ('CentralTime',                      'Second',        None, 'central time of the burst'),
                   ('MaximumFrequency',                 'Hertz',         None, 'maximum burst frequency'))
     
+    dopolarization = True
+    
     def  __init__(self,name=''):
         super(CosmicStringCusp, self).__init__('CosmicStringCusp',name)
         
@@ -72,6 +74,8 @@ class CosmicStringCusp(lisaxml.Source):
         
         hp = numpy.empty(samples,'d')
         hc = numpy.empty(samples,'d')
+        
+        Cusp_Barycenter(Cusp, hp, hc, samples);
         
         return (hp,hc)
     
