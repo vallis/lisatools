@@ -6,6 +6,7 @@ __version__ = '$Id: challenge2.py 415 2007-06-14 22:47:09Z vallisneri $'
 
 import sys
 import os
+import shutil
 import glob
 import re
 import time
@@ -182,12 +183,17 @@ challengename = args[0]
 if options.seed == None:
     parser.error("You must specify the seed!")
 
-# this sets the default dataset duration if not specified, with a special case for apparent challenge-1 datasets
-# (but not for 1.3.X EMRIs, which are two years)
+# this sets the default dataset duration if not specified with special cases:
+# - one year for challenge 1 except 1.3.X EMRIs (two years)
+# - 24 days for challenges 3.4 and 3.5
+
 if options.duration == None:
-    if 'challenge1' in challengename and (not 'challenge1.3' in challengename):
+    if ('challenge1' in challengename) and (not 'challenge1.3' in challengename):
         print("--> It looks like you're generating a challenge-1 dataset, so I will set the duration to 2^21 * 15 (you can override this with -T).")
         options.duration = oneyear
+    elif ('challenge3.4' in challengename) or ('challenge3.5' in challengename):
+        options.duration = 2**21
+        options.timestep = 1.0
     else:
         options.duration = 2.0*oneyear
 
@@ -233,11 +239,26 @@ donoise = not options.nonoise
 
 sourcekeyfile = options.sourcekeyfile
 
-step1time = time.time()
+# -----------------------------------------------------------------------------------
+# STEP 0: see where we're running from, and create directories if they're not present
+# -----------------------------------------------------------------------------------
+
+execdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+workdir = os.path.curdir
+
+for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template'):
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+
+for doc in ('Template/lisa-xml.css','Template/lisa-xml.xsl','Template/StandardLISA.xml'):
+    if not os.path.exists(doc):
+        shutil.copyfile(execdir + '/../' + doc,doc)
 
 # --------------------------------------------------------------------------------------
 # STEP 1: create source XML parameter files, and collect all of them in Source directory
 # --------------------------------------------------------------------------------------
+
+step1time = time.time()
 
 # first empty the Source and Galaxy directories
 # makemode won't regenerate sources, so at least step 1 must be completed
@@ -246,20 +267,23 @@ step1time = time.time()
 if (not makemode) and (not sourcekeyfile):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
-
+    
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
     # if makesource-Galaxy.py is called, it must be with the UNALTERED seed, which is used
     # later to call makeTDIsignals-Galaxy.py
-
-    sourcescript = 'bin/' + challengename + '.py'
+    
+    # look for the script relative to challenge.py
+    
+    sourcescript = execdir + '/' + challengename + '.py'
     if not os.path.isfile(sourcescript):
         parser.error("I need the challenge script %s!" % sourcescript)
     else:
         run('python %s %s %s' % (sourcescript,seed,istraining))
 elif (not makemode) and sourcekeyfile:
-    # convoluted logic, to make sure that the keyfile given is not in Source/ and therefore
-    # deleted
+    # convoluted logic, to make sure that the keyfile given is not in Source/ and therefore deleted
+    # TO DO: improve
+    
     run('mv %s %s-backup' % (sourcekeyfile,sourcekeyfile))
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
@@ -286,7 +310,7 @@ if (not makemode):
 for xmlfile in glob.glob('Source/*.xml'):
     baryfile = 'Barycentric/' + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
     if (not makemode) or newer(xmlfile,baryfile):
-        prun('bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
+        prun('%(execdir)s/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 
 pwait()
 
@@ -311,15 +335,15 @@ if dosynthlisa:
         if (not makemode) or newer(xmlfile,tdifile):
             # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
             if glob.glob('Galaxy/*.xml'):
-                prun('bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+                prun('%(execdir)s/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
             else:
-                prun('bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+                prun('%(execdir)s/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
     # now run noise generation...
     noisefile = 'TDI/tdi-frequency-noise.xml'
     # note that we're not checking whether the seed is the correct one
     if donoise and ((not makemode) or (not os.path.isfile(noisefile))):
-        prun('bin/makeTDInoise-synthlisa.py --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
+        prun('%(execdir)s/makeTDInoise-synthlisa.py --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
 
     pwait()
 
@@ -335,12 +359,12 @@ if lisasimdir:
 
         if (not makemode) or newer(xmlfile,tdifile):
             # remember that we're not doing any SNR adjusting here...
-            prun('bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s %(xmlfile)s %(tdifile)s')
+            prun('%(execdir)s/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s %(xmlfile)s %(tdifile)s')
     
     slnoisefile = 'TDI/tdi-strain-noise.xml'
 
     if donoise and ((not makemode) or (not os.path.isfile(slnoisefile))):
-        prun('bin/makeTDInoise-lisasim.py --lisasimDir=%(lisasimdir)s --seedNoise=%(seednoise)s %(slnoisefile)s')
+        prun('%(execdir)s/makeTDInoise-lisasim.py --lisasimDir=%(lisasimdir)s --seedNoise=%(seednoise)s %(slnoisefile)s')
     
     pwait()
 
@@ -358,7 +382,7 @@ if glob.glob('Galaxy/*.xml'):
         lstdifile = 'TDI/' + re.sub('.xml','-tdi-strain.xml',os.path.basename(xmlfile))
 
         if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
-            prun('bin/makeTDIsignals-Galaxy2.py %s %s %s' % (xmlfile,sltdifile,lstdifile))
+            prun('%s/makeTDIsignals-Galaxy3.py %s %s %s' % (execdir,xmlfile,sltdifile,lstdifile))
 
     pwait()
 
@@ -431,21 +455,21 @@ if dosynthlisa:
 
     if istraining:
         if glob.glob('TDI/*-tdi-frequency.xml'):
-            run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-frequency.xml')
+            run('%(execdir)s/mergeXML.py %(nonoisefile)s TDI/*-tdi-frequency.xml')
 
         if donoise:
-            run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
     else:
         if glob.glob('TDI/*-tdi-frequency.xml'):
-            run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-frequency.xml')
+            run('%(execdir)s/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-frequency.xml')
 
         if donoise:
-            run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+            run('%(execdir)s/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
 
     # create the key with all source info
 
     if glob.glob('TDI/*-tdi-frequency.xml'):
-        run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
+        run('%(execdir)s/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
 
     # now do some tarring up, including XSL and CSS files from Template
 
@@ -497,16 +521,16 @@ if lisasimdir:
 
     if istraining:
         if glob.glob('TDI/*-tdi-strain.xml'):
-            run('bin/mergeXML.py %(nonoisefile)s TDI/*-tdi-strain.xml')
+            run('%(execdir)s/mergeXML.py %(nonoisefile)s TDI/*-tdi-strain.xml')
 
         if donoise:
-            run('bin/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
     else:
         if glob.glob('TDI/*-tdi-strain.xml'):
-            run('bin/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-strain.xml')
+            run('%(execdir)s/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-strain.xml')
         
         if donoise:
-            run('bin/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+            run('%(execdir)s/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
 
     # do key file, but only if synthlisa has not run, otherwise it will be erased
 
@@ -514,7 +538,7 @@ if lisasimdir:
         lisaxml.lisaXML(keyfile,comments='XML key for %s%s' % (challengename,secretseed)).close()
 
         if glob.glob('TDI/*-tdi-strain.xml'):
-            run('bin/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
+            run('%(execdir)s/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
 
     # now do some tarring up, including XSL and CSS files from Template
 
