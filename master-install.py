@@ -273,6 +273,11 @@ print "--> Installing/refreshing EMRI"
 assert(0 == os.system('python setup.py install --prefix=%s --with-gsl=%s' % (libdir,gsldir)))
 os.chdir(here)
 
+os.chdir('MLDCwaveforms/Stochastic')
+print "--> Installing/refreshing Stochastic"
+assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
+os.chdir(here)
+
 # install/check install for Galaxy3 TDI
 
 os.chdir('MLDCwaveforms/Galaxy3')
