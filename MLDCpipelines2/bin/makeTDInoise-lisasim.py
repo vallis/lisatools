@@ -24,6 +24,8 @@ def run(command,quiet = False):
         print 'Script %s failed at command "%s".' % (sys.argv[0],commandline)
         sys.exit(1)
 
+execdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
 # set ourselves up to parse command-line options
 
 from optparse import OptionParser
@@ -123,7 +125,7 @@ run('rm -f Binary/M1Noise*.bin Binary/M2Noise*.bin Binary/M3Noise*.bin',quiet=Tr
 
 noisefileobj = lisaxml.lisaXML(tdifile)
 noisefileobj.close()
-run('%s/bin/mergeXML.py %s %s %s' % (here,tdifile,here + '/Template/StandardLISA.xml',outxml),quiet=True)
+run('%s/mergeXML.py %s %s %s' % (execdir,tdifile,here + '/Template/StandardLISA.xml',outxml),quiet=True)
 
 run('rm -f XML/noise-only.xml',quiet=True)
 run('rm -f XML/noise-only.bin',quiet=True)

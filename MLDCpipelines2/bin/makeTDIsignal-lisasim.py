@@ -24,6 +24,8 @@ def run(command,quiet = False):
         print 'Script %s failed at command "%s".' % (sys.argv[0],commandline)
         sys.exit(1)
 
+execdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
 # set ourselves up to parse command-line options
 
 from optparse import OptionParser
@@ -140,11 +142,11 @@ sourcefileobj.close()
 
 # then add the TDI data from the LISA Simulator output
 # (this will need changing when running challenge2.py in a workdir)
-run('%s/bin/mergeXML.py %s %s %s' % (here,tdifile,here + '/Template/StandardLISA.xml',outxml),quiet=True)
+run('%s/mergeXML.py %s %s %s' % (execdir,tdifile,here + '/Template/StandardLISA.xml',outxml),quiet=True)
 
 # then add the modified Source data included in the Barycentric file
 # (this will need changing when running challenge2.py in a workdir)
-run('%s/bin/mergeXML.py -k %s %s' % (here,tdifile,xmlfile),quiet=True)
+run('%s/mergeXML.py -k %s %s' % (execdir,tdifile,xmlfile),quiet=True)
 
 os.chdir(here)
 
