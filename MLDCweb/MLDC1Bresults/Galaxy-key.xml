@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="Galactic Binaries" Type="PlaneWaveTable">
+            <Param Name="SourceType" Type="String">
+                GalacticBinary
+            </Param>
+            <Table>
+                <Column Name="Frequency" Type="double" Unit="Hertz"/>
+                <Column Name="EclipticLatitude" Type="double" Unit="Radian"/>
+                <Column Name="EclipticLongitude" Type="double" Unit="Radian"/>
+                <Column Name="Amplitude" Type="double" Unit="1"/>
+                <Column Name="Inclination" Type="double" Unit="Radian"/>
+                <Column Name="Polarization" Type="double" Unit="Radian"/>
+                <Column Name="InitialPhase" Type="double" Unit="Radian"/>
+                <Dim Name="Length">
+                    1
+                </Dim>
+                <Dim Name="Records">
+                    7
+                </Dim>
+                <Stream Type="Local" Encoding="Text">
+                    0 0 0 0 0 0 0
+                </Stream>
+            </Table>
+        </XSIL>
+    </XSIL>
+</XSIL>

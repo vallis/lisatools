@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="ExtremeMassRatioInspiral" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                0
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                0
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                0
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                0
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                0
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>
