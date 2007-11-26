@@ -38,6 +38,10 @@ except:
 #   method can find out which constructor to call
 # - let getobsc return a derived numpy object that knows about cadence,
 #   observable names, etc.; then the lisaxml call TDIData can just 
+#
+# TO DO: to avoid the problem of broken links for aliases (e.g., Observable.Data), one can implement them
+#        with getters and setters (Python property, right?)
+
 
 SourceClassModules = {}
 
@@ -189,8 +193,11 @@ class XSILobject(XMLobject,list):
         elif objtype == 'TimeSeries':
             self = TimeSeries()
         elif objtype == 'PlaneWaveTable':
-            raise NotImplementedError
-            # self = SourceTable()    
+            for node2 in node:
+                if node2.tagName == 'Param' and node2.Name == 'SourceType':
+                    sourcetype = str(node2)
+            
+            self = SourceTable(sourcetype)
         else:
             # This includes LISA!
             self = XSILobject()
@@ -369,7 +376,10 @@ class Stream(object):
             else:
                 raise NotImplementedError, 'Stream(): data can currently be represented only as 1D or 2D numpy arrays.'
         elif type(data) == str:
-            pass
+            lines = data.split('\n')
+            
+            self.Records = len(lines[0].split())
+            self.Length = len([line for line in lines if len(line.split()) == self.Records])
         else:
             raise NotImplementedError, 'Stream(): I do not know how to handle these Stream data.'
     
@@ -504,15 +514,18 @@ class Stream(object):
                           {'Type': 'Remote', 'Encoding': 'Text'},
                           [os.path.basename(filename)])
         elif self.Type == 'Local' and 'Text' in self.Encoding:
-            textdata = ''
-            linepattern = '%s ' * self.Records + '\n'
-            
-            if self.Records == 1:
-                for i in range(0,self.Length):
-                    textdata += linepattern % self.Data[i]
+            if type(self.Data) == str:
+                textdata = self.Data
             else:
-                for i in range(0,self.Length):
-                    textdata += linepattern % tuple(self.Data[i,:])
+                textdata = ''
+                linepattern = '%s ' * self.Records + '\n'
+            
+                if self.Records == 1:
+                    for i in range(0,self.Length):
+                        textdata += linepattern % self.Data[i]
+                else:
+                    for i in range(0,self.Length):
+                        textdata += linepattern % tuple(self.Data[i,:])
             
             stream = ('Stream',
                       {'Type': 'Local', 'Encoding': 'Text', 'Delimiter': ' '},
@@ -747,6 +760,22 @@ class Array(object):
                 [ ('Dim', {'Name': 'Length' }, [self.Length]),
                   ('Dim', {'Name': 'Records'}, [self.Records]),
                   self.Stream.XML(xmlfile) ] )
+    
+
+
+class SourceTable(XSILobject):
+    def __init__(self,sourcetype='',name='',table=None):
+        super(SourceTable,self).__init__('PlaneWaveTable',name)
+        
+        if sourcetype:
+            self.SourceType = sourcetype
+                
+        if table and type(table) == Table:
+            self.__dict__['Table'] = table
+            
+            if not self.Name:
+                # inherit the name of the Table, if given...
+                self.__dict__['Name'] = self.__dict__['name'] = self.Table.Name
     
 
 
@@ -1419,7 +1448,7 @@ class lisaXML(XSILobject):
     
     def getLISASources(self):
         """Return a list of Source objects defined in the XML. It's better to access
-        the LISASource attribute directly.
+        the SourceData attribute directly.
         
         Doctests:
         
