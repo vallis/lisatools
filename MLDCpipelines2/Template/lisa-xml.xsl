@@ -217,7 +217,7 @@
                 <td><a href="{Stream}"><xsl:value-of select="Stream"/></a></td>                     
             </xsl:if>
             <xsl:if test="Stream/@Type = 'Local'">
-                <td>(see XML source)</td><td></td>
+                <td>(see below)</td><td></td>
             </xsl:if>
         </tr>
         <tr>
@@ -240,6 +240,29 @@
             </tr>
         </xsl:for-each>
     </table>
+	
+	<xsl:if test="Stream/@Type = 'Local'">
+		<pre>
+        	<xsl:call-template name="pre-text">
+        		<xsl:with-param name="string" select="Stream" />
+        	</xsl:call-template>
+		</pre>
+	</xsl:if>
+</xsl:template>
+
+<xsl:template name="pre-text">
+   <xsl:param name="string" select="." />
+   <xsl:choose>
+      <xsl:when test="contains($string, '&#xA;')">
+         <xsl:value-of select="normalize-space(substring-before($string, '&#xA;'))" /><xsl:text>
+</xsl:text><xsl:call-template name="pre-text">
+            <xsl:with-param name="string" select="substring-after($string, '&#xA;')" />
+         </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:value-of select="normalize-space($string)" />
+      </xsl:otherwise>
+   </xsl:choose>
 </xsl:template>
 
 <xsl:template name="add-line-breaks">
