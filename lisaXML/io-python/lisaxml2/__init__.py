@@ -21,4 +21,4 @@ lisaXML data elements (see their documentation):
 - "LISA" represents a LISA geometry object.
 """
 
-from lisaxml import *
+from lisaxml2 import *
