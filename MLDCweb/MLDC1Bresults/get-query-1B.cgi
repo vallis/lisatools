@@ -35,7 +35,7 @@ if 'MLDC' in submit:
     if '1B.1.1' in submit:
         viewpage = htmldir + '?filename=GalacticBinary-key.xml&challenge=%s&collaboration=%s' % (submitchallenge,shortcollaboration)
     elif '1B.1' in submit:
-            viewpage = htmldir + '?filename=Galaxy-key.xml&challenge=%s&collaboration=%s' % (submitchallenge,shortcollaboration)
+        viewpage = htmldir + '?filename=Galaxy-key.xml&challenge=%s&collaboration=%s' % (submitchallenge,shortcollaboration)
     elif '1B.2' in submit:
         viewpage = htmldir + '?filename=SMBH-key.xml&challenge=%s&collaboration=%s'   % (submitchallenge,shortcollaboration)
     elif '1B.3' in submit:

@@ -31,7 +31,7 @@ outxml.Author = collaboration
 # outxml.Comment = '%s' % data.keys()
 # outxml.Comment = data['src0:Data'].value
 
-outxml.Comment = "Please check this file for correctness. It can be retrieved at http://www.tapir.caltech.edu/~mldc/submit-1B/" + collaboration + '-' + challenge + '-' + time.strftime('%y%m%d-%H%M%S',time.localtime()) + '.xml'
+outxml.Comment = "Thank you for your submission! Please check this file for correctness. It can be retrieved at http://www.tapir.caltech.edu/~mldc/submit-1B/" + collaboration + '-' + challenge + '-' + time.strftime('%y%m%d-%H%M%S',time.localtime()) + '.xml'
 
 if data['comments'].value:
     outxml.Comment += '\n\nYour comments:\n\n' + data['comments'].value

@@ -27,7 +27,8 @@ data = cgi.FieldStorage()
 
 # see if we're passed a filename...
 if 'filename' in data:
-    inputfile = lisaxml.lisaXML(templatedir + data['filename'].value,'r')
+    inputfilename = data['filename'].value
+    inputfile = lisaxml.lisaXML(templatedir + inputfilename,'r')
 else:
     # otherwise use the uploaded file...
     raise NotImplementedError
@@ -79,6 +80,18 @@ print '</div>'
 
 print '<div class="sourceclass" style="background: #ffe;">'
 
+# if we have a file, get data from it
+
+datarows = []
+datalines = []
+
+if data.has_key('upload-file') and data['upload-file'].filename and data['upload-file'].file:
+    for line in data['upload-file'].file:
+        datarows.append(line)
+        
+        for item in line.split():
+            datalines.append(item)
+
 cntsrc = 0
 
 for src in inputfile.SourceData:
@@ -98,6 +111,8 @@ for src in inputfile.SourceData:
     
     print '<input type="text" name="src%s:Name" size="48" maxlength="255" value="%s" /></p>' % (cntsrc,srcname)
     print '<input type="hidden" name="src%s:SourceType" value="%s" />' % (cntsrc,srctype)        
+
+    print '<p>(Use one line for each source, separate parameters by spaces.)</p>'
 
     if istable:
         print '<p><table>'
@@ -126,11 +141,15 @@ for src in inputfile.SourceData:
             print '<input type="hidden" name="src%s:%s_Unit" value="%s" />' % (cntsrc,src.Table.parameters[ii],paramunits[ii])
         
         print '<p><textarea name="src%s:Data" rows="10" cols="80">' % cntsrc
-        
-        for line in src.Table.Data:
-            for val in line:
-                print val,
-            print
+            
+        if cntsrc == 0 and datarows:
+            for line in datarows:
+                print line,
+        else:
+            for line in src.Table.Data:
+                for val in line:
+                    print val,
+                print
         print '</textarea></p>'
     else:    
         print '<table style="table-layout: fixed; width: auto;">'
@@ -138,13 +157,21 @@ for src in inputfile.SourceData:
         for param in src.parameters:
             # check that this is not a Min or Max parameter
             
+            if ( (srctype == 'ExtremeMassRatioInspiral' and param == 'Polarization') or
+                 (srctype == 'BlackHoleBinary' and (param == 'TruncationTime' or param == 'TaperApplied')) ):
+                break
+            
             if hasattr(src,param + '_Unit'):
                 paramunit = getattr(src,param + '_Unit')
             else:
                 paramunit = ''
         
             paramvalue = getattr(src,param)
-        
+            
+            if datalines:
+                paramvalue = datalines[0]
+                del datalines[0]
+            
             print '<tr>'
             print '<td>%s (%s):</td>' % (param,paramunit)
             print '<td><input type="text" name="src%s:%s" size="32" maxlength="255" value="%s" /></td>' % (cntsrc,param,paramvalue)
@@ -168,8 +195,19 @@ print '</div>'
 
 print '<div class="sourceclass" style="background: #fef;">'
 print '<p><b>Comments</b>:<textarea name="comments" rows="5" cols="80"></textarea>'
-print '<input type="submit" name = "action" value = "write" />'
+print '<p>Use this field also to provide parameter uncertainties, as a list [MinParam1 MaxParam1 MinParam2 MaxParam2 ...], using the same parameter ordering as above.</p>'
+print '<input type="submit" name = "action" value = "Submit" />'
 print '</div>'
 
 print '</form>'
+
+print '<div class="sourceclass" style="background: #fee;">'
+print '<form enctype = "multipart/form-data" method = "post" action = "http://www.tapir.caltech.edu/~mldc/cgi-bin/edit-lisaxml.cgi">'
+print '<input type="hidden" name="filename" value="%s"/>' % inputfilename
+print '<input type="hidden" name="challenge" value="%s"/>' % challengename
+print '<input type="hidden" name="collaboration" value="%s"/>' % collaborationname
+print '<p><input type="submit" name = "action" value = "Reload" /> this form after filling fields from text file: <input type="file" name="upload-file" size="32"/></p>'
+print '</form>'
+print '</div>'
+
 print '</body></html>'
