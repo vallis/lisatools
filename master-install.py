@@ -287,7 +287,8 @@ sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.
 
 if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3')
      or newer_group(sources,'Galaxy_key3') or newer_group(sources,'Fast_XML_LS3') 
-     or newer_group(sources,'Fast_XML_SL3') or newer_group(sources,'DataImport') ):
+     or newer_group(sources,'Fast_XML_SL3') or newer_group(sources,'DataImport')
+     or newer_group(sources,'SNR_Check') or newer_group(sources,'Confusion_Maker3')     ):
     print "    (recompiling Galaxy3)"
     assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
