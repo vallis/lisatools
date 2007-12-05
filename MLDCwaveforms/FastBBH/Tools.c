@@ -20,6 +20,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double fac, etain;
   double costhetaL, sinthetaL, phiL, thomas;
   double tcurrent, tfinal, hcurrent;
+  double cphil, sphil;
   double N[3], LSvals[9], updatedvals[9], fourthordervals[9], updatedthomas;
   double derivvals[9];
   double thomasderiv;
@@ -39,7 +40,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   double timevec[VECLENGTH];
   double mulvec[VECLENGTH];
-  double philvec[VECLENGTH];
+  double sphilvec[VECLENGTH];
+  double cphilvec[VECLENGTH];
   double betavec[VECLENGTH];
   double sigmavec[VECLENGTH];
   double thomasvec[VECLENGTH];
@@ -47,7 +49,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   // For the spline:
 
   double muly2[VECLENGTH];
-  double phily2[VECLENGTH];
+  double sphily2[VECLENGTH];
+  double cphily2[VECLENGTH];
   double betay2[VECLENGTH];
   double sigmay2[VECLENGTH];
   double thomasy2[VECLENGTH];
@@ -90,14 +93,14 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   phiS10 = SBH.AzimuthalAngleOfSpin1;
   phiS20 = SBH.AzimuthalAngleOfSpin2;
   phic = SBH.PhaseAtCoalescence;
- /* 
-  printf("m1 = %.12e   m2 = %.12e    tc = %.12e   DL =  %.12e   x1 = %.12e    x2 = %.12e \n",\
+ 
+  /* printf("m1 = %.12e   m2 = %.12e    tc = %.12e   DL =  %.12e   x1 = %.12e    x2 = %.12e \n",	\
       m1, m2, tc, DL, chi1, chi2);
   printf("theta = %.12e   thetaL = %.12e  thS1 = %.12e  thS2  = %.12e \n", \
       PI - SBH.EclipticLatitude, SBH.InitialPolarAngleL, SBH.PolarAngleOfSpin1, SBH.PolarAngleOfSpin2);
-  printf("phi = %.12e   phiL = %.12e  phiS1 = %.12e   phiS2 = %.12e  phic = %.12e \n",
-      phi, phiL0, phiS10, phiS20, phic);
-*/
+  printf("phi = %.12e   phiL = %.12e  phiS1 = %.12e   phiS2 = %.12e  phic = %.12e \n", 
+  phi, phiL0, phiS10, phiS20, phic); */
+
   // Useful functions of these parameters:
 
   Mtot = m1 + m2;
@@ -186,7 +189,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   timevec[index] = tcurrent*TSUN;
   mulvec[index] = LSvals[2];
-  philvec[index] = atan2(LSvals[1],LSvals[0]); 
+  sphilvec[index] = LSvals[1];
+  cphilvec[index] = LSvals[0]; 
   betavec[index] = beta;
   sigmavec[index] = sigma;
   thomasvec[index] = thomasval; 
@@ -254,7 +258,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	S1dotS2 = calcSdotS(LSvals);
       
 	mulvec[index] = LSvals[2];
-	philvec[index] = atan2(LSvals[1],LSvals[0]);
+        sphilvec[index] = LSvals[1];
+        cphilvec[index] = LSvals[0]; 
       
 	betavec[index] =  (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);
 	
@@ -276,7 +281,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	tcurrent = tfinal;
 	timevec[index] = tcurrent*TSUN;
 	mulvec[index] = mulvec[index-1];
-	philvec[index] = philvec[index-1];
+	sphilvec[index] = sphilvec[index-1];
+	cphilvec[index] = cphilvec[index-1];
 	betavec[index] = betavec[index-1];
 	sigmavec[index] = sigmavec[index-1];
 	
@@ -295,7 +301,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   idxm = index;
 
   spline(timevec, mulvec, index, 1.e30, 1.e30, muly2);
-  spline(timevec, philvec, index, 1.e30, 1.e30, phily2);
+  spline(timevec, sphilvec, index, 1.e30, 1.e30, sphily2);
+  spline(timevec, cphilvec, index, 1.e30, 1.e30, cphily2);
   spline(timevec, betavec, index, 1.e30, 1.e30, betay2);
   spline(timevec, sigmavec, index, 1.e30, 1.e30, sigmay2); 
   spline(timevec, thomasvec, index, 1.e30, 1.e30, thomasy2);
@@ -327,8 +334,12 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  D = (pow(B,3.0)-B)*deltat*deltat/6.0;
 	  
 	  interpmul[i] = A*mulvec[index] + B*mulvec[index+1] + C*muly2[index] + D*muly2[index+1];  
+
+          cphil = A*cphilvec[index] + B*cphilvec[index+1] + C*cphily2[index] + D*cphily2[index+1]; 
+
+          sphil = A*sphilvec[index] + B*sphilvec[index+1] + C*sphily2[index] + D*sphily2[index+1]; 
 	
-	  interpphil[i] = A*philvec[index] + B*philvec[index+1] + C*phily2[index] + D*phily2[index+1];  
+	  interpphil[i] = atan2(sphil,cphil);
 
 	  interpbeta[i] = A*betavec[index] + B*betavec[index+1] + C*betay2[index] + D*betay2[index+1];
   
@@ -339,7 +350,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	}
       t += dt;
 
-      // printf("%e %e %e %e %e %e\n", tdvals[i], interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);
+
+      // if((t> 1.5e7) && (t < 1.7e7)) printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);
     }
   
   // Now calculate the waveform:
