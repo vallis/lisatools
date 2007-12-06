@@ -17,6 +17,7 @@
 double ran2(long*);
 void KILL(char*);
 double AEnoise(double f);
+double SNR_Check(double f, double fdot, double theta, double phi, double A, double iota, double psi, double phase);
 
 int main(int argc,char **argv)
 {
@@ -26,7 +27,7 @@ int main(int argc,char **argv)
   double fix, Mfac, Afac;
   double logf, f, Mc, l, b, DL, theta, phi, iota, psi, phase, A;
   double Porb, Porb_dot, m2_dot, fdot;
-  double m1, m2, P, SNR1, SNR2;
+  double m1, m2, P, SNR1, SNR2, SNR;
   double x, y ,z, r;
   double x_ec, y_ec, z_ec;
   double fonfs, Sn, Acut, Sm;
@@ -93,22 +94,20 @@ int main(int argc,char **argv)
 
     while ( !feof(Infile) )
      {
-       fscanf(Infile,"%lf%lf%lf%lf%lf%lf%lf%lf%lf%lf\n", &f, &P, &DL, &m1, &m2, &iota, &psi, &phase, &theta, &phi);
+       fscanf(Infile,"%lf%lf%lf%lf%lf\n", &f, &fdot, &theta, &phi, &A); 
        cntb++;
        cnt++;
-       DL /= 1000.0;
-       theta *= fix;
-       phi *= fix;
-       Mc = pow((m1*m2),3.0/5.0)/pow((m1+m2),1.0/5.0);
 
-       /* Calculate the instrinsic amplitude */
-       A = Afac*pow(pi*f,(2.0/3.0))/DL * pow(Mc*Mfac, 5.0/3.0);
-       x = 1.0-2.0*gsl_rng_uniform(rnd);
        iota = acos(x);
        psi = pi*gsl_rng_uniform(rnd);
        phase = 2.0*pi*gsl_rng_uniform(rnd);
-       fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, 0.0, theta, phi, A, iota, psi, phase);
-       fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, 0.0, theta, phi, A, iota, psi, phase);
+
+       SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
+
+       printf("Verification Binary %d has SNR = %f\n", cnt, SNR);
+
+       fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+       fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
      }
 
       fclose(Infile);
@@ -188,8 +187,12 @@ int main(int argc,char **argv)
 
        if((Acut > 2.0) && (f < fNy))
 	 {
-	   cntb++;
-           fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+           SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
+           if(SNR > 4.0)
+	     {
+	      cntb++;
+              fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+             }
          }
 
      }
