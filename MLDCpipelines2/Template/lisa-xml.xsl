@@ -72,52 +72,6 @@
                     </xsl:for-each>
                 </div>
             </xsl:for-each>
-
-            <xsl:for-each select="XSIL[@Type='NoiseData']">
-                <div class="NoiseData">                
-                    <h2>LISA noise data</h2>
-                    
-                    <xsl:for-each select="XSIL">
-                        <div class="Noise">
-                            <h3><xsl:value-of select="./@Name"/> (<xsl:value-of select="./@Type"/>)</h3>
-
-                            <xsl:call-template name="handle-parameter-table"/>
-
-                            <xsl:for-each select="XSIL[@Type='TimeSeries']">
-                                <xsl:call-template name="handle-timeseries"/>
-                            </xsl:for-each>                           
-
-                            <xsl:for-each select="Comment">
-                                <xsl:call-template name="handle-comment"/>
-                            </xsl:for-each>
-                        </div>
-                    </xsl:for-each>
-
-                    <xsl:for-each select="XSIL[@Type='PseudoRandomNoiseTable']">
-                        <div class="Noise">
-                            <h3><xsl:value-of select="./@Name"/> (<xsl:value-of select="./@Type"/>)</h3>
-
-                            <xsl:call-template name="handle-parameter-table"/>
-
-                            <xsl:for-each select="Table">
-                                <xsl:call-template name="handle-table-columns"/>
-                            </xsl:for-each>
-
-                            <xsl:for-each select="XSIL[@Type='TimeSeries']">
-                                <xsl:call-template name="handle-timeseries"/>
-                            </xsl:for-each>
-
-                            <xsl:for-each select="Comment">
-                                <xsl:call-template name="handle-comment"/>
-                            </xsl:for-each>
-                        </div>
-                    </xsl:for-each>
-                    
-                    <xsl:for-each select="Comment">
-                        <xsl:call-template name="handle-comment"/>
-                    </xsl:for-each>
-                </div>
-            </xsl:for-each>
             
             <xsl:for-each select="XSIL[@Type='SourceData']">
                 <div class="SourceData">                
@@ -189,7 +143,54 @@
                         <xsl:call-template name="handle-comment"/>
                     </xsl:for-each>
                 </div>
-            </xsl:for-each>            
+            </xsl:for-each>
+            
+            <xsl:for-each select="XSIL[@Type='NoiseData']">
+                <div class="NoiseData">                
+                    <h2>LISA noise data</h2>
+                    
+                    <xsl:for-each select="XSIL">
+                        <div class="Noise">
+                            <h3><xsl:value-of select="./@Name"/> (<xsl:value-of select="./@Type"/>)</h3>
+
+                            <xsl:call-template name="handle-parameter-table"/>
+
+                            <xsl:for-each select="XSIL[@Type='TimeSeries']">
+                                <xsl:call-template name="handle-timeseries"/>
+                            </xsl:for-each>                           
+
+                            <xsl:for-each select="Comment">
+                                <xsl:call-template name="handle-comment"/>
+                            </xsl:for-each>
+                        </div>
+                    </xsl:for-each>
+
+                    <xsl:for-each select="XSIL[@Type='PseudoRandomNoiseTable']">
+                        <div class="Noise">
+                            <h3><xsl:value-of select="./@Name"/> (<xsl:value-of select="./@Type"/>)</h3>
+
+                            <xsl:call-template name="handle-parameter-table"/>
+
+                            <xsl:for-each select="Table">
+                                <xsl:call-template name="handle-table-columns"/>
+                            </xsl:for-each>
+
+                            <xsl:for-each select="XSIL[@Type='TimeSeries']">
+                                <xsl:call-template name="handle-timeseries"/>
+                            </xsl:for-each>
+
+                            <xsl:for-each select="Comment">
+                                <xsl:call-template name="handle-comment"/>
+                            </xsl:for-each>
+                        </div>
+                    </xsl:for-each>
+                    
+                    <xsl:for-each select="Comment">
+                        <xsl:call-template name="handle-comment"/>
+                    </xsl:for-each>
+                </div>
+            </xsl:for-each>
+            
         </body>
     </html>
 </xsl:template>
