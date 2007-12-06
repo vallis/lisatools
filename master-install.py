@@ -35,6 +35,47 @@ def findpackage(package):
     
     return filesandversions[0]
 
+def installpackage(package,packagedir=None,prefix=None,keepdownload=False,configureflags=''):
+    if 'http:' in package:
+        print "---> Downloading " + package + '...'
+        packagetar = os.path.basename(package)
+        urllib.urlretrieve(package,packagetar)
+    else:
+        packagetar = package
+    
+    if packagedir == None:
+        packagedir = re.sub('.tar.gz','',packagetar)
+    
+    if prefix == None:
+        prefix = gsldir
+    
+    configureflags += " --prefix=" + prefix
+    
+    if platform.system() == 'Darwin' and ('10.4' in platform.mac_ver()[0]):
+        # attempt to build universal binary version of library
+    
+        os.environ['CFLAGS'] = "-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc"
+        os.environ['LDFLAGS'] = "-arch i386 -arch ppc"
+        
+        configureflags += " --disable-dependency-tracking"
+    
+    assert(0 == os.system('tar zxf ' + packagetar))
+    
+    os.chdir(packagedir)    
+    assert(0 == os.system('./configure ' + configureflags))
+    assert(0 == os.system('make'))
+    assert(0 == os.system('make install'))
+    os.chdir('..')
+    
+    assert(0 == os.system('rm -rf ' + packagedir))
+    
+    os.environ['CFLAGS'] = ""
+    os.environ['LDFLAGS'] = ""
+    
+    if 'http:' in package and not keepdownload:
+        assert(0 == os.system('rm -rf ' + packagetar))
+    
+
 libdir = None
 gsldir = None
 fftwdir = None
@@ -111,19 +152,31 @@ if LooseVersion(pythonversion) < LooseVersion('2.4'):
 # check if we have GSL, install it otherwise
 # TO DO: would be nice to check with pkg-config
 
+# later, install after getting from http://mirrors.kernel.org/gnu/gsl/gsl-1.10.tar.gz
+#
+# to make universal binaries on OS X 10.4:
+# export CFLAGS="-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc"
+# export LDFLAGS="-arch i386 -arch ppc"
+# ./configure --prefix=/Users/vallis --disable-dependency-tracking
+# make
+# make install
+
 print "--> Checking GSL"
 if not os.path.isfile(gsldir + '/bin/gsl-config') or installgsl:
     if installgsl == True:
-        print "--> Installing GSL"
-        os.chdir('Packages')
-        assert(0 == os.system('tar zxf gsl-1.8.tar.gz'))
-        os.chdir('gsl-1.8')
-        assert(0 == os.system('./configure --prefix=%s' % gsldir))
-        assert(0 == os.system('make'))
-        assert(0 == os.system('make install'))
-        os.chdir('..')
-        assert(0 == os.system('rm -rf gsl-1.8'))
-        os.chdir(here)
+        print "--> Installing GSL"    
+        installpackage('http://mirrors.kernel.org/gnu/gsl/gsl-1.10.tar.gz',prefix=gsldir)
+        
+        # print "--> Installing GSL"
+        # os.chdir('Packages')
+        # assert(0 == os.system('tar zxf gsl-1.8.tar.gz'))
+        # os.chdir('gsl-1.8')
+        # assert(0 == os.system('./configure --prefix=%s' % gsldir))
+        # assert(0 == os.system('make'))
+        # assert(0 == os.system('make install'))
+        # os.chdir('..')
+        # assert(0 == os.system('rm -rf gsl-1.8'))
+        # os.chdir(here)
     else:
         print "!!! I cannot find GSL on your system. If you have it, please specify"
         print "    its location with --gsl=GSLDIR (for instance, --gsl=/usr/local if"
@@ -134,24 +187,39 @@ if not os.path.isfile(gsldir + '/bin/gsl-config') or installgsl:
 fftw3package = 'fftw-3.1.2'
 fftw3tar = fftw3package + '.tar.gz'
 
+# universal binary technique should work here, too
+# may need to remove build dir between two compilations
+
 print "--> Checking FFTW"
 if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
     if installfftw == True:
-        print "--> Installing FFTW"
-        os.chdir('Packages')
-        if not os.path.isfile(fftw3tar):
-            print "---> Downloading from www.fftw.org (2.6M)..."
-            urllib.urlretrieve('http://www.fftw.org/' + fftw3tar,fftw3tar)
-        print "---> Compiling FFTW (this may take a while...)"
-        assert(0 == os.system('tar zxf %s' % fftw3tar))
-        os.chdir(fftw3package)
-        assert(0 == os.system('./configure --prefix=%s' % fftwdir))
-        assert(0 == os.system('make'))
-        assert(0 == os.system('make install'))
-        os.chdir('..')
-        assert(0 == os.system('rm -rf %s' % fftw3package))
-        assert(0 == os.system('rm -rf %s' % fftw3tar))        
-        os.chdir(here)
+        print "--> Installing FFTW"    
+        installpackage('http://www.fftw.org/fftw-3.1.2.tar.gz',prefix=fftwdir,keepdownload=True)
+        # redo in single precision
+        installpackage('http://www.fftw.org/fftw-3.1.2.tar.gz',prefix=fftwdir,keepdownload=True,configureflags='--enable-float')
+        
+        # os.chdir('Packages')
+        # if not os.path.isfile(fftw3tar):
+        #     print "---> Downloading from www.fftw.org (2.6M)..."
+        #     urllib.urlretrieve('http://www.fftw.org/' + fftw3tar,fftw3tar)
+        # print "---> Compiling FFTW (this may take a while...)"
+        # assert(0 == os.system('tar zxf %s' % fftw3tar))
+        # os.chdir(fftw3package)
+        # assert(0 == os.system('./configure --prefix=%s' % fftwdir))
+        # assert(0 == os.system('make'))
+        # assert(0 == os.system('make install'))
+        # os.chdir('..')
+        # assert(0 == os.system('rm -rf %s' % fftw3package))
+        # # redo in single precision
+        # assert(0 == os.system('tar zxf %s' % fftw3tar))
+        # os.chdir(fftw3package)
+        # assert(0 == os.system('./configure --prefix=%s --enable-float' % fftwdir))
+        # assert(0 == os.system('make'))
+        # assert(0 == os.system('make install'))
+        # os.chdir('..')
+        # assert(0 == os.system('rm -rf %s' % fftw3package))
+        # assert(0 == os.system('rm -rf %s' % fftw3tar))        
+        # os.chdir(here)
     else:
         print "!!! I cannot find FFTW3 on your system. If you have it, please specify"
         print "    its location with --fftw=FFTWDIR (for instance, --fftw=/usr/local if"
@@ -287,8 +355,7 @@ sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.
 
 if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3')
      or newer_group(sources,'Galaxy_key3') or newer_group(sources,'Fast_XML_LS3') 
-     or newer_group(sources,'Fast_XML_SL3') or newer_group(sources,'DataImport')
-     or newer_group(sources,'SNR_Check') or newer_group(sources,'Confusion_Maker3')     ):
+     or newer_group(sources,'Fast_XML_SL3') or newer_group(sources,'Confusion_Maker3')     ):
     print "    (recompiling Galaxy3)"
     assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
@@ -385,14 +452,17 @@ lisasimdir = packagedir
 
 # still will not upgrade automatically, need to save the version number somewhere...
 # could compact into a single installation section, iterating over '1year', '2year'
-if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
+if not os.path.isdir(libdir + '/share/lisasimulator-1year') or newlisasim:
     print "--> Installing LISA Simulator (1-year version) from %s" % package
 
-    if newlisasim and os.path.isdir(libdir + '/lisasimulator-1year'):
-        assert(0 == os.system('rm -rf %s' % libdir + '/lisasimulator-1year'))
+    if not os.path.isdir(libdir + '/share'):
+        os.mkdir(libdir + '/share')
+
+    if newlisasim and os.path.isdir(libdir + '/share/lisasimulator-1year'):
+        assert(0 == os.system('rm -rf %s' % libdir + '/share/lisasimulator-1year'))
 
     # untar
-    os.chdir(libdir)
+    os.chdir(libdir + '/share')
     assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
     assert(0 == os.system('mv %s lisasimulator-1year' % lisasimdir))
 
@@ -412,14 +482,17 @@ if not os.path.isdir(libdir + '/lisasimulator-1year') or newlisasim:
     assert(0 == os.system('./Setup'))
     os.chdir('../..')
 
-if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
+if not os.path.isdir(libdir + '/share/lisasimulator-2year') or newlisasim:
     print "--> Installing LISA Simulator (2-year version) from %s" % package
 
-    if newlisasim and os.path.isdir(libdir + '/lisasimulator-2year'):
-        assert(0 == os.system('rm -rf %s' % libdir + '/lisasimulator-2year'))
+    if not os.path.isdir(libdir + '/share'):
+        os.mkdir(libdir + '/share')
+
+    if newlisasim and os.path.isdir(libdir + '/share/lisasimulator-2year'):
+        assert(0 == os.system('rm -rf %s' % libdir + '/share/lisasimulator-2year'))
 
     # untar
-    os.chdir(libdir)
+    os.chdir(libdir + '/share')
     assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
     assert(0 == os.system('mv %s lisasimulator-2year' % lisasimdir))
 
@@ -440,8 +513,8 @@ if not os.path.isdir(libdir + '/lisasimulator-2year') or newlisasim:
     os.chdir('../..')
 
 os.chdir(here)
-print >> open('MLDCpipelines2/bin/lisasimulator.py','w'), "lisasim1yr = '%s'; lisasim2yr = '%s'" % (libdir + '/lisasimulator-1year',
-                                                                                                    libdir + '/lisasimulator-2year')
+print >> open('MLDCpipelines2/bin/lisasimulator.py','w'), "lisasim1yr = '%s'; lisasim2yr = '%s'" % (libdir + '/share/lisasimulator-1year',
+                                                                                                    libdir + '/share/lisasimulator-2year')
 # install/check install for traits
 
 if dotraits:
