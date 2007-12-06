@@ -53,6 +53,8 @@ SourceClassModules['GalacticBinary'] = 'GalacticBinary'
 SourceClassModules['Stochastic'] = 'Stochastic'
 SourceClassModules['CosmicStringCusp'] = 'CosmicStringCusp'
 
+SourceClassModules['PseudoRandomNoise'] = 'PseudoRandomNoise'
+
 class XMLobject(object):
     """This class is used to manage attributes for XSIL objects: it keeps a list
     of attributes that are assigned directly (i.e., with a self.attrname = value
@@ -178,8 +180,10 @@ class XSILobject(XMLobject,list):
         # create an object of the correct kind, or use what's passed to us...
         if self != None:
             pass
-        elif objtype == 'PlaneWave' or objtype == 'SampledPlaneWave':
+        elif objtype == 'PlaneWave' or objtype == 'SampledPlaneWave' or objtype == 'Noise':
             # we need the SourceType to allocate the right kind of Source object
+            # use Source.makeSource also for objects (such as Noise) that are just
+            # XSILobjects, not quite Sources
             for node2 in node:
                 if node2.tagName == 'Param' and node2.Name == 'SourceType':
                     sourcetype = str(node2)
@@ -826,7 +830,7 @@ class Observable(XSILobject):
         """Creates an Observable object."""
         
         super(Observable,self).__init__('TDIObservable',name)
-        
+            
         if timeseries and type(timeseries) == TimeSeries:
             self.__dict__['TimeSeries'] = timeseries
             self.append(timeseries)
@@ -847,6 +851,13 @@ class Observable(XSILobject):
             elif iss and (not isf):
                 self.DataType = 'Strain'
     
+    def __setattr__(self,attr,value):
+        if attr == 'TimeSeries':
+            self.__dict__['TimeSeries'] = value
+            self.append(value)
+        else:
+            super(Observable,self).__setattr__(attr,value)
+    
     def checkContent(self):
         if hasattr(self,'TimeSeries') and hasattr(self.TimeSeries,'Array'):
             ar = self.TimeSeries.Array
@@ -855,6 +866,8 @@ class Observable(XSILobject):
                 for col in range(len(columnnames)):
                     if not hasattr(self,columnnames[col]):
                         self.__dict__[columnnames[col]] = ar.Arrays[col]
+    
+    
     
 
 class Source(XSILobject):
@@ -1342,7 +1355,7 @@ class lisaXML(XSILobject):
         
         # set up the standard lisaXML sections if not present
         
-        for sec in ('LISAData','SourceData','TDIData'):
+        for sec in ('LISAData','SourceData','TDIData','NoiseData'):
             if not hasattr(self,sec):
                newsec = XSILobject(sec)
                
@@ -1374,7 +1387,7 @@ class lisaXML(XSILobject):
             self.Author = author
         
         self.GenerationDate = time.strftime('%Y-%m-%dT%H:%M:%S%Z',time.localtime())
-        self.GenerationDate_Unit = 'ISO-8601'
+        self.GenerationDate_Type = 'ISO-8601'
         
         self.addComment(comments)
             
@@ -1387,7 +1400,7 @@ class lisaXML(XSILobject):
         # clean up the standard sections if empty
         # note: cannot delete list items conditionally while enumerating the list... it yields unexpected behavior in Python
         #       so we first select the items to be removed 
-        for child in filter(lambda c: isinstance(c,XSILobject) and c.Type in ('LISAData','SourceData','TDIData') and len(c) == 0,self):
+        for child in filter(lambda c: isinstance(c,XSILobject) and c.Type in ('LISAData','SourceData','TDIData','NoiseData') and len(c) == 0,self):
             delattr(self,child.Type)
             self.remove(child)
         
@@ -1510,7 +1523,7 @@ class lisaXML(XSILobject):
         # enumerate non-empty sections
         secs = ''
         for child in self:
-            if child.Type in ('LISAData','SourceData','TDIData') and len(child) > 0:
+            if child.Type in ('LISAData','SourceData','TDIData','NoiseData') and len(child) > 0:
                 secs += child.Type + ', '
                 
         if secs:
