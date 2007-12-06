@@ -25,21 +25,21 @@ Instrument noise is secondary-only, Gaussian, stationary, and equal on all space
 
 A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from 4--6 (with equal probabilities) spinning MBH binary inspirals.
 
-The spinning-binary signals are modeled as 2PN circular adiabatic inspirals with uncoupled orbital frequency evolution and spin and orbital precession. No higher-PN harmonics are included. [\textbf{Neil and Stas: add more detail, link to full descriptive document}] The end of the inspiral is handled with an exponential taper, as in Challenge 2. Masses, SNRs, and times of coalescence are chosen as in Challenge 2; spin amplitudes are drawn uniformly between 0 and maximal, and spin angles are randomized over spheres.
+The spinning-binary signals are modeled as 2PN circular adiabatic inspirals with uncoupled orbital frequency evolution and spin and orbital precession. No higher-PN harmonics are included. [\textbf{Neil and Stas: add more detail, link to full descriptive document}] The end of the inspiral is handled with an exponential taper, as in Challenge 2. Masses, SNRs, and times of coalescence are chosen as in Challenge 2; spin amplitudes are drawn uniformly between 0 and maximal, and spin angles are randomized over spheres. Sky position, polarization, extrinsic parameters are random over spheres.
 
-The dataset includes also a Galactic confusion background generated from the same population as Challenge 3.1, by withholding all binaries with individual SNR [\textbf{Neil: TDI X? Sky-averaged?}] greater than XX [\textbf{Neil?}].
+The dataset includes also a Galactic confusion background generated from the same population as Challenge 3.1, by withholding all binaries with individual SNR [\textbf{Neil: TDI X? Sky-averaged? What noise curve?}] greater than XX [\textbf{Neil?}].
 
 Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
 
 \subsection*{3.3.X: EMRIs}
 
-Five two-year datasets ($2^{22}$ samples with $15$ s sampling time), each with a signal from an ``MLDC EMRI'', with parameters drawn as in Challenge 1B [\textbf{Excerpt MLDC 1B description here.}], but with SNRs uniformly distributed between 10 and 30. The number of eccentric-orbit harmonics does not vary along the evolution (as in Challenge 1B), but is fixed to 4 [\textbf{Stas: check}].
+Five two-year datasets ($2^{22}$ samples with $15$ s sampling time), each with a signal from an ``MLDC EMRI'', with parameters drawn as in Challenge 1B [\textbf{Excerpt MLDC 1B description here.}], but with SNRs uniformly distributed between 10 and 30. [\textbf{A previous discussion has SNR in 10--50, central masses all around $10^6$. Should we go with that?}] The number of eccentric-orbit harmonics does not vary along the evolution (as in Challenge 1B), but is fixed to 4 [\textbf{Stas: check}]. Sky position, polarization, extrinsic parameters are random over spheres.
 
 Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
 
 \subsection*{3.4: Bursts}
 
-One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time) with Poisson-distributed cosmic-string--cusp bursts, defined as in the accompanying document [\textbf{To be included as a chapter here}]. The Poisson even rate is 5 per ``MLDC month''. SNRs will be uniformly distributed between 10 and 100. The logarithm of the maximum frequency (see accompanying document) will be uniformly distributed as $\log_10 f_\mathrm{max} \in [-4,1.0]$.
+One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time) with Poisson-distributed cosmic-string--cusp bursts, defined as in the accompanying document [\textbf{To be included as a chapter here}]. The Poisson even rate is 5 per ``MLDC month''. SNRs will be uniformly distributed between 10 and 100. The logarithm of the maximum frequency (see accompanying document) will be uniformly distributed as $\log_10 f_\mathrm{max} \in [-4,1.0]$. Sky position and polarization are random over spheres.
 
 Instrument noise is Gaussian and stationary; it includes secondary noise, where the levels of proof-mass and photo-detector noises are randomized independently on each optical bench by a uniform draw in $[-20,+20]\%$ w.r.t.\ their nominal value; it also includes laser noise, also randomized, with nominal amplitude reduced to $10\times$ the nominal amplitude of secondary noises at 1 mHz [\textbf{Michele: check}.] The datasets include the standard $X$, $Y$, $Z$ TDI observables \emph{and} the 12 inter-spacecraft and inter-spacecraft raw phase measurements. The datasets will be distributed only as fractional-frequency--fluctuation time series (i.e., as \emph{Synthetic LISA} datasets).
 
@@ -47,6 +47,6 @@ Instrument noise is Gaussian and stationary; it includes secondary noise, where 
 
 One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time [\textbf{Michele: check}]) with an isotropic stochastic background with $S_h(f) \propto f^{-3}$, realized by placing 192 ``pseudosources'' (independent pseudorandom processes for both $h_+$ and $h_\times$, with $f^{-3}$ spectra) at Healpix-distributed points across the sky [\textbf{Michele: ref.}]. The level of the background is raised to 3--6 times the secondary noise at the best frequency [\textbf{Michele: check}]
 
-The instrument noise and the distributed observables are handled as in Challenge 3.4.
+The instrument noise and the distributed observables are handled as in Challenge 3.4. The datasets will be released in versions produced by \emph{Synthetic LISA} and by the APC's \emph{LISACode}.
 
 \end{document}  
