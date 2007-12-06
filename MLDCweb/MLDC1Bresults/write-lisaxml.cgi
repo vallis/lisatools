@@ -65,6 +65,9 @@ while True:
                     if (key + '_Unit') in data.keys():
                         setattr(makesource,paramname + '_Unit',data[key + '_Unit'].value)
         
+        # this is just a hack for the moment, this bug must be fixed
+        makesource.parameters.append('SourceType')
+        
         outxml.SourceData.append(makesource)
         
     elif (srcstr + "table") in data.keys():
