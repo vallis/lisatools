@@ -114,9 +114,18 @@ for inputfile in inputfiles:
                             tdi.Yf -= thistdi.Yf
                             tdi.Zf -= thistdi.Zf
                         else:
-                            tdi.Xf += thistdi.Xf
-                            tdi.Yf += thistdi.Yf
-                            tdi.Zf += thistdi.Zf
+                            if hasattr(tdi,'Xf'):
+                                tdi.Xf += thistdi.Xf
+                                tdi.Yf += thistdi.Yf
+                                tdi.Zf += thistdi.Zf
+                            elif hasattr(tdi,'y123f'):
+                                # support raw measurements only for addition and for FractionalFrequency
+                                tdi.y123f += thistdi.y123f; tdi.z123f += thistdi.z123f 
+                                tdi.y231f += thistdi.y231f; tdi.z231f += thistdi.z231f 
+                                tdi.y312f += thistdi.y312f; tdi.z312f += thistdi.z312f 
+                                tdi.y321f += thistdi.y321f; tdi.z321f += thistdi.z321f 
+                                tdi.y132f += thistdi.y132f; tdi.z132f += thistdi.z132f 
+                                tdi.y213f += thistdi.y213f; tdi.z213f += thistdi.z213f 
                     elif tdi.DataType == 'Strain':
                         if options.subtract:
                             tdi.Xs -= thistdi.Xs
