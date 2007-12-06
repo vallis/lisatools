@@ -246,7 +246,7 @@ sourcekeyfile = options.sourcekeyfile
 execdir = os.path.dirname(os.path.abspath(sys.argv[0]))
 workdir = os.path.curdir
 
-for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template'):
+for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template','Immediate'):
     if not os.path.exists(folder):
         os.mkdir(folder)
 
@@ -267,6 +267,7 @@ step1time = time.time()
 if (not makemode) and (not sourcekeyfile):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
+    run('rm -f Immediate/*.xml')
     
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
@@ -279,7 +280,7 @@ if (not makemode) and (not sourcekeyfile):
     if not os.path.isfile(sourcescript):
         parser.error("I need the challenge script %s!" % sourcescript)
     else:
-        run('python %s %s %s' % (sourcescript,seed,istraining))
+        run('python %s %s %s %s' % (sourcescript,seed,istraining,options.nproc))
 elif (not makemode) and sourcekeyfile:
     # convoluted logic, to make sure that the keyfile given is not in Source/ and therefore deleted
     # TO DO: improve
@@ -295,7 +296,7 @@ step2time = time.time()
 
 # check if any of the source files requests an SN; in this case we'll need to run synthlisa!
 
-if os.system('grep -q RequestSN Source/*.xml') == 0 and dosynthlisa == False:
+if os.system('grep -qs RequestSN Source/*.xml') == 0 and dosynthlisa == False:
     parser.error("Ah, at least one of your Source files has a RequestSN field; then I MUST run synthlisa to adjust SNRs.")
 
 # ---------------------------------------
@@ -329,15 +330,25 @@ if dosynthlisa:
     # the results are files of TDI time series that include the source info
     # these calls have also the result of rescaling the barycentric files to satisfy any RequestSN that
     # they may carry
-    for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
-        tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+    
+    # for safety: use new makeTDIsignal-synthlisa.py only if we have immediate sources
+    if glob.glob('Immediate/*.xml'):
+        runfile = 'makeTDIsignal-synthlisa2.py'
+    else:
+        runfile = 'makeTDIsignal-synthlisa.py'
+    
+    for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
+        if 'barycentric.xml' in xmlfile:
+            tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+        else:
+            tdifile = 'TDI/' + re.sub('\.xml$','-tdi-frequency.xml',os.path.basename(xmlfile))
 
         if (not makemode) or newer(xmlfile,tdifile):
             # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
             if glob.glob('Galaxy/*.xml'):
-                prun('%(execdir)s/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+                prun('%(execdir)s/%(runfile)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
             else:
-                prun('%(execdir)s/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+                prun('%(execdir)s/%(runfile)s --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
     # now run noise generation...
     noisefile = 'TDI/tdi-frequency-noise.xml'
@@ -354,6 +365,9 @@ step4time = time.time()
 # --------------------------
 
 if lisasimdir:
+    for xmlfile in glob.glob('Immediate/*.xml'):
+        print "--> !!! Ignoring immediate synthlisa file %s" % xmlfile
+
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
         tdifile = 'TDI/' + re.sub('\-barycentric.xml','-tdi-strain.xml',os.path.basename(xmlfile))
 
