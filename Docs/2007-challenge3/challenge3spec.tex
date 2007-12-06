@@ -1,49 +1,52 @@
 \documentclass[11pt]{article}
-\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
-\geometry{letterpaper,vmargin=1.0 in,hmargin=1.0 in}                   % ... or a4paper or a5paper or ... 
-%\geometry{landscape}                % Activate for for rotated page geometry
-%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{geometry}
+\geometry{letterpaper,vmargin=1.0 in,hmargin=1.0 in}
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{epstopdf}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \title{Challenge 3 Specification}
-\author{M. Benacquista}
-\date{Nov. 23, 2007}                                          % Activate to display a given date or no date
+\author{MLDC taskforce}
+\date{Dec 6, 2007}
 
 \begin{document}
 \maketitle
-\section*{Challenge 3.1: Galactic Binaries}
-\subsection*{3.1.1}
 
-Isolated chirping Galactic binaries with circular orbits. Orbital frequency may be increasing or decreasing depending on whether gravitational radiation or mass transfer is the dominant mechanism. Chirp will be modeled up to $\dot{f}$. Data streams will be two years long with Gaussian instrument noise. Each data stream will contain a single chirping binary within 30 $\mu$Hz of \\
-\\
-a) 5 mHz \\
-b) 10 mHz \\
-c) 15 mHz.
+\subsection*{3.1: Galaxy with chirping binaries}
 
-\subsection*{3.1.2}
+A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from $\sim 3 \times 10^7$ Galactic binaries.
 
-A two-year data stream with symmetric instrument noise and the signals from $\sim$ 30 million Galactic binaries. Frequency evolution will follow the model of 3.1.1. Binaries will be drawn from a randomized Nelemans population. Instrument noise will be Gaussian and stationary. There will be around 5 verification binaries drawn from the list of Nelemans.
+Binaries are drawn from a randomized Nelemans population [\textbf{Neil: provide ref., description}], and orbital frequency may be increasing or decreasing depending on whether gravitational radiation or mass transfer is the dominant mechanism. The evolution of frequency is always linear (i.e., $\dot{f}$ is a relevant parameter, but $\ddot{f}$ is not). The set includes also 5--15 [\textbf{Shane: provide list}] verification binaries chosen from the original Nelemans population, with randomized extrinsic parameters.
 
-\section*{Challenge 3.2: Massive Black Holes}
+Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
 
-A two-year data stream containing symmetric instrument noise, Galactic binary confusion-noise, and the signal from 4 to 6 spinning black hole binaries. The orbits will be circular so the signal is described by 15 parameters. Modeling will be done to 2PN order. If the merger occurs during the observation time, the signal will include inspiral only --- merger and ringdown will not be included. If the merger occurs after the observation period, it will occur within 120 days after the observation period. The Galactic binary confusion noise will be generated using the non-chirping population from Challenge 2 with the loud signals (as determined from the loud population file generated during the population randomization process) subtracted perfectly from the signal.
+\subsection*{3.2: Massive--Black-Hole binaries over Galactic confusion}
 
-\section*{3.3: EMRIs}
+A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from 4--6 (with equal probabilities) spinning MBH binary inspirals.
 
-A two-year data stream with symmetric instrument noise and 5 EMRIs with the same mass spread as in Challenge 1B.
+The spinning-binary signals are modeled as 2PN circular adiabatic inspirals with uncoupled orbital frequency evolution and spin and orbital precession. No higher-PN harmonics are included. [\textbf{Neil and Stas: add more detail, link to full descriptive document}] The end of the inspiral is handled with an exponential taper, as in Challenge 2. Masses, SNRs, and times of coalescence are chosen as in Challenge 2; spin amplitudes are drawn uniformly between 0 and maximal, and spin angles are randomized over spheres.
 
-\section*{3.4: Bursts}
+The dataset includes also a Galactic confusion background generated from the same population as Challenge 3.1, by withholding all binaries with individual SNR [\textbf{Neil: TDI X? Sky-averaged?}] greater than XX [\textbf{Neil?}].
 
-A one-year data stream with non-symmetric, stationary, Gaussian instrument noise and a number of bursts from cosmic cusps. The time distribution will be Poissonian with an event rate of $\sim$ 0.5/week. The SNR will range between 10 and 100. The asymmetry in the noise will be within 20\%.
+Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
 
-\section*{3.5: Stochastic Backgrounds}
+\subsection*{3.3.X: EMRIs}
 
-A one-year data stream with Gaussian and stationary instrument noise plus an isotropic stochastic background of $S_h(f) \propto f^{-3}$, corresponding to an $\Omega =$ constant cosmological background.
+Five two-year datasets ($2^{22}$ samples with $15$ s sampling time), each with a signal from an ``MLDC EMRI'', with parameters drawn as in Challenge 1B [\textbf{Excerpt MLDC 1B description here.}], but with SNRs uniformly distributed between 10 and 30. The number of eccentric-orbit harmonics does not vary along the evolution (as in Challenge 1B), but is fixed to 4 [\textbf{Stas: check}].
 
+Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
 
+\subsection*{3.4: Bursts}
 
+One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time) with Poisson-distributed cosmic-string--cusp bursts, defined as in the accompanying document [\textbf{To be included as a chapter here}]. The Poisson even rate is 5 per ``MLDC month''. SNRs will be uniformly distributed between 10 and 100. The logarithm of the maximum frequency (see accompanying document) will be uniformly distributed as $\log_10 f_\mathrm{max} \in [-4,1.0]$.
+
+Instrument noise is Gaussian and stationary; it includes secondary noise, where the levels of proof-mass and photo-detector noises are randomized independently on each optical bench by a uniform draw in $[-20,+20]\%$ w.r.t.\ their nominal value; it also includes laser noise, also randomized, with nominal amplitude reduced to $10\times$ the nominal amplitude of secondary noises at 1 mHz [\textbf{Michele: check}.] The datasets include the standard $X$, $Y$, $Z$ TDI observables \emph{and} the 12 inter-spacecraft and inter-spacecraft raw phase measurements. The datasets will be distributed only as fractional-frequency--fluctuation time series (i.e., as \emph{Synthetic LISA} datasets).
+
+\subsection*{3.5: Stochastic Backgrounds}
+
+One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time [\textbf{Michele: check}]) with an isotropic stochastic background with $S_h(f) \propto f^{-3}$, realized by placing 192 ``pseudosources'' (independent pseudorandom processes for both $h_+$ and $h_\times$, with $f^{-3}$ spectra) at Healpix-distributed points across the sky [\textbf{Michele: ref.}]. The level of the background is raised to 3--6 times the secondary noise at the best frequency [\textbf{Michele: check}]
+
+The instrument noise and the distributed observables are handled as in Challenge 3.4.
 
 \end{document}  
