@@ -44,6 +44,10 @@ parser.add_option("-n", "--sourceName",
                   type="string", dest="sourceName", default="Analytical kludge EMRI",
                   help='name of source [defaults to "Analytical kludge EMRI"]')
 
+parser.add_option("-f", "--fixHarmonics",
+                  action="store_true", dest="fixHarmonics", default=False,
+                  help='fix the number of harmonics to 5 [defaults to False]')
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
@@ -88,6 +92,9 @@ mysystem.AzimuthalAngleOfSpin	    = random.uniform(0.0, 2.0*math.pi)		          
 mysystem.Spin			   	          = random.uniform(0.5, 0.7)				     # spin magnitude in M^2
 mysystem.MassOfCompactObject          = random.uniform(9.5, 10.5)				     # mass of CO in solar mass
 mysystem.MassOfSMBH		              = options.massSMBH * random.uniform(0.95,1.05) # mass of SMBH in solar mass
+
+if options.fixHarmonics:
+    mysystem.FixHarmonics = 5
 
 PhiAtPlunge             = random.uniform(0.0, math.pi*2.0)          # orbital azimuthal phase at plunge
 GammaAtPlunge           = random.uniform(0.0, math.pi*2.0)          # gamma angle at plunge
