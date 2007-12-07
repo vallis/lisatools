@@ -10,11 +10,13 @@
 void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 {
   double m1, m2, Mtot, mu, Mchirp, DL, tc, eta, beta, sigma, chi1, chi2, dm; 
-  double costheta, sintheta, costhetaL0, sinthetaL0;
+  double costheta, sintheta, costhetaL0, sinthetaL0, gamma0;
   double costhetaS10, sinthetaS10, costhetaS20, sinthetaS20;
   double phi, phiL0, phiS10, phiS20, phic, Phase, psi;
   double LdotS1, LdotS2, LdotN, S1dotS2, fold;
   double Phi0, Phi10, Phi15, Phi20;
+  double Lmag, S1mag, S2mag;
+  double Jmag, JdotL;
   double f, t, td, dt;
   double Amp, p15, p20, p150, p200;
   double fac, etain;
@@ -25,6 +27,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double derivvals[9];
   double thomasderiv;
   double LcrossN[3];
+  double JcrossL[3];
+  double Jtot[3];
   double cPhi[7], sPhi[7];
   double thomasval, maxerr, oldh, finalthomas;
   double A, B, C, D, deltat;
@@ -163,13 +167,42 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   if(tc > tmax) tmax = tc;
   tfinal = tmax/TSUN;
 
+  f = Freq(0.0, Mtot, Mchirp, eta, beta, sigma, tc);
+
   // Initial orbital radius
-  r = pow(Mtot,1./3.)/pow(PI*Freq(0.0, Mtot, Mchirp, eta, beta, sigma, tc)*TSUN,2./3.);
+  r = pow(Mtot,1./3.)/pow(PI*f*TSUN,2./3.);
+
+  x = pow(PI*Mtot*f*TSUN,2./3.);
+
+  Lmag = mu*Mtot*TSUN*TSUN/sqrt(x);
+  S1mag = chi1*m1*m2*TSUN*TSUN;
+  S2mag = chi2*m2*m2*TSUN*TSUN;
+
+  Jtot[0] = Lmag*LSvals[0]+S1mag*LSvals[3] + S2mag*LSvals[6];
+  Jtot[1] = Lmag*LSvals[1]+S1mag*LSvals[4] + S2mag*LSvals[7];
+  Jtot[2] = Lmag*LSvals[2]+S1mag*LSvals[5] + S2mag*LSvals[8];
+
+  Jmag = sqrt(calcLdotN(Jtot, Jtot));
+
+  for(i = 0; i < 3; i++) Jtot[i] /= Jmag;
+
+  JdotL = calcLdotN(Jtot, LSvals);
+  calcLcrossN(JcrossL, Jtot, LSvals);
+
+  // printf("L %e S1 %e S2 %e J %e\n", Lmag, S1mag, S2mag, Jmag);
 
   calcderivvals(derivvals, LSvals, r, m1, m2, Mtot, mu, chi1, chi2);
   LdotN = calcLdotN(LSvals, N);
   calcLcrossN(LcrossN, LSvals, N);
   thomasderiv = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
+
+  x = calcLdotN(JcrossL, LcrossN);
+
+  x /= sqrt((1.0-JdotL*JdotL)*(1.0-LdotN*LdotN));
+
+  gamma0 = acos(x);
+
+  // printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0);
 
   for(i = 0; i < 9; i++) LSvals[i] -= SBH.Tpad*derivvals[i];  // back up the initial values to time -Tpad
   thomasval = -SBH.Tpad*thomasderiv;
@@ -397,7 +430,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
             si = sqrt(si2);
             xrt = sqrt(x);
    
-            OPhase = (Phase+thomas)/2.0;
+            OPhase = (Phase+thomas)/2.0 + gamma0;
 
             cPhi[1] = cos(OPhase);
             sPhi[1] = sin(OPhase);
@@ -473,8 +506,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	    c2psi = cos(2.*psi);
 	    s2psi = sin(2.*psi);
 
-            hp[i] = shp*c2psi + shc*s2psi;
-            hc[i] = -shp*s2psi + shc*c2psi;
+            hp[i] = -shp*c2psi - shc*s2psi;
+            hc[i] = shp*s2psi - shc*c2psi;
 
 	      }
            else {  // x > xmax or anti-chirping
