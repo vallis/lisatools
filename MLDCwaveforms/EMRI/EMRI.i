@@ -44,7 +44,8 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
                   ('InitialTildeGamma',                'Radian',        None, 'initial position of pericenter, as angle between LxS and pericenter'),
                   ('InitialAlphaAngle',                'Radian',        None, 'initial azimuthal direction of L (in the orbital plane)'),
                   ('LambdaAngle',                      'Radian',        None, 'angle between L and S'),
-                  ('Distance',                         'Parsec',        None, 'standard source distance'))
+                  ('Distance',                         'Parsec',        None, 'standard source distance'),
+                  ('FixHarmonics',                     '1',             0,    'fixed number of harmonics used in waveform computation; use 0 for variable number'))
 
     def  __init__(self,name=''):
         super(ExtremeMassRatioInspiral, self).__init__('ExtremeMassRatioInspiral',name)
@@ -54,8 +55,12 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
         self.__inittime = None
     
     def waveforms(self,samples,deltat,inittime,debug=0):
-        if samples != self.__samples or deltat != self.__deltat or inittime != self.__inittime:
+        if samples != self.__samples or deltat != self.__deltat or inittime != self.__inittime:        
             self.__samples, self.__deltat, self.__inittime = samples, deltat, inittime
+
+            # if self.FixHarmonics > 0:
+            #   ...pass special switch to EMRI computation...
+            #   ...move this down if only needed at the time of computing waveforms...
 
             self.__emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
             
