@@ -104,11 +104,15 @@ int main(int argc,char **argv)
        cntb++;
        cnt++;
 
+      do
+	{
+       x = 1.0-2.0*gsl_rng_uniform(rnd);
        iota = acos(x);
        psi = pi*gsl_rng_uniform(rnd);
        phase = 2.0*pi*gsl_rng_uniform(rnd);
 
        SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
+        } while (SNR < 8.0);
 
        printf("Verification Binary %d has SNR = %f\n", cnt, SNR);
 
