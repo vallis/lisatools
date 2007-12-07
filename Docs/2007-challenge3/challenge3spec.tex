@@ -3,7 +3,10 @@
 \geometry{letterpaper,vmargin=1.0 in,hmargin=1.0 in}
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{amsbsy}
 \usepackage{epstopdf}
+\usepackage{url}
+
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \title{Challenge 3 Specification}
@@ -15,31 +18,86 @@
 
 \subsection*{3.1: Galaxy with chirping binaries}
 
-A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from $\sim 3 \times 10^7$ Galactic binaries.
+A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from $\sim 6 \times 10^7$ Galactic binaries.
 
-Binaries are drawn from a randomized Nelemans population [\textbf{Neil: provide ref., description}], and orbital frequency may be increasing or decreasing depending on whether gravitational radiation or mass transfer is the dominant mechanism. The evolution of frequency is always linear (i.e., $\dot{f}$ is a relevant parameter, but $\ddot{f}$ is not). The set includes also 5--15 [\textbf{Shane: provide list}] verification binaries chosen from the original Nelemans population, with randomized extrinsic parameters.
+The binaries are drawn from a randomized Nelemans {\it et al.} population of 26 million detached systems and 34 million
+interacting system~\cite{nyz01,nyz04}. The orbital frequency may be increasing or decreasing depending on whether gravitational
+radiation or mass transfer is the dominant mechanism. The evolution of the frequency is treated as being linear (i.e., $\dot{f}$
+is a relevant parameter, but $\ddot{f}$ is not). The set includes also 20 ``verification binaries''
+chosen from the original Nelemans population, with randomized extrinsic parameters and randomly tweaked intrinsic
+parameters (so they will not have exactly the same frequency or sky location as sources in the general population).
+The parameters for these pseduo verification binaries are given in Table 1.
 
-Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
+\begin{table}
+\caption{Fixed parameters for the 20 pseudo verification binaries}
+\begin{center}
+\begin{tabular}{|r@{\hspace*{0.1in}}|r@{\hspace*{0.1in}}|r@{\hspace*{0.1in}}|r@{\hspace*{0.1in}}|r@{\hspace*{0.1in}}|}
+\hline
+\hspace*{0.1in} $f \quad \quad$ & $\dot f \quad$ & $\beta \quad$ & $\lambda \quad$ & $A \quad$ \\
+\hline
+0.0043417274 &	7.3561e-16  &	0.68207	  &	0.53347	  &	5.9350e-22  \\
+0.0037343941 &	-2.0297e-17 &	0.10474	  &	0.62924	  &	2.6135e-22  \\
+0.0131529582 &	8.8204e-15  &	-0.98805  &	3.9268	  &	1.5156e-22  \\
+0.0039699876 &	-3.3365e-17 &	-0.21254  &	4.7720	  &	9.9415e-23   \\
+0.0045022047 &	1.3540e-15  &	0.031996  &	4.7446	  &	8.9184e-23   \\
+0.0026610293 &	3.2306e-17  &	1.1472	  &	0.0095050  &	9.7080e-23   \\
+0.0028695591 &	-4.3640e-18 &	-0.92861  &	3.8856	  &	1.3958e-23   \\
+0.0062057876 &	-2.8732e-16 &	1.0398	  &	6.2805	  &	5.6116e-23   \\
+0.0052955094 &	4.0514e-16  &	1.1159	  &	6.0834	  &	1.0108e-22   \\
+0.0004639037 &	5.8521e-20  &	0.68715	  &	5.8248	  &	4.6955e-22   \\
+0.0097827541 &	4.2655e-15  &	0.76860	  &	5.3829	  &	4.9380e-23    \\
+0.0031386229 &	4.4597e-17  &	-0.58442  &	4.3714	  &	1.8405e-23    \\
+0.0090517193 &	-3.1886e-15  &	-0.85312  &	3.9630	  &	3.3825e-23    \\
+0.0030861822 &	3.1552e-17  &	-0.72290  &	2.3212	  &	4.2400e-23    \\
+0.0022225674 &	2.5908e-17  &	-1.0163	  &	2.1245	  &	5.1583e-23    \\
+0.0033341192 &	-9.9299e-18 &	1.4141	  &	2.2510	  &	1.2462e-22    \\
+0.0023149283 &	-1.1627e-17 &	-0.56303  &	1.9615	  &	8.3458e-23    \\
+0.0024189047 &	1.1142e-17  &	-0.14195  &	1.6711	  &	2.7004e-23    \\
+0.0005542018 &	5.2244e-20  &	0.24866	  &	2.3023	  &	3.4189e-22    \\
+0.0013821261 &	3.3793e-18  &	1.3093	  &	5.0762	  &	2.8972e-22    \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The instrument noise is secondary-only ({\it i.e.} Laser phase noise is assumed to have been cancelled by the TDI
+construction), Gaussian, stationary, and equal on all spacecraft. 
 
 \subsection*{3.2: Massive--Black-Hole binaries over Galactic confusion}
 
-A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from 4--6 (with equal probabilities) spinning MBH binary inspirals.
+A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from U[4,6] spinning MBH binary inspirals.
 
-The spinning-binary signals are modeled as 2PN circular adiabatic inspirals with uncoupled orbital frequency evolution and spin and orbital precession. No higher-PN harmonics are included. [\textbf{Neil and Stas: add more detail, link to full descriptive document}] The end of the inspiral is handled with an exponential taper, as in Challenge 2. Masses, SNRs, and times of coalescence are chosen as in Challenge 2; spin amplitudes are drawn uniformly between 0 and maximal, and spin angles are randomized over spheres. Sky position, polarization, extrinsic parameters are random over spheres.
+The spinning-binary signals are modeled as 2PN circular adiabatic inspirals with uncoupled orbital frequency evolution
+and spin and orbital precession. No higher-PN harmonics are included. [\textbf{Neil and Stas: add more detail, link to full descriptive document}] The end of the inspiral is handled with an exponential taper, as in Challenge 2. Masses, SNRs, and times of coalescence
+are chosen as in Challenge 2; spin amplitudes are drawn from U[0,1], and spin angles are randomized over spheres.
+Sky position, polarization, extrinsic parameters are random over spheres.
 
-The dataset includes also a Galactic confusion background generated from the same population as Challenge 3.1, by withholding all binaries with individual SNR [\textbf{Neil: TDI X? Sky-averaged? What noise curve?}] greater than XX [\textbf{Neil?}].
+The dataset includes also a Galactic confusion background generated from the same population as Challenge 3.1, but withholding
+all binaries with individual SNR $> 5$ relative to the combined instrument plus galactic confusion
+noise. The confusion noise estimate was derived using the BIC analysis code used in the evaluation of Challenge 2.
+Only detached systems are used to generate the confusion background as the confusion estimate from Challenge 2 did
+not include interacting systems. In any event, we do no expect interacting systems to be a significant contribution
+to the confusion noise since they typically have very small chirp masses, and hence amplitudes, compared to the detached systems.
 
 Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
 
-\subsection*{3.3.X: EMRIs}
+\subsection*{3.3: EMRIs}
 
-Five two-year datasets ($2^{22}$ samples with $15$ s sampling time), each with a signal from an ``MLDC EMRI'', with parameters drawn as in Challenge 1B [\textbf{Excerpt MLDC 1B description here.}], but with SNRs uniformly distributed between 10 and 30. [\textbf{A previous discussion has SNR in 10--50, central masses all around $10^6$. Should we go with that?}] The number of eccentric-orbit harmonics does not vary along the evolution (as in Challenge 1B), but is fixed to 4 [\textbf{Stas: check}]. Sky position, polarization, extrinsic parameters are random over spheres.
+A single two-year datasets ($2^{22}$ samples with $15$ s sampling time) containing the signals from 5 ``MLDC EMRIs'', with parameters drawn
+as in Challenge 1B: compact object mass $m$ in U$[9.5, 10.5] \times M_{\odot}$, spin of central BH $S/M$ in U[0.5, 0.7], time at plunge
+in U$[2^{21}, 2^{22}] \times 15$ sec, and eccentricity at plunge in U[0.15, 0.25]. The central black holes masses are chosen so that
+one system has $M$ in U$[0.95, 1.05] \times 10^7 M_{\odot}$, two systems have $M$ in U$[4.75, 5.25] \times 10^6 M_{\odot}$ and
+two systems have $M$ in U$[0.95, 1.05] \times 10^6 M_{\odot}$. In addition to having mutliple EMRIs in a single data set, the
+other new wrinkle for this challenge is that the SNRs are much lower: SNR in U[10,50].
+The number of eccentric-orbit harmonics does not vary with eccentricity
+along the evolution (as was the case in Challenge 2 and 1B), but is fixed at 5. Sky position, polarization,
+extrinsic parameters are random over spheres.
 
 Instrument noise is secondary-only, Gaussian, stationary, and equal on all spacecraft. 
 
 \subsection*{3.4: Bursts}
 
-One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time) with Poisson-distributed cosmic-string--cusp bursts, defined as in the accompanying document [\textbf{To be included as a chapter here}]. The Poisson even rate is 5 per ``MLDC month''. SNRs will be uniformly distributed between 10 and 100. The logarithm of the maximum frequency (see accompanying document) will be uniformly distributed as $\log_10 f_\mathrm{max} \in [-4,1.0]$. Sky position and polarization are random over spheres.
+One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time) with Poisson-distributed cosmic-string--cusp bursts, defined as in the accompanying document [\textbf{To be included as a chapter here}]. The Poisson even rate is 5 per ``MLDC month''. SNRs will be uniformly distributed between 10 and 100. The logarithm of the maximum frequency (see accompanying document) will be uniformly distributed as $\log_{10} f_\mathrm{max} \in [-3,1.0]$. Sky position and polarization are random over spheres.
 
 Instrument noise is Gaussian and stationary; it includes secondary noise, where the levels of proof-mass and photo-detector noises are randomized independently on each optical bench by a uniform draw in $[-20,+20]\%$ w.r.t.\ their nominal value; it also includes laser noise, also randomized, with nominal amplitude reduced to $10\times$ the nominal amplitude of secondary noises at 1 mHz [\textbf{Michele: check}.] The datasets include the standard $X$, $Y$, $Z$ TDI observables \emph{and} the 12 inter-spacecraft and inter-spacecraft raw phase measurements. The datasets will be distributed only as fractional-frequency--fluctuation time series (i.e., as \emph{Synthetic LISA} datasets).
 
@@ -48,5 +106,11 @@ Instrument noise is Gaussian and stationary; it includes secondary noise, where 
 One ``MLDC month''-long dataset ($2^{21}$ samples with 1 s sampling time [\textbf{Michele: check}]) with an isotropic stochastic background with $S_h(f) \propto f^{-3}$, realized by placing 192 ``pseudosources'' (independent pseudorandom processes for both $h_+$ and $h_\times$, with $f^{-3}$ spectra) at Healpix-distributed points across the sky [\textbf{Michele: ref.}]. The level of the background is raised to 3--6 times the secondary noise at the best frequency [\textbf{Michele: check}]
 
 The instrument noise and the distributed observables are handled as in Challenge 3.4. The datasets will be released in versions produced by \emph{Synthetic LISA} and by the APC's \emph{LISACode}.
+
+\begin{thebibliography}{99}
+\bibitem{nyz01} G. Nelemans, L. R. Yungelson \& S. F. Portegies Zwart, A\&A {\bf 375}, 890 (2001).
+\bibitem{nyz04} G. Nelemans, L. R. Yungelson \& S. F. Portegies Zwart, Mon. Not. Roy. Astron. Soc.
+{\bf 349} 181, (2004).
+\end{thebibliography}
 
 \end{document}  
