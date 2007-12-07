@@ -43,6 +43,7 @@ int main(int argc,char **argv)
   FILE* Infile;
   FILE* Output;
   FILE* Output2;
+  FILE* Output3;
 
   if(argc !=3) KILL("Galaxy_Maker rSeed vflag\n");
 
@@ -62,6 +63,11 @@ int main(int argc,char **argv)
   sprintf(Gfile, "Data/Galaxy_Bright_%s.dat", argv[1]);
 
   Output2 = fopen(Gfile,"w");
+
+  sprintf(Gfile, "Data/Very_Bright_%s.dat", argv[1]);
+
+  Output3 = fopen(Gfile,"w");
+
 
   vflag = atoi(argv[2]);
 
@@ -161,6 +167,10 @@ int main(int argc,char **argv)
 
        phi = atan2(y_ec,x_ec);
 
+       theta += 0.00873*(1.0-2.0*gsl_rng_uniform(rnd));
+       phi += 0.00873*(1.0-2.0*gsl_rng_uniform(rnd));
+       A *= (1.0+0.1*(1.0-2.0*gsl_rng_uniform(rnd)));
+
        if(phi<0.0) phi += 2.0*pi;
 
        x = 1.0-2.0*gsl_rng_uniform(rnd);
@@ -192,6 +202,10 @@ int main(int argc,char **argv)
 	     {
 	      cntb++;
               fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+             }
+           if(SNR > 10.0)
+	     {
+              fprintf(Output3, "%.16f %.10e %f %f %e %f\n", f, fdot, theta, phi, A, SNR);
              }
          }
 
@@ -249,6 +263,10 @@ int main(int argc,char **argv)
 
        phi = atan2(y_ec,x_ec);
 
+       theta += 0.00873*(1.0-2.0*gsl_rng_uniform(rnd));
+       phi += 0.00873*(1.0-2.0*gsl_rng_uniform(rnd));
+       A *= (1.0+0.1*(1.0-2.0*gsl_rng_uniform(rnd)));
+
        if(phi<0.0) phi += 2.0*pi;
 
        x = 1.0-2.0*gsl_rng_uniform(rnd);
@@ -275,8 +293,16 @@ int main(int argc,char **argv)
 
        if((Acut > 2.0) && (f < fNy))
 	 {
-	   cntb2++;
-           fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+           SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
+           if(SNR > 4.0)
+	     {
+	      cntb2++;
+              fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+             }
+           if(SNR > 10.0)
+	     {
+              fprintf(Output3, "%.16f %.10e %f %f %e %f\n", f, fdot, theta, phi, A, SNR);
+             }
          }
 
      }
@@ -293,6 +319,7 @@ int main(int argc,char **argv)
 
    fclose(Output);
    fclose(Output2);
+   fclose(Output3);
 
    sprintf(Gfile, "Data/count_%s.dat", argv[1]);
    Output = fopen(Gfile,"w");
