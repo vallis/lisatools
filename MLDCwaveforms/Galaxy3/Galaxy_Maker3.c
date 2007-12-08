@@ -104,8 +104,7 @@ int main(int argc,char **argv)
        cntb++;
        cnt++;
 
-      do
-	{
+      do {
        x = 1.0-2.0*gsl_rng_uniform(rnd);
        iota = acos(x);
        psi = pi*gsl_rng_uniform(rnd);
