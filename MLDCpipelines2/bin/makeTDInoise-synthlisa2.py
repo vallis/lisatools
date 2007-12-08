@@ -41,7 +41,7 @@ parser.add_option("-s", "--seed",
 
 parser.add_option("-r", "--rawMeasurements",
                   action="store_true", dest="rawMeasurements", default=False,
-                  help="output raw phase measurements (y's and z's) instead of TDI X, Y, Z")
+                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
 
 parser.add_option("-R", "--randomizeNoise",
                   type="float", dest="randomizeNoise", default=0.0,
@@ -106,7 +106,7 @@ for ind in ['c1', 'c1s', 'c2', 'c2s', 'c3', 'c3s']:
 
     noise.SpectralType = 'WhiteFrequency'
     noise.PowerSpectralDensity = laserpsd * randnoise()
-    noise.GenerationTimeStep = 15
+    noise.GenerationTimeStep = options.timestep
     noise.InterpolationOrder = 2
     noise.PseudoRandomSeed = random.randint(0,2**30)
 
@@ -118,7 +118,7 @@ for ind in ['pd1', 'pd1s', 'pd2', 'pd2s', 'pd3', 'pd3s']:
 
     noise.SpectralType = 'WhitePhase'
     noise.PowerSpectralDensity = 1.8e-37 * randnoise()
-    noise.GenerationTimeStep = 15
+    noise.GenerationTimeStep = options.timestep
     noise.InterpolationOrder = 4
     noise.PseudoRandomSeed = random.randint(0,2**30)
 
@@ -132,38 +132,37 @@ for ind in ['pd1', 'pd1s', 'pd2', 'pd2s', 'pd3', 'pd3s']:
 # {132,231,213,312,321,123} = {pd2s, pd1, pd3s, pd2, pd3, pd1s}
 
 tdiobs = None
+tdiobsraw = None
 
 if not options.keyOnly:
     proofnoise  = [n.synthesize() for n in proofnoises]
     shotnoise   = [shotnoises[i].synthesize() for i in (3,0,5,2,1,4)]
     lasernoise  = [n.synthesize() for n in lasernoises]
-
+    
     tdi = synthlisa.TDInoise(lisa,proofnoise,shotnoise,lasernoise)
 
     samples = int( options.duration / options.timestep + 0.1 )
 
     if options.rawMeasurements:    
-        [t,y123,y231,y312,y321,y132,y213,
+        [t,X,Y,Z,
+           y123,y231,y312,y321,y132,y213,
            z123,z231,z312,z321,z132,z213] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
-                                                                              [tdi.t,tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
+                                                                              [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm,
+                                                                                     tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
                                                                                      tdi.z123,tdi.z231,tdi.z312,tdi.z321,tdi.z132,tdi.z213],
                                                                               options.inittime))    
 
-        tdiobs = lisaxml.Observable('t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')     
-        tdiobs.TimeSeries = lisaxml.TimeSeries([t,y123,y231,y312,y321,y132,y213,
-                                                  z123,z231,z312,z321,z132,z213],'t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')    
+        tdiobsraw = lisaxml.Observable('t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')     
+        tdiobsraw.TimeSeries = lisaxml.TimeSeries([t,y123,y231,y312,y321,y132,y213,
+                                                     z123,z231,z312,z321,z132,z213],'t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')    
 
     else:
         [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
                                                       [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm],
                                                       options.inittime))
-        tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
-        tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
 
-    tdiobs.DataType = 'FractionalFrequency'
-
-    tdiobs.TimeSeries.Cadence = options.timestep
-    tdiobs.TimeSeries.TimeOffset = options.inittime
+    tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
+    tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
 
 outputXML = lisaxml.lisaXML(outputfile,'w')
 
@@ -174,6 +173,7 @@ lisa.InitialPosition = 0; lisa.InitialPosition_Unit = 'Radian'
 lisa.InitialRotation = 0; lisa.InitialRotation_Unit = 'Radian'
 lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
 
+# old call: outputXML.LISAData(lisa)
 outputXML.LISAData.append(lisa)
 
 for noise in proofnoises:
@@ -184,7 +184,18 @@ for noise in lasernoises:
     outputXML.NoiseData.append(noise)
 
 if tdiobs:
+    tdiobs.DataType = 'FractionalFrequency'
+    tdiobs.TimeSeries.Cadence = options.timestep
+    tdiobs.TimeSeries.TimeOffset = options.inittime
+    
     outputXML.TDIData(tdiobs)
+    
+if tdiobsraw:
+    tdiobsraw.DataType = 'FractionalFrequency'
+    tdiobsraw.TimeSeries.Cadence = options.timestep
+    tdiobsraw.TimeSeries.TimeOffset = options.inittime
+    
+    outputXML.TDIData(tdiobsraw)
 
 outputXML.close()
 
