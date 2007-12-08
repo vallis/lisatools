@@ -42,7 +42,7 @@
    Please contact vallis@vallis.org if you have improvements to this code, or feature
    requests. */
  
-static mxArray *parsefile(char *filename) {
+static mxArray *parsefile(char *filename,int obsnum) {
     TimeSeries *timeseries;
     LISASource *firstsource = 0;
     
@@ -53,7 +53,7 @@ static mxArray *parsefile(char *filename) {
 
     mexPrintf("Opening file '%s'...\n",filename);
 
-    timeseries = getTDIdata(filename);
+    timeseries = getmultipleTDIdata(filename,obsnum);
 
     if(timeseries == 0) {
         mexPrintf("...no TDI observables. Looking for first source...\n");
@@ -101,14 +101,14 @@ static mxArray *parsefile(char *filename) {
 }
  
 void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) { 
-    int buflen;
+    int buflen, obs;
     char *input_buf;
   
     if(nrhs != 1) { 
         mexErrMsgTxt("One input required."); 
-    } else if(nlhs > 1) { 
+    } /* else if(nlhs > 1) { 
         mexErrMsgTxt("Too many output arguments"); 
-    } 
+    } */
   
     if(mxIsChar(prhs[0]) != 1) 
         mexErrMsgTxt("Input must be a string.");
@@ -120,7 +120,8 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
     input_buf = mxCalloc(buflen, sizeof(char)); 
     mxGetString(prhs[0], input_buf, buflen);
 
-    plhs[0] = parsefile(input_buf);
+    for(obs=0; obs < nlhs; obs++)
+        plhs[obs] = parsefile(input_buf,obs);
     
     return;
 }

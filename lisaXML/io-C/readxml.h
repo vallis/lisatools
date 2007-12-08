@@ -80,6 +80,7 @@ typedef struct LISASource {
    individual struct DataColumn */
 
 TimeSeries *getTDIdata(char *filename);
+TimeSeries *getmultipleTDIdata(char *filename,int obsnum);
 
 /* Parses XML file "filename" and returns a linked list of 
    LISASource structs, each of which represents a SampledPlaneWave

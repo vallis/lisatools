@@ -332,7 +332,7 @@ LISASource *getLISASources(char *filename) {
     const char *type, *name, *elat, *elon, *pol;
 
     LISASource *first = 0, *current = 0;
-    TimeSeries *timeseries;
+    TimeSeries *timeseries = 0;
 
     tree = ezxml_parse_file(filename);
     assert(tree);
@@ -430,3 +430,37 @@ TimeSeries *getTDIdata(char *filename) {
     return 0;
 }
 
+TimeSeries *getmultipleTDIdata(char *filename,int obsnum) {
+    ezxml_t tree, section, obs, series;
+    const char *type;
+    TimeSeries *timeseries = 0;
+
+    tree = ezxml_parse_file(filename);
+    assert(tree);
+    
+    for(section = ezxml_child(tree, "XSIL"); section; section = section->next) {
+        type = ezxml_attr(section, "Type");
+        
+        if(!strcmp(type,"TDIData")) {
+            int obscnt = 0;
+            
+            for(obs = ezxml_child(section,"XSIL"); obs; obs = obs->next) {
+                assert(!strcmp(ezxml_attr(obs,"Type"),"TDIObservable"));
+                
+                if(obscnt == obsnum) {
+                    series = ezxml_child(obs,"XSIL");
+                    if(!strcmp(ezxml_attr(series,"Type"),"TimeSeries")) {
+                        timeseries = dotimeseries(series,filename);
+                        return timeseries;
+                    }
+                }
+                
+                obscnt++;
+            }
+        }
+    }
+
+    ezxml_free(tree);
+
+    return 0;    
+}
