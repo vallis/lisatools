@@ -26,5 +26,4 @@ random.seed(seed)
 
 # to be run for one month, at one second sampling...
 
-run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0 --pixelRefinement=2 --nProc=%(nproc)s Immediate/Background.xml' % globals())
-
+run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-48 --randomizePSD=0.3 --pixelRefinement=2 --nProc=%(nproc)s Immediate/Background.xml' % globals())
