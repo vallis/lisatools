@@ -47,7 +47,7 @@ parser.add_option("-D", "--debugSNR",
 
 parser.add_option("-r", "--rawMeasurements",
                   action="store_true", dest="rawMeasurements", default=False,
-                  help="output raw phase measurements (y's and z's) instead of TDI X, Y, Z")
+                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -62,9 +62,6 @@ samples = int( options.duration / options.timestep + 0.1 )
 if len(args) != 2:
     parser.error("You must specify an input file and an output file!")
 
-if options.debugSNR and options.rawMeasurements:
-    parser.error('Options --debugSNR and --rawMeasurements are incompatible!')
-
 (inputfile,outputfile) = args
 
 inputXML = lisaxml.readXML(inputfile)
@@ -74,12 +71,8 @@ inputXML.close()
 sourceobjects = []
 
 for waveforms in allsources:
-    if hasattr(waveforms,'RequestSN') and len(waveforms) > 1:
+    if hasattr(waveforms,'RequestSN') and len(allsources) > 1:
         print "Cannot process multiple sources with RequestSN field."
-        sys.exit(1)
-        
-    if hasattr(waveforms,'RequestSN') and options.rawMeasurements:
-        print "Currently the RequestSN source parameter and the --rawMeasurements option are incompatible."
         sys.exit(1)
     
     if hasattr(waveforms,'TimeSeries'):
@@ -125,9 +118,11 @@ else:
     tdi = synthlisa.TDIsignal(lisa,synthlisa.WaveArray(sourceobjects))
 
 if options.rawMeasurements:
-    [t,y123,y231,y312,y321,y132,y213,
+    [t,X,Y,Z,
+       y123,y231,y312,y321,y132,y213,
        z123,z231,z312,z321,z132,z213] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
-                                                                          [tdi.t,tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
+                                                                          [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm,
+                                                                                 tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
                                                                                  tdi.z123,tdi.z231,tdi.z312,tdi.z321,tdi.z132,tdi.z213],
                                                                           options.inittime))    
 else:
@@ -234,21 +229,25 @@ if hasattr(allsources[0],'RequestSN'):
     X *= factor
     Y *= factor
     Z *= factor
+    
+    y123 *= factor; y231 *= factor; y312 *= factor; y321 *= factor; y132 *= factor; y213 *= factor
+    z123 *= factor; z231 *= factor; z312 *= factor; z321 *= factor; z132 *= factor; z213 *= factor
 
-# TODO need to fix also mergeXML
-
-if options.rawMeasurements:
-    tdiobs = lisaxml.Observable('t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')     
-    tdiobs.TimeSeries = lisaxml.TimeSeries([t,y123,y231,y312,y321,y132,y213,
-                                              z123,z231,z312,z321,z132,z213],'t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')
-else:
-    tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
-    tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
-
+tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
+tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
 
 tdiobs.DataType = 'FractionalFrequency'
 tdiobs.TimeSeries.Cadence = options.timestep
 tdiobs.TimeSeries.TimeOffset = options.inittime
+
+if options.rawMeasurements:
+    tdiobsraw = lisaxml.Observable('t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')     
+    tdiobsraw.TimeSeries = lisaxml.TimeSeries([t,y123,y231,y312,y321,y132,y213,
+                                                 z123,z231,z312,z321,z132,z213],'t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')
+
+    tdiobsraw.DataType = 'FractionalFrequency'
+    tdiobsraw.TimeSeries.Cadence = options.timestep
+    tdiobsraw.TimeSeries.TimeOffset = options.inittime
 
 outputXML = lisaxml.lisaXML(outputfile)
 
@@ -270,6 +269,9 @@ for source in allsources:
 
 # output the TDI observables
 outputXML.TDIData(tdiobs)
+
+if 'tdiobsraw' in globals():
+    outputXML.TDIData(tdiobsraw)
 
 outputXML.close()
 
