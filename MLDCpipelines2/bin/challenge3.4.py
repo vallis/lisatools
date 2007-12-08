@@ -30,7 +30,6 @@ random.seed(seed)
 #                define month as 2**21 samples, 1 Hz (really 24 days)
 
 srcnum = numpy.random.poisson(5)
-srcnum = 2
 
 for srcind in range(srcnum):
     seed = seed + 1
