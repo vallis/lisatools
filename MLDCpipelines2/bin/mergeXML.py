@@ -50,11 +50,6 @@ lisa = mergedtdifile.getLISAgeometry()
 if not options.nokey:
     sources = mergedtdifile.getLISASources()
 
-try:
-    tdi = mergedtdifile.getTDIObservables()[0]
-except IndexError:
-    tdi = None        
-
 # take author and comments, if any, from MERGED.xml
 
 author = mergedtdifile.Author
@@ -68,6 +63,9 @@ comments = mergedtdifile.Comment
 mergedtdifile.close()
 
 newmergedtdifile = lisaxml.lisaXML(mergedfile,author=author,comments=comments)
+
+tdid = {}
+tdin = []
 
 for inputfile in inputfiles:
     inputtdifile = lisaxml.readXML(inputfile)
@@ -90,14 +88,18 @@ for inputfile in inputfiles:
                 newmergedtdifile.SourceData(source)
     
     if not options.keyonly:
-        try:
-            thistdi = inputtdifile.getTDIObservables()[0]
+        alltdi = inputtdifile.getTDIObservables()
 
-            if tdi == None:
-                tdi = thistdi
+        for thistdi in alltdi:
+            if not (thistdi.name in tdin):
+                tdid[thistdi.name] = thistdi
+                # to keep them in order...
+                tdin.append(thistdi.name)
             else:
+                tdi = tdid[thistdi.name]
+
                 try:
-                    assert tdi.DataType == thistdi.DataType
+                    assert tdi.DataType              == thistdi.DataType
                     assert tdi.TimeSeries.Length     == thistdi.TimeSeries.Length
                     assert tdi.TimeSeries.Cadence    == thistdi.TimeSeries.Cadence
                     assert tdi.TimeSeries.TimeOffset == thistdi.TimeSeries.TimeOffset
@@ -107,47 +109,24 @@ for inputfile in inputfiles:
 
                 # add tdi observables to accumulator arrays
 
-                try:
-                    if tdi.DataType == 'FractionalFrequency':
+                for obsname in tdi.name.split(','):
+                    obs = obsname.strip()
+
+                    if obs != 't':
+                        tdio = getattr(tdi,obs)
+                        thistdio = getattr(thistdi,obs)
+
                         if options.subtract:
-                            tdi.Xf -= thistdi.Xf
-                            tdi.Yf -= thistdi.Yf
-                            tdi.Zf -= thistdi.Zf
+                            tdio -= thistdio
                         else:
-                            if hasattr(tdi,'Xf'):
-                                tdi.Xf += thistdi.Xf
-                                tdi.Yf += thistdi.Yf
-                                tdi.Zf += thistdi.Zf
-                            elif hasattr(tdi,'y123f'):
-                                # support raw measurements only for addition and for FractionalFrequency
-                                tdi.y123f += thistdi.y123f; tdi.z123f += thistdi.z123f 
-                                tdi.y231f += thistdi.y231f; tdi.z231f += thistdi.z231f 
-                                tdi.y312f += thistdi.y312f; tdi.z312f += thistdi.z312f 
-                                tdi.y321f += thistdi.y321f; tdi.z321f += thistdi.z321f 
-                                tdi.y132f += thistdi.y132f; tdi.z132f += thistdi.z132f 
-                                tdi.y213f += thistdi.y213f; tdi.z213f += thistdi.z213f 
-                    elif tdi.DataType == 'Strain':
-                        if options.subtract:
-                            tdi.Xs -= thistdi.Xs
-                            tdi.Ys -= thistdi.Ys
-                            tdi.Zs -= thistdi.Zs
-                        else:
-                            tdi.Xs += thistdi.Xs
-                            tdi.Ys += thistdi.Ys
-                            tdi.Zs += thistdi.Zs
-                    else:
-                        raise
-                except:
-                    print "Script %s can't find standard TDI observables in file %s." % (sys.argv[0],xmlfile)
-                    sys.exit(1)
-        except:
-            pass
+                            tdio += thistdio
 
 if lisa:
     newmergedtdifile.LISAData(lisa)
 
-if tdi:
-    newmergedtdifile.TDIData(tdi)
+if not options.keyonly:
+    for name in tdin:
+        newmergedtdifile.TDIData(tdid[name])
     
 newmergedtdifile.close()
 
