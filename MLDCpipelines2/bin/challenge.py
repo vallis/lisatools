@@ -165,6 +165,18 @@ parser.add_option("-f", "--keyFile",
                   type="string", dest="sourcekeyfile", default=None,
                   help="get source descriptions from key file, not CHALLENGE.py script")
 
+parser.add_option("-r", "--rawMeasurements",
+                  action="store_true", dest="rawMeasurements", default=False,
+                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
+
+parser.add_option("-R", "--randomizeNoise",
+                  type="float", dest="randomizeNoise", default=0.0,
+                  help="randomize level of noises [e.g., 0.2 for 20% randomization; defaults to 0; synthlisa only]")
+
+parser.add_option("-l", "--laserNoise",
+                  type="string", dest="laserNoise", default='None',
+                  help="laser noise level: None, Standard, <numerical value> [e.g., 0.2 for 20% of pm noise at 1 mHz; synthlisa only]")
+
 parser.add_option("-P", "--nProc",
                   type="int", dest="nproc", default=1,
                   help="run in parallel on nproc CPUs [default 1]")
@@ -208,6 +220,14 @@ else:
         lisasimdir = lisasimulator.lisasim2yr
     else:
         parser.error("I can only run the LISA Simulator for one or two years (2^21 or 2^22 s)!")
+
+if not options.synthlisaonly:
+    if options.randomizeNoise > 0.0:
+        parser.error("Option --randomizeNoise is not supported with the LISA Simulator. Run with --synthlisa.")
+    if options.laserNoise != 'None':
+        parser.error("Option --laserNoise is not supported with the LISA Simulator. Run with --synthlisa.")
+    if options.rawMeasurements == True:
+        parser.error("Option --rawMeasurement is not supported with The LISA Simulator. Run with --synthlisa.")
 
 if options.lisasimonly:
     dosynthlisa = False
@@ -332,10 +352,17 @@ if dosynthlisa:
     # they may carry
     
     # for safety: use new makeTDIsignal-synthlisa.py only if we have immediate sources
-    if glob.glob('Immediate/*.xml'):
+    if glob.glob('Immediate/*.xml') or (options.rawMeasurements == True):
         runfile = 'makeTDIsignal-synthlisa2.py'
     else:
         runfile = 'makeTDIsignal-synthlisa.py'
+
+    runoptions = ''    
+    if options.rawMeasurements == True:
+        runoptions += '--rawMeasurements '
+    if not glob.glob('Galaxy/*.xml'):
+        # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
+        runoptions += '--noiseOnly '
     
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
         if 'barycentric.xml' in xmlfile:
@@ -344,17 +371,26 @@ if dosynthlisa:
             tdifile = 'TDI/' + re.sub('\.xml$','-tdi-frequency.xml',os.path.basename(xmlfile))
 
         if (not makemode) or newer(xmlfile,tdifile):
-            # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
-            if glob.glob('Galaxy/*.xml'):
-                prun('%(execdir)s/%(runfile)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
-            else:
-                prun('%(execdir)s/%(runfile)s --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-    # now run noise generation...
+    if (options.randomizeNoise > 0.0) or (options.laserNoise != 'None') or (options.rawMeasurements == True):
+        runfile = 'makeTDInoise-synthlisa2.py'
+    else:
+        runfile = 'makeTDInoise-synthlisa.py'
+
+    runoptions = ''
+    if options.randomizeNoise > 0.0:
+        runoptions += ('--randomizeNoise=%s ' % options.randomizeNoise)
+    if options.laserNoise != None:
+        runoptions += ('--laserNoise=%s ' % options.laserNoise)
+    if options.rawMeasurements == True:
+        runoptions += '--rawMeasurements '
+
+    # now run noise generation... note that we're not checking whether the seed is the correct one
     noisefile = 'TDI/tdi-frequency-noise.xml'
-    # note that we're not checking whether the seed is the correct one
-    if donoise and ((not makemode) or (not os.path.isfile(noisefile))):
-        prun('%(execdir)s/makeTDInoise-synthlisa.py --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noisefile)s')
+        
+    if donoise and ((not makemode) or (not os.path.isfile(noisefile))):        
+        prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(runoptions)s %(noisefile)s')
 
     pwait()
 
