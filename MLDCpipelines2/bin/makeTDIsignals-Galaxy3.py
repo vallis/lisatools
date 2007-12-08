@@ -29,6 +29,8 @@ from optparse import OptionParser
 parser = OptionParser(usage="usage: %prog [options] INPUT.xml OUTPUT-synthlisa.xml OUTPUT-lisasim.xml",
                       version="$Id: $")
 
+mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
+
 (options, args) = parser.parse_args()
 
 if len(args) != 3:
@@ -80,9 +82,9 @@ readgalaxy.close()
 # try to find the Galaxy code..
 
 if galaxywhich == 1:
-    galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy')
+    galaxydir = os.path.abspath(mydir + '/../../MLDCwaveforms/Galaxy')
 elif galaxywhich == 3:
-    galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy3')
+    galaxydir = os.path.abspath(mydir + '/../../MLDCwaveforms/Galaxy3')
 else:
     print "!!! I'm not sure what kind of Galaxy you're giving me here!"
     sys.exit(1)
@@ -145,12 +147,12 @@ elif galaxywhich == 3:
 sltdiobj = lisaxml.lisaXML(sltdifile)
 sltdiobj.close()
 
-run('%s/bin/mergeXML.py %s XML/TheGalaxy_synthLISA_noisefree.xml %s' % (here,sltdifile,galaxyfile))
+run('%s/mergeXML.py %s XML/TheGalaxy_synthLISA_noisefree.xml %s' % (mydir,sltdifile,galaxyfile))
 
 lstdiobj = lisaxml.lisaXML(lstdifile)
 lstdiobj.close()
 
-run('%s/bin/mergeXML.py %s XML/TheGalaxy_LISAsim_noisefree.xml   %s' % (here,lstdifile,galaxyfile))
+run('%s/mergeXML.py %s XML/TheGalaxy_LISAsim_noisefree.xml   %s' % (mydir,lstdifile,galaxyfile))
 
 os.chdir(here)
 
