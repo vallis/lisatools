@@ -97,12 +97,13 @@ else:
 
 mysystem.EclipticLatitude           = 0.5*math.pi - math.acos(random.uniform(-1.0,1.0)) # ecliptic latitude in Radian [-pi,pi]
 mysystem.EclipticLongitude          = random.uniform(0.0,2.0*math.pi)                   # ecliptic longitude in Radian [0,2*pi]
+mysystem.Polarization               = random.uniform(0.0,2.0*math.pi)                   # polarization in Radian [0,2*pi]
 mysystem.PolarAngleOfSpin1			= math.acos(random.uniform(-1.0, 1.0))				# initial polar angle of the first spin
 mysystem.PolarAngleOfSpin2			= math.acos(random.uniform(-1.0, 1.0))				# initial polar angle of the second spin
 mysystem.AzimuthalAngleOfSpin1	    = random.uniform(0.0, 2.0*math.pi)			# initial azimuthal direction of first spin
 mysystem.AzimuthalAngleOfSpin2	    = random.uniform(0.0, 2.0*math.pi)			# initial azimuthal direction of second spin
-mysystem.Spin1                      = random.uniform(0.1, 0.95)				# magnitude of first spin in M^2
-mysystem.Spin2			    = random.uniform(0.1, 0.95)				# magnitude of second spin in M^2
+mysystem.Spin1                      = random.uniform(0, 1.00)				# magnitude of first spin in M^2
+mysystem.Spin2			            = random.uniform(0, 1.00)				# magnitude of second spin in M^2
 mysystem.Mass1                      = 1.0e6 * random.uniform(1.0,5.0)                   # m1 in SolarMass
 mysystem.Mass2                      = mysystem.Mass1 / random.uniform(1.0,4.0)          # m2 in SolarMass
 mysystem.CoalescenceTime            = (options.Tc + random.uniform(-options.deltaTc,options.deltaTc)) * 24 * 3600     # coalescence time in Second (from command-line parameter)
