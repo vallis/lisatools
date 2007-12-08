@@ -14,21 +14,6 @@ import math
 import random
 import re
 
-# TO DO: OK, the best way is for this to become makeTDIsignal-StochasticBackground... it will read a single
-#        source file, get a CPU NP as parameter, and divvy up the sources (via XML files with Stochastic
-#        pseudosources) among makeTDIsignal-synthlisa jobs... those must learn to recognize non-barycentric
-#        sources, and to do more than one signal via WaveArray (there may be problems with loading multiple
-#        barycentric arrays, but they could be cached from disk... although this will require modifications
-#        in synthlisa because of the way the hp and hc are stored... let's leave this for the future)
-
-# makeTDIsignal-synthlisa doesn't really need to compute the SNR unless RequestSNR is specified. Add a
-# switch to turn that off.
-
-# process sources individually if they have a RequestSNR...
-# otherwise do a WaveArray and run it in one go...
-
-# better do a makeTDIsignal-synthlisa2.py
-
 # set ourselves up to parse command-line options
 
 from optparse import OptionParser
@@ -50,6 +35,10 @@ parser.add_option("-s", "--seed",
 parser.add_option("-p", "--PSD",
                   type="float", dest="PSD", default=1.0,
                   help="total power spectral density (adimensional)")
+
+parser.add_option("-r", "--randomizePSD",
+                  type="float", dest="randomizePSD", default=0.0,
+                  help="fractional random displacement in total power spectral density (adimensional)")
 
 parser.add_option("-R", "--pixelRefinement",
                   type="int", dest="refine", default=2,
@@ -96,7 +85,7 @@ npixels = healpix.nside2npix(2**options.refine)
 
 random.seed(options.seed)
 
-PSD = random.uniform(options.PSD * 0.70,options.PSD * 1.30)
+PSD = options.PSD * (1.0 + random.uniform(-options.randomizePSD,-options.randomizePSD))
 
 whichfile = 0
 
