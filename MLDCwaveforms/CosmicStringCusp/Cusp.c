@@ -57,7 +57,7 @@ void Cusp_Barycenter(Cusp_structure Cusp, double *hp, double *hc, int n)
 
   back = N/4 - (int)(Cusp.Tpad*Cusp.Cadence);
 
-  printf("%d\n", back);
+  // printf("%d\n", back);
 
   nc = N/2+1;
   in = fftw_malloc ( sizeof ( double ) * N);
@@ -79,9 +79,6 @@ void Cusp_Barycenter(Cusp_structure Cusp, double *hp, double *hc, int n)
    out[nc-1][1] = 0.0;
  
    fftw_execute ( plan_reverse);
-
-   printf("here\n");
-
  
   for(i=0; i< n; i++) 
     { 
