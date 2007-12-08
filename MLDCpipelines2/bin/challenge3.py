@@ -30,4 +30,27 @@ parser.add_option("-P", "--nProc",
 nproc = options.nproc
 seed  = int(args[0])
 
-run('%(mydir)s/challenge.py --seed=%(seed)s --duration=2097152 --timeStep=1 --nProc=%(nproc)s --synthlisa challenge3.5')
+def twoseeds():
+    return randint(1,10000000), randint(1,10000000)
+
+seed31,seed31t = twoseeds()
+seed32,seed32t = twoseeds()
+seed33,seed33t = twoseeds()
+seed34,seed34t = twoseeds()
+seed35,seed35t = twoseeds()
+
+run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed31)s  challenge3.1' % globals())
+run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed31t)s challenge3.1' % globals())
+                                                                      
+run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed32)s  challenge3.2' % globals())
+run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed32t)s challenge3.2' % globals())
+                                                                      
+run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed33)s  challenge3.3' % globals())
+run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed33t)s challenge3.3' % globals())
+
+options34 = '--synthlisa --rawMeasurements --randomizeNoise=0.2 --laserNoise=10'
+run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=1 --seed=%(seed34)s  %(options34)s challenge3.4' % globals())
+run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=1 --seed=%(seed34t)s %(options34)s challenge3.4' % globals())
+
+run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=1 --seed=%(seed35)s  %(options34)s challenge3.5' % globals())
+run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=1 --seed=%(seed35t)s %(options34)s challenge3.5' % globals())
