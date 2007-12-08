@@ -710,7 +710,7 @@ class Array(object):
         if type(data) == numpy.ndarray:
             self.Stream = Stream(data,filetype,encoding)
         elif type(data) == tuple or type(data) == list:
-            self.Stream = Stream(numpy.array(data),filetype,encoding)
+            self.Stream = Stream(numpy.array(data).transpose(),filetype,encoding)
         elif type(data) == Stream:
             self.Stream = data
         else:
