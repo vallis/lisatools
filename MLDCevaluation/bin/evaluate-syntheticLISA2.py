@@ -181,9 +181,17 @@ ind = ind*2
 print "data size = ", samples
 print "number of used points ", ind 
 
+EMRIchal = False
+
+if(re.search('challenge1.3', Injfile) != None):
+    EMRIchal = true
+elif(re.search('challenge1B.3', Injfile) != None):
+    EMRIchal = true
+
+
 if (re.search('challenge2.2', Injfile) != None):
     Dfr = 9.
-elif (re.search('challenge1.3', Injfile) != None):
+elif (EMRIchal):
     Dfr = 14.
 
 # reading Key file
@@ -212,7 +220,7 @@ Sigfilout.close()
 sys.exit(0);
 """
 
-if (re.search('challenge1.3', Injfile) != None):
+if (EMRIchal):
    IndX = len(A)
    for i in xrange(len(A)-1, 1, -1):
       if (A[i] != 0.0):
@@ -275,7 +283,7 @@ normE = ComputeNorm(E,sampling, SnA)
 
 
 
-if (re.search('challenge1.3', Injfile) != None):
+if (EMRIchal):
    print "evaluating EMRIs.... ", Injfile
    # Dealing with key files (injected sources)
    MBH = Injsources.MassOfSMBH
