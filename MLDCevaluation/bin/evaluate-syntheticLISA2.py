@@ -351,7 +351,7 @@ if (re.search('challenge1.3', Injfile) != None):
 	##     record = str(i) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
 	#     foutT.write(record)
 	#  foutT.close()
-	  normXs = ComputeNorm(Xs, sampling, SnX)
+	      normXs = ComputeNorm(Xs, sampling, SnX)
           normAs = ComputeNorm(As, sampling, SnA)
           normEs = ComputeNorm(Es, sampling, SnA)
 	 
@@ -373,7 +373,7 @@ if (re.search('challenge1.3', Injfile) != None):
  
           d_chi2 = 0.5*(SnrAdif + SnrEdif)/Dfr
 
-	  print "chi^2 = ", chi2
+	      print "chi^2 = ", chi2
           print "d_chi^2 = ", d_chi2, SnrAdif/Dfr, SnrEdif/Dfr
           #Computing combined SNR
 

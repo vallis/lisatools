@@ -135,8 +135,8 @@ Detfiles = args[2:]
 
 if options.phasemax :
    if ( re.search('Challenge1.2', Injfile) == None and \
-        re.search('Challenge1.1.1', Injfile) == None ):
-	print "phase maximization can be done only for 1.2 and 1.1.1 chalenges"
+        re.search('Challenge1B.2', Injfile) == None ):
+	print "phase maximization can be done only for 1.2 and 1B.2 challenges"
 	sys.exit(1)
 
 

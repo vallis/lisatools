@@ -74,7 +74,7 @@ challengename = args[0]
 timestep = options.timestep
 duration = options.duration
 
-"""
+
 ##### I : creating barycentric data
 
 sources = "Source/"+ challengename + '/' + "/*xml"
@@ -90,7 +90,7 @@ for xmlfile in glob.glob(barycentric):
     if (re.search('key', xmlfile) == None):
          tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
          run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
-"""
+
 
 #### IIb : creating TDI files for all barycentric files using LISA simulator
 """
@@ -101,7 +101,7 @@ for xmlfile in glob.glob(barycentric):
          run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/home/stas/lisasimulator-2year/  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
 """
 
-"""
+
 #### call evaluation script for synthetic LISA data
 
 keyTdis = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
@@ -116,6 +116,22 @@ if (challengename == "Challenge1.3"):
        elif (re.search('1.3.4', keyTDI) != None):
            dataTdi = 'Data/challenge1.3.4-frequency/challenge1.3.4-frequency.xml'
        run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+       
+if (challengename == "Challenge1B.3"):
+          tdis =  glob.glob('TDI/'+challengename+'/*1B.3.*frequency.xml')
+          for keyTDI in (keyTdis):
+              if(re.search('1.3.1', keyTDI) != None):
+                  dataTdi = 'Data/challenge1.3.1-frequency/challenge1.3.1-frequency.xml'
+              elif (re.search('1.3.2', keyTDI) != None):
+                  dataTdi = 'Data/challenge1.3.2-frequency/challenge1.3.2-frequency.xml'
+              elif (re.search('1.3.3', keyTDI) != None):
+                    dataTdi = 'Data/challenge1.3.3-frequency/challenge1.3.3-frequency.xml'
+              elif (re.search('1.3.4', keyTDI) != None):
+                  dataTdi = 'Data/challenge1.3.4-frequency/challenge1.3.4-frequency.xml'
+              elif (re.search('1.3.5', keyTDI) != None):
+                    dataTdi = 'Data/challenge1.3.5-frequency/challenge1.3.5-frequency.xml'
+              run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+
 
 if (challengename == "Challenge2.2"):
    tdis = glob.glob('TDI/'+challengename+'/*challenge2.2-*frequency.xml')

@@ -42,7 +42,7 @@ from optparse import OptionParser
 # note that correct management of the Id string requires issuing the command
 # svn propset svn:keywords Id FILENAME
 
-parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME [Challenge1.3 or Challenge2.2]", version="$Id: $")
+parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME [Challenge1.3 / Challenge2.2 / Challenge1B.2 / Challenge1B.3 ]", version="$Id: $")
 
 
 parser.add_option("-b", "--preBuffer",
@@ -74,7 +74,7 @@ parser.add_option("-v", "--verbose",
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
-    parser.error("I need the challenge name: Challenge1.3/Challenege2.2")
+    parser.error("I need the challenge name: Challenge1.3 / Challenege2.2 / Challenge1B.2 / Challenge1B.3 ")
 
 challengename = args[0]
 timestep = options.timestep
@@ -105,3 +105,36 @@ if (challengename == "Challenge2.2"):
         #       run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
                run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/home/stas/lisasimulator-2year/  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
 
+if (challengename == "Challenge1B.2"):
+    xmlKeys = ["Key/Challenge1B/challenge1B.2.1-key.xml", "Key/Challenge1B/challenge1B.2.2-key.xml"]
+    for key in xmlKeys:
+       run("bin/create_quadratures.py %s" % key)
+    xmlKeys.append("Key/Challenge1B/challenge1B.2.1-key_0.xml")
+    xmlKeys.append("Key/Challenge1B/challenge1B.2.2-key_0.xml")
+    for xmlKey in xmlKeys:
+        if (re.search('1B.2.1', xmlKey) != None):
+           baryKeyFile = 'Barycentric/Challenge1B.2.1/' + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
+           run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
+           tdiKeyFileF = 'TDI/Challenge1B.2.1/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryKeyFile))
+           run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryKeyFile)s %(tdiKeyFileF)s')
+        elif (re.search('1B.2.2', xmlKey) != None):
+            baryKeyFile = 'Barycentric/Challenge1B.2.2/' + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
+            run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
+            tdiKeyFileF = 'TDI/Challenge1B.2.2/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryKeyFile))
+            run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryKeyFile)s %(tdiKeyFileF)s')
+    
+KeysChal1B_3 = ['Key/Challenge1B/challenge1B.3.1-key.xml', 'Key/Challenge1B/challenge1B.3.2-key.xml', \
+'Key/Challenge1B/challenge1B.3.3-key.xml', 'Key/Challenge1B/challenge1B.3.4-key.xml', 'Key/Challenge1B/challenge1B.3.5-key.xml']        
+
+if (challengename == "Challenge1B.3"):
+     for xmlKey in KeysChal1B_3:
+        baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
+        run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
+        tdiKeyFileF = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryKeyFile))
+        tdiKeyFileS = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(baryKeyFile))
+        run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryKeyFile)s %(tdiKeyFileF)s')
+        #run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/home/stas/lisasimulator-2year/  --duration=%(duration)s  %(baryKeyFile)s %(tdiKeyFileS)s')    
+            
+            
+            
+            
