@@ -50,6 +50,11 @@ lisa = mergedtdifile.getLISAgeometry()
 if not options.nokey:
     sources = mergedtdifile.getLISASources()
 
+extrasecs = []
+for sec in ['NoiseData','Simulate','LISACode']:
+    if mergedtdifile.getExtraSection(sec):
+        extrasecs.append(mergedtdifile.getExtraSection(sec))
+
 # take author and comments, if any, from MERGED.xml
 
 author = mergedtdifile.Author
@@ -120,6 +125,10 @@ for inputfile in inputfiles:
                             tdio -= thistdio
                         else:
                             tdio += thistdio
+    
+    for sec in ['NoiseData','Simulate','LISACode']:
+        if inputtdifile.getExtraSection(sec):
+            extrasecs.append(inputtdifile.getExtraSection(sec))
 
 if lisa:
     newmergedtdifile.LISAData(lisa)
@@ -127,7 +136,11 @@ if lisa:
 if not options.keyonly:
     for name in tdin:
         newmergedtdifile.TDIData(tdid[name])
-    
+
+if not options.nokey:
+    for sec in extrasecs:
+        newmergedtdifile.ExtraSection(sec)
+
 newmergedtdifile.close()
 
 sys.exit(0) 
