@@ -115,7 +115,7 @@ class AKWaveform:public BaseIntegr{
     /** Returns size of waveform and fills up hplus, hcross
      *@param ps0 initial polarization angle
     */
-     int GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength, int debug);
+     int GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength, int debug, int Nharm);
 
 	private:
 

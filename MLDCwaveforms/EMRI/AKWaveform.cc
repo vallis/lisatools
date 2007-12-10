@@ -423,7 +423,7 @@ void AKWaveform::GetFinalOrbitalParams(float& t, float& e_end, float& nu_end){
 
 }
 
-int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength, int debug) {
+int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double* hCross, long hCrossLength, int debug, int Nharm) {
     LISAWPAssert(runDone, "you must Run first");
     LISAWPAssert(sourceSet, "you must set source location");
 
@@ -440,6 +440,7 @@ int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double*
     // double psiSL; MV 070330
     double psi;
     double cs;
+    int N;
 
     for (int i=0; i<theSize; i++) {
         t = tt[i];
@@ -463,8 +464,12 @@ int AKWaveform::GetWaveform(double ps0, double* hPlus, long hPlusLength, double*
             phiL = LISAWP_PI/2.0;
         }
 
-        int N = (int)(30*e);
-        if (e<0.136) N=4;	
+	if (Nharm >0)
+	    N = Nharm;
+	else{
+	     N = (int)(30*e);
+             if (e<0.136) N=4;	
+	}
 
         Waveform(N);
 

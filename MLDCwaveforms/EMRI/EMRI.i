@@ -58,9 +58,6 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
         if samples != self.__samples or deltat != self.__deltat or inittime != self.__inittime:        
             self.__samples, self.__deltat, self.__inittime = samples, deltat, inittime
 
-            # if self.FixHarmonics > 0:
-            #   ...pass special switch to EMRI computation...
-            #   ...move this down if only needed at the time of computing waveforms...
 
             self.__emri = AKWaveform(self.Spin, self.MassOfCompactObject, self.MassOfSMBH, inittime + deltat*(samples-1), deltat)
             
@@ -73,10 +70,13 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
         hp = numpy.empty(samples,'d')
         hc = numpy.empty(samples,'d')
 
-        # don't apply polarization here since it comes in at the level of makebarycentric.py
+        # do not apply polarization here since it comes in at the level of makebarycentric.py
         # wavelen = emri.GetWaveform(self.Polarization, hp, hc)
 
-        wavelen = self.__emri.GetWaveform(0, hp, hc, debug)
+        if self.FixHarmonics > 0:
+           wavelen = self.__emri.GetWaveform(0, hp, hc, debug, 6)
+        else:
+           wavelen = self.__emri.GetWaveform(0, hp, hc, debug, 0)
 
         hp[wavelen:] = 0.0
         hc[wavelen:] = 0.0
