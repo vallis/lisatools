@@ -718,7 +718,7 @@ class writeXML(object):
             # look here for content serialization concerns
             self.iprint(line)
     
-    def outputrxp(self,rxpexp):
+    def outputrxp(self,rxpexp,stripwhitespace=False):
         """Output RXP tuple-based expression"""
         
         if rxpexp[2]:
@@ -728,9 +728,12 @@ class writeXML(object):
             
             for elem in rxpexp[2]:
                 if type(elem) in (tuple,list):
-                    self.outputrxp(elem)
+                    self.outputrxp(elem,stripwhitespace)
                 else:
-                    self.content(elem)
+                    if stripwhitespace:
+                        self.content(str(elem).strip())
+                    else:
+                        self.content(elem)
                 
             self.closetag(rxpexp[0])
         else:
@@ -779,6 +782,7 @@ class lisaXML(writeXML):
         self.theLISAData = []
         self.theNoiseData = []
         self.theTDIData = []
+        self.extraSections = []
     
     def SourceData(self,source,name='',comments=''):
         """Add a source (e.g., BBH, EMRI, GalacticBinary) to a lisaXML file object.
@@ -795,6 +799,9 @@ class lisaXML(writeXML):
         """Add a LISAData entry describing the LISA geometry. See lisaxml.LISA."""
         
         self.theLISAData.append(lisa.XML(self,name,comments))
+    
+    def ExtraSection(self,section):
+        self.extraSections.append(section)
     
     def close(self):
         """Write the XML file to disk. This happens also on destruction of
@@ -861,6 +868,10 @@ class lisaXML(writeXML):
                 self.outputrxp(object)
             
             self.closetag('XSIL')
+        
+        if self.extraSections:
+            for sec in self.extraSections:
+                self.outputrxp((sec.tagName,sec._attrs,sec._children),stripwhitespace=True)
         
         self.closetag('XSIL')
         
@@ -1011,6 +1022,14 @@ class readXML(object):
              unless that attribute is already being used for system purposes."""
         
         return self.Author, self.GenerationData, self.Comment
+    
+    def getExtraSection(self,section):
+        for node in self.tw:
+            if node.tagName == 'XSIL':
+                if node.Type == section:
+                    return node
+        
+        return None
     
     def getLISAGeometry(self):
         """Return the first LISA object defined in the XML. It's better to access
