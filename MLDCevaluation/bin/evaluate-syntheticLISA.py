@@ -165,8 +165,8 @@ print "number of used points ", ind
 
 if (re.search('Challenge1.2', Injfile) != None):
     Dfr = 9.
-elif (re.search('Challenge1.1', Injfile) != None):
-    Dfr = 7.
+elif (re.search('Challenge1B.2', Injfile) != None):
+    Dfr = 9.
 
 print "It is BBH,", Dfr, " degree of freedom" 
 
@@ -281,7 +281,7 @@ if (sz > 0):
 
 for userfile in Detfiles:
    # print userfile
-    if ( re.search('Key', userfile) == None):
+    if ( re.search('key', userfile) == None and re.search('Key', userfile) == None):
        print 80*'*'
        print 4*" ", "Dealing with %s file..." % userfile 
        print 80*'*'

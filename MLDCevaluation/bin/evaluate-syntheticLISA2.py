@@ -184,9 +184,9 @@ print "number of used points ", ind
 EMRIchal = False
 
 if(re.search('challenge1.3', Injfile) != None):
-    EMRIchal = true
+    EMRIchal = True
 elif(re.search('challenge1B.3', Injfile) != None):
-    EMRIchal = true
+    EMRIchal = True
 
 
 if (re.search('challenge2.2', Injfile) != None):
@@ -354,14 +354,15 @@ if (EMRIchal):
                break
           As[IndX-25:] = 0.0
           Es[IndX-25:] = 0.0
-	#  foutT = open("TruncTest.dat", 'w')
-	#  for i in xrange(len(As)):
-	##     record = str(i) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
-	#     foutT.write(record)
-	#  foutT.close()
-	      normXs = ComputeNorm(Xs, sampling, SnX)
+          normXs = ComputeNorm(Xs, sampling, SnX)
           normAs = ComputeNorm(As, sampling, SnA)
           normEs = ComputeNorm(Es, sampling, SnA)
+	      #  foutT = open("TruncTest.dat", 'w')
+	      #  for i in xrange(len(As)):
+	      ##     record = str(i) + spr + str(As[i]) + spr + str(Es[i]) + "\n"
+	      #     foutT.write(record)
+	      #  foutT.close()
+	      
 	 
 	  ### computing chi^2
 
@@ -380,8 +381,7 @@ if (EMRIchal):
           SnrEdif = ComputeNorm(E-Es, sampling, SnA)**2
  
           d_chi2 = 0.5*(SnrAdif + SnrEdif)/Dfr
-
-	      print "chi^2 = ", chi2
+          print "chi^2 = ", chi2
           print "d_chi^2 = ", d_chi2, SnrAdif/Dfr, SnrEdif/Dfr
           #Computing combined SNR
 

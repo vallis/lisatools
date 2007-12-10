@@ -118,19 +118,28 @@ if (challengename == "Challenge1.3"):
        run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
        
 if (challengename == "Challenge1B.3"):
-          tdis =  glob.glob('TDI/'+challengename+'/*1B.3.*frequency.xml')
+          #tdis =  glob.glob('TDI/'+challengename+'/*1B.3.*frequency.xml')
           for keyTDI in (keyTdis):
-              if(re.search('1.3.1', keyTDI) != None):
-                  dataTdi = 'Data/challenge1.3.1-frequency/challenge1.3.1-frequency.xml'
-              elif (re.search('1.3.2', keyTDI) != None):
-                  dataTdi = 'Data/challenge1.3.2-frequency/challenge1.3.2-frequency.xml'
-              elif (re.search('1.3.3', keyTDI) != None):
-                    dataTdi = 'Data/challenge1.3.3-frequency/challenge1.3.3-frequency.xml'
-              elif (re.search('1.3.4', keyTDI) != None):
-                  dataTdi = 'Data/challenge1.3.4-frequency/challenge1.3.4-frequency.xml'
-              elif (re.search('1.3.5', keyTDI) != None):
-                    dataTdi = 'Data/challenge1.3.5-frequency/challenge1.3.5-frequency.xml'
-              run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+              if(re.search('3.1', keyTDI) != None):
+                  dataTdi = 'Data/challenge1.3.1-frequency/challenge1B.3.1-frequency.xml'
+                  tdis =  glob.glob('TDI/'+challengename+'/*1B.3.1*frequency.xml')
+                  run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+              elif (re.search('3.2', keyTDI) != None):
+                  dataTdi = 'Data/challenge1.3.2-frequency/challenge1B.3.2-frequency.xml'
+                  tdis =  glob.glob('TDI/'+challengename+'/*1B.3.2*frequency.xml')
+                  run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+              elif (re.search('3.3', keyTDI) != None):
+                    dataTdi = 'Data/challenge1.3.3-frequency/challenge1B.3.3-frequency.xml'
+                    tdis =  glob.glob('TDI/'+challengename+'/*1B.3.3*frequency.xml')
+                    run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+              elif (re.search('3.4', keyTDI) != None):
+                  dataTdi = 'Data/challenge1.3.4-frequency/challenge1B.3.4-frequency.xml'
+                  tdis =  glob.glob('TDI/'+challengename+'/*1B.3.4*frequency.xml')
+                  run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
+              elif (re.search('3.5', keyTDI) != None):
+                    dataTdi = 'Data/challenge1.3.5-frequency/challenge1B.3.5-frequency.xml'
+                    tdis =  glob.glob('TDI/'+challengename+'/*1B.3.5*frequency.xml')
+                    run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
 
 
 if (challengename == "Challenge2.2"):
@@ -161,3 +170,4 @@ if (challengename == "Challenge2.2"):
    for KeyTDI in (keyTdis):
       run('bin/evaluate-LISAsimulator2.py --maxPhase --Galaxy  %(dataTdi)s %(KeyTDI)s %(tdis)s')
    
+"""

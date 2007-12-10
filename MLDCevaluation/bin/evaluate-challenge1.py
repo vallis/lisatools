@@ -76,7 +76,7 @@ challengename = args[0]
 timestep = options.timestep
 duration = options.duration
 
-"""
+
 
 ##### I : creating barycentric for user specified params
 
@@ -94,7 +94,7 @@ for xmlfile in glob.glob(barycentric):
        tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
        run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-"""
+
 #### IV : creating TDI files using LISA simulator
 """
 here = os.getcwd()
