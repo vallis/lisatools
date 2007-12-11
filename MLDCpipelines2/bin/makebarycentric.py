@@ -87,6 +87,9 @@ for cnt in range(len(allsystems)):
     initialtime = options.inittime - options.prebuffer
     samples = int( (options.duration + options.prebuffer + options.postbuffer) / options.timestep + 0.1 )
 
+    if (mysystem.xmltype == 'ExtremeMassRatioInspiral'):
+	if (not hasattr(mysystem,'FixHarmonics')):
+	   mysystem.FixHarmonics = 0 
     if options.poldebug == True and mysystem.xmltype == 'ExtremeMassRatioInspiral':
         (hp0,hc0) = mysystem.waveforms(samples,options.timestep,initialtime,debug=-1)
     else:
