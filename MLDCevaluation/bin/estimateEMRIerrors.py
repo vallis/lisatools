@@ -21,7 +21,8 @@ def FindDeltas(Source, ParamRange, RecSystems, KeySystem):
        err = []
        MBH = emri.MassOfSMBH
        doit = 0
-       print emri.name
+       Source = "ExtremeMassRatioInspiral"
+#       print emri.name
        if (re.search(Source, emri.name) != None):
            err.append((KeySystem.EclipticLatitude - emri.EclipticLatitude)/ParamRange[0])
            delP = (KeySystem.EclipticLongitude - emri.EclipticLongitude)/ParamRange[1]
@@ -80,13 +81,31 @@ def FindDeltas(Source, ParamRange, RecSystems, KeySystem):
             
     return  err
 
+from optparse import OptionParser
     
+parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME [Challenge1.3 / Challenge1B.3  ]", version="$Id: $")
 
-      
+
+parser.add_option("-e", "--deltae",
+                      type="float", dest="de", default=0.15,
+                      help="range of e [default 0.15]")
+
+(options, args) = parser.parse_args()
+
+if len(args) < 1:
+    parser.error("I need the challenge name: Challenge1.3 / Challenge1B.3 ")
+
+challengename = args[0]
+
+print challengename
+KeysChal1_3 = []     
            
-
-KeysChal1_3 = ["Key/challenge1.3.1-key.xml", "Key/challenge1.3.2-key.xml", "Key/challenge1.3.3-key.xml",\
-"Key/challenge1.3.4-key.xml"]
+if (challengename == "Challenge1.3"):
+   KeysChal1_3 = ["Key/challenge1.3.1-key.xml", "Key/challenge1.3.2-key.xml", "Key/challenge1.3.3-key.xml",\
+   "Key/challenge1.3.4-key.xml"]
+elif (challengename == "Challenge1B.3"):
+   KeysChal1_3 = ["Key/Challenge1B/challenge1B.3.1-key.xml", "Key/Challenge1B/challenge1B.3.2-key.xml", "Key/Challenge1B/challenge1B.3.3-key.xml",\
+   "Key/Challenge1B/challenge1B.3.4-key.xml", "Key/Challenge1B/challenge1B.3.5-key.xml"]
 
 ParamRange = []
 ParamRange.append(pi) # 0-latitude
@@ -98,7 +117,7 @@ ParamRange.append(1.0)  # 5-MassOfCompactObject
 ParamRange.append(1.e6)  # 6-MassOfSMBH (for 1.3.1) should be 5.e5 for 132,3 and 1.e5 for 134,5
 ParamRange.append("NA")  # 7-InitialAzimuthalOrbitalFrequency
 ParamRange.append(2.*pi)  # 8-InitialAzimuthalOrbitalPhase
-ParamRange.append(0.15)  # 9- InitialEccentricity (guess)
+ParamRange.append(options.de)  # 9- InitialEccentricity (guess)
 ParamRange.append(2.*pi)  # 10-InitialTildeGamma
 ParamRange.append(2.*pi)  # 11-InitialAlphaAngle
 ParamRange.append(pi)  # 12-LambdaAngle
@@ -107,9 +126,12 @@ ParamRange.append(5.e7) # 14 to be filled up with Plunge time
 
 print ParamRange
 
-sources = "Source/Challenge1.3/*xml"
+if (challengename == "Challenge1.3"):
+   sources = "Source/Challenge1.3/*xml"
+elif (challengename == "Challenge1B.3"):
+   sources = "Source/Challenge1B.3/*xml"
 
-
+print glob.glob(sources)
 
 for xmlKey in KeysChal1_3:
     inputXML = lisaxml.readXML(xmlKey)
@@ -118,18 +140,32 @@ for xmlKey in KeysChal1_3:
     for xmlfile in glob.glob(sources):
         SourceXML = lisaxml.readXML(xmlfile)
         RecSystems = SourceXML.getLISASources()
-        print "processing file", xmlfile
-        if (re.search('1.3.1', xmlKey) != None):
+        if (re.search('3.1', xmlKey) != None and re.search('3.1', xmlfile) != None):
+            print "processing file", xmlfile
             Errors  = FindDeltas("EMRI-1", ParamRange, RecSystems, KeySystem)
-        elif (re.search('1.3.2', xmlKey) != None):
+#            print Errors
+#            print ParamRange
+#            print xmlfile
+#            print xmlKey
+#            sys.exit(0)
+        elif (re.search('3.2', xmlKey) != None and re.search('3.2', xmlfile) != None):
+            print "processing file", xmlfile
             ParamRange[6] = 5.e5
             Errors  = FindDeltas("EMRI-2", ParamRange, RecSystems, KeySystem)
-        elif (re.search('1.3.3', xmlKey) != None):
+        elif (re.search('3.3', xmlKey) != None and re.search('3.3', xmlfile) != None):
+            print "processing file", xmlfile
             ParamRange[6] = 5.e5
             Errors  = FindDeltas("EMRI-3", ParamRange, RecSystems, KeySystem)
-        elif (re.search('1.3.4', xmlKey) != None):
+        elif (re.search('3.4', xmlKey) != None and re.search('3.4', xmlfile) != None):
+            print "processing file", xmlfile
             ParamRange[6] = 1.e5
             Errors  = FindDeltas("EMRI-4", ParamRange, RecSystems, KeySystem)
+        elif (re.search('3.5', xmlKey) != None and re.search('3.5', xmlfile) != None):
+            print "processing file", xmlfile
+            ParamRange[6] = 1.e5
+            Errors  = FindDeltas("EMRI-5", ParamRange, RecSystems, KeySystem)
         SourceXML.close()
+#        print "Errors"
+#        print Errors
     inputXML.close()    
 
