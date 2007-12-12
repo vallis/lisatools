@@ -220,15 +220,15 @@ class SpinBlackHoleBinary(lisaxml.Source):
     
     def waveforms(self,samples,deltat,inittime):
         sbbh = SpinBBHWaveform(self.Mass1,self.Mass2,self.Spin1,self.Spin2,deltat)      
-         
+        sbbh.SetObserver(0.5*math.pi - self.EclipticLatitude, self.EclipticLongitude, self.Distance)        
+  
         sbbh.ComputeInspiral(inittime,
                              self.CoalescenceTime,self.PhaseAtCoalescence,
                              self.InitialPolarAngleL,self.InitialAzimuthalAngleL,
                              self.PolarAngleOfSpin1,self.AzimuthalAngleOfSpin1,
                              self.PolarAngleOfSpin2,self.AzimuthalAngleOfSpin2,
                              inittime + deltat*(samples-1))
-
-        sbbh.SetObserver(0.5*math.pi - self.EclipticLatitude, self.EclipticLongitude, self.Distance)
+        
 
         hp = numpy.empty(samples,'d')
         hc = numpy.empty(samples,'d')

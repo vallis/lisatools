@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define SPINBBHWAVEFORMHH
 
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <math.h>
 #include <vector>
@@ -161,6 +162,10 @@ namespace LISAWP{
     * @param phi_C orbital(!) phase at coalescence
     */
    double ComputeOrbPhase(double om, double phi_C);
+   
+   /** Computes orbital phase using time domain expression */ 
+
+   double ComputeOrbPhase(double t, double Tc, double phi_C);
 
  };
 
