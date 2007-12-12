@@ -37,7 +37,6 @@ class FastSpinBlackHoleBinary(lisaxml.Source):
     
     outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
                   ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
-                  ('Polarization',                     'Radian',        None, 'standard source polarization'),
                   ('PolarAngleOfSpin1',                'Radian',        None, 'initial  polar angle of the first spin'),
                   ('PolarAngleOfSpin2',                'Radian',        None, 'initial  polar angle of the second spin'),
                   ('AzimuthalAngleOfSpin1',            'Radian',        None, 'initial azimuthal direction of first spin'),

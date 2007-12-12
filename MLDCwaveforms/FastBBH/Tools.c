@@ -175,7 +175,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   x = pow(PI*Mtot*f*TSUN,2./3.);
 
   Lmag = mu*Mtot*TSUN*TSUN/sqrt(x);
-  S1mag = chi1*m1*m2*TSUN*TSUN;
+  S1mag = chi1*m1*m1*TSUN*TSUN;
   S2mag = chi2*m2*m2*TSUN*TSUN;
 
   Jtot[0] = Lmag*LSvals[0]+S1mag*LSvals[3] + S2mag*LSvals[6];
@@ -189,7 +189,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   JdotL = calcLdotN(Jtot, LSvals);
   calcLcrossN(JcrossL, Jtot, LSvals);
 
-  // printf("L %e S1 %e S2 %e J %e\n", Lmag, S1mag, S2mag, Jmag);
+ /* printf("L %e S1 %e S2 %e J %e\n", Lmag, S1mag, S2mag, Jmag);*/
 
   calcderivvals(derivvals, LSvals, r, m1, m2, Mtot, mu, chi1, chi2);
   LdotN = calcLdotN(LSvals, N);
@@ -197,10 +197,17 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   thomasderiv = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
 
   x = calcLdotN(JcrossL, LcrossN);
+  
+  /*printf("Nom %e \n", x); */
 
   x /= sqrt((1.0-JdotL*JdotL)*(1.0-LdotN*LdotN));
+  
+/*  printf("sin(i) = %e,  sin(kappa) =  %e \n", sqrt(1.0-JdotL*JdotL), sqrt(1.0-LdotN*LdotN));*/
 
   gamma0 = acos(x);
+
+
+//-acos( (Lnz*Ldotn + cos(theta))/(sin(iota)*sqrt(1.-Ldotn*Ldotn)) );
 
   // printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0);
 
