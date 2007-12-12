@@ -74,7 +74,7 @@ class ExtremeMassRatioInspiral(lisaxml.Source):
         # wavelen = emri.GetWaveform(self.Polarization, hp, hc)
 
         if self.FixHarmonics > 0:
-           wavelen = self.__emri.GetWaveform(0, hp, hc, debug, 6)
+           wavelen = self.__emri.GetWaveform(0, hp, hc, debug, self.FixHarmonics)
         else:
            wavelen = self.__emri.GetWaveform(0, hp, hc, debug, 0)
 
