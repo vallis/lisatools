@@ -346,6 +346,11 @@ print "--> Installing/refreshing Stochastic"
 assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
 os.chdir(here)
 
+os.chdir('MLDCwaveforms/PseudoRandomNoise')
+print "--> Installing/refreshing PseudoRandomNoise"
+assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
+os.chdir(here)
+
 # install/check install for Galaxy3 TDI
 
 os.chdir('MLDCwaveforms/Galaxy3')
@@ -365,8 +370,8 @@ if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3
 if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
     if downloadgalaxy == True:
         print "    (downloading Nelemans AMCV galaxy (791M), this will take a while...)"
-        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/AMCVn_GWR_MLDC.dat.bz2  > data/AMCVn_GWR_MLDC.dat.bz2'))
-        assert(0 == os.system('bunzip2 data/AMCVn_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/AMCVn_GWR_MLDC.dat.bz2  > Data/AMCVn_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 Data/AMCVn_GWR_MLDC.dat.bz2'))
     else:
         print "!!! If you want to generate galactic backgrounds, you'll need to download"
         print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
@@ -375,8 +380,8 @@ if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
 if not os.path.isfile('Data/dwd_GWR_MLDC.dat'):
     if downloadgalaxy == True:
         print "    (downloading Nelemans dwd galaxy (427M), this will take a while...)"
-        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/dwd_GWR_MLDC.dat.bz2  > data/dwd_GWR_MLDC.dat.bz2'))
-        assert(0 == os.system('bunzip2 data/dwd_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/dwd_GWR_MLDC.dat.bz2  > Data/dwd_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 Data/dwd_GWR_MLDC.dat.bz2'))
     else:
         print "!!! If you want to generate galactic backgrounds, you'll need to download"
         print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
