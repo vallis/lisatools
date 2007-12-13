@@ -177,6 +177,10 @@ parser.add_option("-l", "--laserNoise",
                   type="string", dest="laserNoise", default='None',
                   help="laser noise level: None, Standard, <numerical value> [e.g., 0.2 for 20% of pm noise at 1 mHz; synthlisa only]")
 
+parser.add_option("-c", "--combinedSNR",
+                  action="store_true", dest="combinedSNR", default=False,
+                  help="use combined SNR = sqrt(2)*max{SNR_x, SNR_y, SNR_z} to rescale signals [off by default]")
+
 parser.add_option("-P", "--nProc",
                   type="int", dest="nproc", default=1,
                   help="run in parallel on nproc CPUs [default 1]")
@@ -360,6 +364,8 @@ if dosynthlisa:
     runoptions = ''    
     if options.rawMeasurements == True:
         runoptions += '--rawMeasurements '
+    if options.combinedSNR == True:
+        runoptions += '--combinedSNR '
     if not glob.glob('Galaxy/*.xml'):
         # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
         runoptions += '--noiseOnly '
