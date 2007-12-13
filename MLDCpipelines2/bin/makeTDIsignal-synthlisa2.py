@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__version__='$Id: makeTDIsignal-synthlisa.py 368 2007-04-25 01:44:03Z vallisneri $'
+__version__='$Id$'
 
 import lisaxml
 from lisaxml.convertunit import convertUnit
@@ -23,7 +23,7 @@ from optparse import OptionParser
 # this version supports "immediate" synthlisa sourcefiles
 
 parser = OptionParser(usage="usage: %prog [options] IMMEDIATE.xml/BARYCENTRIC.xml OUTPUT.xml",
-                      version="$Id: makeTDIsignal-synthlisa.py 368 2007-04-25 01:44:03Z vallisneri $")
+                      version="$Id$")
 
 parser.add_option("-t", "--initialTime",
                   type="float", dest="inittime", default=0.0,
@@ -48,6 +48,10 @@ parser.add_option("-D", "--debugSNR",
 parser.add_option("-r", "--rawMeasurements",
                   action="store_true", dest="rawMeasurements", default=False,
                   help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
+
+parser.add_option("-c", "--combinedSNR",
+                  action="store_true", dest="combinedSNR", default=False,
+                  help="use combined snr = sqrt(2)*max{SNR_x, SNR_y, SNR_z} as SNR constrain [off by default]")
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -140,19 +144,15 @@ if options.debugSNR or hasattr(allsources[0],'RequestSN'):
     hY = synthlisa.spect(Y,sampling,0)
     hZ = synthlisa.spect(Z,sampling,0)
     
-    minf = hX[1,0]
-    lowi = int(1e-5 / minf)
-    higi = int(9e-3 / minf)
-    
     # get frequencies, skip DC
-    fr = hX[lowi:higi,0]
+    fr = hX[1:,0]
     
     om = 2.0 * pi * fr
     L  = 16.6782
     
     # instrument noise (was 2.5, 1.8)
-    Spm = 2.54e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
-    Sop = 1.76e-37 * fr**2
+    Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
+    Sop = 1.8e-37 * fr**2
     
     Sx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
     
@@ -177,25 +177,42 @@ if options.debugSNR or hasattr(allsources[0],'RequestSN'):
     # so we need only to sum up the array containing the ratio,
     # and multiply by two
     
-    snX = sqrt(2.0 * numpy.sum(hX[lowi:higi,1] / Sn))
-    snY = sqrt(2.0 * numpy.sum(hY[lowi:higi,1] / Sn))
-    snZ = sqrt(2.0 * numpy.sum(hZ[lowi:higi,1] / Sn))
+    # clipping: check (roughly) if first null is within the computed range
+    highf = 0.01
+    if options.combinedSNR and fr[-1] > highf:
+        # then find the minimum of the noise curve up to highf and clip to that minimum value
+        minSn = numpy.min(Sn[1:int(highf / Sn[1])])
+        Sn = numpy.maximum(Sn,minSn)
+        print "Clipping noise PSD to %s" % minSn
+    
+    snX = sqrt(2.0 * numpy.sum(hX[1:,1] / Sn))
+    snY = sqrt(2.0 * numpy.sum(hY[1:,1] / Sn))
+    snZ = sqrt(2.0 * numpy.sum(hZ[1:,1] / Sn))
     
     SNR = max(snX,snY,snZ)
     
-    print "makeTDIsignal-synthlisa.py: maximum X,Y,Z SNR = %s" % SNR
+    if options.combinedSNR:
+        SNR = SNR*sqrt(2.0) 
+        print "makeTDIsignal-synthlisa.py: combined SNR [sqrt(2) * max(X,Y,Z)] = %s" % SNR
+    else:
+        print "makeTDIsignal-synthlisa.py: maximum X,Y,Z SNR = %s" % SNR
 
     if options.debugSNR:
         print "makeTDIsignal-synthlisa.py: SNR X, Y, Z = %s, %s, %s" % (snX,snY,snZ)
     
         Sxy = -4.0 * numpy.sin(2.0*om*L)*numpy.sin(om*L) * ( Sop + 4.*Spm )
-        Sa = 2.0 * (Sx - Sxy)/3.0
+ 
+        if options.noiseOnly:
+            Sa = 2.0 * (Sx - Sxy)/3.0
+        else:
+            Sxy_gal = -0.5*Sgal
+            Sa = 2.0 * (Sx + Sgal - Sxy - Sxy_gal)/3.0
     
         hA = synthlisa.spect((2*X - Y - Z)/3.0,sampling,0)
         hE = synthlisa.spect((Z - Y)/sqrt(3.0),sampling,0)
     
-        snA = sqrt(2.0 * numpy.sum(hA[lowi:higi,1] / Sa))
-        snE = sqrt(2.0 * numpy.sum(hE[lowi:higi,1] / Sa))
+        snA = sqrt(2.0 * numpy.sum(hA[1:,1] / Sa))
+        snE = sqrt(2.0 * numpy.sum(hE[1:,1] / Sa))
     
         print "makeTDIsignal-synthlisa.py: SNR A, E, total = %s, %s, %s" % (snA,snE,sqrt(snA**2 + snE**2))
     
