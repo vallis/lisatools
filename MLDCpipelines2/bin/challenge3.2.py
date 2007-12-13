@@ -53,4 +53,4 @@ if 6 in chosen:
 
 seed = seed + 7
 
-run('%(mydir)s/makesource-Galaxy3.py --seed=%(seed)s -v Galaxy/TheGalaxy.xml' % globals())
+run('%(mydir)s/makesource-Galaxy3.py --seed=%(seed)s --confusion -v Galaxy/TheGalaxy.xml' % globals())
