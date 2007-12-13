@@ -39,6 +39,10 @@ parser.add_option("-n", "--noiseOnly",
                   action="store_true", dest="noiseOnly", default=False,
                   help="compute SNR using instrumental noise only [off by default]")
 
+parser.add_option("-D", "--debugSNR",
+                  action="store_true", dest="debugSNR", default=False,
+                  help="show more SNR data [off by default]")
+
 parser.add_option("-c", "--combinedSNR",
                   action="store_true", dest="combinedSNR", default=False,
                   help="use combined snr = sqrt(2)*max{SNR_x, SNR_y, SNR_z} as SNR constrain [off by default]")
@@ -96,6 +100,7 @@ source = synthlisa.SampledWave(hp,hc,
                                waveforms.EclipticLongitude,0)       # polarization already encoded in hp,hc
 
 # this hardcodes the standard LISA object for the MLDC...
+# lisa = synthlisa.CacheLISA(synthlisa.CircularRotating(0.0,1.5*pi,-1))
 lisa = synthlisa.CacheLISA(synthlisa.EccentricInclined(0.0,1.5*pi,-1))
 
 tdi = synthlisa.TDIsignal(lisa,source)
@@ -121,7 +126,7 @@ fr = hX[1:,0]
 om = 2.0 * pi * fr
 L  = 16.6782
 
-# instrument noise
+# instrument noise (better values are 2.54, 1.76)
 Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
 Sop = 1.8e-37 * fr**2
 
@@ -137,30 +142,10 @@ Sgal = (2.0 * L)**2 * (2*pi*fr)**2 * 4.0 * numpy.sin(om*L)**2 * (
          numpy.piecewise(fr,(fr >= 10**-2.7) & (fr < 10**-2.4),[lambda f: 10**-62.8  * f**-8.8, 0]) + \
          numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )
 
-#The lines below can be un-commented if we decide to use A,E
-
-#Sxy = -4.0*numpy.sin(2.0*om*L)*numpy.sin(om*L)*(4.0*Spm + Sop);
-#Sxy_gal = -0.5*Sgal
-
-#if options.noiseOnly:
-#   SA = (Sx-Sxy)*(2./3.)
-#else:
-#   SA = (Sx + Sgal - Sxy - Sxy_gal)
-#hA = (2.*hx - hy - hz)/3.
-#hE = (hz - hy)/sqrt(3.)
-
 if options.noiseOnly:
     Sn = Sx
 else:
     Sn = Sx + Sgal
-
-
-#fout = open("PsdN.dat", 'w')
-#spr  = "     "
-#for i in xrange(samples/2):
-#    rec =  str(fr[i]) + spr + str(Sx[i]) + spr + str(Sgal[i]) + spr + str(Sn[i]) + "\n"
-#    fout.write(rec)
-#fout.close()
 
 # the (S/N)^2 is given by 2T times the integrated ratio
 # of the spectral densities (the factor of 2 because the spectral
@@ -168,15 +153,48 @@ else:
 # so we need only to sum up the array containing the ratio,
 # and multiply by two
 
+# clipping: check (roughly) if first null is within the computed range
+highf = 0.01
+if options.combinedSNR and fr[-1] > highf:
+    # then find the minimum of the noise curve up to highf and clip to that minimum value
+    minSn = numpy.min(Sn[1:int(highf / Sn[1])])
+    Sn = numpy.maximum(Sn,minSn)
+    print "Clipping noise PSD to %s" % minSn
+
 snX = sqrt(2.0 * numpy.sum(hX[1:,1] / Sn))
 snY = sqrt(2.0 * numpy.sum(hY[1:,1] / Sn))
 snZ = sqrt(2.0 * numpy.sum(hZ[1:,1] / Sn))
 
 SNR = max(snX,snY,snZ)
+
 if options.combinedSNR:
     SNR = SNR*sqrt(2.0) 
+    print "makeTDIsignal-synthlisa.py: combined SNR [sqrt(2) * max(X,Y,Z)] = %s" % SNR
+else:
+    print "makeTDIsignal-synthlisa.py: maximum X,Y,Z SNR = %s" % SNR
 
-print "makeTDIsignal-synthlisa.py: maximum X,Y,Z SNR = %s" % SNR
+if options.debugSNR:
+    print "makeTDIsignal-synthlisa.py: SNR X, Y, Z = %s, %s, %s" % (snX,snY,snZ)
+
+    Sxy = -4.0 * numpy.sin(2.0*om*L)*numpy.sin(om*L) * ( Sop + 4.*Spm )
+
+    if options.noiseOnly:
+        Sa = 2.0 * (Sx - Sxy)/3.0
+    else:
+        Sxy_gal = -0.5*Sgal
+        Sa = 2.0 * (Sx + Sgal - Sxy - Sxy_gal)/3.0
+
+    hA = synthlisa.spect((2*X - Y - Z)/3.0,sampling,0)
+    hE = synthlisa.spect((Z - Y)/sqrt(3.0),sampling,0)
+
+    snA = sqrt(2.0 * numpy.sum(hA[1:,1] / Sa))
+    snE = sqrt(2.0 * numpy.sum(hE[1:,1] / Sa))
+
+    print "makeTDIsignal-synthlisa.py: SNR A, E, total = %s, %s, %s" % (snA,snE,sqrt(snA**2 + snE**2))
+
+    # note:
+    # A = (2X - Y - Z) / 3
+    # E = (Z - Y) / sqrt(3)
 
 if hasattr(waveforms,'RequestSN'):
     ReqSN = waveforms.RequestSN
