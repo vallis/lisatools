@@ -262,7 +262,7 @@ int main(int argc,char **argv)
       fftw_destroy_plan ( plan_reverse ); 
 
 
-    return;
+    return 0;
 
 }
 	

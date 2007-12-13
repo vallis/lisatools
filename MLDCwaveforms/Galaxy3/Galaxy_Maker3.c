@@ -330,7 +330,7 @@ int main(int argc,char **argv)
    fclose(Output);
 
 
-   return;
+   return 0;
 
 }
 
