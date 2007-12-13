@@ -44,7 +44,7 @@ parser.add_option("-t", "--centralTime",
 
 parser.add_option("-r", "--centralTimeRange",
                   type="float", dest="deltaTc", default=None,
-                  help="dispertion of the central time (seconds) [required]")
+                  help="dispersion of the central time (seconds) [+- uniform range, required]")
 
 parser.add_option("-f", "--maximumFrequency",
                   type="float", dest="MaximumFrequency", default=None,
