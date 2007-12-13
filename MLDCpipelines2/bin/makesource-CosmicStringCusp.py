@@ -48,7 +48,7 @@ parser.add_option("-r", "--centralTimeRange",
 
 parser.add_option("-f", "--maximumFrequency",
                   type="float", dest="MaximumFrequency", default=None,
-                  help="maximum burst frequency (Hz) [default random log-uniform 1e-4--10 Hz]")
+                  help="maximum burst frequency (Hz) [default random log-uniform 1e-3--10 Hz]")
 
 parser.add_option("-n", "--sourceName",
                   type="string", dest="sourceName", default="Cosmic string cusp burst",
@@ -96,7 +96,7 @@ mysystem.CentralTime                = options.Tc + random.uniform(-options.delta
 if options.MaximumFrequency != None:
     mysystem.MaximumFrequency = options.MaximumFrequency
 else:
-    mysystem.MaximumFrequency = 10**random.uniform(-4.0,1.0)
+    mysystem.MaximumFrequency = 10**random.uniform(-3.0,1.0)
 
 if options.RequestSN:
     mysystem.RequestSN = options.RequestSN
