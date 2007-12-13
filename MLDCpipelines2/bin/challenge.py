@@ -381,7 +381,7 @@ if dosynthlisa:
     runoptions = ''
     if options.randomizeNoise > 0.0:
         runoptions += ('--randomizeNoise=%s ' % options.randomizeNoise)
-    if options.laserNoise != None:
+    if options.laserNoise != 'None':
         runoptions += ('--laserNoise=%s ' % options.laserNoise)
     if options.rawMeasurements == True:
         runoptions += '--rawMeasurements '
