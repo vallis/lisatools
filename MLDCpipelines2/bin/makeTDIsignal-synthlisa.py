@@ -39,6 +39,10 @@ parser.add_option("-n", "--noiseOnly",
                   action="store_true", dest="noiseOnly", default=False,
                   help="compute SNR using instrumental noise only [off by default]")
 
+parser.add_option("-c", "--combinedSNR",
+                  action="store_true", dest="combinedSNR", default=False,
+                  help="use combined snr = sqrt(2)*max{SNR_x, SNR_y, SNR_z} as SNR constrain [off by default]")
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
@@ -133,10 +137,23 @@ Sgal = (2.0 * L)**2 * (2*pi*fr)**2 * 4.0 * numpy.sin(om*L)**2 * (
          numpy.piecewise(fr,(fr >= 10**-2.7) & (fr < 10**-2.4),[lambda f: 10**-62.8  * f**-8.8, 0]) + \
          numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )
 
+#The lines below can be un-commented if we decide to use A,E
+
+#Sxy = -4.0*numpy.sin(2.0*om*L)*numpy.sin(om*L)*(4.0*Spm + Sop);
+#Sxy_gal = -0.5*Sgal
+
+#if options.noiseOnly:
+#   SA = (Sx-Sxy)*(2./3.)
+#else:
+#   SA = (Sx + Sgal - Sxy - Sxy_gal)
+#hA = (2.*hx - hy - hz)/3.
+#hE = (hz - hy)/sqrt(3.)
+
 if options.noiseOnly:
     Sn = Sx
 else:
     Sn = Sx + Sgal
+
 
 #fout = open("PsdN.dat", 'w')
 #spr  = "     "
@@ -156,6 +173,8 @@ snY = sqrt(2.0 * numpy.sum(hY[1:,1] / Sn))
 snZ = sqrt(2.0 * numpy.sum(hZ[1:,1] / Sn))
 
 SNR = max(snX,snY,snZ)
+if options.combinedSNR:
+    SNR = SNR*sqrt(2.0) 
 
 print "makeTDIsignal-synthlisa.py: maximum X,Y,Z SNR = %s" % SNR
 
