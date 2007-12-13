@@ -44,7 +44,7 @@ parser.add_option("-t", "--centralTime",
 
 parser.add_option("-r", "--centralTimeRange",
                   type="float", dest="deltaTc", default=None,
-                  help="central time of the burst from t = 0 (seconds) [required]")
+                  help="dispertion of the central time (seconds) [required]")
 
 parser.add_option("-f", "--maximumFrequency",
                   type="float", dest="MaximumFrequency", default=None,
