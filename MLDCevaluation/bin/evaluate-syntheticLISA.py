@@ -222,6 +222,9 @@ L  = 16.6782
 Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
 Sop = 1.8e-37 * fr**2
 
+# Spm = 2.54e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
+# Sop = 1.76e-37 * fr**2
+
 Sx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
 Sxy = -4.0 * numpy.sin(2.0*om*L)*numpy.sin(om*L) * ( Sop + 4.*Spm )
 Sa = 2.0 * (Sx - Sxy)/3.0
