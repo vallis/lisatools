@@ -34,8 +34,8 @@ parser.add_option("-s", "--seed",
                   help="Galaxy seed (int) [required]")
 
 parser.add_option("-v", "--verification",
-                  action="store_true", dest="verification", default=True,
-                  help="include verification binaries [defaults to true]")
+                  action="store_true", dest="verification", default=False,
+                  help="include verification binaries [defaults to False]")
 
 parser.add_option("-c", "--confusion",
                   action="store_true", dest="confusion", default=False,
