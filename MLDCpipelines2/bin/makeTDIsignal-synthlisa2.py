@@ -179,7 +179,7 @@ if options.debugSNR or hasattr(allsources[0],'RequestSN'):
     
     # clipping: check (roughly) if first null is within the computed range
     highf = 0.01
-    highi = int(highf / fr[1])
+    highi = int(highf / fr[0])
     if options.combinedSNR and fr[-1] > highf and highi > 1:
         # then find the minimum of the noise curve up to highf and clip to that minimum value
         minSn = numpy.min(Sn[1:highi])
