@@ -35,6 +35,8 @@ class FastSpinBlackHoleBinary(lisaxml.Source):
     # this is the list of parameters that will be recorded in the lisaXML SourceData sections
     # give ParameterName, DefaultUnit, DefaultValue (a string), Description
     
+    dopolarization = True
+
     outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
                   ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
                   ('PolarAngleOfSpin1',                'Radian',        None, 'initial  polar angle of the first spin'),
