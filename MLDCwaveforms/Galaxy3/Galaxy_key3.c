@@ -65,7 +65,7 @@ int main(int argc,char **argv) {
 
         XMLopentag(myxml,"XSIL","Type=\"SourceData\"");
 
-            XMLopentag(myxml,"XSIL","Name=\"%s\" Type=\"PlaneWaveTable\"",tag);
+            XMLopentag(myxml,"XSIL","Name=\"%s-bright\" Type=\"PlaneWaveTable\"",tag);
 
            XMLopentag(myxml,"Param", "Name=\"SourceType\" Unit=\"String\"");
             XMLcontentstring(myxml,"GalacticBinary");
@@ -98,6 +98,15 @@ int main(int argc,char **argv) {
         myxml->indent -= XMLSTDINDENT;
         XMLclosetag(myxml,"Table");
 
+        XMLclosetag(myxml,"XSIL");
+
+        /* Begin second table */
+
+        XMLopentag(myxml,"XSIL","Name=\"%s\" Type=\"PlaneWaveTable\"",tag);
+
+        XMLopentag(myxml,"Param", "Name=\"SourceType\" Unit=\"String\"");
+            XMLcontentstring(myxml,"GalacticBinary");
+        XMLclosetag(myxml,"Param");
 
         XMLopentag(myxml,"Table","");
 
