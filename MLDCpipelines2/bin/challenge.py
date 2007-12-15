@@ -379,7 +379,7 @@ if dosynthlisa:
         if (not makemode) or newer(xmlfile,tdifile):
             prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-    if (options.randomizeNoise > 0.0) or (options.laserNoise != 'None') or (options.rawMeasurements == True):
+    if (options.randomizeNoise > 0.0) or (options.laserNoise != 'None') or (options.rawMeasurements == True) or (timestep != 15.0):
         runfile = 'makeTDInoise-synthlisa2.py'
     else:
         runfile = 'makeTDInoise-synthlisa.py'
