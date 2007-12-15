@@ -50,6 +50,16 @@ lisa = mergedtdifile.getLISAgeometry()
 if not options.nokey:
     sources = mergedtdifile.getLISASources()
 
+tdid = {}
+tdin = []
+
+alltdi = mergedtdifile.getTDIObservables()
+
+for thistdi in alltdi:
+    if not (thistdi.name in tdin):
+        tdid[thistdi.name] = thistdi
+        tdin.append(thistdi.name)
+
 extrasecs = []
 for sec in ['NoiseData','Simulate','LISACode']:
     if mergedtdifile.getExtraSection(sec):
@@ -68,9 +78,6 @@ comments = mergedtdifile.Comment
 mergedtdifile.close()
 
 newmergedtdifile = lisaxml.lisaXML(mergedfile,author=author,comments=comments)
-
-tdid = {}
-tdin = []
 
 for inputfile in inputfiles:
     inputtdifile = lisaxml.readXML(inputfile)
@@ -133,9 +140,8 @@ for inputfile in inputfiles:
 if lisa:
     newmergedtdifile.LISAData(lisa)
 
-if not options.keyonly:
-    for name in tdin:
-        newmergedtdifile.TDIData(tdid[name])
+for name in tdin:
+    newmergedtdifile.TDIData(tdid[name])
 
 if not options.nokey:
     for sec in extrasecs:
