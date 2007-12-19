@@ -56,9 +56,10 @@ tdin = []
 alltdi = mergedtdifile.getTDIObservables()
 
 for thistdi in alltdi:
-    if not (thistdi.name in tdin):
-        tdid[thistdi.name] = thistdi
-        tdin.append(thistdi.name)
+    obsname = thistdi.TimeSeries.name
+    if not (obsname in tdin):
+        tdid[obsname] = thistdi
+        tdin.append(obsname)
 
 extrasecs = []
 for sec in ['NoiseData','Simulate','LISACode']:
@@ -103,12 +104,14 @@ for inputfile in inputfiles:
         alltdi = inputtdifile.getTDIObservables()
 
         for thistdi in alltdi:
-            if not (thistdi.name in tdin):
-                tdid[thistdi.name] = thistdi
+            obsname = thistdi.TimeSeries.name
+
+            if not (obsname in tdin):
+                tdid[obsname] = thistdi
                 # to keep them in order...
-                tdin.append(thistdi.name)
+                tdin.append(obsname)
             else:
-                tdi = tdid[thistdi.name]
+                tdi = tdid[obsname]
 
                 try:
                     assert tdi.DataType              == thistdi.DataType
@@ -121,8 +124,8 @@ for inputfile in inputfiles:
 
                 # add tdi observables to accumulator arrays
 
-                for obsname in tdi.name.split(','):
-                    obs = obsname.strip()
+                for name in obsname.split(','):
+                    obs = name.strip()
 
                     if obs != 't':
                         tdio = getattr(tdi,obs)
