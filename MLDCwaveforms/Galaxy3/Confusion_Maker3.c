@@ -85,7 +85,6 @@ int main(int argc,char **argv)
      {
        fscanf(Infile, "%lf%lf%lf%lf%lf%lf%lf%lf\n", &m1, &m2, &Porb, &Porb_dot, &m2_dot, &l, &b, &DL);
 
-
        f = 2.0/Porb;
 
        f += 0.01*(1.0-2.0*gsl_rng_uniform(rnd))*f;       /* random +/- 1% tweak to the frequencies */
@@ -143,17 +142,15 @@ int main(int argc,char **argv)
 
        /* need to explicitly check SNRs of the brightest sources 
           Acut estimate of the SNR is only good to within a factor or 2 */
-       if((Acut > 2.0) && (f < fNy))
-	 {
-	   SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
-           //printf("%f %f %f\n", Acut, SNR, SNR/Acut);
-         }
+       if((Acut > 2.0) && (f < fNy)) {
+	       SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
+           // printf("%f %f %f\n", Acut, SNR, SNR/Acut);
+       }
 
-       if((f < fNy) && (SNR <= 5.0))
-        {
-	 cnt++;
-         fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
-        }
+       if((f < fNy) && (SNR <= 5.0)) {
+	       cnt++;
+           fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
+       }
 
        if(SNR > 5.0) cntb++;
 
