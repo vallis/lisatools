@@ -270,11 +270,11 @@ sourcekeyfile = options.sourcekeyfile
 execdir = os.path.dirname(os.path.abspath(sys.argv[0]))
 workdir = os.path.curdir
 
-for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template','Immediate'):
+for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template','Immediate','LISACode'):
     if not os.path.exists(folder):
         os.mkdir(folder)
 
-for doc in ('Template/lisa-xml.css','Template/lisa-xml.xsl','Template/StandardLISA.xml'):
+for doc in ('Template/lisa-xml.css','Template/lisa-xml.xsl','Template/StandardLISA.xml','Template/LISACode.xml'):
     if not os.path.exists(doc):
         shutil.copyfile(execdir + '/../' + doc,doc)
 
