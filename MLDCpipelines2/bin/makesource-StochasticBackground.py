@@ -101,7 +101,7 @@ for i in range(npixels):
     mysystem.PowerSpectralDensity = PSD / (2*npixels)
     mysystem.SpectralSlope = -3
     mysystem.Flow  = 1e-5
-    mysystem.Fknee = 1e-3
+    mysystem.Fknee = 1e-1
 
     mysystem.PseudoRandomSeed = random.randint(0,2**30)
 
