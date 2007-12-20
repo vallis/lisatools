@@ -347,7 +347,7 @@ step3time = time.time()
 
 # first empty the TDI directory
 if (not makemode):
-    run('rm -f TDI/*.xml TDI/*.bin TDI/Binary')
+    run('rm -f TDI/*.xml TDI/*.bin TDI/Binary TDI/*.txt')
 
 if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
@@ -511,21 +511,21 @@ if dosynthlisa:
 
     if istraining:
         if glob.glob('TDI/*-tdi-frequency.xml'):
-            run('%(execdir)s/mergeXML.py %(nonoisefile)s TDI/*-tdi-frequency.xml')
+            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-frequency.xml')
 
         if donoise:
-            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
     else:
         if glob.glob('TDI/*-tdi-frequency.xml'):
-            run('%(execdir)s/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-frequency.xml')
+            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-frequency.xml')
 
         if donoise:
-            run('%(execdir)s/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
+            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
 
     # create the key with all source info
 
     if glob.glob('TDI/*-tdi-frequency.xml'):
-        run('%(execdir)s/mergeXML.py -k %(keyfile)s TDI/*-tdi-frequency.xml')
+        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml')
 
     # now do some tarring up, including XSL and CSS files from Template
 
@@ -577,16 +577,16 @@ if lisasimdir:
 
     if istraining:
         if glob.glob('TDI/*-tdi-strain.xml'):
-            run('%(execdir)s/mergeXML.py %(nonoisefile)s TDI/*-tdi-strain.xml')
+            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-strain.xml')
 
         if donoise:
-            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
     else:
         if glob.glob('TDI/*-tdi-strain.xml'):
-            run('%(execdir)s/mergeXML.py -n %(nonoisefile)s TDI/*-tdi-strain.xml')
+            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-strain.xml')
         
         if donoise:
-            run('%(execdir)s/mergeXML.py -n %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
+            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
 
     # do key file, but only if synthlisa has not run, otherwise it will be erased
 
@@ -594,7 +594,7 @@ if lisasimdir:
         lisaxml.lisaXML(keyfile,comments='XML key for %s%s' % (challengename,secretseed)).close()
 
         if glob.glob('TDI/*-tdi-strain.xml'):
-            run('%(execdir)s/mergeXML.py -k %(keyfile)s TDI/*-tdi-strain.xml')
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml')
 
     # now do some tarring up, including XSL and CSS files from Template
 
@@ -609,6 +609,24 @@ if lisasimdir:
         run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
 
     os.chdir('..')
+
+# make sure the keys point to real Table txt files, not symlinks
+# build symlinks from training dataset tables to their key 
+
+os.chdir('Dataset')
+
+for txtfile in glob.glob('*.txt'):
+    if os.path.islink(txtfile):
+        if 'key' in txtfile:
+            run('cp %s %s-tmp' % (txtfile,txtfile))
+            run('mv %s-tmp %s' % (txtfile,txtfile))
+        else:
+            for filetype in ['training-frequency','training-strain','training-nonoise-frequency','training-nonoise-strain']:
+                if filetype in txtfile:
+                    run('rm %s' % txtfile)
+                    run('ln -s %s %s' % (re.sub(filetype,'training-key',txtfile),txtfile))
+
+os.chdir('..')
 
 # run('rm Dataset/lisa-xml.xsl')
 # run('rm Dataset/lisa-xml.css')
