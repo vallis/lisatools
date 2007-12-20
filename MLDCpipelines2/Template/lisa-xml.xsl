@@ -47,6 +47,28 @@
                 </div>
             </div>
 
+            <xsl:for-each select="XSIL[@Type='LISACode']">
+                <div class="LISAData">                
+                    <h2>LISACode parameters</h2>
+
+					<div class="FileData">
+						<xsl:call-template name="handle-parameter-table"/>
+
+						<xsl:for-each select="XSIL">
+							<h3><xsl:value-of select="./@Name"/> (<xsl:value-of select="./@Type"/>)</h3>
+
+							<div class="TimeSeries">
+								<xsl:call-template name="handle-parameter-table"/>
+							</div>
+						</xsl:for-each>
+
+	                    <xsl:for-each select="Comment">
+	                        <xsl:call-template name="handle-comment"/>
+	                    </xsl:for-each>
+					</div>
+                </div>
+            </xsl:for-each>
+
             <xsl:for-each select="XSIL[@Type='LISAData']">
                 <div class="LISAData">                
                     <h2>LISA data</h2>
