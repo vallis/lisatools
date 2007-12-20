@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <XSIL Type="Simulate">
+        <Param Name="TimeOffset" Unit="Second">
+            0.0
+        </Param>
+        <Param Name="Cadence" Unit="Second">
+            2.0
+        </Param>
+        <Param Name="Duration" Unit="Second">
+            2041250.0
+        </Param>
+        <Param Name="Observables" Unit="String">
+            t,Xf,Yf,Zf,y231,y321,z231,z321,y312,y132,z312,z132,y123,y213,z123,z213,L1,L1p,L2,L2p,L3,L3p
+        </Param>
+        <Param Name="OutputFile" Unit="String">
+            {challengename}-lisacode.xml
+        </Param>
+    </XSIL>
+
+    <XSIL Type="LISACode">
+        <Param Name="GlobalRandomSeed" Unit="Second">{randomseed}</Param>
+        <Param Name="StepPhysic" Unit="Second">1</Param>
+        <Param Name="DeltaTDIDelay" Unit="Second">0</Param>
+        <Param Name="StepDisplay" Unit="Second">500</Param>
+
+        <XSIL Type="Detector">
+            <Param Name="LaserPower" Unit="Watt">1</Param>
+            <Param Name="PhaMetFilter" Unit="None">On</Param>
+            <Param Name="PMFAttenuation" Unit="dB">180</Param>
+            <Param Name="PMFOscillation" Unit="dB">0.1</Param>
+            <Param Name="PMFLowFreqFact" Unit="None">0.1</Param>
+            <Param Name="PMFHighFreqFact" Unit="None">0.3</Param>
+        </XSIL>
+
+        <XSIL Type="OutputFiles">
+            <Param Name="TDI" Unit="String">{challengename}-TDI.bin</Param>
+            <Param Name="SignalSC1" Unit="String">{challengename}-phasemeter-1.bin</Param>
+            <Param Name="SignalSC2" Unit="String">{challengename}-phasemeter-2.bin</Param>
+            <Param Name="SignalSC3" Unit="String">{challengename}-phasemeter-3.bin</Param>
+            <Param Name="Delay" Unit="String">{challengename}-delay.bin</Param>
+        </XSIL>
+
+        <Comment>
+            Note: the PseudoRandomSeed and InterpolationOrder Params in the noise
+            specifications below are ignored by LISACode, which uses GlobalRandomSeed
+            and sets the interpolation level to 7.
+        </Comment>
+    </XSIL>
+</XSIL>
