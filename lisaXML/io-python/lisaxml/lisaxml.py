@@ -665,16 +665,17 @@ class writeXML(object):
         there."""
         
         string = ''
-        
-        if len(attrs) > 0:
-            # always put 'Name' first
+
+        if attrs:
+            if len(attrs) > 0:
+                # always put 'Name' first
             
-            if 'Name' in attrs.keys():
-                string += ' Name="' + attrs['Name'] +'"'
+                if 'Name' in attrs.keys():
+                    string += ' Name="' + attrs['Name'] +'"'
             
-            for attr in attrs.keys():
-                if attr != 'Name':
-                    string += ' ' + attr + '="' + str(attrs[attr]) + '"'
+                for attr in attrs.keys():
+                    if attr != 'Name':
+                        string += ' ' + attr + '="' + str(attrs[attr]) + '"'
         
         return string
     
