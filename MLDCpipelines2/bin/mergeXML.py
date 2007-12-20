@@ -28,6 +28,10 @@ parser.add_option("-s", "--subtract",
                   action="store_true", dest="subtract", default=False,
                   help="subtract (not add) TDI columns [off by default]")
 
+parser.add_option("-N", "--tdiName",
+                  type="string", dest="tdiName", default=None,
+                  help="use this string as the name of TDIobservable sections [off by default]")
+
 (options, args) = parser.parse_args()
 
 # currently we support only a single source parameter file
@@ -144,7 +148,10 @@ if lisa:
     newmergedtdifile.LISAData(lisa)
 
 for name in tdin:
-    newmergedtdifile.TDIData(tdid[name])
+    if options.tdiName:
+        newmergedtdifile.TDIData(tdid[name],name=options.tdiName)
+    else:
+        newmergedtdifile.TDIData(tdid[name])
 
 if not options.nokey:
     for sec in extrasecs:
