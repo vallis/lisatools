@@ -99,7 +99,7 @@ class Table(XMLobject):
     the name and record length of a stream. Attributes are supposed to be set,
     in order, representing the <Param> elements that corresponding to columns
     in the stream. Currently writing out the XML for a Table object copies the
-    stream if the file is smaller than 5Mb, and symlinks it otherwise."""
+    stream if the file is smaller than 50Mb, and symlinks it otherwise."""
     
     def __init__(self,streamname,streamlength):
         """Creates a Table object."""
