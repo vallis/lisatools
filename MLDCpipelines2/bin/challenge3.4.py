@@ -29,7 +29,11 @@ random.seed(seed)
 # Challenge 3.4: Poisson-distributed, 5 events
 #                define month as 2**21 samples, 1 Hz (really 24 days)
 
-srcnum = numpy.random.poisson(5)
+while True:
+	srcnum = numpy.random.poisson(5)
+
+	if srcnum > 0:
+		break
 
 for srcind in range(srcnum):
     seed = seed + 1
