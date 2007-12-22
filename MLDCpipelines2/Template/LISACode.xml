@@ -36,11 +36,11 @@
         </XSIL>
 
         <XSIL Type="OutputFiles">
-            <Param Name="TDI" Unit="String">{challengename}-TDI.bin</Param>
-            <Param Name="SignalSC1" Unit="String">{challengename}-phasemeter-1.bin</Param>
-            <Param Name="SignalSC2" Unit="String">{challengename}-phasemeter-2.bin</Param>
-            <Param Name="SignalSC3" Unit="String">{challengename}-phasemeter-3.bin</Param>
-            <Param Name="Delay" Unit="String">{challengename}-delay.bin</Param>
+            <Param Name="SignalSC1" Encoding="Binary,BigEndian">{challengename}-Phasemeter-1.bin</Param>
+            <Param Name="SignalSC2" Encoding="Binary,BigEndian">{challengename}-Phasemeter-2.bin</Param>
+            <Param Name="SignalSC3" Encoding="Binary,BigEndian">{challengename}-Phasemeter-3.bin</Param>
+            <Param Name="TDI" Encoding="Binary,BigEndian">{challengename}-TDI.bin</Param>
+            <Param Name="Delay" Encoding="Binary,BigEndian">{challengename}-delay.bin</Param>
         </XSIL>
 
         <Comment>
