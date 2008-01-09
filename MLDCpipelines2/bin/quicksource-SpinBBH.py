@@ -138,7 +138,10 @@ run('%s/makebarycentric.py %s %s' % (mydir,sourcefile,barycentricfile))
 # make synthlisa signal (also adjust barycentric-file SNR)
 
 if (not options.lisasimonly) or options.RequestSN:
-    synthlisafile = basename + '-frequency.xml'
+    if not options.nonoise:
+        synthlisafile = basename + '-nonoise-frequency.xml'
+    else:
+        synthlisafile = basename + '-frequency.xml'
 
     noiseOnly = options.noiseOnly and '-n' or ''
     combinedSNR = options.combinedSNR and '-c' or ''
@@ -149,16 +152,27 @@ if (not options.lisasimonly) or options.RequestSN:
     if not options.nonoise:
         synthlisanoisefile = basename + '-noiseonly-frequency.xml'
     
-        run('%s/makeTDInoise-synthlisa.py -s %s %s' % (mydir,options.seed,synthlisanoisefile))
-        run('%s/mergeXML.py %s %s' % (mydir,synthlisafile,synthlisanoisefile))
+        run('%s/makeTDInoise-synthlisa.py -T 62914560.0 -s %s %s' % (mydir,options.seed,synthlisanoisefile))
+
+        mergedfile = basename + '-frequency.xml'
+        lisaxml.lisaXML(mergedfile,author = 'Michele Vallisneri',comments='quicksource SBBH file, seed = %s' % options.seed).close()
+
+        run('%s/mergeXML.py %s %s %s' % (mydir,mergedfile,synthlisafile,synthlisanoisefile))
 
 if not options.synthlisaonly:
-    lisasimfile = basename + '-strain.xml'
+    if not options.nonoise:
+        lisasimfile = basename + '-nonoise-strain.xml'
+    else:
+        lisasimfile = basename + '-strain.xml'
     
     run('%s/makeTDIsignal-lisasim.py %s %s' % (mydir,barycentricfile,lisasimfile))
     
     if not options.nonoise:
         lisasimnoisefile = basename + '-noiseonly-strain.xml'
         
-        run('%s/makeTDInoise-lisasim.py -s %s %s' % (mydir,options.seed,lisasimnoisefile))
-        run('%s/mergeXML.py %s %s' % (mydir,lisasimfile,lisasimnoisefile))
+        run('%s/makeTDInoise-lisasim.py -T 62914560.0 -n %s %s' % (mydir,options.seed,lisasimnoisefile))
+
+        mergedfile = basename + '-strain.xml'
+        lisaxml.lisaXML(mergedfile,author = 'Michele Vallisneri',comments='quicksource SBBH file, seed = %s' % options.seed).close()
+        
+        run('%s/mergeXML.py %s %s %s' % (mydir,mergedfile,lisasimfile,lisasimnoisefile))
