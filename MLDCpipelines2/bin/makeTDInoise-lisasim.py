@@ -72,8 +72,8 @@ if options.lisasimdir == None:
     
     if not os.path.isdir(lisasimdir):
         parser.error("You must provide the location of the LISA Simulator!")
-
-lisasimdir = os.path.abspath(options.lisasimdir)
+else:
+    lisasimdir = os.path.abspath(options.lisasimdir)
 
 if len(args) != 1:
     parser.error("Beyond the options, you must specify only the output file!")
