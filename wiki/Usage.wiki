@@ -1,0 +1,86 @@
+#summary Using lisatools
+
+= Making single-source datasets =
+
+Single-source datasets are made using the executables found in `lisatools/MLDCpipelines2/bin` within the SVN tree. You can add this directory to your `$PATH` to simplify your work. These executables use libraries installed by `master-install.py` in `$PREFIX/lib/python2.X/site-packages` (where `$PREFIX` is the `--prefix`` argument that you gave to `master-install.py`); this directory should be in your `$PYTHONPATH`.
+
+== The full workflow ==
+
+The workflow to create a single-source dataset (except for the Galaxy) is as follows:
+  * create a source parameter XML file using one of the `makesource-XXX.py` scripts
+  * create a barycentric XML file (containing the h+ and hx polarizations for the source) from the parameter file using `makebarycentric.py`
+  * either: create a synthLISA (fractional-frequency fluctuation) TDI observable XML file from the barycentric file using `makeTDIsignal-synthlisa.py` (this step is required if you are using the `--requestSN` argument to adjust the strength of a signal in the barycentric file)
+  * or: create LISA simulator (strain) TDI observable XML file from the barycentric file using using `makeTDIsignal-lisasim.py`
+  * and perhaps: create synthLISA or LISA simulator noise using `makeTDInoise-synthlisa.py` or `makeTDInoise-lisasim.py`, and merge it to the signal with `mergeXML.py`
+
+You should be able to use these scripts from any working directory (some older scripts may work only if called as `bin/...` from `/lisatools/MLDCpipelines2`; this is a bug, please report it).
+
+== Shortcut ==
+
+We are populating the `MLDCpipelines2/bin` directory with `quicksource-XXX.py` that will perform all the steps in the workflow for you, letting you choose whether you want synthLISA or LISA simulator datasets, with or without noise. For instance, with
+{{{
+quicksource-SpinBBH.py --seed=1234 --requestSN=100 --coalescTime=150 --coalescRange=10 \
+                       --FastBBH --noNoise --synthlisa myspinBBH.xml
+}}}
+we make synthLISA TDI observables for a spinning black-hole binary inspiral with a SNR of 100, coalescing between 140 and 160 days after the beginning of the dataset, using the `FastBBH` code, and using a random-number generator seed of 1234. Try it out!
+
+If there's a `quicksource-XXX.py` that you would especially like, let us know and we'll prepare it for you.
+
+== Script parameters ==
+
+The parameters required by all these scripts are described by calling them with the argument `--help`. For instance, `makesource-GalacticBinary.py --help` reports
+{{{
+Usage: makesource-GalacticBinary.py [options] OUTPUT.xml
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -s SEED, --seed=SEED  seed for random number generator (int) [required]
+  -A A, --amplitude=A   amplitude (adimensional)
+  -S REQUESTSN, --requestSN=REQUESTSN
+                        requested source amplitude SN (satisfied at TDI-
+                        generation time)
+  -b LATITUDE, --latitude=LATITUDE
+                        requested source latitude (rad) [will be randomized if
+                        not given]
+  -l LONGITUDE, --longitude=LONGITUDE
+                        requested source longitude (rad) [will be randomized
+                        if not given]
+  -f CENTERF, --centerf=CENTERF
+                        frequency (Hz) [required]
+  -g DELTAF, --deltaf=DELTAF
+                        half width of uniform probability distribution for
+                        frequency (Hz) [required]
+  -n SOURCENAME, --sourceName=SOURCENAME
+                        name of source [defaults to "monochromatic Galactic
+                        binary"]
+  -v, --verbose         display parameter values [off by default]
+
+}}}
+
+So let's go through the workflow for a `GalacticBinary` source:
+{{{
+makesource-GalacticBinary.py --seed=1234 --requestSN=10 --centerf=1e-3 --deltaf=1e-4 mybinary-parameters.xml
+}}}
+here we have given a seed that will be used by the random number generator to choose source parameters; we have also requested that the SNR be set to 10 (this will be done at the time of generating synthlisa TDI observables), and that the frequency of the source be chosen randomly in an interval 1e-3 +- 1e-4 Hz. Since we have not specified the sky position, it will be chosen randomly over a sphere.
+
+The result is a `mybinary-parameters.xml` file that you can view with a standards-compliant web browser *if* you copy the `lisatools/MLDCpipelines/Template/lisa-xml.xsl` and `.css` files to the directory where `mybinary-parameters.xml` sits. Now let's make the barycentric file:
+{{{
+makebarycentric.py mybinary-parameters.xml mybinary-barycentric.xml
+}}}
+since we did not specify duration and cadence, these were set to the standard two years and 15 seconds. If you look at `mybinary-barycentric.xml`, you'll notice that it contains the binary parameters, plus a description of a binary file (`mybinary-barycentric-0.bin`) with the actual h+ and hx data.
+
+Let's now generate TDI observables:
+{{{
+makeTDIsignal-synthlisa.py --noiseOnly mybinary-barycentric.xml mybinary-TDI.xml
+}}}
+by specifying the `--noiseOnly` argument, we requested that the SNR be computed with the LISA instrument noise only, not including white-dwarf binaries. After a while (you'll see a progress counter running) you'll get your `mybinary-TDI.xml` file, again containing the source parameters and a description of a binary file containing the X, Y, and Z observables. Because we did not specify duration and cadence, these were set to the standard two years and 15 seconds.
+
+As for noise (I bet you're catching on by now):
+{{{
+makeTDInoise-synthlisa.py --seed=2345 mynoise-TDI.xml
+}}}
+where we've specified another random seed used to make do noise. We add signal and noise together for the grand finale (to be found in `mybinary-TDI.xml`):
+{{{
+mergeXML.py mybinary-TDI.xml mynoise-TDI.xml
+}}}
