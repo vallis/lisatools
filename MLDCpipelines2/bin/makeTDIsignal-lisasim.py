@@ -142,7 +142,7 @@ sourcefileobj.close()
 
 # then add the TDI data from the LISA Simulator output
 # (this will need changing when running challenge2.py in a workdir)
-run('%s/mergeXML.py %s %s %s' % (execdir,tdifile,here + '/Template/StandardLISA.xml',outxml),quiet=True)
+run('%s/mergeXML.py %s %s %s' % (execdir,tdifile,execdir + '/../Template/StandardLISA.xml',outxml),quiet=True)
 
 # then add the modified Source data included in the Barycentric file
 # (this will need changing when running challenge2.py in a workdir)

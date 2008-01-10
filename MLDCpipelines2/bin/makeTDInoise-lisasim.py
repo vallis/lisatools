@@ -125,7 +125,7 @@ run('rm -f Binary/M1Noise*.bin Binary/M2Noise*.bin Binary/M3Noise*.bin',quiet=Tr
 
 noisefileobj = lisaxml.lisaXML(tdifile)
 noisefileobj.close()
-run('%s/mergeXML.py %s %s %s' % (execdir,tdifile,here + '/Template/StandardLISA.xml',outxml),quiet=True)
+run('%s/mergeXML.py %s %s %s' % (execdir,tdifile,execdir + '/../Template/StandardLISA.xml',outxml),quiet=True)
 
 run('rm -f XML/noise-only.xml',quiet=True)
 run('rm -f XML/noise-only.bin',quiet=True)
