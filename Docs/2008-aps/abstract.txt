@@ -1,0 +1,5 @@
+The Mock LISA Data Challenges: status report, future prospects
+
+The Mock LISA Data Challenges are a program to demonstrate 
+and encourage the development of data-analysis capabilities
+for LISA, the planned NASA--ESA space-based gravitational-wave detector. Each round of challenges consists of several data sets containing simulated instrument noise and gravitational waves from sources of undisclosed parameters. Participants are asked to analyze the data sets and report the maximum information they can infer about the source parameters. The challenges are being released in rounds of increasing complexity and realism, and so far they have already demonstrated the recovery of model signals from nonspinning supermassive black-hole binaries, from ~20,000 overlapping Galactic white-dwarf binaries, and from the extreme--mass-ratio inspirals of compact objects into central galactic black holes. Challenge 3, currently in progress, includes signals from spinning supermassive black-hole inspirals, from cosmic-string cusps, and from primordial stochastic backgrounds. We discuss the status, achievements, and prospects of the Challenges.
