@@ -1,8 +1,9 @@
 #summary Using lisatools
+#labels Featured
 
 = Making single-source datasets =
 
-Single-source datasets are made using the executables found in `lisatools/MLDCpipelines2/bin` within the SVN tree. You can add this directory to your `$PATH` to simplify your work. These executables use libraries installed by `master-install.py` in `$PREFIX/lib/python2.X/site-packages` (where `$PREFIX` is the `--prefix`` argument that you gave to `master-install.py`); this directory should be in your `$PYTHONPATH`.
+Single-source datasets are made using the executables found in `lisatools/MLDCpipelines2/bin` within the SVN tree. You can add this directory to your `$PATH` to simplify your work. These executables use libraries installed by `master-install.py` in `$PREFIX/lib/python2.X/site-packages` (where `$PREFIX` is the `--prefix` argument that you gave to `master-install.py`); this directory should be in your `$PYTHONPATH`.
 
 == The full workflow ==
 
