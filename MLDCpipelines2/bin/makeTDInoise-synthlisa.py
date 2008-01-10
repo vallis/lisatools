@@ -27,8 +27,8 @@ parser.add_option("-t", "--initialTime",
                   help="initial time for TDI observables (s) [default 0.0]")
                                     
 parser.add_option("-T", "--duration",
-                  type="float", dest="duration", default=31457280.0,
-                  help="total time for TDI observables (s) [default 31457280 = 2^21 * 15]")
+                  type="float", dest="duration", default=62914560.0,
+                  help="total time for TDI observables (s) [default 62914560 = 2^22 * 15; another popular choice 31457280 = 2^21 * 15]")
 
 parser.add_option("-d", "--timeStep",
                   type="float", dest="timestep", default=15.0,
