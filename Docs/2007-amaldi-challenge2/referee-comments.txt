@@ -183,7 +183,30 @@ be understood as defining the "success".
 > there is a sense in which it is not even necessarily correct to assume
 > that a higher number of perfect correlations is better.
 
-[[Can Neil or Jeff take a crack at responding to this one?]]
+We used two methods to match recovered and injected sources: The first uses
+the noise weighted inner product between an injected source a and recovered
+source b:
+
+C_ab = (a|b)/sqrt((a|a)(b|b)). 
+
+The second method used a signal metric (a la Owen), but one that is
+restricted to the "doppler" parameters - sky location and GW frequency.  This
+second method is more forgiving as it is insensitive to errors in the
+extrinsic phases - polarization, inclination, and orbital phase. 
+
+These pairing techniques are used to decide if a recovered source is a false
+positive, which is just one of the many criteria we use to assess the quality
+of the entry. On the other hand, it is hard to imagine a situation where
+a higher number of good correlations does not indicate a superior entry, as
+it would take incredible amount of luck to get a source correct by accident.
+The caveats concerning false positives actually work in the other direction:
+since we are using single source correlations to decide if a recovered signal
+matches an injected signal, there is always the possibility that source confusion
+will have pushed the best fit solution far enough away that the pairing analysis
+flags a good solution as a false positive. In other words, the correlation tends
+to *under* estimate how well the search algorithms have performed.
+
+We have amended the text to clarify these points.
 
 > 13) Table 1: I personally find it unacceptable that I should have to refer to
 > another paper to be able to understand the meaning of the columns of
