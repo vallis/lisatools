@@ -99,10 +99,14 @@ The task force devoted considerable time to the analysis of Galactic-binary sear
 \vspace{-6pt}
 \end{figure}
 
-One way to proceed is to associate the reported and injected sources that have the strongest signal correlation, limiting the search to the bright (optimal $\mathrm{SNR} > 2$) injected sources that could in principle have been found: in the left panel of figure \ref{fig:correlation} we show the distribution of correlations generated with this procedure for data set 2.1.
-Detections with the highest correlations can be considered ``safest,'' while those with the lowest correlations probably represent spurious associations.
+One way to proceed is to associate the reported and injected sources that have the strongest signal correlation (in terms of the
+noise weighted inner product between the injected and recovered sources), limiting the search to the bright
+(optimal $\mathrm{SNR} > 2$) injected sources that could in principle have been found: in the left panel of figure \ref{fig:correlation} we show the distribution of correlations generated with this procedure for data set 2.1.
+Detections with the highest correlations can be considered reliable, while those with the lowest correlations probably
+represent spurious associations.
 
-Another procedure is to associate the reported and injected sources that minimize the \emph{Doppler metric} that spans the frequency--sky-location subspace of the full parameter space, and automatically maximizes correlation over the \emph{extrinsic parameters} (amplitude, polarization, inclination, initial phase): the right panel of figure \ref{fig:correlation} shows the resulting distribution of correlations. The UTB entry, which includes frequency and sky position but not the extrinsic parameters, can only be plotted this way. Generally, this is a softer criterion, and all searches do better by it (especially the PrixWhelanAEI entry, whose long-wavelength approximation for the LISA response is prone to extrinsic-parameter errors).
+Another procedure is to associate the reported and injected sources that minimize the \emph{Doppler distance} that spans the frequency--sky-location subspace of the full parameter space, and automatically maximizes correlation over the \emph{extrinsic parameters} (amplitude, polarization, inclination, initial phase): the right panel of figure \ref{fig:correlation} shows the resulting distribution of correlations. The UTB entry, which includes frequency and sky position but not the extrinsic parameters, can only be plotted this way. Generally, this is a softer criterion, and all searches yield better correlations by this measure (especially the PrixWhelanAEI entry,
+whose long-wavelength approximation for the LISA response is prone to extrinsic-parameter errors).
 %
 \begin{figure}
 \includegraphics[width=\textwidth]{Errors-b-2}
