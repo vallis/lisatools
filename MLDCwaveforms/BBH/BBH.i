@@ -233,7 +233,7 @@ class SpinBlackHoleBinary(lisaxml.Source):
         hp = numpy.empty(samples,'d')
         hc = numpy.empty(samples,'d')
 
-        wavelen = sbbh.ComputeWaveform(self.AmplPNorder, self.TaperApplied, hp, hc)
+        wavelen = sbbh.ComputeWaveform(int(self.AmplPNorder), self.TaperApplied, hp, hc)
 
         hp[wavelen:] = 0.0
         hc[wavelen:] = 0.0
