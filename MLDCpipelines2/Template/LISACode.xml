@@ -40,7 +40,6 @@
             <Param Name="SignalSC2" Encoding="Binary,BigEndian">{challengename}-Phasemeter-2.bin</Param>
             <Param Name="SignalSC3" Encoding="Binary,BigEndian">{challengename}-Phasemeter-3.bin</Param>
             <Param Name="TDI" Encoding="Binary,BigEndian">{challengename}-TDI.bin</Param>
-            <Param Name="Delay" Encoding="Binary,BigEndian">{challengename}-delay.bin</Param>
         </XSIL>
 
         <Comment>
