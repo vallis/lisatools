@@ -54,9 +54,9 @@ if len(sys.argv) > 4 and sys.argv[4] == '--dolisacode':
     run('%(mydir)s/makeTDInoise-synthlisa2.py --keyOnly --seed=%(seed)s --randomizeNoise=0.2 --laserNoise=10 LISACode/Background-noise.xml' % globals())
 
     if istraining == 'True':
-        makefromtemplate('LISACode/Background.xml','Template/LISACode.xml',challengename='challenge3.5-training',randomseed=lisacodeseed)
+        makefromtemplate('LISACode/Background.xml','%s/../Template/LISACode.xml' % mydir,challengename='challenge3.5-training',randomseed=lisacodeseed)
     else:
-        makefromtemplate('LISACode/Background.xml','Template/LISACode.xml',challengename='challenge3.5',randomseed=lisacodeseed)
+        makefromtemplate('LISACode/Background.xml','%s/../Template/LISACode.xml' % mydir,challengename='challenge3.5',randomseed=lisacodeseed)
 
     run('%(mydir)s/mergeXML.py LISACode/Background.xml LISACode/Background-noise.xml LISACode/Background-sources.xml' % globals())
     run('rm LISACode/Background-noise.xml LISACode/Background-sources.xml')
