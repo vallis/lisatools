@@ -16,11 +16,11 @@ parameters of a seed Galaxy provided by Gijs Nelemans. The randomization is
 such that the "accidental" binary parameters (such as orientations) are
 completely random, while the more "substantial" parameters (such as frequency
 and sky position) are changed by little, so that the Galaxy maintains its
-statistical properties (but the individual system parameters cannot be used
-to cheat in the challenge).
+statistical properties (but the individual system parameters cannot be used to
+cheat in the challenge).
 
-We have changed the text from "a different realization of the Galaxy" to
-"a similar (but distinct) Galactic-binary population,"
+We have changed the text from "a different realization of the Galaxy" to "a
+similar (but distinct) Galactic-binary population,"
 
 > (ii) I have found information that the data set contained
 > 4-6 MBH binary MBH inspirals confusing:
@@ -94,8 +94,8 @@ Very good suggestion. The uninformative abstracts reflects having been
 written before the challenge-2 results were available. We have added
 more information.
 
-> 3) Introduction: Last sentence of paragraph one is difficult to parse. "It is
-> therefore important to understand the data analysis challenge so as to
+> 3) Introduction: Last sentence of paragraph one is difficult to parse. "It
+> is therefore important to understand the data analysis challenge so as to
 > demonstrate that LISA can ..." would be clearer, in my opinion.
 
 We modified the text to implement this suggestion.
@@ -126,26 +126,26 @@ each problem.
  
 Right: we have changed to ``each'', which is clearer.
  
-> 7) Introduction: In paragraph 4, data set 2.1 did not contain a population of
-> galactic binary systems. Probably, the authors meant simulated signals
+> 7) Introduction: In paragraph 4, data set 2.1 did not contain a population
+> of galactic binary systems. Probably, the authors meant simulated signals
 > from an assumed population of galactic binaries. Likewise for data set
 > 2.2.
 
 This was fixed in the text by adding ``signal'' as needed.
 
-> 8) Introduction: In paragraph 4, were the MBH binaries in set 2.2 spinning or
-> not? Were different sky positions assumed? Different orientations? Why
+> 8) Introduction: In paragraph 4, were the MBH binaries in set 2.2 spinning
+> or not? Were different sky positions assumed? Different orientations? Why
 > do I have to wait until the next section to find these details out?
 
-It would take considerable space to describe how the binary parameters
-were selected; but to answer the referee, the sky positions and
-orientations were both random on spheres. We have added a sentence
-pointing the reader to a separate proceeding where these matters are
-spelled out in detail.
+It would take considerable space in the paper to describe how the binary
+parameters were selected; but to answer the referee, the sky positions and
+orientations were both random on spheres. We have added a sentence pointing
+the reader to a separate proceeding where these matters are spelled out in
+detail.
 
-We did make an exception for the qualification of MBHs as nonspinning,
-which is actually very important in this context. So all challenge-2
-MBHs are now described as ``nonspinning'' in this paper.
+We did make an exception for the qualification of MBHs as nonspinning, which
+is actually very important in this context. So all challenge-2 MBHs are now
+described as ``nonspinning'' in this paper.
 
 > 9) Introduction: In paragraph 4, I assume that the EMRI SNR quoted
 > represents a matched filter on the full waveform?
@@ -166,8 +166,8 @@ We have added a short description of the EMRI waveforms.
 > to tell the reader that they will be discussed in more detail in the
 > next section.
 
-We now point the reader to the rest of the paper, which can indeed
-be understood as defining the "success".
+We now point the reader to the rest of the paper, which can indeed be
+understood as defining this "success".
 
 > 12) Figure 1: It is unclear to me what is being correlated here - all
 > parameters of the injected and detected binaries? Are all parameters
@@ -189,27 +189,28 @@ source b:
 
 C_ab = (a|b)/sqrt((a|a)(b|b)). 
 
-The second method used a signal metric (a la Owen), but one that is
-restricted to the "doppler" parameters - sky location and GW frequency.  This
-second method is more forgiving as it is insensitive to errors in the
-extrinsic phases - polarization, inclination, and orbital phase. 
+The second method used a signal metric (a la Owen), but one that is restricted
+to the "doppler" parameters - sky location and GW frequency. This second
+method is more forgiving as it is insensitive to errors in the extrinsic
+phases - polarization, inclination, and orbital phase.
 
 These pairing techniques are used to decide if a recovered source is a false
 positive, which is just one of the many criteria we use to assess the quality
-of the entry. On the other hand, it is hard to imagine a situation where
-a higher number of good correlations does not indicate a superior entry, as
-it would take incredible amount of luck to get a source correct by accident.
-The caveats concerning false positives actually work in the other direction:
-since we are using single source correlations to decide if a recovered signal
-matches an injected signal, there is always the possibility that source confusion
-will have pushed the best fit solution far enough away that the pairing analysis
-flags a good solution as a false positive. In other words, the correlation tends
-to *under* estimate how well the search algorithms have performed.
+of the entry. On the other hand, it is hard to imagine a situation where a
+higher number of good correlations does not indicate a superior entry, as it
+would take incredible amount of luck to get a source correct by accident. The
+caveats concerning false positives actually work in the other direction: since
+we are using single source correlations to decide if a recovered signal
+matches an injected signal, there is always the possibility that source
+confusion will have pushed the best fit solution far enough away that the
+pairing analysis flags a good solution as a false positive. In other words,
+the correlation tends to *under* estimate how well the search algorithms have
+performed.
 
 We have amended the text to clarify these points.
 
-> 13) Table 1: I personally find it unacceptable that I should have to refer to
-> another paper to be able to understand the meaning of the columns of
+> 13) Table 1: I personally find it unacceptable that I should have to refer
+> to another paper to be able to understand the meaning of the columns of
 > this table.
 
 We have now added brief definitions for all symbols.
