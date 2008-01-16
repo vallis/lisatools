@@ -836,6 +836,10 @@ class lisaXML(writeXML):
             
         self.outputrxp(self.doComment(self.comments))
         
+        if self.extraSections:
+            for sec in self.extraSections:
+                self.outputrxp((sec.tagName,sec._attrs,sec._children),stripwhitespace=True)
+        
         if self.theLISAData:
             self.opentag('XSIL',{'Type': 'LISAData'})
             
@@ -869,11 +873,7 @@ class lisaXML(writeXML):
                 self.outputrxp(object)
             
             self.closetag('XSIL')
-        
-        if self.extraSections:
-            for sec in self.extraSections:
-                self.outputrxp((sec.tagName,sec._attrs,sec._children),stripwhitespace=True)
-        
+                
         self.closetag('XSIL')
         
         # do the actual writing
