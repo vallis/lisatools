@@ -140,7 +140,7 @@ for inputfile in inputfiles:
                         else:
                             tdio += thistdio
     
-    for sec in ['NoiseData','Simulate','LISACode']:
+    for sec in ['Simulate','LISACode','NoiseData']:
         if inputtdifile.getExtraSection(sec):
             extrasecs.append(inputtdifile.getExtraSection(sec))
 
