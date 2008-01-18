@@ -1,0 +1,71 @@
+#summary How to install lisatools
+#labels Featured
+
+== Prerequisites ==
+
+  * A Unix platform, including OS X and Cygwin. 
+  * GCC 3.3 or greater (note that 4.0.0 is a buggy release that breaks Synthetic LISA, but 4.0.1 is OK). If you don't have it, you can get it from http://gcc.gnu.org; on Mac OS X, get the XCode tools from http://developer.apple.com/tools.
+  * Subversion (SVN). Try `which svn`: if you don't have it, you can get it at http://subversion.tigris.org (on Mac OS X, use the installer package found at http://www.codingmonkeys.de/mbo).
+  * Python 2.4 or greater. Try `python` (and exit with CTRL-D): if you don't have it, get it from http://www.python.org.
+
+== Subversion installation and usage ==
+
+This is how things will work. Using Subversion (SVN), you will download the latest version of the lisatools software onto your computer; we will call the resulting `lisatools` directory the _SVN directory_. Using the script `master-install.py`, you will compile and install the lisatools library in a separate directory on your computer; we will call this the _installation directory_. For instance, you may download the software into `$HOME/source/lisatools` and then install it into `$HOME`, which will actually put files in `$HOME/lib`, `$HOME/bin`, and so on. (In Unix, `$HOME` is an environment variable that contains the name of your home directory, typically `/home/username`, or on OS X `/Users/username`.)
+
+To get the Subversion archive, use a shell and cd to where we want the SVN directory to be placed (for instance, `$HOME/source`), and then run
+{{{
+svn checkout http://lisatools.googlecode.com/svn/ lisatools
+}}}
+Here `co` stands for "checkout". Inside the SVN directory, you can use the SVN commands described at http://svnbook.red-bean.com/nightly/en/index.html. The most important are
+  * `svn update`, which will update all files in the directory to the latest repository version; the command will print a list of updated files prefixed by "U" (or added files prefixed by "A"); if you see "G", the changes in the repository version were successfully merged with the changes you had made to the file in the meantime; if you see "C", the changes were incompatible, and more work is needed to harmonize the versions (see http://svnbook.red-bean.com/nightly/en/index.html)
+  * `svn status -u`, which will show you which files have newer versions in the repository, and which you have modified locally ("M"); files prefixed by "?" are local files that are not in the repository (and perhaps should not be, such as .xml working files) 
+  * `svn commit -m "Your commit message" filetocommit`, which will commit your modified version of `committedfile` to the SVN repository, making a note of the commit message
+  * `svn add filetoadd` or `svn add directorytoadd`, to add a file or directory to the repository; the addition is not final until you issue an `svn commit` for the same file or directory
+  * `svn del filetodelete` or `svn del directorytodelete`, to delete a file or directory; again, you need to follow this up with `svn commit`
+
+=== Installation ===
+
+We're almost ready to install lisatools. First though we need to set a few environment variables. Say `$SVNDIR` is the SVN directory (say, `$HOME/source/lisatools`), and `$LISATOOLS` is the installation directory (say, `$HOME`). Then `$LISATOOLS/bin` and `$SVNDIR/MLDCpipelines2/bin` must be added to the `$PATH`, while `$LISATOOLS/lib/python2.X/site-packages` must be added to `$PYTHONPATH` (where `python2.X` is your python, such as `python2.4`). For instance, with bash, do
+{{{
+export SVNDIR=$HOME/source/lisatools
+export LISATOOLS=$HOME
+export PATH=$SVNDIR/MLDCpipelines2/bin:$LISATOOLS/bin:$PATH
+export PYTHONPATH=$LISATOOLS/lib/python2.5/site-packages:$PYTHONPATH
+}}}
+while with tcsh, do
+{{{
+setenv SVNDIR $HOME/source/lisatools
+setenv LISATOOLS $HOME
+setenv PATH $SVNDIR/MLDCpipelines2/bin:$LISATOOLS/bin:$PATH
+setenv PYTHONPATH $LISATOOLS/lib/python2.5/site-packages:$PYTHONPATH
+}}}
+These paths need to be set before installing, and before using lisatools. You can add them to your `.profile` or `.tcshrc.`
+
+Great! We’re all set. Now cd into `$SVNDIR`, and run
+{{{
+python master-install.py --prefix=$LISATOOLS
+}}}
+This will install the lisatools libraries and packages; it will also look for a number of standard Python libraries, and install recent versions if they are not found. These are
+  * numpy (a Python array library)
+  * pyRXP (a Python XML library)
+  * SWIG (a C/Python interface generator)
+In addition, lisatools requires GSL (the [http://www.gnu.org/software/gsl GNU Scientific Library]) and FFTW3 (the [http://www.fftw.org Fastest Fourier Transform in the West]). It will look for them under the `--prefix` directory, but if you have installed them elsewhere, you must tell `master-install.py` with the additional arguments `--gsl=gslinstalldir` and `--fftw=fftwinstalldir` (for instance, `--gsl=/usr/local` if GSL is installed under `/usr/local/lib` and `/usr/local/include`). If you don't have them, you can tell `master-install.py` to download and install them with the options `--installgsl` and `--installfftw`.
+
+Another thing: the generation of the Challenge 2 and 3 Galaxies requires big seed catalogs (hundreds of Mb), than can be downloaded by `master-install.py` (once and for all) if you specify the option `--downloadgalaxy`.
+
+You should be all set! If something went wrong, the script will complain and hopefully suggest a solution. If not, file an "Issues" report.
+
+=== Updating lisatools ===
+
+To get the lisatools installation up to the latest revision, run `svn update` in `$SVNDIR`, and then `python master-install.py --prefix=$LISATOOLS`. Don't forget the second step!
+
+=== A note on Cygwin ===
+
+LISAtools works under Cygwin (well, it was last tried under version 1.5.24-2 on Windows XP). You must include the following additional packages in the Cygwin setup (I include the versions I tried, but anything newer would probably still work):
+  * Python (2.4.3-1)
+  * Subversion (1.4.2-1)
+  * openssh (4.5p1-1)
+  * SWIG (1.3.29-2)
+  * gcc (3.4.4-3, this may not be needed since mingw is the standard compiler)
+  * patchutils (0.2.31-1)
+  * make (3.81-1)
