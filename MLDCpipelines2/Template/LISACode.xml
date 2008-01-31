@@ -13,7 +13,7 @@
             2097152.0
         </Param>
         <Param Name="Observables" Unit="String">
-            t,Xf,Yf,Zf,y231,y321,z231,z321,y312,y132,z312,z132,y123,y213,z123,z213,L1,L1p,L2,L2p,L3,L3p
+            t,Xf,Yf,Zf,y231,y321,z231,z321,y312,y132,z312,z132,y123,y213,z123,z213
         </Param>
         <Param Name="OutputFile" Unit="String">
             {challengename}-lisacode.xml
