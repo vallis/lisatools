@@ -1,23 +1,41 @@
 === responses to editor ===
 
-1. The author list is fine as is.
-2. Reference 11 is still unpublished, but you may add "arXiv:" before the preprint number; reference 12 should be published in the same volume as this proceeding, or on JPCS (you should be able to find out...).
+1. In the author list, please change the affiliation for Brown to
+6,14,15 (this may need to be changed also in the web metadata for this
+article).
+
+2. Reference 11 is still unpublished, but you may add "arXiv:" before
+the preprint number; reference 12 was submitted to JPCS for the Amaldi
+2007 proceedings, but it has not been refereed yet.
+
 3. Colour on the web only is fine.
 
 === additional changes ===
 
-- p. 1, author field: remove comma before "(Mock LISA data challenge task force)", and change parenthesis to "(the Mock LISA data challenge task force)".
+- p. 1, author field: remove comma before "(Mock LISA data challenge
+  task force)", and change parenthesis to "(the Mock LISA data challenge
+  task force)".
 
 - p. 2, line 6: add comma after "white-dwarf binaries"
-- p. 2, line 10: "to understand data analysis in order to demonstrate that LISA" -> "to understand LISA data analysis in order to demonstrate that the mission"
+- p. 2, line 10: "to understand data analysis in order to demonstrate
+  that LISA" -> "to understand LISA data analysis in order to
+  demonstrate that the mission"
 
-- p. 4, main text, line 6: "the PrixWhelanAEI suggests" ->"the PrixWhelanAEI entry suggests"
+- p. 4, main text, line 6: "the PrixWhelanAEI suggests" ->"the
+  PrixWhelanAEI entry suggests"
 - p. 4, sec. 3, line 2: "template-bank-based" -> "template-bank--based"
 
-- p. 6, Table 1: the dash in the first column in the "lisaFrance" row can be removed; the numbers in most columns should be aligned at the decimal point
-- p. 6, Table 2: the dash in the first column in the "lisaFrance" row can be removed; the numbers in the last two columns should be aligned at the decimal point
+- p. 6, Table 1: the dash in the first column in the "lisaFrance" row
+  can be removed; the numbers in most columns should be aligned at the
+  decimal point
+- p. 6, Table 2: the dash in the first column in the "lisaFrance" row
+  can be removed; the numbers in the last two columns should be aligned
+  at the decimal point
 
-- p. 7, Table 3: the dash in the first column in the "EtfAG" row can be removed
+- p. 7, Table 3: the dash in the first column in the "EtfAG" row can be
+  removed
 
-- p. 8, just before acknowledgments: astrogravs.nasa.gov/docs/mldc and www.tapir.caltech.edu/listwg1b should be hyperlinks in blue (with http:// implied)
+- p. 8, just before acknowledgments: astrogravs.nasa.gov/docs/mldc and
+  www.tapir.caltech.edu/listwg1b should be hyperlinks in blue (with
+  http:// implied)
 
