@@ -1,0 +1,3 @@
+EXTRA_DIST = Include
+
+SUBDIRS = SRC Test

@@ -1,0 +1,104 @@
+*****************************
+*     LISACode v1.4    *
+*     -----------------     *
+* Installation Instructions *
+* ------------------------- *
+*****************************
+
+Created on 9 February 2006 by Antoine Petiteau and Eric Plagnol from APC (petiteau@apc.univ-paris7.fr).
+
+
+Summary :
+---------
+I. Install for Mac OS X and Unix
+II. Test LISACode for Mac OS X and Unix
+III. Example of calcul duration
+IV. Use graphical interface LISA_AutoGUI.jar
+V. For more informations
+
+
+I. Install for Mac OS X and Unix :
+----------------------------------------
+
+
+1. Copy lisacode-1.3.beta.tar.gz on local directory :
+	cp /...CDpath.../lisacode-1.3.beta.tar.gz /...localdirectory.../.
+
+2. Go to the local directory :
+	cd /...localdirectory.../
+
+3. Uncompress lisacode-1.3.beta.tar.gz :
+	gzip -d lisacode-1.3.beta.tar.gz
+	tar xvf lisacode-1.3.beta.tar
+
+4. Go to the directory lisacode-1.3.beta :
+	cd lisacode-1.3.beta
+
+5. Launch the confifure script. The prefix parameter will designate the directory/bin where you will find your executable.
+	./configure Ñ-prefix="/Your_dir/Applications"
+
+6. Compile the software with Makefile script :
+	make install
+
+7. Copy the JAVA graphic interface "LISA_AutoGUI.jar" and its configure file "configue.ini", in the same directory (Application directory).
+	cp LISA_AutoGUI.jar /Your_dir/Applications/.
+	cp configue.ini /Your_dir/Applications/.
+
+In fact, the executable file LISACode (and others) will be found in the directory : Your_dir/Applcations/bin
+You can copy this programs where you want ! 
+
+
+
+
+
+II. Test LISACode for Mac OS X and Unix :
+-----------------------------------------
+
+1. Copy ConfigRefBase on local directory where is the program LISACode:
+	cp /...CDpath.../ConfigRefBase Your_dir/Applcations/bin/.
+
+2. Go to the directory Your_dir/Applcations/bin
+	cd Your_dir/Applcations/bin
+
+3. Launch the simulator with configuration file ConfigRefBase and fixed random seed :
+	./LISACode ConfigRefBase 123456
+
+4. The end of the execution will produce, approximately, the following output :
+
+	...
+	10000 s     #0100 % 
+	 Alpha = 1.89384087432967e-20
+	 Beta = 8.60074599903258e-19
+	 Gamma = 8.41785643115969e-19
+	 Zeta = 2.78151318797594e-17
+	 X1s1 = 2.35766472296473e-20
+	 X2s1 = 3.18224294740072e-20
+	 X2s2 = 1.29586866467172e-18
+	 X2s3 = 1.29882616033499e-18
+Final time : 10001 s
+End
+
+
+
+
+III. Example of calcul duration :
+--------------------------------
+Example for the simulation with test command : ./bin/LISACode ConfigRefBase 123456 :
+	- Mac OS 10.4.6 PowerPC G5 BiPro 2.7 GHz   -->      20 s (with fast compilation option) [estimation]
+	- Mac OS 10.4.8 PowerPC G4 550 MHz         -->  2 m  6 s (with O3 compilation option)
+	- Linux                                    -->      46 s (with O3 compilation option) [estimation]
+	- Windows XP QuaPro Xeon 3GHz              -->      34 s (with O3 compilation option) [estimation]
+
+
+IV. Use graphical interface LISA_AutoGUI.jar
+--------------------------------------------
+For use LISA_AutoGUI.jar, go to your application directory (cd Your_dir/Applcations) and launch :
+	java -jar LISA_AutoGUI.jar
+
+
+V. For more informations :
+--------------------------
+	- The LISAFrance website : http://www.apc.univ-paris7.fr/LISA-France/analyse.phtml
+	- The Documentation on CD : CD/Documentation/LISACode_Doc.pdf and others associated files.
+	- The User manual in french : CD/Documentation/ManuelFR_v1.1.pdf
+

@@ -1,0 +1,89 @@
+/** 
+ * @page Bibliography Bibliography
+
+
+<table border="0" cellspacing="5" cellpadding="0">
+
+
+
+<tr>
+<td valign="top">
+<a name="Tinto-2004">[Tinto&nbsp;2004]</a>
+</td>
+<td>
+Massimo Tinto, Sanjeev V. Dhurandhar
+<b>Time-Delay Interferometry</b>,Living Rev.Rel. 8 (2005) 4, http://xxx.lanl.gov/abs/gr-qc/0409034
+<br>
+</td>
+</tr>
+
+
+<tr>
+<td valign="top">
+<a name="Dhurandhar and all.-2004">[Dhurandhar&nbsp; and all.&nbsp;2004]</a>
+</td>
+<td>
+S. V. Dhurandhar, K. Rajesh Nayak, S. Koshti, J-Y. Vinet
+<b>Fundamentals of the LISA Stable Flight Formation</b>,Class.Quant.Grav. 22 (2005) 481-488, http://xxx.lanl.gov/abs/gr-qc/0410093
+</td>
+</tr>
+
+
+<tr>
+<td valign="top">
+<a name="Dhurandhar-TDelay">[Dhurandhar&nbsp;-TDelay&nbsp;2004]</a>
+</td>
+<td>
+S. V. Dhurandhar, K. Rajesh Nayak, J-Y. Vinet
+<b>Algebraic approach to time-delay data analysis for LISA</b>,Phys.Rev. D70 (2004) 102003. http://xxx.lanl.gov/abs/gr-qc/0112059
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<a name="LISACode">[LISACode]</a>
+</td>
+<td>
+ Antoine Petiteau, Gerard Auger, Hubert Halloin, Olivier Jeannin,
+Sophie Pireaux, Eric Plagnol, Tania Regimbau and Jean-YvesVinet.
+<b>LISACode : Simulating Lisa</b>
+</td>
+</tr>
+
+<tr>
+<td valign="top">
+<a name="Nayak and all.">[Nayak&nbsp; and all.&nbsp;]</a>
+</td>
+<td>
+ NK.R. Nayak and S. Koshti and S.V. Dhurandhar and J.-Y.Vinet
+<b>On the minimum flexing of LISA </b>Classical and Quantum Gravity 23, 1763 (2006)
+</td>
+</tr>
+
+
+
+
+
+
+
+</table>
+
+<!-- TEMPLATE
+
+<tr>
+<td valign="top">
+<a name="">[,&nbsp;]</a>
+</td>
+<td>
+
+<b></b>.
+<i></i>,
+<br>Referenced by
+
+</td>
+</tr>
+
+-->
+
+ *
+ */

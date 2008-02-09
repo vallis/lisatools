@@ -1,0 +1,484 @@
+<?xml version="1.0"?>
+<!--
+<!DOCTYPE XSIL SYSTEM "lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+-->
+
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="http://www.vallis.org/lisa-xml.xsl"?>
+
+
+<XSIL>
+    <Param Name="Author">
+        petiteau
+    </Param>
+    <Param Name="GenerationDate" Type="ISO-8601">
+        2007-04-23T10:30:31CEST
+    </Param>
+
+
+    <XSIL Type="LISACode">
+        <Param Name="GlobalRandomSeed" Unit="Second">
+            1234567
+        </Param>
+    </XSIL>
+    <XSIL Type="LISAData">
+        <XSIL Type="Time">
+            <Param Name="StepPhysic" Unit="Second">0.5</Param>
+            <Param Name="StepMeasure" Unit="Second">1</Param>
+            <Param Name="Max" Unit="Second">10000</Param>
+            <Param Name="DeltaTDIDelay" Unit="Second">0</Param>
+            <Param Name="StepDisplay" Unit="Second">500</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+        <XSIL Type="PrecisionTDI">
+            <Param Name="InterpType" Unit="none">LAG</Param>
+            <Param Name="InterpValue" Unit="none">20</Param>
+            <Param Name="DelayApprox" Unit="none">Off</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+        <XSIL Type="Orbits">
+            <Param Name="Armlength" Unit="Meter">5e9</Param>
+            <Param Name="StartTime" Unit="Second">0</Param>
+            <Param Name="Move" Unit="none">On</Param>
+            <Param Name="Order" Unit="none">2</Param>
+            <Param Name="InitialRotation" Unit="Radian">0</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+        <XSIL Type="Detector">
+            <Param Name="LaserPower" Unit="Watt">1</Param>
+            <Param Name="PhaMetFilter" Unit="none">On</Param>
+            <Param Name="PMFAttenuation" Unit="dB">180</Param>
+            <Param Name="PMFOscillation" Unit="dB">0.1</Param>
+            <Param Name="PMFLowFreqFact" Unit="none">0.1</Param>
+            <Param Name="PMFHighFreqFact" Unit="none">0.3</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+       <XSIL Name="SignalSC1" Type="Records">
+            <XSIL Name="Standard" Type="TimeSeries">
+                <Array Name="Standard" Type="double" Unit="Standard">
+                    <Dim Name="Length">0</Dim>
+                    <Dim Name="Records">0</Dim>
+                    <Stream Type="Remote" Encoding="ASCII">
+                        SC1.txt
+                    </Stream>
+                </Array>
+            </XSIL>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+       <XSIL Name="SignalSC2" Type="Records">
+            <XSIL Name="Standard" Type="TimeSeries">
+                <Array Name="Standard" Type="double" Unit="Standard">
+                    <Dim Name="Length">0</Dim>
+                    <Dim Name="Records">0</Dim>
+                    <Stream Type="Remote" Encoding="ASCII">
+                        SC2.txt
+                    </Stream>
+                </Array>
+            </XSIL>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+       <XSIL Name="SignalSC3" Type="Records">
+            <XSIL Name="Standard" Type="TimeSeries">
+                <Array Name="Standard" Type="double" Unit="Standard">
+                    <Dim Name="Length">0</Dim>
+                    <Dim Name="Records">0</Dim>
+                    <Stream Type="Remote" Encoding="ASCII">
+                        SC3.txt
+                    </Stream>
+                </Array>
+            </XSIL>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+       <XSIL Name="Delay" Type="Records">
+            <XSIL Name="Standard" Type="TimeSeries">
+                <Array Name="Standard" Type="double" Unit="Standard">
+                    <Dim Name="Length">0</Dim>
+                    <Dim Name="Records">0</Dim>
+                    <Stream Type="Remote" Encoding="ASCII">
+                        Delay.txt
+                    </Stream>
+                </Array>
+            </XSIL>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="LISAData">
+       <XSIL Name="TDI" Type="Records">
+            <XSIL Name="Standard" Type="TimeSeries">
+                <Array Name="Standard" Type="double" Unit="Standard">
+                    <Dim Name="Length">0</Dim>
+                    <Dim Name="Records">0</Dim>
+                    <Stream Type="Remote" Encoding="ASCII">
+                        TDI.txt
+                    </Stream>
+                </Array>
+            </XSIL>
+        </XSIL>
+    </XSIL>
+
+    <XSIL Type="NoiseData">
+        <XSIL Name="pm1" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+            </Param>
+            <Param Name="Fknee">
+                0.0001
+            </Param>
+        </XSIL>
+        <XSIL Name="pm1s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+            </Param>
+            <Param Name="Fknee">
+                0.0001
+            </Param>
+        </XSIL>
+        <XSIL Name="pm2" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+            </Param>
+            <Param Name="Fknee">
+                0.0001
+            </Param>
+        </XSIL>
+        <XSIL Name="pm2s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+            </Param>
+            <Param Name="Fknee">
+                0.0001
+            </Param>
+        </XSIL>
+        <XSIL Name="pm3" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+            </Param>
+            <Param Name="Fknee">
+                0.0001
+            </Param>
+        </XSIL>
+        <XSIL Name="pm3s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+            </Param>
+            <Param Name="Fknee">
+                0.0001
+            </Param>
+        </XSIL>
+        <XSIL Name="pd1" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhitePhase
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                3.35e-37
+            </Param>
+        </XSIL>
+        <XSIL Name="pd1s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhitePhase
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                3.35e-37
+            </Param>
+        </XSIL>
+        <XSIL Name="pd2" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhitePhase
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                3.35e-37
+            </Param>
+        </XSIL>
+        <XSIL Name="pd2s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhitePhase
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                3.35e-37
+            </Param>
+        </XSIL>
+        <XSIL Name="pd3" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhitePhase
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                3.35e-37
+            </Param>
+        </XSIL>
+        <XSIL Name="pd3s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhitePhase
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                3.35e-37
+            </Param>
+        </XSIL>
+        <XSIL Name="c1" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+            </Param>
+       </XSIL>
+        <XSIL Name="c1s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+            </Param>
+        </XSIL>
+        <XSIL Name="c2" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+            </Param>
+        </XSIL>
+        <XSIL Name="c2s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+            </Param>
+        </XSIL>
+        <XSIL Name="c3" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+            </Param>
+        </XSIL>
+        <XSIL Name="c3s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+            </Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+            </Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+            </Param>
+        </XSIL>
+    </XSIL>
+
+    <XSIL Type="SourceData">
+        <XSIL Name="MonoGW" Type="Mono">
+            <Param Name="EclipticLatitude" Unit="Degree">27</Param>
+            <Param Name="EclipticLongitude" Unit="Degree">297</Param>
+            <Param Name="Polarization" Unit="Degree">229</Param>
+            <Param Name="Frequency" Unit="Hertz">1e-4</Param>
+            <Param Name="AmplitudePlus" Unit="1">1e-19</Param>
+            <Param Name="AmplitudeCross" Unit="none">0</Param>
+            <Param Name="InitialPhasePlus" Unit="Radian">0</Param>
+            <Param Name="InitialPhaseCross" Unit="Radian">0</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="SourceData">
+        <XSIL Name="BinaryGW" Type="Binary">
+            <Param Name="EclipticLatitude" Unit="Degree">68</Param>
+            <Param Name="EclipticLongitude" Unit="Degree">135</Param>
+            <Param Name="Polarization" Unit="Degree">12</Param>
+            <Param Name="Mass1" Unit="SolarMass">1e5</Param>
+            <Param Name="Mass2" Unit="SolarMass">1e6</Param>
+            <Param Name="OrbitalFrequency" Unit="Hertz">1e-3</Param>
+            <Param Name="Inclination" Unit="Degree">42</Param>
+            <Param Name="InitialPhase" Unit="Radian">0</Param>
+            <Param Name="Distance" Unit="KiloParsec">1e5</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="SourceData">
+        <XSIL Name="PostNewtonBinaryGW" Type="PostNewtonBinary">
+            <Param Name="EclipticLatitude" Unit="Degree">-56</Param>
+            <Param Name="EclipticLongitude" Unit="Degree">154</Param>
+            <Param Name="Polarization" Unit="Degree">32</Param>
+            <Param Name="Mass1" Unit="SolarMass">1e6</Param>
+            <Param Name="Mass2" Unit="SolarMass">1e6</Param>
+            <Param Name="CoalescenceTime" Unit="Second">9676800</Param>
+            <Param Name="Inclination" Unit="Degree">90</Param>
+            <Param Name="CoalescencePhase" Unit="Radian">1.2</Param>
+            <Param Name="Distance" Unit="KiloParsec">1e5</Param>
+            <Param Name="Type" Unit="none">2</Param>
+            <Param Name="Omega0" Unit="none">1</Param>
+            <Param Name="Taud0" Unit="none">10</Param>
+            <Param Name="gw" Unit="none">1</Param>
+        </XSIL>
+    </XSIL>
+
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">X</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">Y</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">Z</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">AlphaMan</Param>
+            <Param Name="Pack" Unit="none">-1</Param>
+            <Param Name="Pack" Unit="none">-32</Param>
+            <Param Name="Pack" Unit="none">-133</Param>
+            <Param Name="Pack" Unit="none">4</Param>
+            <Param Name="Pack" Unit="none">455</Param>
+            <Param Name="Pack" Unit="none">56</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">Beta</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">X2s1</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">X2s2</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">X2s3</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">P1</Param>
+        </XSIL>
+    </XSIL>
+
+
+    <XSIL Type="TDIData">
+        <XSIL Type="TDI">
+            <Param Name="GeneratorName" Unit="none">Zeta1</Param>
+        </XSIL>
+    </XSIL>
+</XSIL>
