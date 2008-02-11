@@ -40,8 +40,11 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
         print "---> Downloading " + package + '...'
         packagetar = os.path.basename(package)
         urllib.urlretrieve(package,packagetar)
-    else:
+    elif 'tar.gz' in package:
         packagetar = package
+    else:
+        packagedir = package
+        packagetar = ''
     
     if packagedir == None:
         packagedir = re.sub('.tar.gz','',packagetar)
@@ -51,17 +54,30 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     
     configureflags += " --prefix=" + prefix
     
-    if platform.system() == 'Darwin' and ('10.4' in platform.mac_ver()[0]):
+    if (platform.system() == 'Darwin') and (('10.4' in platform.mac_ver()[0]) or ('10.5' in platform.mac_ver()[0])):
         # attempt to build universal binary version of library
-    
-        os.environ['CFLAGS'] = "-O -g -isysroot /Developer/SDKs/MacOSX10.4u.sdk -arch i386 -arch ppc"
+        
+        # previously had also "-O -g"; adding "-arch ppc64 -arch x86_64" would build also 64-bit versions,
+        #   which are not backward compatible with Tiger
+        os.environ['CFLAGS'] = "-arch i386 -arch ppc"
         os.environ['LDFLAGS'] = "-arch i386 -arch ppc"
+                
+        if '10.4' in platform.mac_ver()[0]:
+            # the -isysroot is needed because the system is not universal on PPC OSX Tiger
+            os.environ['CFLAGS'] += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
         
         configureflags += " --disable-dependency-tracking"
     
-    assert(0 == os.system('tar zxf ' + packagetar))
+    if packagetar:
+        assert(0 == os.system('tar zxf ' + packagetar))
     
-    os.chdir(packagedir)    
+    env = ''
+    
+    # use the local m4 if there is one
+    if os.path.isfile(prefix + '/bin/m4'):
+        env += ('M4=%s; ' % prefix + '/bin/m4') 
+    
+    os.chdir(packagedir)
     assert(0 == os.system('./configure ' + configureflags))
     assert(0 == os.system('make'))
     assert(0 == os.system('make install'))
@@ -82,6 +98,7 @@ fftwdir = None
 
 newsynthlisa = False
 newlisasim   = False
+newlisacode  = False
 dotraits     = False
 installgsl   = False
 installswig  = False
@@ -99,6 +116,8 @@ for arg in sys.argv:
         newsynthlisa = True
     elif arg.startswith('--newlisasim'):        # force lisasim reinstallation
         newlisasim = True
+    elif arg.startswith('--newlisacode'):       # force lisacode reinstallation
+        newlisacode = True        
     elif arg.startswith('--traits'):            # include experimental traits functionality
         dotraits = True
     elif arg.startswith('--installgsl'):        # force GSL install
@@ -195,8 +214,8 @@ if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
     if installfftw == True:
         print "--> Installing FFTW"    
         installpackage('http://www.fftw.org/fftw-3.1.2.tar.gz',prefix=fftwdir,keepdownload=True)
-        # redo in single precision
-        installpackage('http://www.fftw.org/fftw-3.1.2.tar.gz',prefix=fftwdir,keepdownload=True,configureflags='--enable-float')
+        # redo in single precision, get rid of tar.gz
+        installpackage('http://www.fftw.org/fftw-3.1.2.tar.gz',prefix=fftwdir,keepdownload=False,configureflags='--enable-float')
         
         # os.chdir('Packages')
         # if not os.path.isfile(fftw3tar):
@@ -226,6 +245,17 @@ if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
         print "    the FFTW3 libraries are in /usr/local/lib). Otherwise, I can install"
         print "    v3.1.2 for you if you give me the --installfftw option."
         sys.exit(1)
+
+# on Leopard, there's a problem with m4 (version 1.4.6) that breaks the LISACode compilation
+# therefore we install a newer local version
+
+if (platform.system() == 'Darwin') and ('10.5' in platform.mac_ver()[0]):
+    ret, stdo, stde = runcommand('m4 --version')
+    m4version = re.search('.* ([0-9\.]*)',stdo).group(1)
+    
+    if m4version == '1.4.6':
+        print "--> I've found m4 version 1.4.6 on Leopard; I'll install 1.4.9 locally."
+        installpackage('http://ftp.gnu.org/gnu/m4/m4-1.4.9.tar.gz',prefix=libdir,keepdownload=False)
 
 # check if we have numpy, install it otherwise
 
@@ -444,6 +474,11 @@ if newsynthlisa:
     os.chdir('..')
     assert(0 == os.system('rm -rf %s' % packagedir))
     os.chdir(here)
+
+# install/check install for LISACode
+
+if (not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode:
+    installpackage('LISACode',prefix=libdir)
 
 # install/check install for LISA Simulator
 
