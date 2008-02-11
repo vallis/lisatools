@@ -10,7 +10,7 @@
  *
  */
 
-#include "LISACode-NoiseFShape.h"
+#include "LISACODE-NoiseFShape.h"
 
 /* Constructor */
 /*!\brief Base constructor.

@@ -262,6 +262,34 @@ void ConfigSim::ReadFile()
 }
 /*void ConfigSim::ReadFile()
 {
+       char * ptr;
+       ptr=ConfigFileName+strlen(ConfigFileName);
+       //cout << " filename = " << ConfigFileName << endl;
+       //cout << strncmp(ptr-4,".xml",4) << endl;
+       if(strncmp(ptr-4,".xml",4)==0) {
+               ReadXMLFile();
+       }else{
+               ReadASCIIFile();
+       }
+
+       //ReadASCIIFile();
+}
+/*void ConfigSim::ReadFile()
+{
+       char * ptr;
+       ptr=ConfigFileName+strlen(ConfigFileName);
+       //cout << " filename = " << ConfigFileName << endl;
+       //cout << strncmp(ptr-4,".xml",4) << endl;
+       if(strncmp(ptr-4,".xml",4)==0) {
+               ReadXMLFile();
+       }else{
+               ReadASCIIFile();
+       }
+
+       //ReadASCIIFile();
+}
+/*void ConfigSim::ReadFile()
+{
 	char * extention;
 	char * ptr;
 	extention=(char*)malloc(16*sizeof(char));

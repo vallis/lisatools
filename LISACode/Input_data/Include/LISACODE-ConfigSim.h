@@ -40,7 +40,7 @@
 #include "LISACODE-Noise.h"
 #include "LISACODE-NoiseWhite.h"
 #include "LISACODE-NoiseFilter.h"
-#include "LISACode-NoiseFShape.h"
+#include "LISACODE-NoiseFShape.h"
 #include "LISACODE-NoiseOof.h"
 #include "LISACODE-NoiseTwoFilter.h"
 #include "LISACODE-NoiseFile.h"

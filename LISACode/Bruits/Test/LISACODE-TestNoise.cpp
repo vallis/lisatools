@@ -21,7 +21,7 @@
 #include "LISACODE-NoiseWhite.h"
 #include "LISACODE-NoiseFilter.h"
 #include "LISACODE-NoiseFile.h"
-#include "LISACode-NoiseFShape.h"
+#include "LISACODE-NoiseFShape.h"
 #include "LISACODE-NoiseOof.h"
 #include "LISACODE-NoiseTwoFilter.h"
 //#include "Memory.h"
