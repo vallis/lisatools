@@ -477,7 +477,10 @@ if newsynthlisa:
 
 # install/check install for LISACode
 
+print "--> Checking LISACode"
+
 if (not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode:
+    print "--> Installing LISACode"
     installpackage('LISACode',prefix=libdir)
 
 # install/check install for LISA Simulator
