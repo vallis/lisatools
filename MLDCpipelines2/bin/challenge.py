@@ -15,6 +15,18 @@ from distutils.dep_util import newer, newer_group
 import lisaxml
 import numpy
 
+def makefromtemplate(output,template,**kwargs):
+    fi = open(template,'r')
+    fo = open(output,'w')
+        
+    for line in fi:
+        repline = line
+        
+        for kw in kwargs:
+            repline = re.sub('{' + kw + '}',str(kwargs[kw]),repline)
+        
+        print >> fo, repline,
+
 def timestring(lapse):
     hrs  = int(lapse/3600)
     mins = int((lapse - hrs*3600)/60)
@@ -161,21 +173,25 @@ parser.add_option("-L", "--lisasim",
                   action="store_true", dest="lisasimonly", default=False,
                   help="run only the LISA Simulator")
 
+parser.add_option("-C", "--lisacode",
+                  action="store_true", dest="lisacodeonly", default=False,
+                  help="run only lisacode, if challenge supports it [off by default]")
+
 parser.add_option("-f", "--keyFile",
                   type="string", dest="sourcekeyfile", default=None,
                   help="get source descriptions from key file, not CHALLENGE.py script")
 
 parser.add_option("-r", "--rawMeasurements",
                   action="store_true", dest="rawMeasurements", default=False,
-                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
+                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z [synthlisa and lisacode only]")
 
 parser.add_option("-R", "--randomizeNoise",
                   type="float", dest="randomizeNoise", default=0.0,
-                  help="randomize level of noises [e.g., 0.2 for 20% randomization; defaults to 0; synthlisa only]")
+                  help="randomize level of noises [e.g., 0.2 for 20% randomization; defaults to 0; synthlisa and lisacode only]")
 
 parser.add_option("-l", "--laserNoise",
                   type="string", dest="laserNoise", default='None',
-                  help="laser noise level: None, Standard, <numerical value> [e.g., 0.2 for 20% of pm noise at 1 mHz; synthlisa only]")
+                  help="laser noise level: None, Standard, <numerical value> [e.g., 0.2 for 20% of pm noise at 1 mHz; defaults to None; synthlisa and lisacode only]")
 
 parser.add_option("-c", "--combinedSNR",
                   action="store_true", dest="combinedSNR", default=False,
@@ -184,10 +200,6 @@ parser.add_option("-c", "--combinedSNR",
 parser.add_option("-P", "--nProc",
                   type="int", dest="nproc", default=1,
                   help="run in parallel on nproc CPUs [default 1]")
-
-# parser.add_option("-C", "--clean",
-#                   action="store_true", dest="cleandataset", default=False,
-#                   help="remove files included in dataset archives from Dataset")
 
 (options, args) = parser.parse_args()
 
@@ -213,30 +225,29 @@ if options.duration == None:
     else:
         options.duration = 2.0*oneyear
 
-if options.synthlisaonly:
-    lisasimdir = None
-else:
-    import lisasimulator
+# decide which simulators to use
 
+dosynthlisa = not (                         options.lisasimonly or options.lisacodeonly)
+dolisasim   = not (options.synthlisaonly                        or options.lisacodeonly)
+dolisacode  = not (options.synthlisaonly or options.lisasimonly                        )
+
+if dolisasim:
+    # see if the duration is allowed by lisasim
+    import lisasimulator
+    
     if options.duration == 31457280:
         lisasimdir = lisasimulator.lisasim1yr
     elif options.duration == 62914560:
         lisasimdir = lisasimulator.lisasim2yr
     else:
         parser.error("I can only run the LISA Simulator for one or two years (2^21 or 2^22 s)!")
-
-if not options.synthlisaonly:
+    
     if options.randomizeNoise > 0.0:
         parser.error("Option --randomizeNoise is not supported with the LISA Simulator. Run with --synthlisa.")
     if options.laserNoise != 'None':
         parser.error("Option --laserNoise is not supported with the LISA Simulator. Run with --synthlisa.")
     if options.rawMeasurements == True:
         parser.error("Option --rawMeasurement is not supported with The LISA Simulator. Run with --synthlisa.")
-
-if options.lisasimonly:
-    dosynthlisa = False
-else:
-    dosynthlisa = True
 
 seed = options.seed
 
@@ -292,6 +303,7 @@ if (not makemode) and (not sourcekeyfile):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
     run('rm -f Immediate/*.xml')
+    run('rm -f LISACode/*.xml')
     
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
@@ -349,6 +361,16 @@ step3time = time.time()
 if (not makemode):
     run('rm -f TDI/*.xml TDI/*.bin TDI/Binary TDI/*.txt')
 
+# make noise options (will be used also by LISACode later)
+
+noiseoptions = ''
+if options.randomizeNoise > 0.0:
+    noiseoptions += ('--randomizeNoise=%s ' % options.randomizeNoise)
+if options.laserNoise != 'None':
+    noiseoptions += ('--laserNoise=%s ' % options.laserNoise)
+if options.rawMeasurements == True:
+    noiseoptions += '--rawMeasurements '
+
 if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
     # the results are files of TDI time series that include the source info
@@ -379,24 +401,16 @@ if dosynthlisa:
         if (not makemode) or newer(xmlfile,tdifile):
             prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-    if (options.randomizeNoise > 0.0) or (options.laserNoise != 'None') or (options.rawMeasurements == True) or (timestep != 15.0):
+    if noiseoptions or (timestep != 15.0):
         runfile = 'makeTDInoise-synthlisa2.py'
     else:
         runfile = 'makeTDInoise-synthlisa.py'
-
-    runoptions = ''
-    if options.randomizeNoise > 0.0:
-        runoptions += ('--randomizeNoise=%s ' % options.randomizeNoise)
-    if options.laserNoise != 'None':
-        runoptions += ('--laserNoise=%s ' % options.laserNoise)
-    if options.rawMeasurements == True:
-        runoptions += '--rawMeasurements '
 
     # now run noise generation... note that we're not checking whether the seed is the correct one
     noisefile = 'TDI/tdi-frequency-noise.xml'
         
     if donoise and ((not makemode) or (not os.path.isfile(noisefile))):        
-        prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(runoptions)s %(noisefile)s')
+        prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s %(noisefile)s')
 
     pwait()
 
@@ -406,7 +420,7 @@ step4time = time.time()
 # STEP 4: run LISA Simulator
 # --------------------------
 
-if lisasimdir:
+if dolisasim:
     for xmlfile in glob.glob('Immediate/*.xml'):
         print "--> !!! Ignoring immediate synthlisa file %s" % xmlfile
 
@@ -423,6 +437,41 @@ if lisasimdir:
         prun('%(execdir)s/makeTDInoise-lisasim.py --lisasimDir=%(lisasimdir)s --seedNoise=%(seednoise)s %(slnoisefile)s')
     
     pwait()
+
+step4btime = time.time()
+
+# ---------------------
+# STEP 4b: run LISAcode
+# ---------------------
+
+if dolisacode and glob.glob('LISACode/source-*.xml'):
+    # make the standard lisacode instruction set
+    cname = istraining and (challengename + '-training') or challengename
+    endian = (sys.byteorder == 'little') and 'LittleEndian' or 'BigEndian'
+    
+    # (use same seed as synthlisa if we're training)
+    lcseednoise = istraining and seednoise or (seednoise + 1)
+    
+    makefromtemplate('LISACode/%s-lisacode-input.xml' % cname,'%s/../Template/LISACode.xml' % execdir,
+                     challengename=cname,
+                     cadence=timestep,
+                     duration=duration,
+                     randomseed=lcseednoise,
+                     endianness=endian)
+    
+    # make lisacode noise (note that the random seed is really set above in the standard instruction set)
+    run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
+    
+    # merge with source data into a single lisacode input file
+    run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/noise.xml LISACode/source-*.xml')
+    run('rm LISACode/noise.xml LISACode/source-*.xml')
+    
+    os.chdir('LISACode')
+    
+    import lisacode    
+    run('%s %s-lisacode-input.xml' % (lisacode.lisacode,challengename))
+    
+    os.chdir('..')
 
 step5time = time.time()
 
@@ -541,9 +590,42 @@ if dosynthlisa:
 
     os.chdir('..')
 
+# next do LISACode
+
+if dolisacode:
+    for xmlfile in glob.glob('LISACode/*-lisacode.xml'):
+        basefile = re.sub('LISACode/','',re.sub('\.xml','',xmlfile))
+        
+        withnoisefile = 'Dataset/' + basefile + '.xml'
+        inputfile = 'LISACode/' + basefile + '-input.xml'
+        
+        # prepare empty file
+        lisaxml.lisaXML(withnoisefile,
+                        author="MLDC Task Force",
+                        comments='Full dataset for %s (lisacode version)%s' % (challengename,globalseed)).close()
+        
+        # merge dataset with key (if training), otherwise copy dataset, renaming binaries
+        if istraining:
+            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s %(inputfile)s')
+        else:
+            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s')
+        
+        # also, get key file
+        run('cp %s %s' % (inputfile,'Dataset/' + basefile + '-key.xml'))
+        
+        # make tar
+        os.chdir('Dataset')
+        
+        withnoisefile = os.path.basename(withnoisefile)
+        withnoisetar = re.sub('.xml','.tar.gz',withnoisefile)
+        
+        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))
+        
+        os.chdir('..')
+
 # next do LISA Simulator
 
-if lisasimdir:
+if dolisasim:
     # set filenames
 
     if istraining:
@@ -641,11 +723,12 @@ endtime = time.time()
 
 print
 print "--> Completed generating %s" % challengename 
-print "    Total time         : %s" % timestring(endtime   - step0time)
-print "    Sources time       : %s" % timestring(step3time - step1time)
-print "    Synthetic LISA time: %s" % timestring(step4time - step3time)
-print "    LISA Simulator time: %s" % timestring(step5time - step4time)
-print "    Fast Galaxy time   : %s" % timestring(step6time - step5time)
+print "    Total time         : %s" % timestring(endtime    - step0time)
+print "    Sources time       : %s" % timestring(step3time  - step1time)
+print "    Synthetic LISA time: %s" % timestring(step4time  - step3time)
+print "    LISA Simulator time: %s" % timestring(step4btime - step4time)
+print "    LISACode time      : %s" % timestring(step5time  - step4btime)
+print "    Fast Galaxy time   : %s" % timestring(step6time  - step5time)
 
 # exit with success code
 sys.exit(0)
