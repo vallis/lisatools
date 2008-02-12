@@ -17,18 +17,6 @@ def run(command):
         print 'Script %s failed at command "%s".' % (sys.argv[0],commandline)
         sys.exit(1)
 
-def makefromtemplate(output,template,**kwargs):
-    fi = open(template,'r')
-    fo = open(output,'w')
-        
-    for line in fi:
-        repline = line
-        
-        for kw in kwargs:
-            repline = re.sub('{' + kw + '}',str(kwargs[kw]),repline)
-        
-        print >> fo, repline,
-
 
 mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
@@ -36,7 +24,7 @@ mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
 # (the second argument is an "istraining" flag)
 
 seed = int(sys.argv[1])
-istraining = sys.argv[2]
+istraining = (sys.argv[2] == 'True')
 nproc = int(sys.argv[3])
 
 random.seed(seed)
@@ -45,18 +33,9 @@ random.seed(seed)
 
 run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-48 --randomizePSD=0.3 --pixelRefinement=2 --nProc=%(nproc)s Immediate/Background.xml' % globals())
 
-# for LISACode
+# now for LISACode
 
-if len(sys.argv) > 4 and sys.argv[4] == '--dolisacode':
-    lisacodeseed = random.randint(1,10000000)
+# use the same seed for training sets so we're sure we've got the same sources
+lcseed = istraining and seed or random.randint(1,10000000)
 
-    run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-48 --randomizePSD=0.3 --pixelRefinement=2 LISACode/Background-sources.xml' % globals())
-    run('%(mydir)s/makeTDInoise-synthlisa2.py --keyOnly --seed=%(seed)s --randomizeNoise=0.2 --laserNoise=10 LISACode/Background-noise.xml' % globals())
-
-    if istraining == 'True':
-        makefromtemplate('LISACode/Background.xml','%s/../Template/LISACode.xml' % mydir,challengename='challenge3.5-training',randomseed=lisacodeseed)
-    else:
-        makefromtemplate('LISACode/Background.xml','%s/../Template/LISACode.xml' % mydir,challengename='challenge3.5',randomseed=lisacodeseed)
-
-    run('%(mydir)s/mergeXML.py LISACode/Background.xml LISACode/Background-noise.xml LISACode/Background-sources.xml' % globals())
-    run('rm LISACode/Background-noise.xml LISACode/Background-sources.xml')
+run('%(mydir)s/makesource-StochasticBackground.py --seed=%(lcseed)s --PSD=1.0e-48 --randomizePSD=0.3 --pixelRefinement=0 LISACode/source-Background.xml' % globals())
