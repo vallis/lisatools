@@ -10,7 +10,7 @@
  */
 
 #include "LISACODE-TrFctGW.h"
-#include <fstream.h>
+#include <fstream>
 
 /* Constructor */
 /*! \brief Constructs an instance and initializes it with default values.

@@ -25,7 +25,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <vector.h>
+#include <vector>
 #include <stdlib.h>
 #include <math.h>
 #include "LISACODE-PhysicConstants.h"

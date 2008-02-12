@@ -19,8 +19,8 @@
 
 
 #include <stdexcept>
-#include <iostream.h>
-#include <vector.h>
+#include <iostream>
+#include <vector>
 #include <stdlib.h>
 #include <math.h>
 #include "LISACODE-PhysicConstants.h"

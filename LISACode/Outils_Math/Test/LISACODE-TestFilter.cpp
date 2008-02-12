@@ -16,7 +16,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream.h>
+#include <fstream>
 #include "LISACODE-Filter.h"
 #include "randlib.h"
 

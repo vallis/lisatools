@@ -16,7 +16,7 @@
  */
 
 #include <stdexcept>
-#include <iostream.h>
+#include <iostream>
 #include <fstream>
 #include <math.h>
 #include "LISACODE-Geometry.h"

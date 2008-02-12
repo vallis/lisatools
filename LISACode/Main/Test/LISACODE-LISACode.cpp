@@ -101,7 +101,7 @@ There is a variety of output files. Some of them are related to the phasemeter o
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream.h>
+#include <fstream>
 #include <stdlib.h>
 #include "randlib.h"
 #include "LISACODE-PhysicConstants.h"

@@ -20,8 +20,8 @@
 #include <stdexcept>
 #include <iostream>
 #include <iomanip>
-#include <vector.h>
-#include <fstream.h>
+#include <vector>
+#include <fstream>
 #include <string>
 #include <sstream>
 #include "LISACODE-PhysicConstants.h"
