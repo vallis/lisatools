@@ -483,6 +483,8 @@ if (not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode:
     print "--> Installing LISACode"
     installpackage('LISACode',prefix=libdir)
 
+print >> open('MLDCpipelines2/bin/lisacode.py','w'), "lisacode = '%s'" % (libdir + '/bin/LISACode')
+
 # install/check install for LISA Simulator
 
 print "--> Checking LISA Simulator"
