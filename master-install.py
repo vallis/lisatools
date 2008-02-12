@@ -86,10 +86,12 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     assert(0 == os.system('make install'))
     os.chdir('..')
     
-    assert(0 == os.system('rm -rf ' + packagedir))
-    
     os.environ['CFLAGS'] = ""
+    os.environ['CXXFLAGS'] = ""
     os.environ['LDFLAGS'] = ""
+    
+    if 'http:' in package or 'tar.gz' in package:
+        assert(0 == os.system('rm -rf ' + packagedir))
     
     if 'http:' in package and not keepdownload:
         assert(0 == os.system('rm -rf ' + packagetar))
