@@ -60,11 +60,14 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
         # previously had also "-O -g"; adding "-arch ppc64 -arch x86_64" would build also 64-bit versions,
         #   which are not backward compatible with Tiger
         os.environ['CFLAGS'] = "-arch i386 -arch ppc"
+        os.environ['CXXFLAGS'] = "-arch i386 -arch ppc"
         os.environ['LDFLAGS'] = "-arch i386 -arch ppc"
                 
         if '10.4' in platform.mac_ver()[0]:
             # the -isysroot is needed because the system is not universal on PPC OSX Tiger
             os.environ['CFLAGS'] += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+            os.environ['CXXFLAGS'] += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+            os.environ['LDFLAGS'] += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
         
         configureflags += " --disable-dependency-tracking"
     
