@@ -52,5 +52,6 @@ options34 = '--synthlisa --rawMeasurements --randomizeNoise=0.2 --laserNoise=10'
 run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=1 --seed=%(seed34)s  --combinedSNR %(options34)s challenge3.4' % globals())
 run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=1 --seed=%(seed34t)s --combinedSNR %(options34)s challenge3.4' % globals())
 
-run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=1 --seed=%(seed35)s  %(options34)s challenge3.5' % globals())
-run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=1 --seed=%(seed35t)s %(options34)s challenge3.5' % globals())
+options35 = '--synthlisa --lisacode --rawMeasurements --randomizeNoise=0.2 --laserNoise=10'
+run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
+run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
