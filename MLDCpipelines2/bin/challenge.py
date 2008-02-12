@@ -227,9 +227,9 @@ if options.duration == None:
 
 # decide which simulators to use
 
-dosynthlisa = not (                         options.lisasimonly or options.lisacodeonly)
-dolisasim   = not (options.synthlisaonly                        or options.lisacodeonly)
-dolisacode  = not (options.synthlisaonly or options.lisasimonly                        )
+dosynthlisa = not (                         options.lisasimonly or options.lisacodeonly) or options.synthlisaonly
+dolisasim   = not (options.synthlisaonly                        or options.lisacodeonly) or options.lisasimonly
+dolisacode  = not (options.synthlisaonly or options.lisasimonly                        ) or options.lisacodeonly
 
 if dolisasim:
     # see if the duration is allowed by lisasim
