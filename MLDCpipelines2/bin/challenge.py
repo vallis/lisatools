@@ -469,7 +469,7 @@ if dolisacode and glob.glob('LISACode/source-*.xml'):
     os.chdir('LISACode')
     
     import lisacode    
-    run('%s %s-lisacode-input.xml' % (lisacode.lisacode,challengename))
+    run('%s %s-lisacode-input.xml' % (lisacode.lisacode,cname))
     
     os.chdir('..')
 
