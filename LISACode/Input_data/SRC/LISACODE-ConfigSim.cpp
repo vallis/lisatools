@@ -2528,16 +2528,17 @@ void ConfigSim::CreateXmlOutputFile()
 	// TDI data
 	FichXML <<"<XSIL Type=\"TDIData\">"<<endl;
 	
-	FichXML <<"   <XSIL Name=\""<<getTDIParamName()<<"\" Type=\"TDIObservable\">"<< endl;
+	ObsName="t,Xf,Yf,Zf";
+	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TDIObservable\">"<< endl;
 	FichXML << spc_5 <<ParamName <<"DataType\">"<<endl <<spc_5<<"FractionalFrequency"<< endl<<spc_5 << Param_end;
-	FichXML <<"   <XSIL Name=\""<<getTDIParamName()<<"\" Type=\"TimeSeries\">"<< endl;
+	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TimeSeries\">"<< endl;
 	FichXML << spc_5 <<ParamName<<"TimeOffset\" Unit=\"Second\">" << endl ;
 	FichXML << spc_9 << getTimeOffset() << endl << spc_5 <<Param_end;
 	FichXML << spc_5 <<ParamName<<"Cadence\" Unit=\"Second\">" << endl ;
 	FichXML << spc_9 << gettStepMes() << endl << spc_5 <<Param_end;
 	FichXML << spc_5 <<ParamName<<"Duration\" Unit=\"Second\">" << endl ;
 	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
-	FichXML << spc_5 << ArrayName << getTDIParamName()<<"\" Type=\"double\" Unit=\"Word\">" << endl;
+	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "4"<<endl<<spc_5 <<Dim_end;
 	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,BigEndian\">" <<endl;
