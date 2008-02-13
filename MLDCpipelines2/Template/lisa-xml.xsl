@@ -6,6 +6,18 @@
         <head>
             <link href="lisa-xml.css" rel="Stylesheet" type="text/css" media="screen"/>    
             <title>Mock LISA Data Challenge XML File Format, v. 1.0</title>
+
+            <script type="text/javascript">
+            function switchMenu(obj) {
+                    var el = document.getElementById(obj);
+                    if ( el.style.display != "none" ) {
+                            el.style.display = 'none';
+                    }
+                    else {
+                            el.style.display = '';
+                    }
+            }
+            </script>
         </head>
         <body>
             <div class="FileInfo">
@@ -71,7 +83,7 @@
 
             <xsl:for-each select="XSIL[@Type='LISAData']">
                 <div class="LISAData">                
-                    <h2>LISA data</h2>
+                    <h2>LISA data [<a onclick="switchMenu('LISAData');">+/-</a>]</h2><div id="LISAData">
                     
                     <xsl:for-each select="XSIL">
                         <div class="LISA">
@@ -92,13 +104,13 @@
                     <xsl:for-each select="Comment">
                         <xsl:call-template name="handle-comment"/>
                     </xsl:for-each>
-                </div>
+                </div></div>
             </xsl:for-each>
             
             <xsl:for-each select="XSIL[@Type='SourceData']">
                 <div class="SourceData">                
-                    <h2>Source data</h2>
-                    
+                    <h2>Source data [<a onclick="switchMenu('SourceData');">+/-</a>]</h2><div id="SourceData">
+                        
                     <xsl:for-each select="XSIL[@Type='SampledPlaneWave' or @Type='PlaneWave']">
                         <div class="Wave">
                             <h3><xsl:value-of select="./@Name"/> (<xsl:value-of select="./@Type"/>)</h3>
@@ -137,13 +149,14 @@
                     
                     <xsl:for-each select="Comment">
                         <xsl:call-template name="handle-comment"/>
-                    </xsl:for-each>
-                </div>
+                    </xsl:for-each>   
+                    
+                </div></div>
             </xsl:for-each>
                    
             <xsl:for-each select="XSIL[@Type='TDIData']">
                 <div class="TDIData">                
-                    <h2>TDI data</h2>
+                    <h2>TDI data [<a onclick="switchMenu('TDIData');">+/-</a>]</h2><div id="TDIData">
                     
                     <xsl:for-each select="XSIL">
                         <div class="Observable">
@@ -164,12 +177,12 @@
                     <xsl:for-each select="Comment">
                         <xsl:call-template name="handle-comment"/>
                     </xsl:for-each>
-                </div>
+                </div></div>
             </xsl:for-each>
             
             <xsl:for-each select="XSIL[@Type='NoiseData']">
                 <div class="NoiseData">                
-                    <h2>LISA noise data</h2>
+                    <h2>LISA noise data [<a onclick="switchMenu('NoiseData');">+/-</a>]</h2><div id="NoiseData">
                     
                     <xsl:for-each select="XSIL">
                         <div class="Noise">
@@ -210,7 +223,7 @@
                     <xsl:for-each select="Comment">
                         <xsl:call-template name="handle-comment"/>
                     </xsl:for-each>
-                </div>
+                </div></div>
             </xsl:for-each>
             
         </body>
