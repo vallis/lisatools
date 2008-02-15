@@ -12,7 +12,6 @@
  */
 
 #include "LISACODE-ConfigSim.h"
-
 /* Constructor */
 /*! \brief Base constructor.
  *
@@ -150,6 +149,7 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
 		USOs.push_back(USOClock(0.0));
 	NbMaxDelays = 0;
     ConfigFileName = NameConfigFile_n;
+    Endian = 0 ;
 	
 }
 /*!\brief
@@ -252,34 +252,14 @@ void ConfigSim::ReadFile()
        ptr=ConfigFileName+strlen(ConfigFileName);
        //cout << " filename = " << ConfigFileName << endl;
        //cout << strncmp(ptr-4,".xml",4) << endl;
-       if(strncmp(ptr-4,".xml",4)==0) {
-               ReadXMLFile();
-       }else{
-               ReadASCIIFile();
+       Endian = testbyteorder() ;
+       BigEndian = false ;
+       if( Endian == 0 )BigEndian = true ;
+       SystemEncoding = "LittleEndian" ;
+       if( BigEndian) {
+	 SystemEncoding = "BigEndian" ;
        }
-
-       //ReadASCIIFile();
-}
-/*void ConfigSim::ReadFile()
-{
-       char * ptr;
-       ptr=ConfigFileName+strlen(ConfigFileName);
-       //cout << " filename = " << ConfigFileName << endl;
-       //cout << strncmp(ptr-4,".xml",4) << endl;
-       if(strncmp(ptr-4,".xml",4)==0) {
-               ReadXMLFile();
-       }else{
-               ReadASCIIFile();
-       }
-
-       //ReadASCIIFile();
-}
-/*void ConfigSim::ReadFile()
-{
-       char * ptr;
-       ptr=ConfigFileName+strlen(ConfigFileName);
-       //cout << " filename = " << ConfigFileName << endl;
-       //cout << strncmp(ptr-4,".xml",4) << endl;
+       cout << endl << "System Encoding for Binary files is  " <<  getSystemEncoding()<< endl << endl ;
        if(strncmp(ptr-4,".xml",4)==0) {
                ReadXMLFile();
        }else{
@@ -577,41 +557,47 @@ void ConfigSim::ReadASCIIFile()
 				int iSC;
 				ConfigFile >> iSC;
 				switch (iSC){
-					case 1 :
-						ConfigFile >> FileNameSigSC1 >> Buf;
-						if(Buf == "BINARY")
-							FileEncodingSC1 = 1;
-						break;
-					case 2 :
-						ConfigFile >> FileNameSigSC2  >> Buf;
-						if(Buf == "BINARY")
-							FileEncodingSC2 = 1;
-						break;
-					case 3 :
-						ConfigFile >> FileNameSigSC3  >> Buf;
-						if(Buf == "BINARY")
-							FileEncodingSC3 = 1;
-						break;
-					default :
-						throw invalid_argument("ConfigSim::ReadFile : The spacecraft number must be 1, 2 or 3 !");
+				case 1 :
+				  ConfigFile >> FileNameSigSC1 >> Buf;
+				  FileEncodingSC1 = 0 ;
+				  if(Buf == "BINARY")
+				    FileEncodingSC1 = 1 ;
+				  break;
+				case 2 :
+				  ConfigFile >> FileNameSigSC2  >> Buf;
+				  FileEncodingSC2 = 0 ;
+				  if(Buf == "BINARY")
+				    FileEncodingSC2 = 1;
+				  break;
+				case 3 :
+				  ConfigFile >> FileNameSigSC3  >> Buf;
+				  FileEncodingSC3 = 0 ;
+				  if(Buf == "BINARY")
+				    FileEncodingSC3 = 1 ;
+				  break;
+				default :
+				  throw invalid_argument("ConfigSim::ReadFile : The spacecraft number must be 1, 2 or 3 !");
 				};
 			}
 			if(Buf == "TDI"){
 				ConfigFile >> FileNameTDI >> Buf;
+				FileEncodingTDI = 0;
 				if(Buf == "BINARY")
 					FileEncodingTDI = 1;
 				//cout << " Fichier d'enregistrement de TDI = " << FileNameTDI << endl;
 			}
 			if(Buf == "Delay"){
 				ConfigFile >> FileNameDelays >> Buf;
+				FileEncodingDelays = 0;
 				if(Buf == "BINARY")
 					FileEncodingDelays = 1;
 				//cout << " Fichier d'enregistrement des retards = " << FileNamedelays << endl;
 			}
 			if(Buf == "Position"){
 				ConfigFile >> FileNamePositions >> Buf;
+				FileEncodingPos = 0;
 				if(Buf == "BINARY")
-					FileEncodingPos = 1;
+				  FileEncodingPos = 1;
 				//cout << " Fichier d'enregistrement des positions = " << FileNamePositions << endl;
 			}
 			//cout << "-----------------------> " << Buf << endl;
@@ -1337,9 +1323,9 @@ void ConfigSim::ReadXMLFile()
 				  cout << "   - filename = " << FileNameSigSC1 ;
 				  //throw ;
 				  FileEncodingSC1 = 0;
-				  if(strcmp(ezxml_attr(param,"Encoding"),"Binary,BigEndian")==0)
-				    FileEncodingSC1 = 2;
-				  cout << "   - Encoding = " << FileEncodingSC1 << endl;
+				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+				    FileEncodingSC1 = 1 ;}
+				  cout << "   - Encoding = " << FileEncodingSC1  << endl;
 				}
 				//}
 				if(strcmp(ezxml_attr(param,"Name"),"SignalSC2")==0){
@@ -1347,49 +1333,45 @@ void ConfigSim::ReadXMLFile()
 				  cout << "   - filename = " << FileNameSigSC2 ;
 				  //throw ;
 				  FileEncodingSC2 = 0;
-				  if(strcmp(ezxml_attr(param,"Encoding"),"Binary,BigEndian")==0)
-				    FileEncodingSC2 = 2;
-				  cout << "   - Encoding = " << FileEncodingSC2 << endl;
+				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+				    FileEncodingSC2 = 1;}
+				  cout << "   - Encoding = " << FileEncodingSC2  << endl;
 				}
 				if(strcmp(ezxml_attr(param,"Name"),"SignalSC3")==0){
 				  strcpy(FileNameSigSC3,gXMLWord(param));
 				  cout << "   - filename = " << FileNameSigSC3 ;
 				  //throw ;
 				  FileEncodingSC3 = 0;
-				  if(strcmp(ezxml_attr(param,"Encoding"),"Binary,BigEndian")==0)
-				    FileEncodingSC3 = 2;
-				  cout << "   - Encoding = " << FileEncodingSC3 << endl;
+				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+				    FileEncodingSC3 = 1 ;}
+				  cout << "   - Encoding = " << FileEncodingSC3  << endl;
 				}
 				if(strcmp(ezxml_attr(param,"Name"),"TDI")==0){
 				  strcpy(FileNameTDI,gXMLWord(param));
 				  cout << "   - filename = " << FileNameTDI ;
 				  //throw ;
-				  //FileNameTDIEncoding = 0;
 				  FileEncodingTDI = 0;
-				  if(strcmp(ezxml_attr(param,"Encoding"),"Binary,BigEndian")==0)
-				    // FileNameTDIEncoding = 2;
-				    //cout << "   - Encoding = " << FileNameTDIEncoding << endl;
-				  FileEncodingTDI = 2;
-				  cout << "   - Encoding = " <<FileEncodingTDI  << endl;
-				  //cout << " =========  getFileEncodingTDI  ="<<getFileEncodingTDI() << endl ;
+				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+				    FileEncodingTDI = 1 ;}
+				  cout << "   - Encoding = " <<  FileEncodingTDI << endl;
 				}
 				if(strcmp(ezxml_attr(param,"Name"),"Delay")==0){
 				  strcpy(FileNameDelays,gXMLWord(param));
 				  cout << "   - filename = " << FileNameDelays ;
 				  //throw ;
-				  FileNameDelaysEncoding = 0;
-				  if(strcmp(ezxml_attr(param,"Encoding"),"Binary,BigEndian")==0)
-				    FileNameDelaysEncoding = 2;
-				  cout << "   - Encoding = " << FileNameDelaysEncoding << endl;
+				  FileEncodingDelays = 0;
+				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+				    FileEncodingDelays = 1 ;}
+				  cout << "   - Encoding = " << FileEncodingDelays << endl;
 				}
 				if(strcmp(ezxml_attr(param,"Name"),"Position")==0){
 				  strcpy(FileNamePositions,gXMLWord(param));
 				  cout << "   - filename = " << FileNamePositions ;
 				  //throw ;
-				  FileNamePosEncoding = 0;
-				  if(strcmp(ezxml_attr(param,"Encoding"),"Binary,BigEndian")==0)
-				    FileNamePosEncoding = 2;
-				  cout << "   - Encoding = " << FileNamePosEncoding << endl;
+				  FileEncodingPos = 0;
+				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+				    FileEncodingPos = 1 ;}
+				  cout << "   - Encoding = " << FileEncodingPos  << endl;
 				}
 			      }
 			    }// End of Read OutputData  (modif E.P.)
@@ -1663,39 +1645,44 @@ void ConfigSim::ReadXMLFile()
 						// Find the name of records
 						if(strcmp(ezxml_attr(lisadata,"Name"),"SignalSC1")==0){
 							strcpy(FileNameSigSC1,filename);
-							cout << " - FileNameSigSC1 = " << FileNameSigSC1 << endl;
+							cout << " - FileNameSigSC1 = " << FileNameSigSC1 ;
 							FileEncodingSC1 = encoding ;
+							cout << "   Encoding =" << encoding << endl;
 							UnKnowRecords = false;
 						}
 						if(strcmp(ezxml_attr(lisadata,"Name"),"SignalSC2")==0){
-							strcpy(FileNameSigSC2,filename);
-							cout << " - FileNameSigSC2 = " << FileNameSigSC2 << endl;
+						  strcpy(FileNameSigSC2,filename); ;
+						  cout << " - FileNameSigSC2 = " << FileNameSigSC2 ;
 							FileEncodingSC2 = encoding ;
+							cout << "   Encoding =" << encoding << endl;
 							UnKnowRecords = false;
 						}
 						if(strcmp(ezxml_attr(lisadata,"Name"),"SignalSC3")==0){
 							strcpy(FileNameSigSC3,filename);
-							cout << " - FileNameSigSC3 = " << FileNameSigSC3 << endl;
+							cout << " - FileNameSigSC3 = " << FileNameSigSC3 ;
 							FileEncodingSC3 = encoding ;
+							cout << "   Encoding =" << encoding << endl;
 							UnKnowRecords = false;
 						}
 						if(strcmp(ezxml_attr(lisadata,"Name"),"Delay")==0){
 							strcpy(FileNameDelays,filename);
-							cout << " - Delay = " << FileNameDelays << endl;
+							cout << " - Delay = " << FileNameDelays ;
 							FileEncodingDelays= encoding ;
+							cout << "   Encoding =" << encoding << endl;
 							UnKnowRecords = false;
 						}
 						if(strcmp(ezxml_attr(lisadata,"Name"),"Position")==0){
 							strcpy(FileNamePositions,filename);
-							cout << " - Position = " << FileNamePositions << endl;
+							cout << " - Position = " << FileNamePositions ;
 							FileEncodingPos = encoding ;
+							cout << "   Encoding =" << encoding << endl;
 							UnKnowRecords = false;
 						}
 						if(strcmp(ezxml_attr(lisadata,"Name"),"TDI")==0){
 							strcpy(FileNameTDI,filename);
-							cout << " - TDI = " << FileNameTDI << endl;
+							cout << " - TDI = " << FileNameTDI ;
 							FileEncodingTDI = encoding ;
-							cout << " FileEncodingTDI = " << FileEncodingTDI << endl ;
+							cout << "   Encoding =" <<encoding << endl;
 							UnKnowRecords = false;
 						}
 						if(UnKnowRecords)
@@ -2528,20 +2515,19 @@ void ConfigSim::CreateXmlOutputFile()
 	// TDI data
 	FichXML <<"<XSIL Type=\"TDIData\">"<<endl;
 	
-	ObsName="t,Xf,Yf,Zf";
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TDIObservable\">"<< endl;
+	FichXML <<"   <XSIL Name=\""<<getTDIParamName()<<"\" Type=\"TDIObservable\">"<< endl;
 	FichXML << spc_5 <<ParamName <<"DataType\">"<<endl <<spc_5<<"FractionalFrequency"<< endl<<spc_5 << Param_end;
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TimeSeries\">"<< endl;
+	FichXML <<"   <XSIL Name=\""<<getTDIParamName()<<"\" Type=\"TimeSeries\">"<< endl;
 	FichXML << spc_5 <<ParamName<<"TimeOffset\" Unit=\"Second\">" << endl ;
 	FichXML << spc_9 << getTimeOffset() << endl << spc_5 <<Param_end;
 	FichXML << spc_5 <<ParamName<<"Cadence\" Unit=\"Second\">" << endl ;
 	FichXML << spc_9 << gettStepMes() << endl << spc_5 <<Param_end;
 	FichXML << spc_5 <<ParamName<<"Duration\" Unit=\"Second\">" << endl ;
 	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
-	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
+	FichXML << spc_5 << ArrayName << getTDIParamName()<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "4"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,BigEndian\">" <<endl;
+	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
 	FichXML << spc_9 << getFileNameTDI() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2561,7 +2547,7 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,BigEndian\">" <<endl;
+	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
 	FichXML << spc_9 << getFileNameSigSC1() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2581,7 +2567,7 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,BigEndian\">" <<endl;
+	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
 	FichXML << spc_9 << getFileNameSigSC2() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2602,7 +2588,7 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,BigEndian\">" <<endl;
+	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
 	FichXML << spc_9 << getFileNameSigSC3() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2857,18 +2843,10 @@ char * ConfigSim::gXMLTimeSeries(ezxml_t series, int & typedata, int & encoding,
 	}
 	encoding = -1;
 	 */
-	if(strcmp(ezxml_attr(stream,"Encoding"),"ASCII")==0)
+	if(strcmp(uppercase(ezxml_attr(stream,"Encoding")),"ASCII")==0)
 		encoding = 0;
 	else{
-		if(strcmp(ezxml_attr(stream,"Encoding"),"Binary,LittleEndian")==0)
-			encoding = 1;
-		else{
-			if(strcmp(ezxml_attr(stream,"Encoding"),"Binary,BigEndian")==0)
-				encoding = 2;
-			else{
-				cout << " WARNING : Unknow encoding type !" << endl;
-			}
-		}
+	  encoding = 1;
 	}
 	
 	cout << "   - FileName = " << filename << endl;
@@ -2884,16 +2862,13 @@ char * ConfigSim::gXMLTimeSeries(ezxml_t series, int & typedata, int & encoding,
 			cout << " : ASCII" << endl;
 			break;
 		case 1 :
-			cout << " : Binary,LittleEndian" << endl;
-			break;
-		case 2 :
-			cout << " : Binary,BigEndian" << endl;
+			cout << " : Binary" << endl;
 			break;
 		default:
 			cout << " : Unknown" << endl;
 	}
 		
-	cout << "   - Lenght   = " << length << endl;
+	cout << "   - Length   = " << length << endl;
 	cout << "   - Records  = " << records << endl;
 	
 	return(filename);
@@ -3201,6 +3176,32 @@ bool ConfigSim::getNoNoise()
 	return(NNoise);
 }
 
+
+int ConfigSim::testbyteorder()
+{
+  short int word = 0x0001;
+  char *byte = (char *) &word;
+  int  BIGENDIAN = 0;
+  int  LITTLEENDIAN = 0;
+  return(byte[0] ? LITTLEENDIAN : BIGENDIAN);
+}
+
+
+char * ConfigSim::uppercase(const char * mot)
+{
+  int longueur,i ;
+  longueur = strlen(mot) ;
+  static char MOT1[256] ;
+  strcpy(MOT1,mot) ; 
+  for (i=0 ; i<longueur ; i++){
+    majuscule(MOT1[i]);
+  }
+  return(MOT1);
+}
+void ConfigSim::majuscule(char &lettre)
+{
+	if ((lettre>='a')&&(lettre<='z')) lettre=lettre-32;
+}
 
 bool ConfigSim::FindTDIName(const char * generatorname, vector<int> & tmp_TDIPacks)
 {
