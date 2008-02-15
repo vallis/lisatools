@@ -18,13 +18,13 @@
 #define __CONFIGSIM_H
 
 
-#include <iostream>
+#include <iostream.h>
 #include <stdexcept>
 #include <math.h>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <iomanip>
+#include <iomanip.h>
 #include "ezxml.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-Serie.h"
@@ -91,6 +91,8 @@ private:
 	*	configuration file.
 	*/
 	char * ConfigFileName;
+	char * SystemEncoding;
+	int SystemEncoding_int;
 	string Author,GenerationDate,GenerationType,TDIParamName,TDIParamNameType;
 	string SC1ParamName,SC2ParamName,SC3ParamName,Simulator;
 	double TimeOffset;
@@ -133,7 +135,9 @@ private:
 		* It is an error added to the exact time propagation before to its use by TDI.  
 		*/
 		int GlobalRandomSeed;
+		int Endian ;
 		double tStepPhy, tMax, tStepMes, tMemNoiseFirst, tMemNoiseLast, tMemSig, tDisplay, tDeltaTDIDelay;
+		bool BigEndian ;
 		
 		/*!\brief TDI interpolator type */
 		INTERP TDIInterp;
@@ -242,8 +246,6 @@ private:
 			* \brief FileName for Positions.
 			*/ 
 		char FileNameSigSC1[256], FileNameSigSC2[256], FileNameSigSC3[256], FileNameTDI[256], FileNameDelays[256], FileNamePositions[256];
-		//int FileNameEncoding1, FileNameEncoding2, FileNameEncoding3,FileNameTDIEncoding ;
-		int FileNameDelaysEncoding, FileNamePosEncoding,FileNameTDIEncoding ;
   /*! \brief It returns  #FileName SigSCn attribute.*/
 		/*! \var FileEncodindingSigSC1
 			* \brief FileEncodinding for spacecraft 1 Signal.
@@ -342,6 +344,8 @@ public:
 		char * getFileNameSig(int iSC);
 		/*! \brief It returns  #FileNameTDI attribute.*/
 		char * getFileNameTDI() {return(FileNameTDI);};
+		/*! \brief It returns  SystemEncoding , BigEndian or LittleEndian.*/
+		char * getSystemEncoding() {return(SystemEncoding);};
 		/*! \brief It returns  #FileNameDelays attribute.*/
 		char * getFileNameDelays() {return(FileNameDelays);};
 		/*! \brief It returns  #FileNamePositions attribute.*/
@@ -388,6 +392,10 @@ public:
 		
 		/*  Others methods */	
 		/* Documentation in .cpp*/
+                int testbyteorder();
+                char * uppercase(const char *);
+		//char letter;
+		void majuscule(char &);
 		void ReadFile(); // Read the configuration file.
 		void ReadASCIIFile(); // Read the ASCII configuration file.
 		void ReadXMLFile(); // Read the ASCII configuration file.
