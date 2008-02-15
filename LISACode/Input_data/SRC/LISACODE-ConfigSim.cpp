@@ -252,12 +252,13 @@ void ConfigSim::ReadFile()
        ptr=ConfigFileName+strlen(ConfigFileName);
        //cout << " filename = " << ConfigFileName << endl;
        //cout << strncmp(ptr-4,".xml",4) << endl;
-       Endian = testbyteorder() ;
-       BigEndian = false ;
-       if( Endian == 0 )BigEndian = true ;
-       SystemEncoding = "LittleEndian" ;
-       if( BigEndian) {
-	 SystemEncoding = "BigEndian" ;
+       Endian = testbyteorder();       
+       if(Endian == 0) {
+           BigEndian = true;
+           SystemEncoding = "BigEndian";
+       } else {
+           BigEndian = false;
+           SystemEncoding = "LittleEndian";
        }
        cout << endl << "System Encoding for Binary files is  " <<  getSystemEncoding()<< endl << endl ;
        if(strncmp(ptr-4,".xml",4)==0) {
@@ -3194,7 +3195,7 @@ int ConfigSim::testbyteorder()
   short int word = 0x0001;
   char *byte = (char *) &word;
   int  BIGENDIAN = 0;
-  int  LITTLEENDIAN = 0;
+  int  LITTLEENDIAN = 1;
   return(byte[0] ? LITTLEENDIAN : BIGENDIAN);
 }
 
