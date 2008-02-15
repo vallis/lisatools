@@ -2527,7 +2527,10 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << ArrayName << getTDIParamName()<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "4"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
+	if(getFileEncodingTDI()==0)
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+	else{
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
 	FichXML << spc_9 << getFileNameTDI() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2547,7 +2550,10 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
+	if(getFileEncodingSig(1)==0)
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+	else{
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
 	FichXML << spc_9 << getFileNameSigSC1() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2567,7 +2573,10 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
+	if(getFileEncodingSig(2)==0)
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+	else{
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
 	FichXML << spc_9 << getFileNameSigSC2() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2588,7 +2597,10 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
+	if(getFileEncodingSig(3)==0)
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+	else{
+	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
 	FichXML << spc_9 << getFileNameSigSC3() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
