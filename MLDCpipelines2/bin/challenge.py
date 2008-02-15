@@ -201,12 +201,22 @@ parser.add_option("-P", "--nProc",
                   type="int", dest="nproc", default=1,
                   help="run in parallel on nproc CPUs [default 1]")
 
+parser.add_option("-o", "--outputfile",
+                  type="string", dest="outputfile", default=None,
+                  help="basename for the datasets [defaults to the CHALLENGENAME]")
+
+
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
     parser.error("I need the challenge name!")
 
 challengename = args[0]
+
+if options.outputfile:
+    outputfile = options.outputfile
+else:
+    outputfile = challengename
 
 if options.seed == None:
     parser.error("You must specify the seed!")
@@ -447,7 +457,6 @@ step4btime = time.time()
 if dolisacode and glob.glob('LISACode/source-*.xml'):
     # make the standard lisacode instruction set
     cname = istraining and (challengename + '-training') or challengename
-    endian = (sys.byteorder == 'little') and 'LittleEndian' or 'BigEndian'
     
     # (use same seed as synthlisa if we're training)
     lcseednoise = istraining and seednoise or (seednoise + 1)
@@ -456,8 +465,7 @@ if dolisacode and glob.glob('LISACode/source-*.xml'):
                      challengename=cname,
                      cadence=timestep,
                      duration=duration,
-                     randomseed=lcseednoise,
-                     endianness=endian)
+                     randomseed=lcseednoise)
     
     # make lisacode noise (note that the random seed is really set above in the standard instruction set)
     run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
@@ -525,21 +533,21 @@ if dosynthlisa:
     # set filenames
 
     if istraining:
-        nonoisefile   = 'Dataset/' + challengename + '-training-nonoise-frequency.xml'
-        withnoisefile = 'Dataset/' + challengename + '-training-frequency.xml'
+        nonoisefile   = 'Dataset/' + outputfile + '-training-nonoise-frequency.xml'
+        withnoisefile = 'Dataset/' + outputfile + '-training-frequency.xml'
 
-        nonoisetar    = challengename + '-training-nonoise-frequency.tar.gz'
-        withnoisetar  = challengename + '-training-frequency.tar.gz'
+        nonoisetar    = outputfile + '-training-nonoise-frequency.tar.gz'
+        withnoisetar  = outputfile + '-training-frequency.tar.gz'
 
-        keyfile       = 'Dataset/' + challengename + '-training-key.xml'
+        keyfile       = 'Dataset/' + outputfile + '-training-key.xml'
     else:
-        nonoisefile   = 'Dataset/' + challengename + '-nonoise-frequency.xml'
-        withnoisefile = 'Dataset/' + challengename + '-frequency.xml'
+        nonoisefile   = 'Dataset/' + outputfile + '-nonoise-frequency.xml'
+        withnoisefile = 'Dataset/' + outputfile + '-frequency.xml'
 
-        nonoisetar    = challengename + '-nonoise-frequency.tar.gz'
-        withnoisetar  = challengename + '-frequency.tar.gz'
+        nonoisetar    = outputfile + '-nonoise-frequency.tar.gz'
+        withnoisetar  = outputfile + '-frequency.tar.gz'
 
-        keyfile       = 'Dataset/' + challengename + '-key.xml'
+        keyfile       = 'Dataset/' + outputfile + '-key.xml'
 
     # create empty files
 
@@ -629,21 +637,21 @@ if dolisasim:
     # set filenames
 
     if istraining:
-        nonoisefile   = 'Dataset/' + challengename + '-training-nonoise-strain.xml'
-        withnoisefile = 'Dataset/' + challengename + '-training-strain.xml'
+        nonoisefile   = 'Dataset/' + outputfile + '-training-nonoise-strain.xml'
+        withnoisefile = 'Dataset/' + outputfile + '-training-strain.xml'
 
-        nonoisetar    = challengename + '-training-nonoise-strain.tar.gz'
-        withnoisetar  = challengename + '-training-strain.tar.gz'
+        nonoisetar    = outputfile + '-training-nonoise-strain.tar.gz'
+        withnoisetar  = outputfile + '-training-strain.tar.gz'
 
-        keyfile       = 'Dataset/' + challengename + '-training-key.xml'
+        keyfile       = 'Dataset/' + outputfile + '-training-key.xml'
     else:
-        nonoisefile   = 'Dataset/' + challengename + '-nonoise-strain.xml'
-        withnoisefile = 'Dataset/' + challengename + '-strain.xml'
+        nonoisefile   = 'Dataset/' + outputfile + '-nonoise-strain.xml'
+        withnoisefile = 'Dataset/' + outputfile + '-strain.xml'
 
-        nonoisetar    = challengename + '-nonoise-strain.tar.gz'
-        withnoisetar  = challengename + '-strain.tar.gz'
+        nonoisetar    = outputfile + '-nonoise-strain.tar.gz'
+        withnoisetar  = outputfile + '-strain.tar.gz'
 
-        keyfile       = 'Dataset/' + challengename + '-key.xml'
+        keyfile       = 'Dataset/' + outputfile + '-key.xml'
     
     # create empty files
     
