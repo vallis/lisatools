@@ -36,10 +36,10 @@
         </XSIL>
 
         <XSIL Type="OutputFiles">
-            <Param Name="SignalSC1" Encoding="Binary,{endianness}">{challengename}-lisacode-Phasemeter-1.bin</Param>
-            <Param Name="SignalSC2" Encoding="Binary,{endianness}">{challengename}-lisacode-Phasemeter-2.bin</Param>
-            <Param Name="SignalSC3" Encoding="Binary,{endianness}">{challengename}-lisacode-Phasemeter-3.bin</Param>
-            <Param Name="TDI" Encoding="Binary,{endianness}">{challengename}-lisacode-TDI.bin</Param>
+            <Param Name="SignalSC1" Encoding="Binary">{challengename}-lisacode-Phasemeter-1.bin</Param>
+            <Param Name="SignalSC2" Encoding="Binary">{challengename}-lisacode-Phasemeter-2.bin</Param>
+            <Param Name="SignalSC3" Encoding="Binary">{challengename}-lisacode-Phasemeter-3.bin</Param>
+            <Param Name="TDI" Encoding="Binary">{challengename}-lisacode-TDI.bin</Param>
         </XSIL>
 
         <Comment>
