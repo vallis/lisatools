@@ -180,26 +180,27 @@ void MemoryWriteDisk::RecordAccData(double tStep, double t)
 			throw invalid_argument("MemoryWriteDisk: There is no data for one serie !");
 		AlreadyRecDat[i] = false;
 	}
-	
-	if(FEncoding){ // Write the datas in BINARY file
-		FichMem.write((char*) &t, sizeof(double));
-		for(int i=0; i< int(ListTmpData.size()); i++){
-			tmpdata =  ListTmpData[i].getBinValue(0);
-			FichMem.write((char*) &tmpdata, sizeof(double));
-		}
-				
-	}else{ // Write the datas in ASCII file
-		FichMem.precision(15);
-		FichMem << t;
-		for(int i=0; i< int(ListTmpData.size()); i++)
-			FichMem << " " << ListTmpData[i].getBinValue(0) ;
-		FichMem << endl;
-		/*cout.precision(15);
-		cout << "MemoryWriteDisk : t,s,sp = "  << t;
-		for(int i=0; i< int(ListTmpData.size()); i++)
-			cout << " " << ListTmpData[i].getBinValue(0) ;
-		cout << endl;
-		*/
+	if(t >= 0){ // modif eric
+	  if(FEncoding){ // Write the datas in BINARY file
+	    FichMem.write((char*) &t, sizeof(double));
+	    for(int i=0; i< int(ListTmpData.size()); i++){
+	      tmpdata =  ListTmpData[i].getBinValue(0);
+	      FichMem.write((char*) &tmpdata, sizeof(double));
+	    }
+	    
+	  }else{ // Write the datas in ASCII file
+	    FichMem.precision(15);
+	    FichMem << t;
+	    for(int i=0; i< int(ListTmpData.size()); i++)
+	      FichMem << " " << ListTmpData[i].getBinValue(0) ;
+	    FichMem << endl;
+	    /*cout.precision(15);
+	      cout << "MemoryWriteDisk : t,s,sp = "  << t;
+	      for(int i=0; i< int(ListTmpData.size()); i++)
+	      cout << " " << ListTmpData[i].getBinValue(0) ;
+	      cout << endl;
+	    */
+	  }
 	}
 	// Delete last data
 	for(int i=0; i< int(ListTmpData.size()); i++){
