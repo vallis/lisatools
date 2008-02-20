@@ -85,7 +85,7 @@ npixels = healpix.nside2npix(2**options.refine)
 
 random.seed(options.seed)
 
-PSD = options.PSD * (1.0 + random.uniform(-options.randomizePSD,-options.randomizePSD))
+PSD = options.PSD * (1.0 + random.uniform(-options.randomizePSD,options.randomizePSD))
 
 whichfile = 0
 
