@@ -84,7 +84,7 @@ class Stochastic(lisaxml.Source):
     def makealphanoise(self,deltat,prebuf,psd,alpha,flow,fhi,interplen=1,seed=0,order=None):
         nyquistf = 0.5/deltat
         norm = math.sqrt(psd) * math.sqrt(nyquistf) / fhi**(alpha/2.0)
-        sigbuffer = min(256,2**int(math.log(160/deltat,2)))
+        sigbuffer = max(256,2**int(math.log(160/deltat,2)+1))
                 
         wlow = 2 * math.pi * flow
         whi  = 2 * math.pi * fhi
