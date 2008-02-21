@@ -43,13 +43,25 @@ parser.add_option("-r", "--rawMeasurements",
                   action="store_true", dest="rawMeasurements", default=False,
                   help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
 
+parser.add_option("-O", "--observables",
+                  type="string", dest="observables", default='1.5',
+                  help="TDI observables: 1.5 [default], 2.0, Sagnac (not compatible with -r)")
+
 parser.add_option("-R", "--randomizeNoise",
                   type="float", dest="randomizeNoise", default=0.0,
                   help="randomize level of noises (e.g., 0.2 for 20% randomization)")
 
+parser.add_option("-p", "--pinkAcceleration",
+                  action="store_true", dest="pinkAcceleration", default=True,
+                  help="enable pink proof-mass acceleration noise [default is True]")
+
 parser.add_option("-l", "--laserNoise",
                   type="string", dest="laserNoise", default='None',
-                  help="laser noise level: None, Standard, <numerical value> (e.g., 0.2 for 20% of pm noise at 1 mHz)")
+                  help="laser noise level: None [default], Standard, <numerical value> (e.g., 0.2 for 20% of pm noise at 1 mHz)")
+
+parser.add_option("-L", "--LISA",
+                  type="string", dest="LISAmodel", default='Eccentric',
+                  help="LISA model: Static, Rigid, Eccentric [default]")
 
 parser.add_option("-k", "--keyOnly",
                   action="store_true", dest="keyOnly", default=False,
@@ -74,8 +86,15 @@ if options.seed == None:
 # set the noise seed
 random.seed(options.seed)
 
-# hardcode LISA and Noise to the MLDC standards
-lisa = synthlisa.EccentricInclined(0.0,1.5*math.pi,-1)
+# add caching?
+if options.LISAmodel == 'Eccentric':
+    lisa = synthlisa.EccentricInclined(0.0,1.5*math.pi,-1)
+elif options.LISAmodel == 'Static':
+    lisa = synthlisa.OriginalLISA()
+elif options.LISAmodel == 'Rigid':
+    lisa = synthlisa.CircularRotating(0.0,1.5*math.pi,-1)
+else:
+    parser.error("I don't recognize this LISA model!")
 
 def randnoise():
     return random.uniform(1.00 - options.randomizeNoise, 1.0 + options.randomizeNoise)
@@ -84,7 +103,11 @@ proofnoises = []
 for ind in ['pm1', 'pm1s', 'pm2', 'pm2s', 'pm3', 'pm3s']:
     noise = PseudoRandomNoise.PseudoRandomNoise(ind)
     
-    noise.SpectralType = 'PinkAcceleration'
+    if options.pinkAcceleration:
+        noise.SpectralType = 'PinkAcceleration'
+    else:
+        noise.SpectralType = 'WhiteAcceleration'
+    
     noise.PowerSpectralDensity = 2.5e-48 * randnoise()
     noise.Fknee = 1e-4
     noise.GenerationTimeStep = 100
@@ -154,15 +177,26 @@ if not options.keyOnly:
 
         tdiobsraw = lisaxml.Observable('t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')     
         tdiobsraw.TimeSeries = lisaxml.TimeSeries([t,y123,y231,y312,y321,y132,y213,
-                                                     z123,z231,z312,z321,z132,z213],'t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')    
-
+                                                     z123,z231,z312,z321,z132,z213],'t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')
+        
+        obsstr = 't,Xf,Yf,Zf'
     else:
-        [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
-                                                      [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm],
-                                                      options.inittime))
+        if options.observables == '1.5':
+            obsset = [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm]
+            obsstr = 't,Xf,Yf,Zf'
+        elif options.observables == '2.0':
+            obsset = [tdi.t,tdi.X1,tdi.X2,tdi.X3]
+            obsstr = 't,X1f,X2f,X3f'
+        elif options.observables == 'Sagnac':
+            obsset = [tdi.alpham,tdi.betam,tdi.gammam,tdi.zetam]
+            obsstr = 'alphaf,betaf,gammaf,zetaf'
+        else:
+            parser.error("I don't recognize the set of TDI observables!")
+        
+        [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,obsset,options.inittime))
 
-    tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
-    tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
+    tdiobs = lisaxml.Observable(obsstr)
+    tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],obsstr)
 
 outputXML = lisaxml.lisaXML(outputfile,'w')
 
