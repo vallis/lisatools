@@ -65,11 +65,16 @@ class Stochastic(lisaxml.Source):
         seedhp = self.PseudoRandomSeed
         random.seed(seedhp); seedhc = random.randint(0,2**30)
         
-        noisehp = self.makealphanoise(deltat,prebuf,self.PowerSpectralDensity,-self.SpectralSlope,
+        # should check what the requested deltat is...
+        mydeltat = 0.1 / self.Fknee
+        if deltat > mydeltat / 5:
+            raise ValueError, "Stochastic.py: for this stochastic sources (Fknee = %s Hz), the cadence needs to be faster than %s s" % (self.Fknee,mydeltat)
+        
+        noisehp = self.makealphanoise(mydeltat,prebuf,self.PowerSpectralDensity,-self.SpectralSlope,
                                       self.Flow,self.Fknee,self.InterpolationOrder,seedhp)
-        noisehc = self.makealphanoise(deltat,prebuf,self.PowerSpectralDensity,-self.SpectralSlope,
-                                      self.Flow,self.Fknee,self.InterpolationOrder,seedhc)
-                
+        noisehc = self.makealphanoise(mydeltat,prebuf,self.PowerSpectralDensity,-self.SpectralSlope,
+                                      self.Flow,self.Fknee,self.InterpolationOrder,seedhc)                            
+        
         interp = synthlisa.getInterpolator(self.InterpolationOrder)
         
         return synthlisa.NoiseWave(noisehp,noisehc,self.EclipticLatitude,self.EclipticLongitude,-self.Polarization)
