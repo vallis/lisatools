@@ -33,12 +33,12 @@ parser.add_option("-s", "--seed",
                   help="seed for random number generator (int) [required]")
 
 parser.add_option("-p", "--PSD",
-                  type="float", dest="PSD", default=1.0,
-                  help="total power spectral density (adimensional)")
+                  type="float", dest="PSD", default=5e-48,
+                  help="total power spectral density (strain, adimensional) [default = 5e-48]")
 
 parser.add_option("-r", "--randomizePSD",
                   type="float", dest="randomizePSD", default=0.0,
-                  help="fractional random displacement in total power spectral density (adimensional)")
+                  help="fractional random displacement in total power spectral density (as a fraction of PSD) [default = 0]")
 
 parser.add_option("-R", "--pixelRefinement",
                   type="int", dest="refine", default=2,
@@ -101,11 +101,11 @@ for i in range(npixels):
     mysystem.PowerSpectralDensity = PSD / (2*npixels)
     mysystem.SpectralSlope = -3
     mysystem.Flow  = 1e-5
-    mysystem.Fknee = 1e-1
+    mysystem.Fknee = 1e-2
 
     mysystem.PseudoRandomSeed = random.randint(0,2**30)
 
-    mysystem.InterpolationOrder = 1
+    mysystem.InterpolationOrder = 2
     
     if options.verbose:
         for p in mysystem.parameters:
