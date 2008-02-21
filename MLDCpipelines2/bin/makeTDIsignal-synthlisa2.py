@@ -49,9 +49,17 @@ parser.add_option("-r", "--rawMeasurements",
                   action="store_true", dest="rawMeasurements", default=False,
                   help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
 
+parser.add_option("-O", "--observables",
+                  type="string", dest="observables", default='1.5',
+                  help="TDI observables: 1.5 [default], 2.0, Sagnac (experimental; not compatible with -r)")
+
 parser.add_option("-c", "--combinedSNR",
                   action="store_true", dest="combinedSNR", default=False,
                   help="use combined snr = sqrt(2)*max{SNR_x, SNR_y, SNR_z} as SNR constrain [off by default]")
+
+parser.add_option("-L", "--LISA",
+                  type="string", dest="LISAmodel", default='Eccentric',
+                  help="LISA model: Static, Rigid, Eccentric [default]")
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -111,7 +119,15 @@ for waveforms in allsources:
 
     sourceobjects.append(source)
 
-lisa = synthlisa.CacheLISA(synthlisa.EccentricInclined(0.0,1.5*pi,-1))
+# add caching?
+if options.LISAmodel == 'Eccentric':
+    lisa = synthlisa.EccentricInclined(0.0,1.5*pi,-1)
+elif options.LISAmodel == 'Static':
+    lisa = synthlisa.OriginalLISA()
+elif options.LISAmodel == 'Rigid':
+    lisa = synthlisa.CircularRotating(0.0,1.5*pi,-1)
+else:
+    parser.error("I don't recognize this LISA model!")
 
 if len(sourceobjects) == 0:
     print "!!! Could not find any suitable sources..."
@@ -128,11 +144,24 @@ if options.rawMeasurements:
                                                                           [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm,
                                                                                  tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
                                                                                  tdi.z123,tdi.z231,tdi.z312,tdi.z321,tdi.z132,tdi.z213],
-                                                                          options.inittime))    
+                                                                          options.inittime))
+    obsstr = 't,Xf,Yf,Zf'
 else:
-    [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
-                                                  [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm],
-                                                  options.inittime))
+    # note that choices of options.observables other than 1.5 are not compatible with debugSNR and/or RequestSN
+    
+    if options.observables == '1.5':
+        obsset = [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm]
+        obsstr = 't,Xf,Yf,Zf'
+    elif options.observables == '2.0':
+        obsset = [tdi.t,tdi.X1,tdi.X2,tdi.X3]
+        obsstr = 't,X1f,X2f,X3f'
+    elif options.observables == 'Sagnac':
+        obsset = [tdi.alpham,tdi.betam,tdi.gammam,tdi.zetam]
+        obsstr = 'alphaf,betaf,gammaf,zetaf'
+    else:
+        parser.error("I don't recognize the set of TDI observables!")
+
+    [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,obsset,options.inittime))
 
 # Computing SNR....
 
@@ -248,11 +277,12 @@ if hasattr(allsources[0],'RequestSN'):
     Y *= factor
     Z *= factor
     
-    y123 *= factor; y231 *= factor; y312 *= factor; y321 *= factor; y132 *= factor; y213 *= factor
-    z123 *= factor; z231 *= factor; z312 *= factor; z321 *= factor; z132 *= factor; z213 *= factor
+    if options.rawMeasurements:
+        y123 *= factor; y231 *= factor; y312 *= factor; y321 *= factor; y132 *= factor; y213 *= factor
+        z123 *= factor; z231 *= factor; z312 *= factor; z321 *= factor; z132 *= factor; z213 *= factor
 
-tdiobs = lisaxml.Observable('t,Xf,Yf,Zf')
-tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],'t,Xf,Yf,Zf')
+tdiobs = lisaxml.Observable(obsstr)
+tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],obsstr)
 
 tdiobs.DataType = 'FractionalFrequency'
 tdiobs.TimeSeries.Cadence = options.timestep
