@@ -169,6 +169,11 @@ parser.add_option("-S", "--synthlisa",
                   action="store_true", dest="synthlisaonly", default=False,
                   help="run only Synthetic LISA")
 
+# note the letter mismatch with the makeTDIsignal/noise-synthlisa2.py option
+parser.add_option("-I", "--LISA",
+                  type="string", dest="LISAmodel", default='Eccentric',
+                  help="LISA model: Static, Rigid, Eccentric [default]")
+
 parser.add_option("-L", "--lisasim",
                   action="store_true", dest="lisasimonly", default=False,
                   help="run only the LISA Simulator")
@@ -380,15 +385,17 @@ if options.laserNoise != 'None':
     noiseoptions += ('--laserNoise=%s ' % options.laserNoise)
 if options.rawMeasurements == True:
     noiseoptions += '--rawMeasurements '
+if options.LISAmodel != 'Eccentric':
+    noiseoptions += '--LISA=%s ' % options.LISAmodel
 
 if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
     # the results are files of TDI time series that include the source info
     # these calls have also the result of rescaling the barycentric files to satisfy any RequestSN that
     # they may carry
-    
-    # for safety: use new makeTDIsignal-synthlisa.py only if we have immediate sources
-    if glob.glob('Immediate/*.xml') or (options.rawMeasurements == True):
+        
+    # for safety: use new makeTDIsignal-synthlisa.py only if we have immediate sources or nonstandard
+    if glob.glob('Immediate/*.xml') or (options.rawMeasurements == True) or (options.LISAmodel != 'Eccentric'):
         runfile = 'makeTDIsignal-synthlisa2.py'
     else:
         runfile = 'makeTDIsignal-synthlisa.py'
@@ -398,6 +405,8 @@ if dosynthlisa:
         runoptions += '--rawMeasurements '
     if options.combinedSNR == True:
         runoptions += '--combinedSNR '
+    if options.LISAmodel != 'Eccentric':
+        runoptions += '--LISA=%s ' % options.LISAmodel
     if not glob.glob('Galaxy/*.xml'):
         # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
         runoptions += '--noiseOnly '
@@ -496,8 +505,18 @@ if glob.glob('Galaxy/*.xml'):
 
         if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
             prun('%s/makeTDIsignals-Galaxy3.py %s %s %s' % (execdir,xmlfile,sltdifile,lstdifile))
-
+    
     pwait()
+
+# in challenge 3.2, the Galaxy is noise, so merge it with the instrument noise
+# this is a hack that should be later changed with something more systematic
+
+if 'challenge3.2' in challengename:
+    run('%s/mergeXML.py %s %s' % (execdir,noisefile  ,'TDI/TheGalaxy-tdi-frequency.xml'))
+    run('rm TDI/TheGalaxy-tdi-frequency.xml TDI/TheGalaxy-tdi-frequency-0.bin')
+
+    run('%s/mergeXML.py %s %s' % (execdir,slnoisefile,'TDI/TheGalaxy-tdi-strain.xml'))
+    run('rm TDI/TheGalaxy-tdi-strain.xml TDI/TheGalaxy-tdi-strain-0.bin')
 
 step6time = time.time()
 
