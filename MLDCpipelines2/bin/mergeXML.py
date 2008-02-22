@@ -32,12 +32,16 @@ parser.add_option("-N", "--tdiName",
                   type="string", dest="tdiName", default=None,
                   help="use this string as the name of TDIobservable sections [off by default]")
 
+parser.add_option("-o", "--outputfile",
+                  type="string", dest="outputfile", default=None,
+                  help="outputfile [normally just the same as MERGED.xml]")
+
 (options, args) = parser.parse_args()
 
 # currently we support only a single source parameter file
 
 if len(args) < 2:
-    parser.error("You must specify at least the output file and one input file!")
+    parser.error("You must specify at least one output file and one input file!")
 
 if options.nokey and options.keyonly:
     parser.error("Conflicting options --keyOnly and --noKey.")
@@ -82,7 +86,10 @@ comments = mergedtdifile.Comment
 
 mergedtdifile.close()
 
-newmergedtdifile = lisaxml.lisaXML(mergedfile,author=author,comments=comments)
+if options.outputfile:
+    newmergedtdifile = lisaxml.lisaXML(options.outputfile,author=author,comments=comments)
+else:
+    newmergedtdifile = lisaxml.lisaXML(mergedfile,author=author,comments=comments)
 
 for inputfile in inputfiles:
     inputtdifile = lisaxml.readXML(inputfile)
