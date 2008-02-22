@@ -33,7 +33,7 @@ parser.add_option("-s", "--seed",
                   help="seed for random number generator (int) [required]")
 
 parser.add_option("-p", "--PSD",
-                  type="float", dest="PSD", default=5e-48,
+                  type="float", dest="PSD", default=1e-47,
                   help="total power spectral density (strain, adimensional) [default = 5e-48]")
 
 parser.add_option("-r", "--randomizePSD",
