@@ -25,6 +25,18 @@ parser.add_option("-P", "--nProc",
                   type="int", dest="nproc", default=1,
                   help="run in parallel on nproc CPUs [default 1]")
 
+parser.add_option("-R", "--runOnly",
+                  type="string", dest="runOnly", default="3.1,3.2,3.3,3.4,3.5",
+                  help="which challenges to run (use a comma-separated list like 3.1,3.2) [default: all of them]")
+
+parser.add_option("-T", "--trainingOnly",
+                  action="store_true", dest="trainingOnly", default=False,
+                  help="run only training [default: False]")
+
+parser.add_option("-B", "--blindOnly",
+                  action="store_true", dest="blindOnly", default=False,
+                  help="run only blind [default: False]")
+
 (options, args) = parser.parse_args()
 
 nproc = options.nproc
@@ -39,19 +51,34 @@ seed33,seed33t = twoseeds()
 seed34,seed34t = twoseeds()
 seed35,seed35t = twoseeds()
 
-run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed31)s  challenge3.1' % globals())
-run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed31t)s challenge3.1' % globals())
-                                                                      
-run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed32)s  --combinedSNR challenge3.2' % globals())
-run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed32t)s --combinedSNR challenge3.2' % globals())
+if '3.1' in options.runOnly:
+    if not options.trainingOnly:
+        run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed31)s  challenge3.1' % globals())
+    if not options.blindOnly:
+        run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed31t)s challenge3.1' % globals())
 
-run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed33)s  --combinedSNR challenge3.3' % globals())
-run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed33t)s --combinedSNR challenge3.3' % globals())
+if '3.2' in options.runOnly:
+    if not options.trainingOnly:                                                                  
+        run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed32)s  --combinedSNR challenge3.2' % globals())
+    if not options.blindOnly:
+        run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed32t)s --combinedSNR challenge3.2' % globals())
+
+if '3.3' in options.runOnly:
+    if not options.trainingOnly:                                                                  
+        run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed33)s  --combinedSNR challenge3.3' % globals())
+    if not options.blindOnly:
+        run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed33t)s --combinedSNR challenge3.3' % globals())
 
 options34 = '--synthlisa --rawMeasurements --randomizeNoise=0.2 --laserNoise=10'
-run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=1 --seed=%(seed34)s  --combinedSNR %(options34)s challenge3.4' % globals())
-run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=1 --seed=%(seed34t)s --combinedSNR %(options34)s challenge3.4' % globals())
+if '3.4' in options.runOnly:
+    if not options.trainingOnly:                                                                  
+        run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=1 --seed=%(seed34)s  --combinedSNR %(options34)s challenge3.4' % globals())
+    if not options.blindOnly:
+        run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=1 --seed=%(seed34t)s --combinedSNR %(options34)s challenge3.4' % globals())
 
 options35 = '--synthlisa --lisacode --rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Rigid'
-run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
-run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
+if '3.5' in options.runOnly:
+    if not options.trainingOnly:                                                                  
+        run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
+    if not options.blindOnly:
+        run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
