@@ -283,14 +283,32 @@ Vect Geometry::position(int nb, double t)
 		alpha=omega*t;
 		c_alpha=cos(alpha); s_alpha=sin(alpha);
 		beta=rot[nb-1];  c_beta=crot[nb-1] ; s_beta=srot[nb-1];
+		// 1st order in excentricity 
+		/*
 		r.p[0] = au_m*(c_alpha+e_mldc*(s_alpha*c_alpha*s_beta-(1+s_alpha*s_alpha)*c_beta));
 		r.p[1] = au_m*(s_alpha+e_mldc*(s_alpha*c_alpha*c_beta-(1+c_alpha*c_alpha)*s_beta));
 		r.p[2] = -au_m*e_mldc*sqrt_3*cos(alpha-beta);
+		*/
+		//cout << "Pos OLD : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
+		//2nd order in excentricity   (copied form Synth Lisa)
+		r.p[0] = 0.5*au_m*e_mldc*(cos(2.0*alpha-beta)-3.0*cos(beta))
+		   +0.125*au_m*pow(e_mldc,2)*(3.0*cos(3.0*alpha-2.0*beta)-5.0*(2.0*cos(alpha)+cos(alpha-2.0*beta)))
+                   +au_m*cos(alpha);
+		r.p[1] =   0.5*au_m*e_mldc*(sin(2.0*alpha-beta)-3.0*sin(beta))
+		   +0.125*au_m*pow(e_mldc,2)*(3.0*sin(3.0*alpha-2.0*beta)-5.0*(2.0*sin(alpha)-sin(alpha-2.0*beta)))
+		   +au_m*sin(alpha);
+           
+		r.p[2] = -sqrt_3*au_m*e_mldc*cos(alpha-beta)
+		   +sqrt_3*au_m*pow(e_mldc,2)*(cos(alpha-beta)*cos(alpha-beta)+2.0*sin(alpha-beta)*sin(alpha-beta));                                            
+		//cout << "Pos NEW : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
+
 	}
-	/*		cout << "Pos : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
+	//cout << "Pos : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
+	/*
 	if (t > 4.){
 		throw invalid_argument("Position :: On arrete !");
-	}*/	
+	}
+	*/
 	return r;
 }
 
