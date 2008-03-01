@@ -386,6 +386,46 @@ print "--> Installing/refreshing PseudoRandomNoise"
 assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
 os.chdir(here)
 
+
+# install/check install for Galaxy_General TDI
+
+os.chdir('MLDCwaveforms/Galaxy_General')
+print "--> Installing/refreshing Galaxy_General"
+
+sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.c') + glob.glob('../../lisaXML/io-C/*.h')
+
+if ( newer_group(sources,'Setup') or newer_group(sources,'Fast_Response') or newer_group(sources,'Galaxy_Maker')
+     or newer_group(sources,'Galaxy_key') or newer_group(sources,'Fast_XML_LS') 
+     or newer_group(sources,'Fast_XML_SL') or newer_group(sources,'Confusion_Maker')     ):
+    print "    (recompiling Galaxy_General)"
+    assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
+
+# previously the download was disabled for cygwin. But it may just be a question of requiring curl,
+# or replacing it... (not 'CYGWIN' in platform.system())
+
+if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
+    if downloadgalaxy == True:
+        print "    (downloading Nelemans AMCV galaxy (791M), this will take a while...)"
+        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/AMCVn_GWR_MLDC.dat.bz2  > Data/AMCVn_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 Data/AMCVn_GWR_MLDC.dat.bz2'))
+    else:
+        print "!!! If you want to generate galactic backgrounds, you'll need to download"
+        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
+        print "    for you if you give me the --downloadgalaxy option."
+
+if not os.path.isfile('Data/dwd_GWR_MLDC.dat'):
+    if downloadgalaxy == True:
+        print "    (downloading Nelemans dwd galaxy (427M), this will take a while...)"
+        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/dwd_GWR_MLDC.dat.bz2  > Data/dwd_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 Data/dwd_GWR_MLDC.dat.bz2'))
+    else:
+        print "!!! If you want to generate galactic backgrounds, you'll need to download"
+        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
+        print "    for you if you give me the --downloadgalaxy option."
+
+os.chdir(here)
+
+
 # install/check install for Galaxy3 TDI
 
 os.chdir('MLDCwaveforms/Galaxy3')
