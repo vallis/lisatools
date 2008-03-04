@@ -43,7 +43,7 @@ parser.add_option("-c", "--confusion",
 
 parser.add_option("-g", "--general",
                   action="store_true", dest="general", default=False,
-                  help="use Galaxy_General instead of Galaxy [off by default]")
+                  help="use Galaxy_General instead of Galaxy3 [off by default]")
 
 (options, args) = parser.parse_args()
 
@@ -69,7 +69,9 @@ if not options.general:
 else:
     galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy_General')
 
-if not os.path.isfile(galaxydir + '/Fast_Response3'):
+# see if the fast galaxy code is there
+
+if not os.path.isfile(galaxydir + '/Fast_Response') and not os.path.isfile(galaxydir + '/Fast_Response3'):
     print "Cannot find the fast Galaxy code! Try re-running master-install.py."
     sys.exit(1)
 
@@ -80,10 +82,16 @@ here = os.getcwd()
 workdir = os.path.abspath(tempfile.mkdtemp(dir='.'))
 os.chdir(workdir)
 
-execfiles = ['Fast_Response3','Fast_XML_LS3','Fast_XML_SL3','Galaxy_key3','Galaxy_Maker3','Confusion_Maker3']
+if not options.general:
+    execfiles = ['Fast_Response3','Fast_XML_LS3','Fast_XML_SL3','Galaxy_key3','Galaxy_Maker3','Confusion_Maker3']
 
-for f in execfiles:
-    run('ln -s %s/%s ./%s' % (galaxydir,f,f),quiet=True)
+    for f in execfiles:
+        run('ln -s %s/%s ./%s' % (galaxydir,f,f),quiet=True)
+else:
+    execfiles = ['Fast_Response','Fast_XML_LS','Fast_XML_SL','Galaxy_key','Galaxy_Maker','Confusion_Maker']
+    
+    for f in execfiles:
+        run('ln -s %s/%s ./%s3' % (galaxydir,f,f),quiet=True)
 
 run('mkdir Binary',quiet=True)
 run('mkdir Data',quiet=True)

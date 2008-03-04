@@ -29,6 +29,10 @@ from optparse import OptionParser
 parser = OptionParser(usage="usage: %prog [options] INPUT.xml OUTPUT-synthlisa.xml OUTPUT-lisasim.xml",
                       version="$Id: $")
 
+parser.add_option("-g", "--general",
+                  action="store_true", dest="general", default=False,
+                  help="use Galaxy_General instead of Galaxy [off by default]")
+
 mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 (options, args) = parser.parse_args()
@@ -84,15 +88,17 @@ readgalaxy.close()
 if galaxywhich == 1:
     galaxydir = os.path.abspath(mydir + '/../../MLDCwaveforms/Galaxy')
 elif galaxywhich == 3:
-    galaxydir = os.path.abspath(mydir + '/../../MLDCwaveforms/Galaxy3')
+    if not options.general:
+        galaxydir = os.path.abspath(mydir + '/../../MLDCwaveforms/Galaxy3')
+    else:
+        galaxydir = os.path.abspath(mydir + '/../../MLDCwaveforms/Galaxy_General')
 else:
     print "!!! I'm not sure what kind of Galaxy you're giving me here!"
     sys.exit(1)
 
 # see if the fast galaxy code is there
 
-if ((galaxywhich == 1 and not os.path.isfile(galaxydir + '/Fast_Response')) or 
-    (galaxywhich == 3 and not os.path.isfile(galaxydir + '/Fast_Response3'))):
+if not os.path.isfile(galaxydir + '/Fast_Response') and not os.path.isfile(galaxydir + '/Fast_Response3'):
     print "Cannot find the fast Galaxy code! Try re-running master-install.py."
     sys.exit(1)
 
@@ -103,13 +109,17 @@ here = os.getcwd()
 workdir = os.path.abspath(tempfile.mkdtemp(dir='.'))
 os.chdir(workdir)
 
-if galaxywhich == 1:
+if galaxywhich == 1 or (galaxywhich == 3 and options.general == True):
     execfiles = ['Fast_Response','Fast_XML_LS','Fast_XML_SL','Galaxy_key','Galaxy_Maker']
-elif galaxywhich == 3:
+else:
     execfiles = ['Fast_Response3','Fast_XML_LS3','Fast_XML_SL3','Galaxy_key3','Galaxy_Maker3']
 
-for f in execfiles:
-    run('ln -s %s/%s ./%s' % (galaxydir,f,f),quiet=True)
+if galaxywhich == 3 and options.general == True:
+    for f in execfiles:
+        run('ln -s %s/%s ./%s3' % (galaxydir,f,f),quiet=True)
+else:
+    for f in execfiles:
+        run('ln -s %s/%s ./%s' % (galaxydir,f,f),quiet=True)
 
 run('mkdir Binary',quiet=True)
 run('mkdir Data',quiet=True)
