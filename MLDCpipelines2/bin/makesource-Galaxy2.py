@@ -35,7 +35,7 @@ parser.add_option("-s", "--seed",
 
 parser.add_option("-v", "--verification",
                   action="store_true", dest="verification", default=False,
-                  help="include verification binaries [defaults to true]")
+                  help="include verification binaries [off by default]")
 
 (options, args) = parser.parse_args()
 
@@ -50,7 +50,7 @@ if len(args) != 1:
 
 outputfile = args[0]
 
-# try to find the Galaxy code..
+# try to find the Galaxy code...
 
 galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy')
 
