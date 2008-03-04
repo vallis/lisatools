@@ -21,7 +21,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] OUTPUT.xml",
-                      version="$Id: makeTDInoise-synthlisa.py 181 2006-12-01 00:37:11Z vallisneri $")
+                      version="$Id: $")
 
 parser.add_option("-t", "--initialTime",
                   type="float", dest="inittime", default=0.0,
@@ -51,9 +51,21 @@ parser.add_option("-R", "--randomizeNoise",
                   type="float", dest="randomizeNoise", default=0.0,
                   help="randomize level of noises (e.g., 0.2 for 20% randomization)")
 
-parser.add_option("-p", "--pinkAcceleration",
-                  action="store_true", dest="pinkAcceleration", default=True,
-                  help="enable pink proof-mass acceleration noise [default is True]")
+parser.add_option("-x", "--redAcceleration",
+                  action="store_true", dest="redAcceleration", default=False,
+                  help="disable pink proof-mass acceleration noise [enabled by default]")
+
+parser.add_option("-P", "--positionNoise",
+                  type="string", dest="positionNoise", default='Standard',
+                  help="proof-mass noise level: Standard [default], <numerical value> [in m^2 Hz^-1]")
+
+parser.add_option("-o", "--rescalePositionNoise",
+                  action="store_true", dest="rescalePositionNoise", default=False,
+                  help="rescale proof-mass noise level by armlength [off by default]")
+
+parser.add_option("-a", "--armlength",
+                  type="string", dest="armlength", default='Standard',
+                  help="LISA armlength (Static and Rigid LISA only): Standard [default, = 16.6782 s], <numerical value> [s]")
 
 parser.add_option("-l", "--laserNoise",
                   type="string", dest="laserNoise", default='None',
@@ -86,15 +98,27 @@ if options.seed == None:
 # set the noise seed
 random.seed(options.seed)
 
-# add caching?
-if options.LISAmodel == 'Eccentric':
-    lisa = synthlisa.EccentricInclined(0.0,1.5*math.pi,-1)
-elif options.LISAmodel == 'Static':
-    lisa = synthlisa.OriginalLISA()
-elif options.LISAmodel == 'Rigid':
-    lisa = synthlisa.CircularRotating(0.0,1.5*math.pi,-1)
+# set LISA, add caching?
+if options.armlength == 'Standard':
+    if options.LISAmodel == 'Eccentric':
+        lisa = synthlisa.EccentricInclined(0.0,1.5*math.pi,-1)
+    elif options.LISAmodel == 'Static':
+        lisa = synthlisa.OriginalLISA()
+    elif options.LISAmodel == 'Rigid':
+        lisa = synthlisa.CircularRotating(0.0,1.5*math.pi,-1)
+    else:
+        parser.error("I don't recognize this LISA model!")
 else:
-    parser.error("I don't recognize this LISA model!")
+    L = float(options.armlength)
+    
+    if options.LISAmodel == 'Eccentric':
+        parser.error("You can only set --armlength with --LISA=Static or --LISA=Rigid")
+    elif options.LISAmodel == 'Static':
+        lisa = synthlisa.OriginalLISA(L,L,L)
+    elif options.LISAmodel == 'Rigid':
+        lisa = synthlisa.CircularRotating(L,0.0,1.5*math.pi,-1,0)
+    else:
+        parser.error("I don't recognize this LISA model!")    
 
 def randnoise():
     return random.uniform(1.00 - options.randomizeNoise, 1.0 + options.randomizeNoise)
@@ -103,7 +127,7 @@ proofnoises = []
 for ind in ['pm1', 'pm1s', 'pm2', 'pm2s', 'pm3', 'pm3s']:
     noise = PseudoRandomNoise.PseudoRandomNoise(ind)
     
-    if options.pinkAcceleration:
+    if not options.redAcceleration:
         noise.SpectralType = 'PinkAcceleration'
     else:
         noise.SpectralType = 'WhiteAcceleration'
@@ -138,13 +162,23 @@ for ind in ['c1', 'c1s', 'c2', 'c2s', 'c3', 'c3s']:
 shotnoises = []
 for ind in ['pd1', 'pd1s', 'pd2', 'pd2s', 'pd3', 'pd3s']:
     noise = PseudoRandomNoise.PseudoRandomNoise(ind)
-
+    
+    if options.positionNoise == 'Standard':
+        shotpsd = 1.8e-37
+    else:
+        # convert PSD from m^2 Hz^-1 by multiplying by 4 pi^2 / c^2
+        shotpsd = float(options.positionNoise) * 4.39256636e-16
+        
+    # rescale noise by armlength
+    if options.armlength != 'Standard' and options.rescalePositionNoise == True:
+        shotpsd *= (L/16.6782)**2
+    
     noise.SpectralType = 'WhitePhase'
-    noise.PowerSpectralDensity = 1.8e-37 * randnoise()
+    noise.PowerSpectralDensity = shotpsd * randnoise()
     noise.GenerationTimeStep = options.timestep
     noise.InterpolationOrder = 4
     noise.PseudoRandomSeed = random.randint(0,2**30)
-
+    
     shotnoises.append(noise)
 
 # pm1, pm2, pm3, pm1s, pm2s, pm3s for the two proof masses on each bench
