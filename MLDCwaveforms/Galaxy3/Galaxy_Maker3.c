@@ -326,7 +326,7 @@ int main(int argc,char **argv)
 
    sprintf(Gfile, "Data/count_%s.dat", argv[1]);
    Output = fopen(Gfile,"w");
-   fprintf(Output,"%ld %ld\n", cnt, cntb);
+   fprintf(Output,"%ld %ld\n", cnt+cnt2, cntb+cntb2);
    fclose(Output);
 
 
