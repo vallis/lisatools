@@ -10,10 +10,9 @@ void spacecraft(double t,  double *x, double *y, double *z);
 void convolve(long N, double *a, long M, double *b, double *cn);
 void XYZ(double ***d, double f0, long q, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
 void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
-double AEnoise(double f);
 void KILL(char*);
 
-double SNR_Check(double f, double fdot, double theta, double phi, double A, double iota, double psi, double phase)
+double SNR_Check(double Sn, double f, double fdot, double theta, double phi, double A, double iota, double psi, double phase)
 {
   char Gfile[50];
   double *params;
@@ -21,7 +20,7 @@ double SNR_Check(double f, double fdot, double theta, double phi, double A, doub
   double *XfSL, *YfSL, *ZfSL;
   double *XLS, *YLS, *ZLS;
   double *XSL, *YSL, *ZSL;
-  double fonfs, Sn, Sm, Acut;
+  double fonfs, Sm, Acut;
   double SNRA, SNRE, SNR;
   long M, N, q;
   long i, j, k, cnt, mult;
@@ -51,8 +50,6 @@ double SNR_Check(double f, double fdot, double theta, double phi, double A, doub
        fonfs = f/fstar;
 
        q = (long)(f*T);
-
-       Sn = AEnoise(f);
 
        /*  calculate michelson noise  */
        Sm = Sn/(4.0*sin(f/fstar)*sin(f/fstar));

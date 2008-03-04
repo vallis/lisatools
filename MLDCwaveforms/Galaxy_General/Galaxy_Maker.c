@@ -17,8 +17,9 @@
 
 double ran2(long*);
 void KILL(char*);
-double AEnoise(double f);
-double SNR_Check(double f, double fdot, double theta, double phi, double A, double iota, double psi, double phase);
+double AE_instrument_noise(double f);
+double AE_confusion_noise(double f, double *carray, double *farray, int Nfit);
+double SNR_Check(double Sn, double f, double fdot, double theta, double phi, double A, double iota, double psi, double phase);
 
 int main(int argc,char **argv)
 {
@@ -40,7 +41,11 @@ int main(int argc,char **argv)
   int vflag;
   char ErrorMessage[200];
   char Gfile[100];
+  double *carray, *farray;
+  double Aconf;
+  int Nfit;
 
+  FILE* bfile;
   FILE* Infile;
   FILE* Output;
   FILE* Output2;
@@ -68,6 +73,31 @@ int main(int argc,char **argv)
   sprintf(Gfile, "Data/Very_Bright_%s.dat", argv[1]);
 
   Output3 = fopen(Gfile,"w");
+
+  /* code expects the AE confusion estimate to be in the file AE_confusion.dat */
+  /* open confusion noise estimate file   */
+  bfile = fopen("AE_confusion.dat", "r");
+
+  Nfit = -1;
+  while(!feof(bfile)) 
+  {
+    fscanf(bfile,"%lf %lf",&f, &Aconf);
+       Nfit++;
+  }
+  rewind(bfile);
+
+  carray = dvector(0,Nfit-1);
+  farray = dvector(0,Nfit-1);
+
+    for(i = 0; i < Nfit; i++)
+    {
+     fscanf(bfile,"%lf %lf",&f, &Aconf);
+     carray[i] = Aconf;
+     farray[i] = pow(10.0,f);
+    }
+
+    fclose(bfile);
+
 
 
   vflag = atoi(argv[2]);
@@ -103,13 +133,15 @@ int main(int argc,char **argv)
        cntb++;
        cnt++;
 
+       Sn = (AE_instrument_noise(f)+AE_confusion_noise(f,carray,farray,Nfit));
+
       do {
        x = 1.0-2.0*gsl_rng_uniform(rnd);
        iota = acos(x);
        psi = pi*gsl_rng_uniform(rnd);
        phase = 2.0*pi*gsl_rng_uniform(rnd);
 
-       SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
+       SNR = SNR_Check(Sn, f, fdot, theta, phi, A, iota, psi, phase);
         } while (SNR < 8.0);
 
        printf("Verification Binary %d has SNR = %f\n", cnt, SNR);
@@ -183,7 +215,7 @@ int main(int argc,char **argv)
 
        phase = 2.0*pi*gsl_rng_uniform(rnd);
 
-       Sn = AEnoise(f);
+       Sn = (AE_instrument_noise(f)+AE_confusion_noise(f,carray,farray,Nfit));
 
        /*  calculate michelson noise  */
        Sm = Sn/(4.0*sin(f/fstar)*sin(f/fstar));
@@ -197,10 +229,10 @@ int main(int argc,char **argv)
          fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
         }
 
-       if((Acut > 2.0) && (f < fNy))
+       if((Acut > 1.0) && (f < fNy))
 	 {
-           SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
-           if(SNR > 4.0)
+           SNR = SNR_Check(Sn, f, fdot, theta, phi, A, iota, psi, phase);
+           if(SNR > 3.0)
 	     {
 	      cntb++;
               fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
@@ -279,7 +311,7 @@ int main(int argc,char **argv)
 
        phase = 2.0*pi*gsl_rng_uniform(rnd);
 
-       Sn = AEnoise(f);
+       Sn = (AE_instrument_noise(f)+AE_confusion_noise(f,carray,farray,Nfit));
 
       /*  calculate michelson noise  */
       Sm = Sn/(4.0*sin(f/fstar)*sin(f/fstar));
@@ -293,10 +325,10 @@ int main(int argc,char **argv)
          fprintf(Output, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
         }
 
-       if((Acut > 2.0) && (f < fNy))
+       if((Acut > 1.0) && (f < fNy))
 	 {
-           SNR = SNR_Check(f, fdot, theta, phi, A, iota, psi, phase);
-           if(SNR > 4.0)
+           SNR = SNR_Check(Sn, f, fdot, theta, phi, A, iota, psi, phase);
+           if(SNR > 3.0)
 	     {
 	      cntb2++;
               fprintf(Output2, "%.16f %.10e %f %f %e %f %f %f\n", f, fdot, theta, phi, A, iota, psi, phase);
@@ -325,7 +357,7 @@ int main(int argc,char **argv)
 
    sprintf(Gfile, "Data/count_%s.dat", argv[1]);
    Output = fopen(Gfile,"w");
-   fprintf(Output,"%ld %ld\n", cnt, cntb);
+   fprintf(Output,"%ld %ld\n", cnt+cnt2, cntb+cntb2);
    fclose(Output);
 
 

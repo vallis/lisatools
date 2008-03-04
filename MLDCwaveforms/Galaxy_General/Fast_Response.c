@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 #include "arrays.h"
 #include "Constants.h"
 #include "Detector.h"
@@ -10,7 +12,8 @@ void spacecraft(double t,  double *x, double *y, double *z);
 void convolve(long N, double *a, long M, double *b, double *cn);
 void XYZ(double ***d, double f0, long q, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
 void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
-double AEnoise(double f);
+double AE_instrument_noise(double f);
+double AE_confusion_noise(double f, double *carray, double *farray, int Nfit);
 void KILL(char*);
 
 int main(int argc,char **argv)
@@ -23,9 +26,13 @@ int main(int argc,char **argv)
   double *XfSL, *YfSL, *ZfSL;
   double *XLS, *YLS, *ZLS;
   double *XSL, *YSL, *ZSL;
+  double red, sAR, sER, sAI, sEI, sTR, sTI, SAE, ST;
   double fonfs, Sn, Sm, Acut;
   long M, N, q;
   long i, j, k, cnt, mult;
+  double *carray, *farray;
+  double Aconf;
+  int Nfit;
 
   // used by fftw3
   fftw_complex *out;
@@ -35,8 +42,43 @@ int main(int argc,char **argv)
 
   FILE* Infile;
   FILE* Outfile;
+  FILE* bfile;
+
+  const gsl_rng_type * Tor;
+  gsl_rng * rnd;
+  long rSeed;
 
   if(argc !=2) KILL("Fast_Response rSeed\n");
+
+  rSeed = atoi(argv[1]);
+  gsl_rng_env_setup();
+  Tor = gsl_rng_default;
+  rnd = gsl_rng_alloc(Tor);
+  gsl_rng_set(rnd, rSeed);
+
+  /* code expects the AE confusion estimate to be in the file AE_confusion.dat */
+  /* open confusion noise estimate file   */
+  bfile = fopen("AE_confusion.dat", "r");
+
+  Nfit = -1;
+  while(!feof(bfile)) 
+  {
+    fscanf(bfile,"%lf %lf",&f, &Aconf);
+       Nfit++;
+  }
+  rewind(bfile);
+
+  carray = dvector(0,Nfit-1);
+  farray = dvector(0,Nfit-1);
+
+    for(i = 0; i < Nfit; i++)
+    {
+     fscanf(bfile,"%lf %lf",&f, &Aconf);
+     carray[i] = Aconf;
+     farray[i] = pow(10.0,f);
+    }
+
+    fclose(bfile);
 
   params = dvector(0,7);
 
@@ -98,7 +140,7 @@ int main(int argc,char **argv)
 
        q = (long)(f*T);
 
-       Sn = AEnoise(f);
+       Sn = (AE_instrument_noise(f)+AE_confusion_noise(f,carray,farray,Nfit));
 
        /*  calculate michelson noise  */
        Sm = Sn/(4.0*sin(f/fstar)*sin(f/fstar));
@@ -112,6 +154,9 @@ int main(int argc,char **argv)
 
        XLS = dvector(1,2*M);  YLS = dvector(1,2*M);  ZLS = dvector(1,2*M);
        XSL = dvector(1,2*M);  YSL = dvector(1,2*M);  ZSL = dvector(1,2*M);
+
+       if((2*q+M) < NFFT)  /* stay below Nyquist */
+	 {
 
        FAST_LISA(params, N, M, XLS, XSL, YLS, YSL, ZLS, ZSL);
 
@@ -135,6 +180,8 @@ int main(int argc,char **argv)
 	ZfLS[2*k+1] += ZLS[2*i];
        
        }
+
+	 }
 
 
        free_dvector(XLS,1,2*M);  free_dvector(YLS,1,2*M);  free_dvector(ZLS,1,2*M);
@@ -253,7 +300,95 @@ int main(int argc,char **argv)
       for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
       fclose(Outfile);
 
-      free_dvector(params,0,6);
+      /* here we generate a crude version of the synthetic LISA instrument noise by
+         drawing indepenent samples in  A, E, T and putting them into X, Y and Z */
+   Outfile = fopen("Noise.dat", "w");
+   Infile = fopen("AE.dat", "w");
+   red = (2.0*pi*1.0e-4)*(2.0*pi*1.0e-4);
+   for(i=1; i<NFFT/2; i++)
+     {
+       f = (double)(i)/T;
+       SAE = 16.0/3.0*pow(2.0*(f/fstar)*sin(f/fstar),2.0)*( ( (2.0+cos(f/fstar))*Sps + 2.0*(3.0+2.0*cos(f/fstar)+cos(2.0*f/fstar))*Sacc*(1.0/pow(2.0*pi*f,4)
+             + red/pow(2.0*pi*f,6.0))) / pow(2.0*L,2.0));
+
+       ST = 48.0*pow(2.0*(f/fstar)*sin(f/fstar),2.0)*( ( (2.0*pow(sin(0.5*f/fstar),2.0))*Sps + (3.0-4.0*cos(f/fstar)+cos(2.0*f/fstar))*Sacc*(1.0/pow(2.0*pi*f,4)
+             + red/pow(2.0*pi*f,6.0))) / pow(2.0*L,2.0));
+
+      sAR = gsl_ran_gaussian(rnd, 1.0)*sqrt(SAE)/2.0;  
+      sER = gsl_ran_gaussian(rnd, 1.0)*sqrt(SAE)/2.0; 
+      sAI = gsl_ran_gaussian(rnd, 1.0)*sqrt(SAE)/2.0; 
+      sEI = gsl_ran_gaussian(rnd, 1.0)*sqrt(SAE)/2.0; 
+      sTR = gsl_ran_gaussian(rnd, 1.0)*sqrt(ST)/2.0; 
+      sTI = gsl_ran_gaussian(rnd, 1.0)*sqrt(ST)/2.0; 
+
+      fprintf(Outfile, "%e %e %e %e %e %e\n", log10(f), 0.5*log10(SAE), 0.5*log10(ST), 0.5*log10(2.0*(sAR*sAR+sAI*sAI)), 
+	      0.5*log10(2.0*(sER*sER+sEI*sEI)), 0.5*log10(2.0*(sTR*sTR+sTI*sTI)));
+      fprintf(Infile, "%e %e %e\n", log10(f), 0.5*log10(2.0*(sAR*sAR+sAI*sAI)), 0.5*log10(2.0*(sER*sER+sEI*sEI)));
+
+      if(f < 1.0e-6) sAR = sER = sAI = sEI = sTR = sTI = 0.0;
+
+      XfSL[2*i] = sAR+sTR;
+      XfSL[2*i+1] = sAI+sTI;
+      YfSL[2*i] = (2.0*sTR-sAR-sqrt(3.0)*sER)/2.0;
+      YfSL[2*i+1] = (2.0*sTI-sAI-sqrt(3.0)*sEI)/2.0;       
+      ZfSL[2*i] = (2.0*sTR-sAR+sqrt(3.0)*sER)/2.0;
+      ZfSL[2*i+1] = (2.0*sTI-sAI+sqrt(3.0)*sEI)/2.0;
+     }
+
+   fclose(Outfile);
+   fclose(Infile);
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = XfSL[2*i];
+      out[i][1] = XfSL[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
+
+      sprintf(Gfile, "Binary/X_Noise_SL_%s.bin", argv[1]);
+      Outfile = fopen(Gfile,"wb");
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
+      fclose(Outfile);
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = YfSL[2*i];
+      out[i][1] = YfSL[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
+
+      sprintf(Gfile, "Binary/Y_Noise_SL_%s.bin", argv[1]);
+      Outfile = fopen(Gfile,"wb");
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
+      fclose(Outfile);
+
+   out[0][0] = 0.0;
+   out[0][1] = 0.0;
+  for(i=1; i<NFFT/2; i++)
+    {
+      out[i][0] = ZfSL[2*i];
+      out[i][1] = ZfSL[2*i+1];
+    }
+   out[nc-1][0] = 0.0;
+   out[nc-1][1] = 0.0;
+   fftw_execute ( plan_reverse);
+
+      sprintf(Gfile, "Binary/Z_Noise_SL_%s.bin", argv[1]);
+      Outfile = fopen(Gfile,"wb");
+      for (i = 0 ; i < NFFT ; i++) fwrite(&in[i], sizeof(double), 1, Outfile);
+      fclose(Outfile);
+
+
+
+      free_dvector(params,0,7);
 
       free_dvector(XfLS,0,NFFT-1);  free_dvector(YfLS,0,NFFT-1);  free_dvector(ZfLS,0,NFFT-1);
       free_dvector(XfSL,0,NFFT-1);  free_dvector(YfSL,0,NFFT-1);  free_dvector(ZfSL,0,NFFT-1);
