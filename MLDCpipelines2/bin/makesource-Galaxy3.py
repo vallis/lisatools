@@ -41,6 +41,10 @@ parser.add_option("-c", "--confusion",
                   action="store_true", dest="confusion", default=False,
                   help="run Galaxy3 code to produce partially regressed confusion foreground [defaults to False]")
 
+parser.add_option("-g", "--general",
+                  action="store_true", dest="general", default=False,
+                  help="use Galaxy_General instead of Galaxy [off by default]")
+
 (options, args) = parser.parse_args()
 
 if options.seed == None:
@@ -60,7 +64,10 @@ outputfile = args[0]
 
 # try to find the Galaxy code
 
-galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy3')
+if not options.general:
+    galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy3')
+else:
+    galaxydir = os.path.abspath(os.path.dirname(os.path.abspath(sys.argv[0])) + '/../../MLDCwaveforms/Galaxy_General')
 
 if not os.path.isfile(galaxydir + '/Fast_Response3'):
     print "Cannot find the fast Galaxy code! Try re-running master-install.py."
