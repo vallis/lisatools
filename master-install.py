@@ -400,28 +400,8 @@ if ( newer_group(sources,'Setup') or newer_group(sources,'Fast_Response') or new
     print "    (recompiling Galaxy_General)"
     assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
-# previously the download was disabled for cygwin. But it may just be a question of requiring curl,
-# or replacing it... (not 'CYGWIN' in platform.system())
-
-if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
-    if downloadgalaxy == True:
-        print "    (downloading Nelemans AMCV galaxy (791M), this will take a while...)"
-        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/AMCVn_GWR_MLDC.dat.bz2  > Data/AMCVn_GWR_MLDC.dat.bz2'))
-        assert(0 == os.system('bunzip2 Data/AMCVn_GWR_MLDC.dat.bz2'))
-    else:
-        print "!!! If you want to generate galactic backgrounds, you'll need to download"
-        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
-        print "    for you if you give me the --downloadgalaxy option."
-
-if not os.path.isfile('Data/dwd_GWR_MLDC.dat'):
-    if downloadgalaxy == True:
-        print "    (downloading Nelemans dwd galaxy (427M), this will take a while...)"
-        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/dwd_GWR_MLDC.dat.bz2  > Data/dwd_GWR_MLDC.dat.bz2'))
-        assert(0 == os.system('bunzip2 Data/dwd_GWR_MLDC.dat.bz2'))
-    else:
-        print "!!! If you want to generate galactic backgrounds, you'll need to download"
-        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
-        print "    for you if you give me the --downloadgalaxy option."
+assert(0 == os.system('ln -fs ../../Galaxy3/Data/AMCVn_GWR_MLDC.dat Data/.'))
+assert(0 == os.system('ln -fs ../../Galaxy3/Data/dwd_GWR_MLDC.dat Data/.'))
 
 os.chdir(here)
 
@@ -514,6 +494,13 @@ if newsynthlisa:
     print "--> Installing Synthetic LISA"
     os.chdir('Packages')
     assert(0 == os.system('tar zxf %s' % package))
+    # apply some patches (for synthlisa 1.3.4d)
+    for f in ['lisasim-swig.i']:
+        src = 'synthlisa/' + f
+        trg = packagedir + '/lisasim/' + f
+        if newer(src,trg):
+            assert(0 == os.system('cp %s %s' % (src,trg)))
+    # go in and compile
     os.chdir(packagedir)
     assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
     os.chdir('..')
