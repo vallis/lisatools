@@ -21,14 +21,15 @@ if fftwdir != gsldir:
 
 assert(0 == os.system('gcc -O2 -o Setup Setup.c -lm'))    
 
-assert(0 == os.system('gcc -O2 -o Fast_Response Fast_Response.c arrays.c AENoise.c -lm -lfftw3' + setpath))
+assert(0 == os.system('gcc -O2 -o Fast_Response Fast_Response.c arrays.c AE_instrument_noise.c AE_confusion_noise.c -lm  -lgsl -lgslcblas -lfftw3' + setpath))
 
-assert(0 == os.system('gcc -O2 -o Galaxy_Maker Galaxy_Maker.c arrays.c AENoise.c SNR_Check.c -lm -lgsl -lgslcblas -lfftw3' + setpath))
-
-assert(0 == os.system('gcc -O2 -o Confusion_Maker Confusion_Maker.c arrays.c AENoise.c SNR_Check.c -lm -lgsl -lgslcblas -lfftw3' + setpath))
+assert(0 == os.system('gcc -O2 -o Galaxy_Maker Galaxy_Maker.c arrays.c AE_instrument_noise.c AE_confusion_noise.c SNR_Check.c -lm -lgsl -lgslcblas -lfftw3' + setpath))
 
 assert(0 == os.system('gcc -O2 -o Galaxy_key Galaxy_key.c   ../../lisaXML/io-C/lisaxml.c ../../lisaXML/io-C/ezxml.c -I../../lisaXML/io-C ../../lisaXML/io-C/xmlbinary.c ../../lisaXML/io-C/readxml.c -lm'))
 
 assert(0 == os.system('gcc -O2 -o Fast_XML_LS Fast_XML_LS.c ../../lisaXML/io-C/lisaxml.c ../../lisaXML/io-C/ezxml.c -I../../lisaXML/io-C ../../lisaXML/io-C/xmlbinary.c ../../lisaXML/io-C/readxml.c -lm'))
 
 assert(0 == os.system('gcc -O2 -o Fast_XML_SL Fast_XML_SL.c ../../lisaXML/io-C/lisaxml.c ../../lisaXML/io-C/ezxml.c -I../../lisaXML/io-C ../../lisaXML/io-C/xmlbinary.c ../../lisaXML/io-C/readxml.c -lm'))
+
+assert(0 == os.system('gcc -O2 -o Noise_XML_SL Noise_XML_SL.c ../../lisaXML/io-C/lisaxml.c ../../lisaXML/io-C/ezxml.c -I../../lisaXML/io-C ../../lisaXML/io-C/xmlbinary.c ../../lisaXML/io-C/readxml.c -lm'))
+
