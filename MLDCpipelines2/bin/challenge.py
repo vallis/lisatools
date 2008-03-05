@@ -601,7 +601,12 @@ if dosynthlisa:
     # create the key with all source info
 
     if glob.glob('TDI/*-tdi-frequency.xml'):
-        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml')
+        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml ')
+
+    # add info from noise file (but not for challenge3.2, where it would add also Galactic-binary tables)
+    
+    if os.path.isfile(noisefile) and ('challenge3.2' not in challengename):
+        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(noisefile)s')
 
     # now do some tarring up, including XSL and CSS files from Template
 
@@ -610,7 +615,10 @@ if dosynthlisa:
     nonoisefile   = os.path.basename(nonoisefile)
     withnoisefile = os.path.basename(withnoisefile)
 
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
+    if istraining:
+        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
+    else:
+        run('%(execdir)s/rmXML.py %(nonoisefile)s')
 
     if donoise:
         run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
@@ -638,7 +646,7 @@ if dolisacode:
             run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s')
         
         # also, get key file
-        run('cp %s %s' % (inputfile,'Dataset/' + basefile + '-key.xml'))
+        run('cp %s %s' % (inputfile,'Dataset/' + basefile + '-key-lisacode.xml'))
         
         # make tar
         os.chdir('Dataset')
@@ -704,6 +712,11 @@ if dolisasim:
 
         if glob.glob('TDI/*-tdi-strain.xml'):
             run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml')
+            
+        # add info from noise file (but not for challenge3.2, where it would add also Galactic-binary tables)
+
+        if os.path.isfile(noisefile) and ('challenge3.2' not in challengename):
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(slnoisefile)s')
 
     # now do some tarring up, including XSL and CSS files from Template
 
@@ -712,7 +725,10 @@ if dolisasim:
     nonoisefile   = os.path.basename(nonoisefile)
     withnoisefile = os.path.basename(withnoisefile)
 
-    run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
+    if istraining:
+        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
+    else:
+        run('%(execdir)s/rmXML.py %(nonoisefile)s')
 
     if donoise:
         run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
