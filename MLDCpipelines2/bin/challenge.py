@@ -598,15 +598,15 @@ if dosynthlisa:
         if donoise:
             run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
 
+    # add info from noise file (but not for challenge3.2, where it would add also Galactic-binary tables)
+
+    if os.path.isfile(noisefile) and ('challenge3.2' not in challengename):
+        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(noisefile)s')
+
     # create the key with all source info
 
     if glob.glob('TDI/*-tdi-frequency.xml'):
         run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml ')
-
-    # add info from noise file (but not for challenge3.2, where it would add also Galactic-binary tables)
-    
-    if os.path.isfile(noisefile) and ('challenge3.2' not in challengename):
-        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(noisefile)s')
 
     # now do some tarring up, including XSL and CSS files from Template
 
@@ -710,14 +710,14 @@ if dolisasim:
     if not dosynthlisa:
         lisaxml.lisaXML(keyfile,comments='XML key for %s%s' % (challengename,secretseed)).close()
 
-        if glob.glob('TDI/*-tdi-strain.xml'):
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml')
-            
         # add info from noise file (but not for challenge3.2, where it would add also Galactic-binary tables)
 
         if os.path.isfile(noisefile) and ('challenge3.2' not in challengename):
             run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(slnoisefile)s')
 
+        if glob.glob('TDI/*-tdi-strain.xml'):
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml')
+            
     # now do some tarring up, including XSL and CSS files from Template
 
     os.chdir('Dataset')
