@@ -40,6 +40,10 @@ parser.add_option("-B", "--blindOnly",
 (options, args) = parser.parse_args()
 
 nproc = options.nproc
+
+if len(args) < 1:
+    parser.error("You need to provide the SEED!")
+
 seed  = int(args[0])
 
 def twoseeds():
