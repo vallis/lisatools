@@ -598,9 +598,9 @@ if dosynthlisa:
         if donoise:
             run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
 
-    # add info from noise file (but not for challenge3.2, where it would add also Galactic-binary tables)
+    # add info from noise file
 
-    if os.path.isfile(noisefile) and ('challenge3.2' not in challengename):
+    if os.path.isfile(noisefile):
         run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(noisefile)s')
 
     # create the key with all source info
@@ -710,9 +710,9 @@ if dolisasim:
     if not dosynthlisa:
         lisaxml.lisaXML(keyfile,comments='XML key for %s%s' % (challengename,secretseed)).close()
 
-        # add info from noise file (but not for challenge3.2, where it would add also Galactic-binary tables)
+        # add info from noise file
 
-        if os.path.isfile(noisefile) and ('challenge3.2' not in challengename):
+        if os.path.isfile(noisefile):
             run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(slnoisefile)s')
 
         if glob.glob('TDI/*-tdi-strain.xml'):
