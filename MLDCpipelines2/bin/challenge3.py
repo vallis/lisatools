@@ -73,16 +73,17 @@ if '3.3' in options.runOnly:
     if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed33t)s --combinedSNR challenge3.3' % globals())
 
-options34 = '--synthlisa --rawMeasurements --randomizeNoise=0.2 --laserNoise=10'
+options34 = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10'
 if '3.4' in options.runOnly:
     if not options.trainingOnly:                                                                  
-        run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=1 --seed=%(seed34)s  --combinedSNR %(options34)s challenge3.4' % globals())
+        run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa            --duration=2097152 --timeStep=1 --seed=%(seed34)s  --combinedSNR %(options34)s challenge3.4' % globals())
     if not options.blindOnly:
-        run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=1 --seed=%(seed34t)s --combinedSNR %(options34)s challenge3.4' % globals())
+        run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --training --duration=2097152 --timeStep=1 --seed=%(seed34t)s --combinedSNR %(options34)s challenge3.4' % globals())
 
-options35 = '--synthlisa --lisacode --rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Rigid'
+options35 = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Rigid'
 if '3.5' in options.runOnly:
     if not options.trainingOnly:                                                                  
-        run('%(mydir)s/challenge.py -P %(nproc)s            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
-    if not options.blindOnly:
-        run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
+        run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
+    if not options.blindOnly:                    
+        run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
+        run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
