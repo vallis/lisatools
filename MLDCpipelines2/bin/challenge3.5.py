@@ -29,13 +29,15 @@ nproc = int(sys.argv[3])
 
 random.seed(seed)
 
+pixelref = 2
+
 # to be run for one month, at one second sampling...
 
-run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --pixelRefinement=2 --nProc=%(nproc)s Immediate/Background.xml' % globals())
+run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --pixelRefinement=%(pixelref)s --nProc=%(nproc)s Immediate/Background.xml' % globals())
 
 # now for LISACode
 
 # use the same seed for training sets so we're sure we've got the same sources
 lcseed = istraining and seed or random.randint(1,10000000)
 
-run('%(mydir)s/makesource-StochasticBackground.py --seed=%(lcseed)s --PSD=1.0e-47 --randomizePSD=0.3 --pixelRefinement=2 LISACode/source-Background.xml' % globals())
+run('%(mydir)s/makesource-StochasticBackground.py --seed=%(lcseed)s --PSD=1.0e-47 --randomizePSD=0.3 --pixelRefinement=%(pixelref)s LISACode/source-Background.xml' % globals())
