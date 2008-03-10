@@ -513,7 +513,8 @@ print "--> Checking LISACode"
 
 if (not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode:
     print "--> Installing LISACode"
-    os.chdir('LISACode'); assert(0 == os.system('make clean')); os.chdir('..')
+    if os.path.isfile('LISACode/Makefile'):
+        assert(0 == os.system('make -C LISACode clean'))
     installpackage('LISACode',prefix=libdir)
 
 print >> open('MLDCpipelines2/bin/lisacode.py','w'), "lisacode = '%s'" % (libdir + '/bin/LISACode')
