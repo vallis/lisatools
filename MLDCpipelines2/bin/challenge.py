@@ -318,7 +318,7 @@ if (not makemode) and (not sourcekeyfile):
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
     run('rm -f Immediate/*.xml')
-    run('rm -f LISACode/*.xml')
+    run('rm -f LISACode/*.xml LISACode/*.bin')
     
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
@@ -465,7 +465,10 @@ step4btime = time.time()
 
 if dolisacode and glob.glob('LISACode/source-*.xml'):
     # make the standard lisacode instruction set
-    cname = istraining and (challengename + '-training') or challengename
+    cname = outputfile
+    
+    if istraining:  cname += '-training'
+    if not donoise: cname += '-nonoise'
     
     # (use same seed as synthlisa if we're training)
     lcseednoise = istraining and seednoise or (seednoise + 1)
@@ -476,12 +479,17 @@ if dolisacode and glob.glob('LISACode/source-*.xml'):
                      duration=duration,
                      randomseed=lcseednoise)
     
-    # make lisacode noise (note that the random seed is really set above in the standard instruction set)
-    run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
+    if donoise:
+        # make lisacode noise (note that the random seed is really set above in the standard instruction set)
+        run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
     
-    # merge with source data into a single lisacode input file
-    run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/noise.xml LISACode/source-*.xml')
-    run('rm LISACode/noise.xml LISACode/source-*.xml')
+        # merge with source data into a single lisacode input file
+        run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/noise.xml LISACode/source-*.xml')
+        run('rm LISACode/noise.xml')
+    else:
+        run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/source-*.xml')
+    
+    run('rm LISACode/source-*.xml')
     
     os.chdir('LISACode')
     
