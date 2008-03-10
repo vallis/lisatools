@@ -398,7 +398,7 @@ if ( newer_group(sources,'Setup') or newer_group(sources,'Fast_Response') or new
      or newer_group(sources,'Galaxy_key') or newer_group(sources,'Fast_XML_LS') 
      or newer_group(sources,'Fast_XML_SL') or newer_group(sources,'Confusion_Maker')     ):
     print "    (recompiling Galaxy_General)"
-    assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
+    assert(0 == os.system('python Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
 assert(0 == os.system('ln -fs ../../Galaxy3/Data/AMCVn_GWR_MLDC.dat Data/.'))
 assert(0 == os.system('ln -fs ../../Galaxy3/Data/dwd_GWR_MLDC.dat Data/.'))
@@ -513,6 +513,7 @@ print "--> Checking LISACode"
 
 if (not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode:
     print "--> Installing LISACode"
+    os.chdir('LISACode'); assert(0 == os.system('make clean')); os.chdir('..')
     installpackage('LISACode',prefix=libdir)
 
 print >> open('MLDCpipelines2/bin/lisacode.py','w'), "lisacode = '%s'" % (libdir + '/bin/LISACode')
