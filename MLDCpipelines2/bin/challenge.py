@@ -520,11 +520,13 @@ if glob.glob('Galaxy/*.xml'):
 # this is a hack that should be later changed with something more systematic
 
 if 'challenge3.2' in challengename:
-    run('%s/mergeXML.py %s %s' % (execdir,noisefile  ,'TDI/TheGalaxy-tdi-frequency.xml'))
-    run('rm TDI/TheGalaxy-tdi-frequency.xml TDI/TheGalaxy-tdi-frequency-0.bin')
+    if dosynthlisa:
+        run('%s/mergeXML.py %s %s' % (execdir,noisefile  ,'TDI/TheGalaxy-tdi-frequency.xml'))
+        run('rm TDI/TheGalaxy-tdi-frequency.xml TDI/TheGalaxy-tdi-frequency-0.bin')
 
-    run('%s/mergeXML.py %s %s' % (execdir,slnoisefile,'TDI/TheGalaxy-tdi-strain.xml'))
-    run('rm TDI/TheGalaxy-tdi-strain.xml TDI/TheGalaxy-tdi-strain-0.bin')
+    if dolisasim:
+        run('%s/mergeXML.py %s %s' % (execdir,slnoisefile,'TDI/TheGalaxy-tdi-strain.xml'))
+        run('rm TDI/TheGalaxy-tdi-strain.xml TDI/TheGalaxy-tdi-strain-0.bin')
 
 step6time = time.time()
 
@@ -606,15 +608,16 @@ if dosynthlisa:
         if donoise:
             run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
 
-    # add info from noise file
+    if 'challenge3.2' in challengename:
+        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml %(noisefile)s')
+    else:
+        # add info from noise file
+        if os.path.isfile(noisefile):
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(noisefile)s')
 
-    if os.path.isfile(noisefile):
-        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(noisefile)s')
-
-    # create the key with all source info
-
-    if glob.glob('TDI/*-tdi-frequency.xml'):
-        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml ')
+        # create the key with all source info
+        if glob.glob('TDI/*-tdi-frequency.xml'):
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml')
 
     # now do some tarring up, including XSL and CSS files from Template
 
@@ -717,14 +720,17 @@ if dolisasim:
 
     if not dosynthlisa:
         lisaxml.lisaXML(keyfile,comments='XML key for %s%s' % (challengename,secretseed)).close()
-
-        # add info from noise file
-
-        if os.path.isfile(noisefile):
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(slnoisefile)s')
-
-        if glob.glob('TDI/*-tdi-strain.xml'):
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml')
+        
+        if 'challenge3.2' in challengename:
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml %(slnoisefile)s')
+        else:
+            # add info from noise file
+            if os.path.isfile(slnoisefile):
+                run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(slnoisefile)s')
+            
+            # create the key with all source info
+            if glob.glob('TDI/*-tdi-strain.xml'):
+                run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml')
             
     # now do some tarring up, including XSL and CSS files from Template
 
