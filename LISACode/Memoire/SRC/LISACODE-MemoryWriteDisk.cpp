@@ -172,7 +172,7 @@ void MemoryWriteDisk::MakeTitles(char * FileNameHead)
  */
 void MemoryWriteDisk::RecordAccData(double tStep, double t)
 {
-	double tmpdata;
+  double tmpdata,zero;
 	
 	// Control that all the series are filled before recording
 	for(int i=0; i< int(AlreadyRecDat.size()); i++){
@@ -181,13 +181,13 @@ void MemoryWriteDisk::RecordAccData(double tStep, double t)
 		AlreadyRecDat[i] = false;
 	}
 	if(t >= 0){ // modif eric
+	  //cout << "time, number of data = " << t << "  " <<int(ListTmpData.size()) << endl ;
 	  if(FEncoding){ // Write the datas in BINARY file
 	    FichMem.write((char*) &t, sizeof(double));
 	    for(int i=0; i< int(ListTmpData.size()); i++){
 	      tmpdata =  ListTmpData[i].getBinValue(0);
 	      FichMem.write((char*) &tmpdata, sizeof(double));
 	    }
-	    
 	  }else{ // Write the datas in ASCII file
 	    FichMem.precision(15);
 	    FichMem << t;

@@ -1237,43 +1237,83 @@ void ConfigSim::ReadXMLFile()
 					}
 					if(strcmp(ezxml_attr(param,"Name"),"Observables")==0){
 						TDIParamName = gXMLstring(param) ; // Type ?? TDINameType
-						loc_tdi = TDIParamName.find( "Xf", 0 );
+						loc_tdi = TDIParamName.find( "Xf,", 0 );
 						if(loc_tdi > 0){
-						vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Xf", tmp_TDIPacks);
+						  vector<int> tmp_TDIPacks;
+						  //UnKnowTDI = FindTDIName("Xf", tmp_TDIPacks);
+						  UnKnowTDI = FindTDIName("Xf2", tmp_TDIPacks);
 						  if(UnKnowTDI){
 						    cout << " --> Sorry, it is not known !" << endl;
 						  }else{
 						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Xf");
+						    TDIsName.push_back("Xf2");
 						    TDIsPacks.push_back(tmp_TDIPacks);
 						  cout << " TDI Xf is calculated" <<endl;
 						  }
 						}
-						loc_tdi = TDIParamName.find( "Yf", 0 );
+						loc_tdi = TDIParamName.find( "Yf,", 0 );
 						if(loc_tdi > 0){
 						vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Yf", tmp_TDIPacks);
+						  UnKnowTDI = FindTDIName("Yf2", tmp_TDIPacks);
 						  if(UnKnowTDI){
 						    cout << " --> Sorry, it is not known !" << endl;
 						  }else{
 						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Yf");
+						    TDIsName.push_back("Yf2");
 						    TDIsPacks.push_back(tmp_TDIPacks);
 						  cout << " TDI Yf is calculated" <<endl;
 						  }
 						}
-						loc_tdi = TDIParamName.find( "Zf", 0 );
-						vector<int> tmp_TDIPacks;
+						loc_tdi = TDIParamName.find( "Zf,", 0 );
 						if(loc_tdi > 0){
-						  UnKnowTDI = FindTDIName("Zf", tmp_TDIPacks);
+						  vector<int> tmp_TDIPacks;
+						  UnKnowTDI = FindTDIName("Zf2", tmp_TDIPacks);
 						  if(UnKnowTDI){
 						    cout << " --> Sorry, it is not known !" << endl;
 						  }else{
 						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Zf");
+						    TDIsName.push_back("Zf2");
 						    TDIsPacks.push_back(tmp_TDIPacks);
 						  cout << " TDI Zf is calculated" <<endl;
+						  }
+						}
+						loc_tdi = TDIParamName.find( "Xf2", 0 );
+						if(loc_tdi > 0){
+						  vector<int> tmp_TDIPacks;
+						  UnKnowTDI = FindTDIName("Xf2", tmp_TDIPacks);
+						  if(UnKnowTDI){
+						    cout << " --> Sorry, it is not known !" << endl;
+						  }else{
+						    //cout << "genname ="<<genname<< endl;
+						    TDIsName.push_back("Xf2");
+						    TDIsPacks.push_back(tmp_TDIPacks);
+						  cout << " TDI Xf2 is calculated" <<endl;
+						  }
+						}
+						loc_tdi = TDIParamName.find( "Yf2", 0 );
+						if(loc_tdi > 0){
+						  vector<int> tmp_TDIPacks;
+						  UnKnowTDI = FindTDIName("Yf2", tmp_TDIPacks);
+						  if(UnKnowTDI){
+						    cout << " --> Sorry, it is not known !" << endl;
+						  }else{
+						    //cout << "genname ="<<genname<< endl;
+						    TDIsName.push_back("Yf2");
+						    TDIsPacks.push_back(tmp_TDIPacks);
+						  cout << " TDI Yf2 is calculated" <<endl;
+						  }
+						}
+						loc_tdi = TDIParamName.find( "Zf2", 0 );
+						if(loc_tdi > 0){
+						  vector<int> tmp_TDIPacks;
+						  UnKnowTDI = FindTDIName("Zf2", tmp_TDIPacks);
+						  if(UnKnowTDI){
+						    cout << " --> Sorry, it is not known !" << endl;
+						  }else{
+						    //cout << "genname ="<<genname<< endl;
+						    TDIsName.push_back("Zf2");
+						    TDIsPacks.push_back(tmp_TDIPacks);
+						  cout << " TDI Zf2 is calculated" <<endl;
 						  }
 						}
 						//throw ;
@@ -1291,7 +1331,7 @@ void ConfigSim::ReadXMLFile()
 			if(strcmp(type,"LISACode")==0){
 			  ezxml_t param;
 			  ezxml_t lisacode0;
-			  const char * lisacode0type; 
+			  const char * lisacode0type;
 			  int Seed_MLDC;
 			  cout << "Section : LISACode " << endl ;
 			  for(param = ezxml_child(section,"Param"); param; param = param->next){
@@ -1705,8 +1745,10 @@ void ConfigSim::ReadXMLFile()
 								double tmpInitPos(0.0);
 								tmpInitPos = gXMLAngle(param);
 								OrbStartTime = tmpInitPos*Yr_SI/(2.0*M_PI);
-								OrbMove = 3 ;  // a verifier
+								OrbMove = 3 ;  // MLDC
 								OrbOrder = 0;
+								//OrbMove = 1 ;  // a verifier
+								//OrbOrder = 2;  // a verifier
 								//cout << "OrbMove " << OrbMove << endl ;
 								//throw ;
 							}
@@ -3186,6 +3228,7 @@ bool ConfigSim::getNoNoise()
 		if(Noises[i] != NULL)
 			NNoise = false;
 	}
+	NNoise = false ; // always calculate the tau (internal) phasemeters
 	return(NNoise);
 }
 
