@@ -3,7 +3,7 @@
 import os
 import sys
 import random
-from random import randint
+from random import seed, randint
 from optparse import OptionParser
 
 def run(command):
@@ -44,7 +44,7 @@ nproc = options.nproc
 if len(args) < 1:
     parser.error("You need to provide the SEED!")
 
-seed  = int(args[0])
+seed(args[0])
 
 def twoseeds():
     return randint(1,10000000), randint(1,10000000)
