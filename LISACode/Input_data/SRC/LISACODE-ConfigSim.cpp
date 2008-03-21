@@ -1241,12 +1241,12 @@ void ConfigSim::ReadXMLFile()
 						if(loc_tdi > 0){
 						  vector<int> tmp_TDIPacks;
 						  //UnKnowTDI = FindTDIName("Xf", tmp_TDIPacks);
-						  UnKnowTDI = FindTDIName("Xf2", tmp_TDIPacks);
+						  UnKnowTDI = FindTDIName("Xf", tmp_TDIPacks);
 						  if(UnKnowTDI){
 						    cout << " --> Sorry, it is not known !" << endl;
 						  }else{
 						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Xf2");
+						    TDIsName.push_back("Xf");
 						    TDIsPacks.push_back(tmp_TDIPacks);
 						  cout << " TDI Xf is calculated" <<endl;
 						  }
@@ -1254,12 +1254,12 @@ void ConfigSim::ReadXMLFile()
 						loc_tdi = TDIParamName.find( "Yf,", 0 );
 						if(loc_tdi > 0){
 						vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Yf2", tmp_TDIPacks);
+						  UnKnowTDI = FindTDIName("Yf", tmp_TDIPacks);
 						  if(UnKnowTDI){
 						    cout << " --> Sorry, it is not known !" << endl;
 						  }else{
 						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Yf2");
+						    TDIsName.push_back("Yf");
 						    TDIsPacks.push_back(tmp_TDIPacks);
 						  cout << " TDI Yf is calculated" <<endl;
 						  }
@@ -1267,12 +1267,12 @@ void ConfigSim::ReadXMLFile()
 						loc_tdi = TDIParamName.find( "Zf,", 0 );
 						if(loc_tdi > 0){
 						  vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Zf2", tmp_TDIPacks);
+						  UnKnowTDI = FindTDIName("Zf", tmp_TDIPacks);
 						  if(UnKnowTDI){
 						    cout << " --> Sorry, it is not known !" << endl;
 						  }else{
 						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Zf2");
+						    TDIsName.push_back("Zf");
 						    TDIsPacks.push_back(tmp_TDIPacks);
 						  cout << " TDI Zf is calculated" <<endl;
 						  }
@@ -1746,7 +1746,7 @@ void ConfigSim::ReadXMLFile()
 								tmpInitPos = gXMLAngle(param);
 								OrbStartTime = tmpInitPos*Yr_SI/(2.0*M_PI);
 								OrbMove = 3 ;  // MLDC
-								OrbOrder = 0;
+								OrbOrder = 2;
 								//OrbMove = 1 ;  // a verifier
 								//OrbOrder = 2;  // a verifier
 								//cout << "OrbMove " << OrbMove << endl ;

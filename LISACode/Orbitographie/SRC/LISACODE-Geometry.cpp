@@ -271,43 +271,44 @@ Vect Geometry::position(int nb, double t)
 	Couple zpsi;
 	
 	if (orbit_type == 1){
-		zpsi = exanom(nb,t);
-		
-		cpsi=zpsi.x;
-		spsi=zpsi.y;
-		
-		r.p[0] = Rgc*((cpsi - e)*cmu*crot[nb-1] - sqrtee*spsi*srot[nb-1]);
-		r.p[1] = Rgc*((cpsi - e)*cmu*srot[nb-1] + sqrtee*spsi*crot[nb-1]);
-		r.p[2] = -Rgc*smu*(cpsi - e);
+	  zpsi = exanom(nb,t);
+	  
+	  cpsi=zpsi.x;
+	  spsi=zpsi.y;
+	  
+	  r.p[0] = Rgc*((cpsi - e)*cmu*crot[nb-1] - sqrtee*spsi*srot[nb-1]);
+	  r.p[1] = Rgc*((cpsi - e)*cmu*srot[nb-1] + sqrtee*spsi*crot[nb-1]);
+	  r.p[2] = -Rgc*smu*(cpsi - e);
 	}else{
-		alpha=omega*t;
-		c_alpha=cos(alpha); s_alpha=sin(alpha);
-		beta=rot[nb-1];  c_beta=crot[nb-1] ; s_beta=srot[nb-1];
-		// 1st order in excentricity 
-		/*
-		r.p[0] = au_m*(c_alpha+e_mldc*(s_alpha*c_alpha*s_beta-(1+s_alpha*s_alpha)*c_beta));
-		r.p[1] = au_m*(s_alpha+e_mldc*(s_alpha*c_alpha*c_beta-(1+c_alpha*c_alpha)*s_beta));
-		r.p[2] = -au_m*e_mldc*sqrt_3*cos(alpha-beta);
-		*/
-		//cout << "Pos OLD : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
-		//2nd order in excentricity   (copied form Synth Lisa)
-		r.p[0] = 0.5*au_m*e_mldc*(cos(2.0*alpha-beta)-3.0*cos(beta))
-		   +0.125*au_m*pow(e_mldc,2)*(3.0*cos(3.0*alpha-2.0*beta)-5.0*(2.0*cos(alpha)+cos(alpha-2.0*beta)))
-                   +au_m*cos(alpha);
-		r.p[1] =   0.5*au_m*e_mldc*(sin(2.0*alpha-beta)-3.0*sin(beta))
-		   +0.125*au_m*pow(e_mldc,2)*(3.0*sin(3.0*alpha-2.0*beta)-5.0*(2.0*sin(alpha)-sin(alpha-2.0*beta)))
-		   +au_m*sin(alpha);
-           
-		r.p[2] = -sqrt_3*au_m*e_mldc*cos(alpha-beta)
-		   +sqrt_3*au_m*pow(e_mldc,2)*(cos(alpha-beta)*cos(alpha-beta)+2.0*sin(alpha-beta)*sin(alpha-beta));                                            
-		//cout << "Pos NEW : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
-
+	  //  PseudoLisa orbits form Vallisneri
+	  alpha=omega*t;
+	  c_alpha=cos(alpha); s_alpha=sin(alpha);
+	  beta=rot[nb-1];  c_beta=crot[nb-1] ; s_beta=srot[nb-1];
+	  // 1st order in excentricity 
+	  /*
+	    r.p[0] = au_m*(c_alpha+e_mldc*(s_alpha*c_alpha*s_beta-(1+s_alpha*s_alpha)*c_beta));
+	    r.p[1] = au_m*(s_alpha+e_mldc*(s_alpha*c_alpha*c_beta-(1+c_alpha*c_alpha)*s_beta));
+	    r.p[2] = -au_m*e_mldc*sqrt_3*cos(alpha-beta);
+	  */
+	  //cout << "Pos OLD : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
+	  //2nd order in excentricity   (copied form Synth Lisa)
+	  r.p[0] = 0.5*au_m*e_mldc*(cos(2.0*alpha-beta)-3.0*cos(beta))
+	    +0.125*au_m*pow(e_mldc,2)*(3.0*cos(3.0*alpha-2.0*beta)-5.0*(2.0*cos(alpha)+cos(alpha-2.0*beta)))
+	    +au_m*cos(alpha);
+	  r.p[1] =   0.5*au_m*e_mldc*(sin(2.0*alpha-beta)-3.0*sin(beta))
+	    +0.125*au_m*pow(e_mldc,2)*(3.0*sin(3.0*alpha-2.0*beta)-5.0*(2.0*sin(alpha)-sin(alpha-2.0*beta)))
+	    +au_m*sin(alpha);
+	  
+	  r.p[2] = -sqrt_3*au_m*e_mldc*cos(alpha-beta)
+	    +sqrt_3*au_m*pow(e_mldc,2)*(cos(alpha-beta)*cos(alpha-beta)+2.0*sin(alpha-beta)*sin(alpha-beta));                                            
+	  //cout << "Pos NEW : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
+	  
 	}
 	//cout << "Pos : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
 	/*
-	if (t > 4.){
-		throw invalid_argument("Position :: On arrete !");
-	}
+	  if (t > 4.){
+	  throw invalid_argument("Position :: On arrete !");
+	  }
 	*/
 	return r;
 }
@@ -334,33 +335,59 @@ Vect Geometry::velocity(int nb, double t)
 	double beta;
 	double alpha;
 	double c_alpha,s_alpha,c_beta,s_beta,d_alpha;
+	//double vx_old,vy_old,vz_old ;
 	
 	Couple zpsi;
 	
 	if (orbit_type == 1){
-		zpsi = exanom(nb,t);
-		cpsi=zpsi.x;
-		spsi=zpsi.y;
-		
-		double psidot = omega*Rgc/(1.-e*cpsi);
-		
-		v.p[0] = psidot*(-spsi*cmu*crot[nb-1] - sqrtee*cpsi*srot[nb-1]);
-		v.p[1] = psidot*(-spsi*cmu*srot[nb-1] + sqrtee*cpsi*crot[nb-1]);
-		v.p[2] = psidot*smu*spsi;
+	  zpsi = exanom(nb,t);
+	  cpsi=zpsi.x;
+	  spsi=zpsi.y;
+	  
+	  double psidot = omega*Rgc/(1.-e*cpsi);
+	  
+	  v.p[0] = psidot*(-spsi*cmu*crot[nb-1] - sqrtee*cpsi*srot[nb-1]);
+	  v.p[1] = psidot*(-spsi*cmu*srot[nb-1] + sqrtee*cpsi*crot[nb-1]);
+	  v.p[2] = psidot*smu*spsi;
 	}else{
-		alpha=omega*t;
-		d_alpha=omega;
-		c_alpha=cos(alpha);  s_alpha=sin(alpha);
-		beta=rot[nb-1];  c_beta=crot[nb-1] ; s_beta=srot[nb-1];
-		v.p[0] = au_m*(-s_alpha+e_mldc*((c_alpha*c_alpha-s_alpha*s_alpha)*s_beta-2*s_alpha*c_alpha*c_beta))*d_alpha;
-		v.p[1] = au_m*( c_alpha+e_mldc*((c_alpha*c_alpha-s_alpha*s_alpha)*c_beta+2*c_alpha*s_alpha*s_beta))*d_alpha;
-		v.p[2] = au_m*e_mldc*sqrt_3*sin(alpha-beta)*d_alpha;
-	}
-	/*	cout << "Vel : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<v.p[0]<<"  "<<v.p[1]<<"  "<<v.p[2]<< endl;
+	  //  PseudoLisa orbits form Vallisneri
+	  alpha=omega*t;
+	  d_alpha=omega;
+	  c_alpha=cos(alpha);  s_alpha=sin(alpha);
+	  beta=rot[nb-1];  c_beta=crot[nb-1] ; s_beta=srot[nb-1];
+	  // /*
+	    v.p[0] = au_m*(-s_alpha+e_mldc*((c_alpha*c_alpha-s_alpha*s_alpha)*s_beta-2*s_alpha*c_alpha*c_beta))*d_alpha;
+	    v.p[1] = au_m*( c_alpha+e_mldc*((c_alpha*c_alpha-s_alpha*s_alpha)*c_beta+2*c_alpha*s_alpha*s_beta))*d_alpha;
+	    v.p[2] = au_m*e_mldc*sqrt_3*sin(alpha-beta)*d_alpha;
+	    //cout << "Vel old : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<v.p[0]<<"  "<<v.p[1]<<"  "<<v.p[2]<< endl;
+	    //vx_old=v.p[0] ; vy_old=v.p[1] ; vz_old=v.p[2] ;
+	    
+	    //   */  
+	   /* 
+	  v.p[0] = 0.5*au_m*e_mldc*(-2*sin(2.0*alpha-beta))
+	    +0.125*au_m*pow(e_mldc,2)*(-9.0*sin(3.0*alpha-2.0*beta)-5.0*(-2.0*sin(alpha)-sin(alpha-2.0*beta)))
+	    -au_m*sin(alpha);
+	  v.p[0] = v.p[0]*d_alpha ;
+	  
+	  v.p[1] = 0.5*au_m*e_mldc*(2*cos(2.0*alpha-beta))
+	    +0.125*au_m*pow(e_mldc,2)*(9.0*cos(3.0*alpha-2.0*beta)-5.0*(2.0*cos(alpha)-cos(alpha-2.0*beta)))
+	    +au_m*cos(alpha);
+	  v.p[1] = v.p[1]*d_alpha ;
+          
+	  v.p[2] = +sqrt_3*au_m*e_mldc*sin(alpha-beta)
+	    +sqrt_3*au_m*pow(e_mldc,2)*(-2*cos(alpha-beta)*sin(alpha-beta)+4.0*sin(alpha-beta)*cos(alpha-beta));
+	  v.p[2] = v.p[2]*d_alpha ;
+	  */
+	} 
+	 /*	
+	cout << " d_alpha = "<< d_alpha << "  " << omega << endl ;
+	cout << "Vel new : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<v.p[0]<<"  "<<v.p[1]<<"  "<<v.p[2]<< endl;
+	// cout << "Vel rap : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<1-vx_old/v.p[0]<<"  "<<1-vy_old/v.p[1]<<"  "<<1-vz_old/v.p[2]<< endl;
 	if (t > 4.){
 		throw invalid_argument("Velocity :: On arrete !");
-	  }*/
+	  }
 	
+	*/
 	return v;
 }
 
@@ -421,6 +448,14 @@ double Geometry::tdelay(int em, int rec, int order, double trec)
 	tij = rij.norme()/c_SI;
 	tij=-tij;  
 	c0= tij;
+	
+// 	  if ( trec <= 4.)
+// 	  {
+// 	    cout.precision(15) ;
+// 	    cout << "t,tdelay =" << trec << "  " << c0 << endl; 
+// 	  }
+// 	else
+// 	  {throw invalid_argument (" Stopped in tdelay "); }
 	
 	if (order==0)
 	{return c0;}
