@@ -1,0 +1,157 @@
+\documentclass[12pt]{article}
+\usepackage{times,latexsym}
+\usepackage{amsmath}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage{epsfig}
+
+\pagestyle{empty}
+\setlength{\parindent}{0.5cm}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.6in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\leftmargin}{0.1in}
+\setlength{\parskip}{0cm}
+\setlength{\evensidemargin}{0in}
+\setlength{\topmargin}{0.1in}
+
+\begin{document} 
+
+\section{Challenge 3.1: Galactic Foreground}
+
+The Challenge 3.1 galactic foreground data sets are direct descendants of Challenge 2.1.
+The only modifications are that the underlying population synthesis model now includes interacting
+AM CVn systems in addition to the detached systems used in the earlier
+challenges, and the leading term in the frequency evolution is now
+included in the signal model.
+
+The starting point for the simulations are two large data files,
+provided by Gijs Nelemans, that contain a list of detached and
+interacting systems produced by the population synthesis codes
+described in Refs.~\cite{Nelemans:2001hp, Nelemans:2003ha}. The
+columns in these data files list the component masses $M,m$ of
+the heavier and lighter component, the initial orbital
+period $P_0$ and its first time derivative $\dot{P}_0$, the
+time rate of change of the donor mass $\dot{m}$, the galactic latitude
+and longitude, and the distance $d$ to the system. There are a total
+of  26.1 million detached systems and 34.2 million interacting systems
+in the input data files. Recent work by Roelofs, Nelemans and
+Groot~\cite{Roelofs:2007rn} suggests that the population
+synthesis model of Ref.~\cite{Nelemans:2003ha} over predicts the
+number of AM CVn systems by a factor of 5 or 10, but this
+correction has not been applied to the Challenge 3.1 simulations.
+
+Some of the information in the population files is redundant since the
+rate of orbital evolution can be computed from the masses, orbital
+period and mass transfer rate by
+\begin{equation}
+\frac{\dot{f}}{f} = -\frac{\dot{P}}{P} = 
+\frac{96}{3}(\pi f)^{8/3}{\cal M}^{5/3}  
+- 3 \left(1 - \frac{m}{M}\right) \frac{\dot{m}}{m}
+\end{equation}
+where $f=2/P$ is the gravitational wave frequency and
+${\cal M} = (mM)^{3/5}/(m+M)^{1/5}$ is the chirp mass. For the detached
+systems $\dot{m}=0$ and the orbits decay through
+gravitational wave emission $(\dot{f} >0)$, while the interacting
+systems are typically in a state of equilibrium mass transfer such that
+the orbits expand $(\dot{f} < 0)$.
+
+\begin{center}
+\begin{table}\label{galactic}
+\begin{tabular}{l|c}
+\hline
+\hline
+\multicolumn{2}{c}{{\bf Galactic binary source descriptors}} \\
+\hline
+\hline
+$f_0$    & initial GW frequency\\ 
+$\dot{f}_0$ & initial time-derivative of GW frequency\\
+$\beta$ & ecliptic latitude \\
+$\lambda$ & ecliptic longitude\\
+${\cal A}_0$ & initial signal amplitude\\
+$\iota$ & inclination angle\\
+$\psi$ & polarization angle\\
+$\varphi_0$ &  initial GW phase\\
+\hline \hline
+\end{tabular} \\
+\end{table}
+\end{center}
+
+The population files are read in and converted into the MLDC galactic
+binary source descriptors listed in Table~\ref{galactic}. Quantities
+such as the inclination angle, polarization angle and orbital phase
+are drawn at random. Galactic coordinates are converted to Ecliptic
+coordinates and given a small random tweak. Similarly, the orbital period
+and period derivative are converted to initial gravitational wave frequency
+and frequency derivative with a small random tweak. These random
+perturbations are large enough to render the population files useless
+as answer keys, but small enough so as not to upset the overall
+parameter distributions. The initial amplitude is computed using
+the relation
+\begin{equation}\label{amp}
+{\cal A}_0 = \frac{2G^{5/3}}{c^4 d}(2\pi f_0)^{2/3} {\cal M}^{5/3} \, .
+\end{equation}
+The barycenter waveform in the MLDC polarization basis can then be written:
+\begin{eqnarray}\label{bary_galactic}
+h_+(t) &=& {\cal A}_0( \cos(2\psi)(1 + \cos^2{\iota})\cos\Psi(t) - 2\sin(2 \psi)\cos\iota \sin\Psi(t) ), \\
+h_\times(t) &=& -{\cal A}_0(2 \cos (2\psi)\cos\iota \sin\Psi(t)  - \sin (2 \psi)(1 + \cos^2{\iota})\cos\Psi(t)),
+\end{eqnarray}
+where
+\begin{equation}
+\Psi(t) = 2\pi f_0 t + 2\pi \dot{f}_0 t^2 + \varphi_0 \, .
+\end{equation}
+
+Processing the barycenter waveform (\ref{bary_galactic}) for each source through the instrument simulators
+would take many processor years to complete, so an alternative method~\cite{Cornish:2007if} had to be devised to produce the
+galactic data sets. On solution is to use re-write the LISA phase meter readouts in a fast-slow decomposition of
+the form
+\begin{equation}
+y_{ij}(t) = C(t) \cos(2 \pi f_0 t) + S(t) \sin(2 \pi f_0 t) \, .
+\end{equation}
+The functions $C(t)$ and $S(t)$ describe slowly varying effects such as the time variation of the
+antenna patterns, Doppler shifting of the barycenter frequency and the intrinsic frequency evolution.
+These slow varying terms can be sampled very sparsely and numerically Fourier transformed. The fast
+varying sine and cosine terms can be analytically Fourier transformed. The results are then
+convolved to produce the full phase meter output, which can then be used to construct the desired
+TDI variables. This algorithm is three to four orders of magnitude faster than the general
+purpose instrument simulators. Full details can be found in Ref.~\cite{Cornish:2007if}, and the
+source code is part of {\it lisatools} repository.
+
+
+
+
+\begin{thebibliography}{99}
+
+%\cite{Nelemans:2001hp}
+\bibitem{Nelemans:2001hp}
+  G.~Nelemans, L.~R.~Yungelson and S.~F.~Portegies Zwart,
+  %``The gravitational wave signal from the galactic disk population of
+  %binaries containing two compact objects,''
+  arXiv:astro-ph/0105221.
+
+%\cite{Nelemans:2003ha}
+\bibitem{Nelemans:2003ha}
+  G.~Nelemans, L.~R.~Yungelson and S.~F.~Portegies Zwart,
+  %``Short-period AM CVn systems as optical, X-ray and gravitational wave
+  %sources,''
+  Mon.\ Not.\ Roy.\ Astron.\ Soc.\  {\bf 349}, 181 (2004)
+  [arXiv:astro-ph/0312193].
+
+%\cite{Roelofs:2007rn}
+\bibitem{Roelofs:2007rn}
+  G.~H.~A.~Roelofs, G.~Nelemans and P.~J.~Groot,
+  %``The population of AM CVn stars from the Sloan Digital Sky Survey,''
+  arXiv:0709.2951 [astro-ph].
+
+%\cite{Cornish:2007if}
+\bibitem{Cornish:2007if}
+  N.~J.~Cornish and T.~B.~Littenberg,
+  %``Tests of Bayesian Model Selection Techniques for Gravitational Wave
+  %Astronomy,''
+  Phys.\ Rev.\  D {\bf 76}, 083006 (2007)
+  [arXiv:0704.1808 [gr-qc]].
+  %%CITATION = PHRVA,D76,083006;%%
+
+\end{thebibliography}
+
+\end{document}
