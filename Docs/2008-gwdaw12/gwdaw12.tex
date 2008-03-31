@@ -57,6 +57,40 @@ included in the signal model.
 \subsection{Challenges 1B.1.X: Galactic binaries}
 
 \subsection{Challenges 1B.2.X: MBH binaries}
+The challenge for massive black holes consisted of isolated binaries over a Gaussian stationary instrument noise.  For the massive black hole search, groups were required to return the nine parameters of the systems : the two masses $m_{1,2}$, the time to coalescence of the wave $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The groups were given the following limited prior information on the parameters of the systems.  One of the individual masses in each case would be in the range $1\leq m_1/10^6\,M_{\odot}\leq 5$, while the other mass would be in the range $m_2=m_1/x$ where $1\leq x\leq 4$.  The time to coalescence  would be $t_c = 6\pm 1$ months for Challenge 2.1 and $t_c=400\pm40$ days for Challenge 2.2.\\
+
+\noindent Two groups submitted results for the massive black hole search :\\
+
+\noindent\emph{ JPL} : used a three step strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, finishing with a Metropolis-Hastings Monte Carlo refinement.  The JPL group submitted entries for both 2.1 and 2.2.\\
+\emph{ Cardiff} : used a stochastic template bank matched filtering search.  The Cardiff group submitted an entry for 2.1.\\
+
+We can see from Table~\ref{tab:mbh} that both groups suceeded in finding the injected binary systems.  In all cases the groups recovered almost all of the key SNR.  It is interesting to note that all entries ended up on secondary sky positions that affected the precision of the other extracted parameters.
+
+
+%\section{MBH 2.1}
+\begin{table}[t]
+\begin{center}
+\begin{tabular}{ccccccccccc}\hline\hline
+%&  &  & & & & & & &\\
+Group& SNR &$\Delta m_{1}/m_{1}$ & $\Delta m_{2}/ m_{2}$ & $\Delta t_{c} / t_{c}$ &$\Delta\beta  $ & $\Delta\lambda $ & $\Delta D_{L} / D_{L}$ & $\Delta\iota $ & $\Delta\psi $  & $\Delta\varphi_{0}$\\
+& &($\times10^{-2}$) &  ($\times10^{-2}$) & ($\times10^{-5}$)  &   &   & ($\times10^{-1}$)  & ($\times10^{-1}$) &  &  \\
+\hline
+& & & & & 2.1  & & & & &\\
+\hline
+JPL & 531.57&0.61 & 	 0.52 &	 1.37 &	 2.43 & 	 3.133 &	 1.22 &	 7.13 & 	 5.719 &	 -2.846 \\ 
+Cardiff & 511.78&12.1 & 	 10.01 &	 3.601 & 	 1.374 & 	 0.549 & 	 5.89 &	 6.87 & 	 4.835 & 	 -2.389 \\
+\hline
+& && & &  2.2 & & & & &\\
+ \hline
+
+JPL & 79.86&1.39 & 	 1.18 & 	 7.296 & 	 5.86 & 	 -1.462 & 	 4.803 & 	 -6.96 & 	 1.522 &	 -4.725 \\ 
+\hline\hline
+\end{tabular}
+\end{center}
+\caption{Relative/absolute errors for MBH in Challenges 1B 2.1 and 2.2.  The optimal key SNRs are 531.84 and 80.67 for each challenge respectively.}
+\label{tab:mbh}
+\end{table}
+
 
 \subsection{Challenges 1B.3.X: EMRIs}
 
@@ -136,8 +170,7 @@ $^\mathrm{b}$ corrected phases at $t=0$
 
 
 From booth tables one can see clear detection and excellent estimation of the parameters for
-1.3.1 by MT2 group (N. Cornish). Other submission seem to suffer by the same problem as before:
-secondary maxima. 
+1.3.1 by MT2 group (N. Cornish). Other submissions seem to suffer by the same problem as before (in challenge 1): the search algorithm got stack at the secondary maxima. 
  
 
 
@@ -352,10 +385,12 @@ and the precession part of the phase at $t=0$ should be $\delta\dot{\Phi}^K = -\
 where superscript $K$ stands for Kidder and 
 $$
 \gamma^K = \frac{{\bf e}_z \times \bL}{|{\bf e}_z \times \bL|}\frac{\bL\times \hn}
-{\sqrt{1 - (\bL.\hn)^2}}
+{\sqrt{1 - (\bL.\hn)^2}}.
 $$
 The end of the inspiral is handled with an exponential taper, as in Challenge 2. The expressions 
-for $h_{+}$ and $h_{\times}$ are given in the time varying polarization basis, but to generate the LISA responses it is necessary to re-express it in termsof fixed polarization tensors. This is achieved through a rotation by the polarizationangle $\psi$:
+for $h_{+}$ and $h_{\times}$ are given in the time varying polarization basis, but to generate the LISA responses it is necessary to re-express it in terms
+of fixed polarization tensors. This is achieved through a rotation by the polarization
+angle $\psi$:
 \begin{equation}
 \tan{\psi} = \frac{\cos{\beta}\cos{(\lambda -\phi_L)}\sin{\theta_L} - \cos{\theta_L}\sin{\beta}}
 {\sin{\beta}\sin{(\lambda - \phi_L)}}.
