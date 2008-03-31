@@ -56,6 +56,88 @@ included in the signal model.
 
 \subsection{Challenges 1B.3.X: EMRIs}
 
+Three groups participated in this challenge and those are the same groups which 
+submitted results for the challenge 2 \cite{mldcgwdaw2}. The basic underlying techniques 
+used in the extracting the parameters remained the same, but were further 
+improved and tuned (see more detailed article on EMRIs in this issue).
+The challenge for EMRIs had five data sets with a single signal in each, for details on the 
+parameter distribution and SNRs we refer reader to \cite{mldcgwdaw2}. The evaluation of the 
+results was performed along the same line as for the challenge 2 and similar to the MBH binaries 
+evaluation. In particular we have computed overlaps of the signals generated with recovered 
+parameters with the true signal for each $A$ and $E$ channels. We have also evaluated 
+combined SNR between the data set and the recovered signal (see Table~\ref{EMRI1}).
+ For the results submitted by EtfAG (name of the group) we could not evaluate overlaps and 
+ SNR since their method (based on the time-frequency analysis) targeted only intrinsic parameters and was insensitive to the initial phases. Therefore we have produced also the table of the relative errors in the parameter estimation and the results are summarized in the 
+ Table~\ref{EMRI2}.
+ 
+ \begin{table}
+\caption{\label{EMRI1} Errors for challenge 1.3.X}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Entry &  $\frac{d\beta}{\Delta\beta}$ & 
+$\frac{d\lambda}{\Delta\lambda}$ &
+ $\frac{d\theta_K}{\Delta\theta_K}$ & $\frac{d\phi_K}{\Delta\phi_K}$ 
+ & $\frac{da}{\Delta a}$ & $\frac{d\mu}{\Delta\mu}$ & 
+ $\frac{dM}{\Delta M}$ &  $\frac{d\nu_0}{\nu_0}$ 
+  &  $\frac{de_0}{0.15}$  & 
+ $\frac{d\lambda_{SL}}{\Delta\lambda_{SL}}$ \\ 
+\hline
+BBGP-1B.3.1 & -0.03   &   -0.0059   &   -0.14   &   0.053   &   0.31   &   -0.20   &   -0.84   &   0.026    &   0.37     &   -0.022   \\
+EtfAG-1B.3.1  & 0.019   &   -0.0045   &   0.56   &   0.33   &   0.16   &   -0.11   &   -0.27   &   -9.3e-05    &   0.17     &   0.078    \\
+MT2-1B.3.1  &  0.0058   &   0.0027   &   0.00044   &   0.0051   &   -0.0022   &   0.0065   &   0.014   &   3.2e-06      &   -0.0085    &   -0.0020   \\
+\hline
+BBGP-1B.3.2  &  -0.16   &   -0.43   &   0.46   &   -0.33   &   -0.0088   &   -0.0040   &   0.016   &   0.00014     &   -0.010    &   -0.0013   \\
+EtfAG-1B.3.2  &  -0.014   &   0.0042   &   0.97   &   -0.36   &   0.0043   &   -0.046   &   -0.069   &   -6.5e-05     &   0.041     &   0.0041  \\
+MT2-1B.3.2  & 0.0040   &   -0.0086   &   0.79   &   0.41   &   0.093   &   -0.064   &   0.35   &   -0.035    &   0.068    &   0.092    \\
+\hline
+BBGP-1B.3.3 &   0.091   &   0.50   &   -0.23   &   0.045   &   -0.32   &   -0.49   &   -0.029   &   0.00061      &   0.019     &   0.054   \\
+EtfAG-1B.3.3  &  -0.01   &   -0.004   &   0.49   &   -0.34   &   0.0073   &   -0.059   &   -0.061   &   -7.8e-05    &   0.038      &   0.0061  \\
+MT2-1B.3.3  &  0.045   &   -0.019   &   -0.1   &   0.077   &   -0.066   &   0.13   &   0.59   &   0.00036   &   -0.33     &   0.010  \\
+\hline
+BBGP-1B.3.4 &  -0.57   &   -0.37   &   0.37   &   -0.31   &   -0.025   &   0.020   &   -0.88   &   0.066     &   0.065     &   -0.16   \\
+EtfAG-1B.3.4 & -0.56   &   0.49   &   0.56   &   -0.34   &   0.059   &   0.12   &   0.04   &   0.00028    &   -0.039    &   0.0040   \\
+\hline
+BBGP-1B.3.5 &  -0.48   &   -0.14   &   -0.35   &   0.1   &   -0.094   &   -0.094   &   0.55   &   -0.0021    &   -0.017      &   -0.060  \\
+EtfAG-1B.3.5 &  -0.58   &   0.46   &   0.27   &   -0.084   &   0.20   &   -0.7   &   0.83   &   -0.066     &   0.066     &   0.27  \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}
+\caption{\label{EMRI2} Overlaps for challenge 1.3.X, the true SNR are: 1.3.1 - 123.7, 1.3.2 - 133.46, 1.3.3 - 81.0, 1.3.4 - 104.5, 1.3.5 - 57.6.} 
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+Entry & overlap (A) & $SNR_A$ &  overlap (E) & $SNR_E$ & $SNR$ \\
+\hline
+BBGP-1B.3.1 & 0.57 & 51 .0 & 0.58 & 51.6 & 72.5\\
+MT2-1B.3.1  & 0.998 & 86.1 & 0.997 & 88.3 & 123.4\\
+\hline
+BBGP-1B.3.2 & 0.07 & 6.6 & 0.18 & 18.2 & 17.6\\
+BBGP-1B.3.2$^\mathrm{a}$ & 0.39 & 37.6 & 0.41 & 39.8 & 54.7\\
+MT2-1B.3.2  & 0.54 & 49.5 & 0.54 & 50.8 & 70.9 \\
+\hline
+BBGP-1B.3.3 & -0.06 & -4.2 & -0.0003 & -0.05 & -3.0 \\
+BBGP-1B.3.3$^\mathrm{a}$ & -0.2 & -11.5 & -0.32 & -19.0 & -21.5\\
+MT2-1B.3.3  & 22.0 &  22.0 & 20.5 & 20.9 & 30.4 \\
+\hline
+BBGP-1B.3.4 & 0.0007 & 2.1 & -0.0002 & 0.8 & 2.1\\
+BBGP-1B.3.4$^\mathrm{b}$ & 0.16 & 13.9 & 0.04 & 6.7 & 14.6 \\ 
+\hline
+BBGP-1B.3.5 & 0.09 & 3.4 & 0.1 & 4.2 & 5.3\\
+\hline
+\end{tabular}\\
+$^\mathrm{a}$ corrected sign of the latitude\\
+$^\mathrm{b}$ corrected phases at $t=0$
+\end{table}
+
+
+From booth tables one can see clear detection and excellent estimation of the parameters for
+1.3.1 by MT2 group (N. Cornish). Other submission seem to suffer by the same problem as before:
+secondary maxima. 
+ 
+
+
+
 \section{Synopsis of Challenge 3}
 
 \begin{table}
