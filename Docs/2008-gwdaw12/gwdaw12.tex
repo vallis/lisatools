@@ -5,6 +5,10 @@
 \usepackage{graphicx}
 
 \newcommand{\eqref}[1]{{(\ref{#1})}}
+\def\bSo{{\bf \hat{S}_1}}
+\def\bSt{{\bf \hat{S}_2}}
+\def\bL{{\bf \hat{L}_{N}}}
+\def\hn{{\bf {\hat n}}}
  
 \begin{document}
 
@@ -228,12 +232,27 @@ Initial GW phase    & $\phi_0$      & \texttt{InitialPhase} & \texttt{Radian} \\
 \mr
 \multicolumn{4}{c}{\textit{Spinning massive black-hole binaries}} \\
 \mr
+Initial polar angle of the 1-st spin & $\theta_{S1}$ &	  \texttt{PolarAngleOfSpin1} &  \texttt{Radian}\\
+Initial polar angle of the 2-nd spin & $\theta_{S2}$ &	  \texttt{PolarAngleOfSpin2} &  \texttt{Radian}\\
+Initial azimuthal angle of 1-st spin & $\phi_{S1}$ & \texttt{AzimuthalAngleOfSpin1} &	
+\texttt{Radian}\\
+Initial azimuthal angle of 2-nd spin & $\phi_{S2}$ & \texttt{AzimuthalAngleOfSpin2} &	
+\texttt{Radian}\\
+Magnitude of the 1-st spin & $a_1$ & \texttt{Spin1} & \texttt{MassSquared} \\
+Magnitude of the 2-nd spin & $a_2$ & \texttt{Spin2} & \texttt{MassSquared} \\
+Mass of 1-st MBH$^\mathrm{c}$ & $m_1$ & \texttt{Mass1} & 	\texttt{SolarMass}\\
+Mass of 2-nd MBH$^\mathrm{c}$ & $m_2$ & \texttt{Mass2} & 	\texttt{SolarMass}\\
+Time to coalescence & $T_c$ & \texttt{CoalescenceTime}	 &	\texttt{Second}\\
+Phase at coalescence & $\Phi_c$ & \texttt{PhaseAtCoalescence}	 &	\texttt{Radian}\\
+Initial polar angle of orbital momentum & $\theta_L$ & \texttt{InitialPolarAngleL}	 &	\texttt{Radian}\\
+Initial azimuthal angle of orbital momentum & $\phi_L$ & \texttt{InitialAzimuthalAngleL}	 &	\texttt{Radian}\\
+\mr
 \multicolumn{4}{c}{\textit{EMRIs: see table 5 of \cite{mldcgwdaw2}}} \\
 \mr
 \multicolumn{4}{c}{\textit{Cosmic string cusp bursts}} \\
 Amplitude$^\mathrm{b}$ (Fourier) & $\mathcal{A}$ & \texttt{Amplitude}    & \verb|Hertz^(1/3)| \\
 Central time of arrival & $t_C$ & \texttt{CentralTime}    & \texttt{Second} \\
-Maximum frequency$^\mathrm{c}$ & $f_\mathrm{max}$ & \texttt{MaximumFrequency}    & \texttt{Hertz} \\
+Maximum frequency$^\mathrm{d}$ & $f_\mathrm{max}$ & \texttt{MaximumFrequency}    & \texttt{Hertz} \\
 \mr
 \multicolumn{4}{c}{\textit{Isotropic stochastic background}} \\
 PSD$^\mathrm{b}$ at 1 Hz  & $S_h$ & \texttt{PowerSpectralDensity} & \verb|(f/Hz)^-3/Hz| \\
@@ -242,7 +261,8 @@ PSD$^\mathrm{b}$ at 1 Hz  & $S_h$ & \texttt{PowerSpectralDensity} & \verb|(f/Hz)
 \end{tabular} \\
 $^\mathrm{a}$ We do not deal explicitly with the redshifting of sources at cosmological distances, so $D$ is a \emph{luminosity} distance, and all masses and frequencies are measured at the SSB and red/blue-shifted by factors $(1+z)^{\pm 1}$ with respect to those measured locally near the sources. \\
 $^\mathrm{b}$ Replaces $D$ for Galactic binaries, cosmic-string--cusp bursts, and stochastic-background pseudosources. \\
-$^\mathrm{c}$ Effectively replaces $\iota$ for cosmic-string--cusp bursts.
+$^\mathrm{c}$ Here are red-shifted masses.\\
+$^\mathrm{d}$ Effectively replaces $\iota$ for cosmic-string--cusp bursts.
 \end{table}
 
 \subsection{Chirping Galactic binaries}
@@ -277,7 +297,81 @@ Data set 3.2 contains...
 A two-year dataset ($2^{22}$ samples with $15$ s sampling time) with signals from U[4,6] spinning MBH binary inspirals.
 
 The spinning-binary signals are modeled as 2PN circular adiabatic inspirals with uncoupled orbital frequency evolution
-and spin and orbital precession. No higher-PN harmonics are included. [\textbf{Neil and Stas: add more detail, link to full descriptive document}] The end of the inspiral is handled with an exponential taper, as in Challenge 2. Masses, SNRs, and times of coalescence
+and spin and orbital precession. No higher-PN harmonics are included. Both phase and orbital
+frequency are explicit functions of time (TaylorT3 in classification presented in \cite{DIS}):
+
+\begin{eqnarray}
+M\omega &=& \frac1{8}\tau^{-3/8} \left[1 + \left(\frac{743}{2688} + \frac{11}{32}\eta\right)\tau^{-1/4} - 
+            \frac3{10}\left(\pi - \frac{\beta}{4}\right)\tau^{-3/8} + 
+            \right. \nonumber \\ 
+            &+& \left.
+            \left(\frac{1855099}{14450688} + 
+           \frac{56975}{258048}\eta + \frac{371}{2048}\eta^2 - \frac{3}{64}\sigma\right)\tau^{-1/2}\right]
+ \end{eqnarray}
+where $\eta = \mu/M$ is symmetric mass ratio and 
+\begin{eqnarray}
+\tau = \frac{\eta}{5M}(T_c - t),
+\end{eqnarray}
+\begin{eqnarray}
+\beta &=& \frac1{12}\sum_{i=1,2} \left[ 
+\chi_i \left(\bL.{\bf \hat{S}_i}\right)\left(113\frac{m_i^2}{M^2} + 75\eta\right)
+\right] \\
+\sigma &=& -\frac1{48}\eta\chi_1\chi_2\left[ 247(\bSo.\bSt) - 721(\bL.\bSo)(\bL.\bSt)
+\right]
+\end{eqnarray}
+Here $\bL, \; {\bf \hat{S}}_1,\;{\bf \hat{S}}_2$ 
+are unit vectors along leading order angular orbital momentum and hole's spins.
+The intrinsic orbital phase is 
+\begin{eqnarray}
+\Phi_{orb} &=& \Phi_C - \frac{\tau^{5/8}}{\eta}\left[ 1 + 
+  \left(  \frac{3715}{8064} + \frac{55}{96}\eta \right)\tau^{-1/4}
+  - \frac{3}{16}(4\pi - \beta) + \right. \nonumber \\
+  & & \left. \left( \frac{9275495}{14450688}+ \frac{284875}{258048}\eta+ \frac{1855}{2048}\eta^2 - \frac{15}{64}\sigma  \right) \tau^{-1/2}
+\right]. \label{OrbPhN}
+\end{eqnarray}
+Due to the spin-orbital coupling the spins and orbital angular momentum are precessing around
+total angular momentum, therefor we need to add precessional correction to the orbital 
+phase (see \cite{ACST}):
+
+\begin{equation}
+\dot{\Phi} = \omega + \frac{(\bL.\hn)[\bL\times \hn]\dot{\bf \hat{L}}_N}{1-(\bL.\hn)^2}
+\equiv \omega + \delta\dot{\Phi},\label{totPhi}
+\end{equation}
+where $\hn$ is direction to the source in SSB. The constant of integration of (\ref{totPhi}),
+ $\Phi_C$,  can be redefined so that $\delta\dot{\Phi} = 0$ at $t=0$.  The precession  
+ equations for $\bL, \; {\bf \hat{S}}_1,\;{\bf \hat{S}}_2$ are given by eqn. (2.9)-(2.11) in 
+ \cite{LangHughes}. As mentioned above we use restricted waveform (only leading order amplitude) and in the source frame (with the phasing formulae above) it takes the following form 
+ \begin{eqnarray}
+h_{+} &=& -2\frac{\mu}{D}(1 + \cos(i)^2)(M\omega)^{2/3}\cos{2\Phi}\\
+h_{\times} &=& 4\frac{\mu}{D}\cos(i)(M\omega)^{2/3}\sin{2\Phi}.
+\end{eqnarray}
+The inclination angle $i$ is defined by initial position of the orbital momentum and 
+by the direction to the source: $\cos{i} = (\bL.\hn)$.
+Note that if one uses the approach given in \cite{Kidder}, the amplitudes will be more complicated
+and the precession part of the phase at $t=0$ should be $\delta\dot{\Phi}^K = -\gamma^K$,
+where superscript $K$ stands for Kidder and 
+$$
+\gamma^K = \frac{{\bf e}_z \times \bL}{|{\bf e}_z \times \bL|}\frac{\bL\times \hn}
+{\sqrt{1 - (\bL.\hn)^2}}
+$$
+The end of the inspiral is handled with an exponential taper, as in Challenge 2. The expressions 
+for $h_{+}$ and $h_{\times}$ are given in the time varying polarization basis, but to generate the LISA responses it is necessary to re-express it in termsof fixed polarization tensors. This is achieved through a rotation by the polarizationangle $\psi$:
+\begin{equation}
+\tan{\psi} = \frac{\cos{\beta}\cos{(\lambda -\phi_L)}\sin{\theta_L} - \cos{\theta_L}\sin{\beta}}
+{\sin{\beta}\sin{(\lambda - \phi_L)}}.
+\end{equation}
+and the waveform in SSB becomes
+
+\begin{eqnarray}
+h_{+}^{SSB} &=& -h_{+}\cos{2\psi} - h_{\times}\sin{2\psi}\\
+h_{\times}^{SSB} &=& h_{+}\sin{2\psi} - h_{\times}\cos{2\psi}.
+\end{eqnarray}
+
+
+
+
+
+Masses, SNRs, and times of coalescence
 are chosen as in Challenge 2; spin amplitudes are drawn from U[0,1], and spin angles are randomized over spheres.
 Sky position, polarization, extrinsic parameters are random over spheres.
 
@@ -450,6 +544,15 @@ K. Cannon, and J. Read, Phys. Rev. D {\bf 73} 105001 (2006).
 %
 \bibitem{zetapaper} M. Tinto, J. W. Armstrong and F. B. Estabrook, Phys. Rev. D 63, 021101 (2000).
 %
+\bibitem{DIS} T. Damour, B. Iyer and B. Sathyaprakash, Phys. Rev. D {\bf 63}, 044023 (2001).
+%
+\bibitem{ACST} T. A. Apostolatos, C. Cutler, G. J. Sussman and K. S. Thorne, Phys. Rev. D {\bf 49},
+6274 (1994)
+%
+\bibitem{LangHughes} R. N. Lang and S. A. Hughes, Phys. Rev. D {\bf 74}, 122001 (2006) 
+%
+\bibitem{Kidder} L. Kidder, Phys.Rev. D {\bf 52}  821 (1995)
+
 \end{thebibliography}
 \end{document}
 
