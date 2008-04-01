@@ -56,6 +56,145 @@ included in the signal model.
 
 \subsection{Challenges 1B.1.X: Galactic binaries}
 
+If the equation for correlation has not been given, please include it.
+
+\begin{equation}
+\label{cor}
+C = \frac{\left(h_{\rm key}|h_{\rm rec}\right)}{\sqrt{\left(h_{\rm key}|h_{\rm key}\right)\left(h_{\rm rec}|h_{\rm rec}\right)}}.
+\end{equation}
+
+Similarly, if the equation for the parameter differences has not been given please include it.
+
+\begin{equation}
+\Delta\lambda = \lambda_{\rm key} - \lambda_{\rm rec}.
+\end{equation}
+
+For white dwarf binary systems 7 parameters are required to fully characterise each source. These parameters are: the amplitude $\mathcal{A}$, the frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarisation angle $\psi$, and the initial phase $\phi_0$. In Table~\ref{Table_1b_1_1_correlations}, we give the values of the correlations for each challenge entry for Challenges 1b.1.1a-c. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1b.1.1a-c. 
+
+\begin{table}
+\caption{\label{Table_1b_1_1_correlations} The performance of challenge entries on the single WDWD binary challenges as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*); numbers are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is only fitting to noise.}
+\begin{indented}
+\item[]\begin{tabular}{lrrrrrr}
+\br
+Group & SNR & $C$ & SNR & $C$ & SNR & $C$ \\
+\br
+& \centre{2}{Challenge 1b.1.1a}
+& \centre{2}{Challenge 1b.1.1b}
+& \centre{2}{Challenge 1b.1.1c} \\
+& \centre{2}{(${\rm SNR}_{\rm key}=13.819$)}
+& \centre{2}{(${\rm SNR}_{\rm key}=24.629$)}
+& \centre{2}{(${\rm SNR}_{\rm key}=15.237$)} \\
+\mr
+AEI			& 20.435	& 0.108	& 18.652	& 0.922 & 1.949	& -0.190		\\
+AEI*			& 14.199	& 0.984	& 23.266	& 0.996	& 14.770	& 0.989 \\
+GSFC			& 13.805	& 0.992	& 20.310	& 0.807	& 4.827		& -0.138\\
+GSFC*		&       &     	& 20.987	& 0.814 \\
+IMPAN		& 14.427	& 0.988	& 25.235	& 0.981 & 16.465	& 0.925	\\
+IMPAN*		&       &     	& 23.152	& 0.997		\\
+MCMNJU			& 13.524	& 0.952	& 22.641	& 0.906	& 6.830	& 0.033 \\
+MCMNJU*			& 14.193	& 0.996	& 23.270	& 0.994	\\
+UIBBham			& 13.577	& 0.992	& 23.479	& 0.996 	\\
+\br
+\end{tabular}
+\end{indented}
+\end{table}
+
+\begin{table}
+\caption{\label{Table_1b_1_1_parameter_differences} The performance of challenge entries on the single binary challenges as calculated using recovered parameter differences. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
+\begin{indented}
+\item[]\begin{tabular}{lrrrrrrr}
+\br
+Group & $\Delta \theta$ & $\Delta \phi$ & $\Delta f$ (nHz) & $\Delta\psi$ & $\Delta \iota$ & $\Delta \varphi$ & $\Delta \mathcal{A} (\times 10^{-23})$ \\
+\br
+\centre{8}{Challenge 1b.1.1a} \\
+\mr
+AEI		& 0.0318	& -0.120	& -2.43		& 0.217		& -0.454 	& 1.17		& 1.22		\\
+AEI*		& 0.0318	& -0.120	& -2.43		& 0.700		& 0.215		& -1.23		& 1.18		\\
+GSFC		& 0.00412	& -0.0715	& -1.81	 	& 0.708	 	& 0.252 	& 1.33	 	& 1.20		\\
+IMPAN		& 0.0311	& 0.0185 	& 2.13		& 0.454 	& 0.212	 	& -1.06 	& 1.25		\\ 
+MCMNJU		& 0.0170	& -0.0424	& -0.534	& 0.662		& 0.426		& -1.57		& 2.34		\\
+MCMNJU*		& 0.0170	& -0.0424	& -0.534	& 0.746		& 0.248		& -1.44		& 1.37		\\
+UIBBham		& -0.00540	& -0.0790	& -1.51		& 0.708		& 0.173		& 4.96		& 0.647		\\
+
+\br
+\centre{8}{Challenge 1b.1.1b} \\
+\mr
+AEI		& 0.0558	& -0.00899	& 0.946		& -1.05		& 0.283		& 1.63		& -0.0664	\\
+AEI*		& 0.0558	& -0.00899	& 0.946		& -0.761	& 0.0776	& 1.46		& 0.00307	\\
+GSFC		& 0.462		& 0.0606	& -30.9		& 2.56		& 0.182		& 0.516		& -0.0245	\\
+GSFC*		& 0.462		& 0.0606	& -30.9		& -0.534	& 0.198		& 0.624		& 0.0665	\\
+IMPAN:		& -0.0203 	& 0.000708	& 0.852 	& 0.333 	& 0.339 	& -0.603 	& 0.713		\\ 
+MCMNJU		& 0.0670	& -0.00627	& 2.069530	& -0.732	& -0.0643	& 0.844		& -0.223	\\
+MCMNJU*		& 0.0670	& -0.00627	& 2.069530	& -0.739	& 0.0633	& 1.30		& -0.0165	\\
+UIBBham		& 0.0436	& -0.00817	& 1.777530	& -0.636	& 0.0428	& 1.13		& -0.0293	\\
+\br
+\centre{8}{Challenge 1b.1.1c} \\
+\mr
+AEI		& 0.0261	& 0.00530	& 1.84		& -0.499	& -1.12		& 3.02		& 0.124		\\ 
+AEI*		& 0.0261	& 0.00530	& 1.84		& 0.0410	& -0.0937	& -0.123	& 0.106		\\ 
+GSFC		& 0.452		& -1.48		& 140		& 1.82		& -0.471	& -0.663	& -0.695	\\ 
+IMPAN		& 0.0158	& 0.0248	& 3.72		& -1.51		& -0.197	& 2.68		& 0.478		\\ 
+IMPAN*		& 0.0158	& 0.0248	& 3.72		& -0.0287	& -0.113	& 0.356		& 0.0792	\\ 
+MCMNJU		& 0.555		& -0.368	& 359		& -1.59		& -0.250	& -0.943	& -0.532	\\ 
+\br
+\end{tabular}
+\end{indented}
+\end{table}
+
+The Challenge 1b.1.2 data set contained 25 ``verification'' binaries. The frequency and sky location of each of the binaries is given to the participants, who then searched for the extrinsic parameters using their algorithms. This simulates the search for signals from binaries that are already known to exist. In fact, five of these binaries are taken from a list of known binaries available on Gijs Nelemans' website~\cite{nelemanswiki}, while the remaining twenty were simulated binaries. Table~\ref{Table_1b_1_2_correlations} contains the global SNRs and correlations between all sources characterized by the parameters in the key file and the all sources recovered by the three groups that participated in this challenge. As in Challenges 1b.1.1a-c the issue with the extrinsic parameters caused the correlations to be less than ideal. However, as the intrinsic parameters were provided to the participants an ${\cal F}$-statistic calculations were not performed.
+
+\begin{table}
+\caption{\label{Table_1b_1_2_correlations} The performance of challenge entries on the verification binaries challenge as calculated using SNR, and $C$.}
+\begin{indented}
+\item[]\begin{tabular}{lrrc}
+\br
+Group & SNR & $C$ & \# Recovered\\
+\br
+\centre{4}{Challenge 1b.1.2 (${\rm SNR}_{\rm key}=634.918$, $25$ Sources)}  \\
+\mr
+AEI		& 891.677	& -0.822	& 25	 	\\
+GSFC		& 807.012	& 0.006		& 25	 	\\
+MCMNJU		& 603.805	& 0.267		& 25	 	\\
+\end{tabular}
+\end{indented}
+\end{table}
+
+The data set for Challenge 1b.1.3 contained the signals from $20$ binaries distributed across the LISA band. Unfortunately, there was an issue with the generation of the signals that caused their SNRs to be too small for detection (all were below $1$). So no evaluation of this challenge is given. As a silver lining to this cloud, the participating groups responding to this challenge reported that they were unable to find any sources.
+
+Challenge 1b.1.4 was a test of the search algorithms in the presence of mild source confusion. Fifty-one sources were spread across a $15 \mu{\rm Hz}$ band starting at $3 {\rm mHz}$; a source density of 0.108 sources per frequency bin. Challenge 1b.1.5 tested the algorithms in the presence of a high level of source confusion. Forty-four sources were spread across a $3 \mu{\rm Hz}$ band centered on $3 {\rm mHz}$; a source density of 0.465 sources per frequency bin. The presence of multiple sources in the data streams of these challenges introduces the possibility of the search algorithms missing sources (false negatives) as well as returning false positives. To determine the presence of false positives we first matched the frequencies of the recovered sources and those from the key file to within one frequency bin ($\frac{1}{{\rm year}}$) of each other. If the correlation between the pair was less than 0.7 (after correcting with the ${\cal F}$-statistic) the recovered source was considered a false positive. The two measures for the matches in these challenges, as in Challenge 1b.1.2, are the SNR and correlation. Again, we use the combined signal from all recovered sources compared to the signal from the sources in the key file. Table~\ref{Table_1b_1_4_correlations} gives the results of the two entries to Challenge 1b.1.4, and Table~\ref{Table_1b_1_5_correlations} gives the results of the single entry to Challenge 1b.1.5.
+
+\begin{table}
+\caption{\label{Table_1b_1_4_correlations} The performance of challenge entries on the mildly confused binaries challenge as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
+\begin{indented}
+\item[]\begin{tabular}{lrrcc}
+\br
+Group & SNR & $C$ & \# Recovered & False Positives \\
+\br
+\centre{5}{Challenge 1b.1.4 (${\rm SNR}_{\rm key}=340.233$, $51$ Sources)}  \\
+\mr
+AEI		& 375.366	& 0.774		& 13	& 2	\\
+AEI*		& 329.344	& 0.966		& 13	& 2	\\
+GSFC		& 209.411	& 0.003		& 6	& 1	\\
+GSFC*		& 90.506	& 0.282		& 6	& 1	\\
+\end{tabular}
+\end{indented}
+\end{table}
+
+\begin{table}
+\caption{\label{Table_1b_1_5_correlations} The performance of challenge entries on the highly confused binaries challenge as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
+\begin{indented}
+\item[]\begin{tabular}{lrrcc}
+\br
+Group & SNR & $C$ & \# Recovered & False Positives\\
+\br
+\centre{5}{Challenge 1b.1.5 (${\rm SNR}_{\rm key}=273.206$, $44$ Sources)}  \\
+\mr
+AEI		& 208.273	& 0.453		& 3	 & 0	\\
+AEI*		& 251.985	& 0.929		& 3	 & 0	\\
+\end{tabular}
+\end{indented}
+\end{table}
+
 \subsection{Challenges 1B.2.X: MBH binaries}
 The challenge for massive black holes consisted of isolated binaries over a Gaussian stationary instrument noise.  For the massive black hole search, groups were required to return the nine parameters of the systems : the two masses $m_{1,2}$, the time to coalescence of the wave $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The groups were given the following limited prior information on the parameters of the systems.  One of the individual masses in each case would be in the range $1\leq m_1/10^6\,M_{\odot}\leq 5$, while the other mass would be in the range $m_2=m_1/x$ where $1\leq x\leq 4$.  The time to coalescence  would be $t_c = 6\pm 1$ months for Challenge 2.1 and $t_c=400\pm40$ days for Challenge 2.2.\\
 
@@ -69,8 +208,9 @@ We can see from Table~\ref{tab:mbh} that both groups suceeded in finding the inj
 
 %\section{MBH 2.1}
 \begin{table}[t]
-\begin{center}
-\begin{tabular}{ccccccccccc}\hline\hline
+\caption{Relative/absolute errors for MBH in Challenges 1B 2.1 and 2.2.  The optimal key SNRs are 531.84 and 80.67 for each challenge respectively.\label{tab:mbh}}
+\begin{indented}
+\item[] \begin{tabular}{ccccccccccc}\hline\hline
 %&  &  & & & & & & &\\
 Group& SNR &$\Delta m_{1}/m_{1}$ & $\Delta m_{2}/ m_{2}$ & $\Delta t_{c} / t_{c}$ &$\Delta\beta  $ & $\Delta\lambda $ & $\Delta D_{L} / D_{L}$ & $\Delta\iota $ & $\Delta\psi $  & $\Delta\varphi_{0}$\\
 & &($\times10^{-2}$) &  ($\times10^{-2}$) & ($\times10^{-5}$)  &   &   & ($\times10^{-1}$)  & ($\times10^{-1}$) &  &  \\
@@ -86,9 +226,7 @@ Cardiff & 511.78&12.1 & 	 10.01 &	 3.601 & 	 1.374 & 	 0.549 & 	 5.89 &	 6.87 & 
 JPL & 79.86&1.39 & 	 1.18 & 	 7.296 & 	 5.86 & 	 -1.462 & 	 4.803 & 	 -6.96 & 	 1.522 &	 -4.725 \\ 
 \hline\hline
 \end{tabular}
-\end{center}
-\caption{Relative/absolute errors for MBH in Challenges 1B 2.1 and 2.2.  The optimal key SNRs are 531.84 and 80.67 for each challenge respectively.}
-\label{tab:mbh}
+\end{indented}
 \end{table}
 
 
