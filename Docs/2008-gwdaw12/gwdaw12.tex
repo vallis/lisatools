@@ -36,7 +36,7 @@ GSFC$^?$,
 Ian Harry$^\mathrm{cardiff}$,
 Deepak Khurana$^\mathrm{iit}$,
 Andrzej Kr\'olak$^\mathrm{warsaw}$,
-Ilya Mandel$^\mathrm{north}$,
+Ilya Mandel$^\mathrm{cit,north}$,
 Reinhard Prix$^\mathrm{hannover}$,
 B. S. Sathyaprakash$^\mathrm{cardiff}$,
 Pavlin Savov$^\mathrm{cit}$,
@@ -44,7 +44,7 @@ Yu Shang$^\mathrm{cas}$,
 Miquel Trias$^\mathrm{mallorca}$,
 John Veitch$^\mathrm{bgham}$,
 Yan Wang$^\mathrm{nanjing}$,
-Linqing Wen$^\mathrm{aei}$,
+Linqing Wen$^\mathrm{aei,cit,uwa}$,
 John T. Whelan$^\mathrm{aei}$}
 
 \address{$^\mathrm{aei}$ Max-Planck-Institut f\"ur Gravitationsphysik (Albert-Einstein-Institut), Am M\"uhlenberg 1, D-14476 Golm bei Potsdam, Germany}
@@ -67,6 +67,8 @@ John T. Whelan$^\mathrm{aei}$}
 \address{$^\mathrm{warsaw}$ Inst.\ of Mathematics, Polish Academy of Sciences, Warsaw, Poland}
 \address{$^\mathrm{weber}$ Dept.\ of Physics, Weber State Univ., 2508 University Circle, Ogden, UT 84408, USA}
 \address{$^\mathrm{wroclaw}$ Inst.\ of Theoretical Physics, Univ.\ of Wroc{\l}aw, Wroc{\l}aw, Poland}
+\address{$^\mathrm{uwa}$ School of Physics, M013, Univ.\ of Western Australia, 35
+Stirling Highway, Crawley, WA 6009, Australia}
 
 \ead{Michele.Vallisneri@jpl.nasa.gov}
 
@@ -292,7 +294,7 @@ results was performed along the same line as for the challenge 2 and similar to 
 evaluation. In particular we have computed overlaps of the signals generated with recovered 
 parameters with the true signal for each $A$ and $E$ channels. We have also evaluated 
 combined SNR between the data set and the recovered signal (see Table~\ref{EMRI1}).
- For the results submitted by EtfAG (name of the group) we could not evaluate overlaps and 
+ For the results submitted by Gair, Mandel, and Wen (EtfAG, \cite{gmw}) we could not evaluate overlaps and 
  SNR since their method (based on the time-frequency analysis) targeted only intrinsic parameters and was insensitive to the initial phases. Therefore we have produced also the table of the relative errors in the parameter estimation and the results are summarized in the 
  Table~\ref{EMRI2}.
  
@@ -586,24 +588,26 @@ angle $\psi$:
 and the waveform in SSB becomes
 
 \begin{eqnarray}
-h_{+}^{SSB} &=& -h_{+}\cos{2\psi} - h_{\times}\sin{2\psi}\\
-h_{\times}^{SSB} &=& h_{+}\sin{2\psi} - h_{\times}\cos{2\psi}.
+h_{+}^\mathrm{SSB} &=& -h_{+}\cos{2\psi} - h_{\times}\sin{2\psi}\\
+h_{\times}^\mathrm{SSB} &=& h_{+}\sin{2\psi} - h_{\times}\cos{2\psi}.
 \end{eqnarray}
 
+Masses, SNRs, and times of coalescence are chosen as in Challenge 2 (see also table \ref{table:MLDC3}); the spin magnitudes $S_1/M_1^2$ and $S_2/M_2^2$
+are drawn uniformly in $[0,1]$; all the angles (spin directions, initial orbital angular momentum, sky position) are drawn uniformly over spheres.
 
-
-
-
-Masses, SNRs, and times of coalescence
-are chosen as in Challenge 2; spin amplitudes are drawn from U[0,1], and spin angles are randomized over spheres.
-Sky position, polarization, extrinsic parameters are random over spheres.
-
-The dataset includes also a Galactic confusion background generated from the same population as Challenge 3.1, but withholding
-all binaries with individual SNR $> 5$ relative to the combined instrument plus galactic confusion
-noise. The confusion noise estimate was derived using the BIC analysis code used in the evaluation of Challenge 2.
-Only detached systems are used to generate the confusion background as the confusion estimate from Challenge 2 did
-not include interacting systems. In any event, we do no expect interacting systems to be a significant contribution
-to the confusion noise since they typically have very small chirp masses, and hence amplitudes, compared to the detached systems.
+The dataset includes also a Galactic confusion background generated from the same detached-binary population as Challenge 3.1, but withholding all binaries with individual SNR $> 5$ relative to the combined instrument plus galactic confusion noise \textbf{[I think we use only instrument noise! Neil?]}, approximated as
+%
+\begin{equation} \fl
+S_{X,\mathrm{gal}} = 16 \, (2 \pi f L)^2 \sin^2(2 \pi f L) \times \left\{ \begin{array}{l@{\;}l@{\;}l}
+10^{-44.62} f^{-2.3}  & \mathrm{for} \, f \in [10^{-4}  ,10^{-3}  ] & \mathrm{Hz}, \\ 
+10^{-50.92} f^{-4.4}  & \mathrm{for} \, f \in [10^{-3}  ,10^{-2.7}] & \mathrm{Hz}, \\
+10^{-62.8}  f^{-8.8}  & \mathrm{for} \, f \in [10^{-2.7},10^{-2.4}] & \mathrm{Hz}, \\
+10^{-89.68} f^{-20.0} & \mathrm{for} \, f \in [10^{-2.4},10^{-2.0}] & \mathrm{Hz},
+\end{array}\right.
+\end{equation}
+%
+This estimate was derived using the BIC analysis code used in the evaluation of Challenge 2, and it does not include interacting systems; these should not make a significant contribution
+to confusion noise, since they typically have very small chirp masses, and hence amplitudes, compared to detached systems.
 
 \textbf{Approximation formula for confusion noise.}
 
@@ -704,7 +708,15 @@ Furthermore, the MLDC conventions, file formats, and software tools (see \url{li
 \ack
 
 MV: the LISA Mission Science Office and by JPL's HRDF.
-CC's, JC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration. Work of SB and EP was supported by DLR (Deutsches Zentrum f\"ur Luft- und Raumfart).
+CC's, JC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration.
+SB's and EP's work was supported by the Deutsches Zentrum f\"ur Luft- und Raumfahrt.
+JG thanks the Royal Society for support and the Albert Einstein
+Institute for hospitality and support while part of this work was
+being completed. IM was partially supported by NASA ATP Grant
+NNX07AH22G to Northwestern University. LW's work is supported by the
+Alexander von Humboldt Foundation's Sofja Kovalevskaja Programme
+funded by the German Federal Ministry of Education and Research.
+
 
 % \appendix
 
@@ -775,6 +787,9 @@ K. Cannon, and J. Read, Phys. Rev. D {\bf 73} 105001 (2006).
 \bibitem{LangHughes} R. N. Lang and S. A. Hughes, Phys. Rev. D {\bf 74}, 122001 (2006) 
 %
 \bibitem{Kidder} L. Kidder, Phys.Rev. D {\bf 52}  821 (1995)
+%
+\bibitem{gmw} J. R. Gair, I. Mandel and L. Wen
+``Improved time-frequency analysis of extreme-mass-ratio inspiral signals in mock LISA data,'' proceedings of GWDAW-12, Dec 13--16 2007, Cambridge MA.
 
 \end{thebibliography}
 \end{document}
