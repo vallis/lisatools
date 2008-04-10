@@ -252,40 +252,39 @@ AEI*		& 251.985	& 0.929		& 3	 & 0	\\
 \end{indented}
 \end{table}
 
+
 \subsection{Challenges 1B.2.X: MBH binaries}
-The challenge for massive black holes consisted of isolated binaries over a Gaussian stationary instrument noise.  For the massive black hole search, groups were required to return the nine parameters of the systems : the two masses $m_{1,2}$, the time to coalescence of the wave $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The groups were given the following limited prior information on the parameters of the systems.  One of the individual masses in each case would be in the range $1\leq m_1/10^6\,M_{\odot}\leq 5$, while the other mass would be in the range $m_2=m_1/x$ where $1\leq x\leq 4$.  The time to coalescence  would be $t_c = 6\pm 1$ months for Challenge 2.1 and $t_c=400\pm40$ days for Challenge 2.2.\\
-
-\noindent Two groups submitted results for the massive black hole search :\\
-
-\noindent\emph{ JPL} : used a three step strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, finishing with a Metropolis-Hastings Monte Carlo refinement.  The JPL group submitted entries for both 2.1 and 2.2.\\
-\emph{Cardiff} : used a stochastic template bank matched filtering search. \cite{cardiffmbh} The Cardiff group submitted an entry for 2.1.\\
-
-We can see from Table~\ref{tab:mbh} that both groups succeeded in finding the injected binary systems.  In all cases the groups recovered almost all of the key SNR.  It is interesting to note that all entries ended up on secondary sky positions that affected the precision of the other extracted parameters.
+The challenge for massive black holes consisted of isolated binaries over a Gaussian stationary instrument noise.  For the massive black hole search, groups were required to return the nine parameters of the systems: the two masses $m_{1,2}$, the time to coalescence of the wave $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The groups were given the following limited prior information on the parameters of the systems.  One of the individual masses in each case would be in the range $1\leq m_1/10^6\,M_{\odot}\leq 5$, while the other mass would be in the range $m_2=m_1/x$ where $1\leq x\leq 4$.  The time to coalescence  would be $t_c = 6\pm 1$ months for Challenge 2.1 and $t_c=400\pm40$ days for Challenge 2.2.\\
 
 
-%\section{MBH 2.1}
-\begin{table}[t]
-\caption{Relative/absolute errors for MBH in Challenges 1B 2.1 and 2.2.  The optimal key SNRs are 531.84 and 80.67 for each challenge respectively.\label{tab:mbh}}
-\begin{indented}
-\item[] \begin{tabular}{ccccccccccc}\hline\hline
-%&  &  & & & & & & &\\
-Group& SNR &$\Delta m_{1}/m_{1}$ & $\Delta m_{2}/ m_{2}$ & $\Delta t_{c} / t_{c}$ &$\Delta\beta  $ & $\Delta\lambda $ & $\Delta D_{L} / D_{L}$ & $\Delta\iota $ & $\Delta\psi $  & $\Delta\varphi_{0}$\\
-& &($\times10^{-2}$) &  ($\times10^{-2}$) & ($\times10^{-5}$)  &   &   & ($\times10^{-1}$)  & ($\times10^{-1}$) &  &  \\
-\hline
-& & & & & 2.1  & & & & &\\
-\hline
-JPL & 531.57&0.61 & 	 0.52 &	 1.37 &	 2.43 & 	 3.133 &	 1.22 &	 7.13 & 	 5.719 &	 -2.846 \\ 
-Cardiff & 511.78&12.1 & 	 10.01 &	 3.601 & 	 1.374 & 	 0.549 & 	 5.89 &	 6.87 & 	 4.835 & 	 -2.389 \\
-\hline
-& && & &  2.2 & & & & &\\
- \hline
+\noindent Two groups submitted results for the massive black hole search:\\
 
-JPL & 79.86&1.39 & 	 1.18 & 	 7.296 & 	 5.86 & 	 -1.462 & 	 4.803 & 	 -6.96 & 	 1.522 &	 -4.725 \\ 
-\hline\hline
+\noindent\emph{JPL}: used a three step strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, finishing with a Metropolis-Hastings Monte Carlo refinement.  The JPL group submitted entries for both 2.1 and 2.2.\\
+\emph{Cardiff}: used a stochastic template bank matched filtering search \cite{cardiffmbh}.  The Cardiff group submitted an entry for 2.1.\\
+
+We can see from Table~\ref{mbh} that both groups did well in recovering the parameters of the injected binary systems.  In all cases the groups recovered almost all of the combined key SNR: the key values were 531.84 and 80.67 for 1B.2.1 and 1B.2.2 respectively.  For challenge 1B.2.1, JPL recovered an SNR of 531.57, while Cardiff recovered an SNR of 511.78.  In challenge 1B.2.2, JPL recovered an SNR of 79.86.  In the table we have also included recovered parameter degeneracies when certain symmetries are taken into account.  In challenge 1B.2.1, for both JPL and Cardiff, the error values in parenthesis for the polarization angle are from the symmetry $\psi\rightarrow\psi+2\pi$.  In challenge 1B.2.2, the error values in parenthesis for the JPL entry, are due to the symmetries $\psi\rightarrow\psi+\pi/2$ and $\varphi_0\rightarrow\varphi_0-\pi$.  It is interesting to note that in challenge 1B.2.1, both JPL and Cardiff ended up on secondary sky positions that affected the precision of the other extracted parameters.  It is a reminder of a role that the antipodal sky solutions play for the extraction of MBHs from the LISA data stream.
+
+\begin{table}
+\caption{\label{mbh}Relative/absolute errors for the MBH binaries recovered by the JPL and Cardiff groups in Challenges 1B.2.1 and 1B.2.2.}
+\begin{indented}\lineup
+\item[]\begin{tabular}{@{}llll}
+\br
+          & \multicolumn{2}{c}{1B.2.1} & \multicolumn{1}{c}{1B.2.2} \\
+          & \multicolumn{1}{c}{JPL} & \multicolumn{1}{c}{Cardiff} & \multicolumn{1}{c}{JPL} \\
+\mr
+$\Delta m_{1}/m_{1}$  & \m$5.991 \times10^{-3}$ & \m0.108    & \m0.122\\
+$\Delta m_{2}/ m_{2}$ & \m$5.252 \times10^{-3}$ & \m0.111    & \m0.134\\
+$\Delta t_c/ t_c$     & \m$1.37\0\times10^{-5}$ & \m$3.601\times10^{-5}$ & $\m7.296\times10^{-5}$\\
+$\Delta D_L/ D_L$     & \m0.139            & \m1.438         & \m$4.781\times10^{-3}$\\
+$\Delta \beta$        & \m2.43             & \m1.374         & \m$5.862\times10^{-3}$\\
+$\Delta \lambda$      & \m3.133            & \m0.55          & $-1.461\times10^{-2}$\\
+$\Delta \iota$        & \m0.713            & \m0.678         & $-6.955\times10^{-2}$\\
+$\Delta \psi$         & \m5.719 ($-0.564$) & \m4.835 (1.448) & \m1.522 ($-4.88\times10^{-2}$)\\
+$\Delta \varphi_0$    & $-2.846$           & $-2.389$        & $-4.725$ ($-1.584$)\\
+\br
 \end{tabular}
 \end{indented}
 \end{table}
-
 
 \subsection{Challenges 1B.3.X: EMRIs}
 
