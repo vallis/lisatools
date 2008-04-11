@@ -108,24 +108,44 @@ Challenge 3 data sets have just been released. The introduce a number of innovat
 \section{Report on Challenge 1B}
 \label{s:challenge-1b}
 
-\subsection{Challenges 1B.1.X: Galactic binaries}
-
-If the equation for correlation has not been given, please include it.
-
+Challenge 1B focused on three classes of sources treated independently: (monochromatic) galactic binaries, massive black hole binaries and extreme mass ratio inspirals. The results submitted by the participants were assessed using the two simple criteria considered in previous rounds~\cite{mldcgwdaw1, mldcamaldi2} whereby the parameters and waveform from the key file (corresponding to the true signal included in the data set) were compared to those recovered, using the {\em best recovered} SNR
+%
+\begin{equation}
+\mathrm{SNR}_\mathrm{best}  = \frac{(A_\mathrm{true}|A_\mathrm{best}) + (E_\mathrm{true}|E_\mathrm{best})}
+{\sqrt{(A_\mathrm{best}|A_\mathrm{best}) + (E_\mathrm{best}|E_\mathrm{best})}}\,,
+\label{e:SNR}
+\end{equation}
+%
+the {\em correlation} of the true waveform with the recovered one
+%
 \begin{equation}
 \label{cor}
-C = \frac{\left(h_{\rm key}|h_{\rm rec}\right)}{\sqrt{\left(h_{\rm key}|h_{\rm key}\right)\left(h_{\rm rec}|h_{\rm rec}\right)}}.
+C = \frac{\left(h_{\rm key}|h_{\rm rec}\right)}{\sqrt{\left(h_{\rm key}|h_{\rm key}\right)\left(h_{\rm rec}|h_{\rm rec}\right)}}\,,
+\label{e:C}
 \end{equation}
-
-Similarly, if the equation for the parameter differences has not been given please include it.
-
+%
+and the simple difference between the true parameter in the key file and the "best fit" of the recovered parameter
+%
 \begin{equation}
-\Delta\lambda = \lambda_{\rm key} - \lambda_{\rm rec}.
+\Delta\lambda = \lambda_{\rm key} - \lambda_{\rm rec}\,.
+\label{e:deltalambda}
 \end{equation}
+%
+In the previous equations, $(.|.)$ stands for the usual inner product and $A$ and $E$ denote 
 
-There were four collaborations that participated in the searches of the MLDC data sets containing monochromatic sources. The participants from the Goddard Space Flight Center (GSFC) used the X-Ray Spectral Fitting Package (XSPEC)~\cite{XSPEC_website} to fit templates to the energy spectra. The package includes a Levenberg-Marquardt optimization algorithm which was used to get an initial guess for the source parameters. A Markov Chain Monte Carlo (MCMC) routine, also available in XSPEC, was then used to arrive at the best fit parameters for the sources. The collaboration from the Institute of Mathematics of the Polish Academy of Science (IMPAN) and the Institute of Theoretical Physics at the University of Wroclaw, performed a grid-based search featuring a constraint optimal hypercube lattice and matched filtering. They also use the ${\cal F}$-statistic~\cite{fstat} to shrink the search space from $7$ to $3$ parameters. The participants from the Max Planck Institute for Gravitational Physics, the Albert Einstein Institute (AEI), also used a grid-based approach using the ${\cal F}$-statistic. A more complete description of the method is found in \cite{AEI_MLDC_1_paper}, though the current modeling of the waveform has been updated to the rigid adiabatic approximation instead of using the long-wavelength limit. A collaboration of people from the Institute of Applied Mathematics of the Chinese Academy of Sciences and the Department of Astronomy of Nanjing University (MCMNJU), used a genetic algorithm featuring the ${\cal F}$-statistic to determine the source parameters.
+\subsection{Challenges 1B.1.X: Galactic binaries}
 
-For monochromatic white dwarf--white dwarf (WDWD) binary systems seven parameters are required to fully characterize each source. These parameters are the amplitude $\mathcal{A}$, the frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. In Table~\ref{Table_1b_1_1_correlations}, we give the values of the correlations for each challenge entry for Challenges 1b.1.1a-c. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1b.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
+Seven different Challenge 1B.1.X data sets contained signals from monochromatic binaries in a variety of combinations. Seven parameters are required to fully characterize each source: the amplitude $\mathcal{A}$, the frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. Five groups -- members of the Goddard Space Flight Center (GSFC), a group from the Institute of Mathematics of the Polish Academy of Science and the Institute of Theoretical Physics at the University of Wroclaw (IMPAN), members of the Max Planck Institute for Gravitational Physics, the Albert Einstein Institute (AEI), a collaboration of scientists from the Institute of Applied Mathematics of the Chinese Academy of Sciences and the Department of Astronomy of Nanjing University (MCMNJU) and members of the Universitat de les Illes Balears and the University of Birmingham (UIBBham) --   submitted entries for this group of Challenges, though many groups concentrated only on  selected data sets and only AEI provided entries for every challenge. 
+
+A fair range of techniques was considered: they belong to the same classes adopted in the past for similar MLDCs, which clearly shows that effective techniques have been identified and begins to consolidate, but provide new implementations and different technical solutions, wich expands the robustness of this searches. GSFC used the X-Ray Spectral Fitting Package (XSPEC)~\cite{XSPEC_website} to fit templates to the energy spectra. The package includes a Levenberg-Marquardt optimization algorithm which was used to get an initial guess for the source parameters. A Markov Chain Monte Carlo (MCMC) routine, also available in XSPEC, was then used to arrive at the best fit parameters for the sources. IMPAN used a grid-based search featuring a constraint optimal hypercube lattice and matched filtering; the ${\cal F}$-statistic~\cite{fstat} was employed to shrink the search space from $7$ to $3$ parameters. A similar technique was adopted by AEI, and a more complete description of the method is found in~\cite{prixwhelan}, though the current modeling of the waveform has been updated to the rigid adiabatic approximation instead of using the long-wavelength limit. MCMNJU, used a genetic algorithm featuring the ${\cal F}$-statistic to determine the source parameters, and UIBBham used a MCMC approach, described in more detail in~\cite{tvv}.
+
+%There were four collaborations that participated in the searches of the MLDC data sets containing monochromatic sources. The participants from the Goddard Space Flight Center (GSFC) used the X-Ray Spectral Fitting Package (XSPEC)~\cite{XSPEC_website} to fit templates to the energy spectra. The package includes a Levenberg-Marquardt optimization algorithm which was used to get an initial guess for the source parameters. A Markov Chain Monte Carlo (MCMC) routine, also available in XSPEC, was then used to arrive at the best fit parameters for the sources. The collaboration from the Institute of Mathematics of the Polish Academy of Science (IMPAN) and the Institute of Theoretical Physics at the University of Wroclaw, performed a grid-based search featuring a constraint optimal hypercube lattice and matched filtering. They also use the ${\cal F}$-statistic~\cite{fstat} to shrink the search space from $7$ to $3$ parameters. The participants from the Max Planck Institute for Gravitational Physics, the Albert Einstein Institute (AEI), also used a grid-based approach using the ${\cal F}$-statistic. A more complete description of the method is found in \cite{AEI_MLDC_1_paper}, though the current modeling of the waveform has been updated to the rigid adiabatic approximation instead of using the long-wavelength limit. A collaboration of people from the Institute of Applied Mathematics of the Chinese Academy of Sciences and the Department of Astronomy of Nanjing University (MCMNJU), used a genetic algorithm featuring the ${\cal F}$-statistic to determine the source parameters.
+
+
+%For monochromatic white dwarf--white dwarf (WDWD) binary systems seven parameters are required to fully characterize each source. These parameters are the amplitude $\mathcal{A}$, the frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. 
+
+
+Three data sets, Challenges 1b.1.1a-c, contained a single monochromatic binary (the main difference between the data sets was the source's frequency) with SNR $\approx 13-25$. Table~\ref{Table_1b_1_1_correlations} summarises the values of the correlations, see Eq.~(\ref{e:C}) for each challenge entry. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1b.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
 
 \begin{figure}
 \centerline{\includegraphics[width=7.5cm]{MLDC_1b-1.1a_sky_positions.eps}}
@@ -260,17 +280,19 @@ AEI*		& 251.985	& 0.929		& 3	 & 0	\\
 \end{indented}
 \end{table}
 
-
 \subsection{Challenges 1B.2.X: MBH binaries}
-The challenge for massive black holes consisted of isolated binaries over a Gaussian stationary instrument noise.  For the massive black hole search, groups were required to return the nine parameters of the systems: the two masses $m_{1,2}$, the time to coalescence of the wave $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The groups were given the following limited prior information on the parameters of the systems.  One of the individual masses in each case would be in the range $1\leq m_1/10^6\,M_{\odot}\leq 5$, while the other mass would be in the range $m_2=m_1/x$ where $1\leq x\leq 4$.  The time to coalescence  would be $t_c = 6\pm 1$ months for Challenge 2.1 and $t_c=400\pm40$ days for Challenge 2.2.\\
+
+The challenge for massive black holes consisted of isolated binaries over a Gaussian stationary instrument noise.  For the massive black hole search, groups were required to return the nine parameters of the systems : the two masses $m_{1,2}$, the time to coalescence of the wave $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The groups were given the following limited prior information on the parameters of the systems.  One of the individual masses in each case would be in the range $1\leq m_1/10^6\,M_{\odot}\leq 5$, while the other mass would be in the range $m_2=m_1/x$ where $1\leq x\leq 4$.  The time to coalescence  would be $t_c = 6\pm 1$ months for Challenge 2.1 and $t_c=400\pm40$ days for Challenge 2.2.\\
 
 
-\noindent Two groups submitted results for the massive black hole search:\\
+\noindent Two groups submitted results for the massive black hole search :\\
 
-\noindent\emph{JPL}: used a three step strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, finishing with a Metropolis-Hastings Monte Carlo refinement.  The JPL group submitted entries for both 2.1 and 2.2.\\
-\emph{Cardiff}: used a stochastic template bank matched filtering search \cite{cardiffmbh}.  The Cardiff group submitted an entry for 2.1.\\
+\noindent\emph{ JPL} : used a three step strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, finishing with a Metropolis-Hastings Monte Carlo refinement.  The JPL group submitted entries for both 2.1 and 2.2.\\
+\emph{ Cardiff} : used a stochastic template bank matched filter search\cite{cardiffmbh}.  The Cardiff group submitted an entry for 2.1.\\
 
-We can see from Table~\ref{mbh} that both groups did well in recovering the parameters of the injected binary systems.  In all cases the groups recovered almost all of the combined key SNR: the key values were 531.84 and 80.67 for 1B.2.1 and 1B.2.2 respectively.  For challenge 1B.2.1, JPL recovered an SNR of 531.57, while Cardiff recovered an SNR of 511.78.  In challenge 1B.2.2, JPL recovered an SNR of 79.86.  In the table we have also included recovered parameter degeneracies when certain symmetries are taken into account.  In challenge 1B.2.1, for both JPL and Cardiff, the error values in parenthesis for the polarization angle are from the symmetry $\psi\rightarrow\psi+2\pi$.  In challenge 1B.2.2, the error values in parenthesis for the JPL entry, are due to the symmetries $\psi\rightarrow\psi+\pi/2$ and $\varphi_0\rightarrow\varphi_0-\pi$.  It is interesting to note that in challenge 1B.2.1, both JPL and Cardiff ended up on secondary sky positions that affected the precision of the other extracted parameters.  It is a reminder of a role that the antipodal sky solutions play for the extraction of MBHs from the LISA data stream.
+We can see from Table~\ref{mbh} that both groups did well in recovering the parameters of the injected binary systems.  In all cases the groups recovered almost all of the combined key SNR: the key values were 531.84 and 80.67 for 1B.2.1 and 1B.2.2 respectively.  For challenge 1B.2.1, JPL recovered an SNR of 531.57, while Cardiff recovered an SNR of 511.78.  In challenge 1B.2.2, JPL recovered an SNR of 79.86.  In the table we have adjusted the error estimates for degeneracies when certain symmetries are taken into account.  In challenge 1B.2.1, for both JPL and Cardiff, the error values for the polarization angle are given using the symmetry $\psi\rightarrow\psi+2\pi$.  In challenge 1B.2.2, the error values for both $\psi$ and $\varphi_0$ in the JPL entry are due to the symmetries $\psi\rightarrow\psi+\pi/2$ and $\varphi_0\rightarrow\varphi_0-\pi$.  
+
+It is interesting to note that in challenge 1B.2.1, both JPL and Cardiff ended up on secondary sky positions that affected the precision of the other extracted parameters.  In fact the JPL entry is almost at the antipodal sky position, which explains the large errors in $\beta$ and $\lambda$, while still recovering almost the full SNR.  This result is a continuing reminder of a role that the antipodal sky solutions play for the extraction of MBHs from the LISA data stream.  It is clear after the three challenges to date,  for MBHs, it is always safer to try and return two sky solutions for recovered parameters.  In the real LISA case, because of the symmetric sensitivity of the beam pattern functions, we will be unable to distinguish between the two sky solutions a priori.
 
 \begin{table}
 \caption{\label{mbh}Relative/absolute errors for the MBH binaries recovered by the JPL and Cardiff groups in Challenges 1B.2.1 and 1B.2.2.}
@@ -280,15 +302,15 @@ We can see from Table~\ref{mbh} that both groups did well in recovering the para
           & \multicolumn{2}{c}{1B.2.1} & \multicolumn{1}{c}{1B.2.2} \\
           & \multicolumn{1}{c}{JPL} & \multicolumn{1}{c}{Cardiff} & \multicolumn{1}{c}{JPL} \\
 \mr
-$\Delta m_{1}/m_{1}$  & \m$5.991 \times10^{-3}$ & \m0.108    & \m0.122\\
-$\Delta m_{2}/ m_{2}$ & \m$5.252 \times10^{-3}$ & \m0.111    & \m0.134\\
-$\Delta t_c/ t_c$     & \m$1.37\0\times10^{-5}$ & \m$3.601\times10^{-5}$ & $\m7.296\times10^{-5}$\\
-$\Delta D_L/ D_L$     & \m0.139            & \m1.438         & \m$4.781\times10^{-3}$\\
-$\Delta \beta$        & \m2.43             & \m1.374         & \m$5.862\times10^{-3}$\\
-$\Delta \lambda$      & \m3.133            & \m0.55          & $-1.461\times10^{-2}$\\
-$\Delta \iota$        & \m0.713            & \m0.678         & $-6.955\times10^{-2}$\\
-$\Delta \psi$         & \m5.719 ($-0.564$) & \m4.835 (1.448) & \m1.522 ($-4.88\times10^{-2}$)\\
-$\Delta \varphi_0$    & $-2.846$           & $-2.389$        & $-4.725$ ($-1.584$)\\
+$\Delta m_{1}/m_{1}$  & \m$5.991 \times10^{-3}$   & \m0.108    & \m0.122\\
+$\Delta m_{2}/ m_{2}$ & $-5.252 \times10^{-3}$    & $-0.111$    & $-0.134$\\
+$\Delta t_c/ t_c$     & \m$1.369\times10^{-5}$  & $-3.601\times10^{-5}$ & $-7.296\times10^{-5}$\\
+$\Delta D_L/ D_L$     & $-0.139$                    & $-1.438$         & \m$4.781\times10^{-3}$\\
+$\Delta \beta$        & \m2.429                   & \m1.374         & \m$5.862\times10^{-3}$\\
+$\Delta \lambda$      & \m3.133                   & \m0.548          & $-1.461\times10^{-2}$\\
+$\Delta \iota$        & \m0.713                   & \m0.678         & $-6.955\times10^{-2}$\\
+$\Delta \psi$         &$-0.564$                     & \m1.448 & $-4.878\times10^{-2}$\\
+$\Delta \varphi_0$    &$-2.846$                    & $-2.389$        & $-1.584$\\
 \br
 \end{tabular}
 \end{indented}
@@ -778,6 +800,8 @@ de les Illes Balears, Conselleria d'Economia, Hisenda i Innovaci\'o.
 \bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
 %
 \bibitem{mldcgwdaw2} Arnaud K A et al. (the MLDC Task Force) 2007 \textit{Class. Quant. Grav.} \textbf{24} S551
+%
+\bibitem{mldcamaldi2} Babak S  et al. (the MLDC Task Force and the Challenge 2 Participants) 2007 \textit{Preprint}  arXiv:0711.2667
 %
 \bibitem{JKS98}
 P.\ Jaranowski, A.\ Kr\'olak, and B.\ F.\ Schutz, Phys.\ Rev.\ D
