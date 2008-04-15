@@ -145,15 +145,15 @@ A fair range of techniques was considered. They broadly belong to the same class
 %For monochromatic white dwarf--white dwarf (WDWD) binary systems seven parameters are required to fully characterize each source. These parameters are the amplitude $\mathcal{A}$, the frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. 
 
 
-Three data sets, Challenges 1b.1.1a-c, contained a single monochromatic binary -- the main difference between the data sets was the source's frequency -- with SNR $\approx 13-25$. Table~\ref{Table_1b_1_1_correlations} summarises the values of the correlations, see Eq.~(\ref{e:C}) for each challenge entry. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1b.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
+Three data sets, Challenges 1B.1.1a-c, contained a single monochromatic binary -- the main difference between the data sets was the source's frequency -- with SNR $\approx 13-25$. Table~\ref{Table_1b_1_1_correlations} summarises the values of the correlations, see Eq.~(\ref{e:C}) for each challenge entry. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1B.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
 
 \begin{figure}
 \centerline{\includegraphics[width=7.5cm]{MLDC_1b-1.1a_sky_positions.eps}}
-\caption{Plot of the sky position for the source from the key file, for Challenge 1b.1.1a, and the participating groups.\label{Figure_1b_1_1a_sky_positions}}
+\caption{Plot of the sky position for the source from the key file, for Challenge 1b.1.1a, and the recovered sky position for each of the entries.\label{Figure_1b_1_1a_sky_positions}}
 \end{figure} 
 
 \begin{table}
-\caption{\label{Table_1b_1_1_correlations} The performance of challenge entries on the single WDWD binary challenges as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*); numbers are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is only fitting to noise.}
+\caption{\label{Table_1b_1_1_correlations} The performance of challenge entries on the single galactic binary challenges as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*); numbers are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is only fitting to noise.}
 \begin{indented}
 \item[]\begin{tabular}{lrrrrrr}
 \br
@@ -181,7 +181,7 @@ UIBBham			& 13.577	& 0.992	& 23.479	& 0.996 	\\
 \end{table}
 
 \begin{table}
-\caption{\label{Table_1b_1_1_parameter_differences} The performance of challenge entries on the single binary challenges as calculated using recovered parameter differences. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
+\caption{\label{Table_1b_1_1_parameter_differences} The performance of challenge entries on the single galactic binary challenges as calculated using recovered parameter differences. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
 \begin{indented}
 \item[]\begin{tabular}{lrrrrrrr}
 \br
@@ -221,7 +221,7 @@ MCMNJU		& 0.555		& -0.368	& 359		& -1.59		& -0.250	& -0.943	& -0.532	\\
 \end{indented}
 \end{table}
 
-The Challenge 1b.1.2 data set contained 25 ``verification'' binaries, defined as sources for which frequency and sky location are exactly known. This simulates the search for signals from galactic binaries that are already known to exist. In fact, five of these binaries are taken from a list of known binaries available on Gijs Nelemans' website~\cite{nelemanswiki}, while the remaining twenty were simulated binaries. Table~\ref{Table_1b_1_2_correlations} contains the global SNRs and correlations between all sources characterized by the parameters in the key file and the all sources recovered by the three groups that participated in this challenge. As in Challenges 1b.1.1a-c the issue with the extrinsic parameters caused the correlations to be less than ideal. However, as the intrinsic parameters were provided to the participants an ${\cal F}$-statistic calculations were not performed.
+The Challenge 1b.1.2 data set contained 25 ``verification'' binaries, defined as sources for which frequency and sky location are exactly known. This simulates the search for signals from galactic binaries that are already known to exist. In fact, five of these binaries are taken from a list of known binaries available on Gijs Nelemans' website~\cite{nelemanswiki}, while the remaining twenty were simulated binaries. Table~\ref{Table_1b_1_2_correlations} contains the global SNRs and correlations between all sources characterized by the parameters in the key file and the sources recovered by the three groups that participated in this challenge. As in Challenges 1B.1.1a-c the issue with the extrinsic parameters caused the correlations to be less than ideal. However, as the intrinsic parameters were provided to the participants an ${\cal F}$-statistic calculations were not performed. 
 
 \begin{table}
 \caption{\label{Table_1b_1_2_correlations} The performance of challenge entries on the verification binaries challenge as calculated using SNR, and $C$.}
@@ -239,9 +239,9 @@ MCMNJU		& 603.805	& 0.267		& 25	 	\\
 \end{indented}
 \end{table}
 
-The data set for Challenge 1b.1.3 contained the signals from $20$ binaries distributed across the LISA band and therefore well separated in frequency space. Unfortunately, there was an issue with the generation of the signals that caused their SNRs to be too small for detection (all were below $1$). As a silver lining to this cloud, none of the participating groups responding to this challenge reported a positive detection, providing therefore a meaningful consistency test of the performance of the algorithms.
+The data set for Challenge 1b.1.3 contained the signals from $20$ unknown binaries distributed across the LISA band and therefore well separated in frequency space. Unfortunately, there was an issue with the generation of the signals that caused their SNRs to be too small for detection (all were below $1$). As a silver lining to this cloud, none of the participating groups responding to this challenge reported a positive detection, providing therefore a meaningful consistency test of the performance of the algorithms.
 
-Challenge 1b.1.4 was a test of the search algorithms in the presence of mild source confusion. Fifty-one sources were spread across a $15 \mu{\rm Hz}$ band starting at $3\, {\rm mHz}$, with an average source density of 0.108 sources per frequency bin. Challenge 1b.1.5 tested the algorithms in the presence of a high level of source confusion, comparable to that produced by our Galaxy during the LISA mission: forty-four sources were spread across a $3 \mu{\rm Hz}$ band centered on $3 {\rm mHz}$; a source density of 0.465 sources per frequency bin. The presence of multiple sources in the data streams of these challenges introduces the possibility of the search algorithms missing sources (false negatives) as well as returning false positives. To determine the presence of false positives we first matched the frequencies of the recovered sources and those from the key file to within one frequency bin ($\frac{1}{{\rm year}}$) of each other. If the correlation between the pair was less than 0.7 (after correcting with the ${\cal F}$-statistic) the recovered source was considered a false positive. The two measures for the matches in these challenges, as in Challenge 1b.1.2, are the SNR and correlation. Again, we use the combined signal from all recovered sources compared to the signal from the sources in the key file. Table~\ref{Table_1b_1_4_correlations} gives the results of the two entries to Challenge 1b.1.4, and Table~\ref{Table_1b_1_5_correlations} gives the results of the single entry to Challenge 1b.1.5. Figure~\ref{Figure_1b_1_4_AEI} shows plots the MLDC signal from the sources in Challenge 1b.1.4 and the residuals after subtracting the signal from the sources entered by the AEI, before and after the ${\cal F}$-statistic correction.
+Challenge 1b.1.4 was a test of the search algorithms in the presence of mild source confusion. Fifty-one sources were spread across a $15 \mu{\rm Hz}$ band starting at $3\, {\rm mHz}$, with an average source density of 0.108 sources per frequency bin. Challenge 1b.1.5 tested the algorithms in the presence of a higher level of source confusion, comparable to that actually produced by our Galaxy during the LISA mission: forty-four sources were spread across a $3 \mu{\rm Hz}$ band centered on $3 {\rm mHz}$; a source density of 0.465 sources per frequency bin. The presence of multiple sources in the data streams of these challenges introduces the possibility of the search algorithms missing sources (false negatives) as well as returning detections when no source is actually present (false positives). To determine the presence of false positives we first matched the frequencies of the recovered sources and those from the key file to within one frequency bin (${1}/{{\rm year}}$) of each other. If the correlation between the pair was less than 0.7 (after correcting with the ${\cal F}$-statistic) the recovered source was considered a false positive. The two measures for the matches in these challenges, as in Challenge 1B.1.2, are the SNR and correlation. Again, we use the combined signal from all recovered sources compared to the signal from the sources in the key file. Tables~\ref{Table_1b_1_4_correlations} and~\ref{Table_1b_1_5_correlations} give the results of the two entries to Challenge 1b.1.4 and the single entry to Challenge 1B.1.5. Figure~\ref{Figure_1b_1_4_AEI} shows plots the MLDC signal from the sources in Challenge 1B.1.4 and the residuals after subtracting the signal from the sources entered by the AEI, before and after the ${\cal F}$-statistic correction.
 
 \begin{figure}
 \centerline{\includegraphics[width=10cm]{MLDC_1b-1.4_AEI_comb.eps}}
@@ -299,9 +299,12 @@ It is interesting to note that in challenge 1B.2.1, both JPL and Cardiff ended u
 \begin{indented}\lineup
 \item[]\begin{tabular}{@{}llll}
 \br
-          & \multicolumn{2}{c}{1B.2.1} & \multicolumn{1}{c}{1B.2.2} \\
-          & \multicolumn{1}{c}{JPL} & \multicolumn{1}{c}{Cardiff} & \multicolumn{1}{c}{JPL} \\
+Challenge          & \multicolumn{2}{c}{1B.2.1} & \multicolumn{1}{c}{1B.2.2} \\
+${\rm SNR}_{\rm key}$        & \multicolumn{2}{c}{531.84}	&	\multicolumn{1}{c}{80.67} \\
 \mr
+Group          & \multicolumn{1}{c}{JPL} & \multicolumn{1}{c}{Cardiff} & \multicolumn{1}{c}{JPL} \\
+\mr
+${\rm SNR}$ 	& \multicolumn{1}{c}{531.57}	&	\multicolumn{1}{c}{511.78}	&	\multicolumn{1}{c}{79.86}	\\
 $\Delta m_{1}/m_{1}$  & \m$5.991 \times10^{-3}$   & \m0.108    & \m0.122\\
 $\Delta m_{2}/ m_{2}$ & $-5.252 \times10^{-3}$    & $-0.111$    & $-0.134$\\
 $\Delta t_c/ t_c$     & \m$1.369\times10^{-5}$  & $-3.601\times10^{-5}$ & $-7.296\times10^{-5}$\\
