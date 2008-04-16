@@ -3,6 +3,7 @@
 \usepackage{url}
 \usepackage{amsbsy}
 \usepackage{graphicx}
+\input{epsf} 
 
 \newcommand{\eqref}[1]{{(\ref{#1})}}
 \def\bSo{{\bf \hat{S}_1}}
@@ -148,7 +149,7 @@ A fair range of techniques was considered. They broadly belong to the same class
 Three data sets, Challenges 1B.1.1a-c, contained a single monochromatic binary -- the main difference between the data sets was the source's frequency -- with SNR $\approx 13-25$. Table~\ref{Table_1b_1_1_correlations} summarises the values of the correlations, see Eq.~(\ref{e:C}) for each challenge entry. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1B.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
 
 \begin{figure}
-\centerline{\includegraphics[width=7.5cm]{MLDC_1b-1.1a_sky_positions.eps}}
+\centerline{\includegraphics[width=7.5cm]{MLDC_1b-1_1a_sky_positions}}
 \caption{Plot of the sky position for the source from the key file, for Challenge 1b.1.1a, and the recovered sky position for each of the entries.\label{Figure_1b_1_1a_sky_positions}}
 \end{figure} 
 
@@ -244,7 +245,7 @@ The data set for Challenge 1b.1.3 contained the signals from $20$ unknown binari
 Challenge 1b.1.4 was a test of the search algorithms in the presence of mild source confusion. Fifty-one sources were spread across a $15 \mu{\rm Hz}$ band starting at $3\, {\rm mHz}$, with an average source density of 0.108 sources per frequency bin. Challenge 1b.1.5 tested the algorithms in the presence of a higher level of source confusion, comparable to that actually produced by our Galaxy during the LISA mission: forty-four sources were spread across a $3 \mu{\rm Hz}$ band centered on $3 {\rm mHz}$; a source density of 0.465 sources per frequency bin. The presence of multiple sources in the data streams of these challenges introduces the possibility of the search algorithms missing sources (false negatives) as well as returning detections when no source is actually present (false positives). To determine the presence of false positives we first matched the frequencies of the recovered sources and those from the key file to within one frequency bin (${1}/{{\rm year}}$) of each other. If the correlation between the pair was less than 0.7 (after correcting with the ${\cal F}$-statistic) the recovered source was considered a false positive. The two measures for the matches in these challenges, as in Challenge 1B.1.2, are the SNR and correlation. Again, we use the combined signal from all recovered sources compared to the signal from the sources in the key file. Tables~\ref{Table_1b_1_4_correlations} and~\ref{Table_1b_1_5_correlations} give the results of the two entries to Challenge 1b.1.4 and the single entry to Challenge 1B.1.5. Figure~\ref{Figure_1b_1_4_AEI} shows plots the MLDC signal from the sources in Challenge 1B.1.4 and the residuals after subtracting the signal from the sources entered by the AEI, before and after the ${\cal F}$-statistic correction.
 
 \begin{figure}
-\centerline{\includegraphics[width=10cm]{MLDC_1b-1.4_AEI_comb.eps}}
+\centerline{\includegraphics[width=10cm]{MLDC_1b-1_4_AEI_comb}}
 \caption{\label{Figure_1b_1_4_AEI}Plot of the amplitude of the signal in MLDC 1b.1.4 and the residual after subtracting the signal from the AEI entry, before and after the ${\cal F}$-statistic correction.}
 \end{figure} 
 
@@ -330,10 +331,17 @@ combined SNR between the data set and the recovered signal (see Table~\ref{EMRI1
  SNR since their method (based on the time-frequency analysis) targeted only intrinsic parameters and was insensitive to the initial phases. Therefore we have produced also the table of the relative errors in the parameter estimation and the results are summarized in the 
  Table~\ref{EMRI2}.
  
- \begin{table}
-\caption{\label{EMRI1} Errors for challenge 1.3.X}
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-\hline
+% \begin{table}
+%\caption{\label{EMRI1} Errors for challenge 1.3.X}
+%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+%\hline
+
+
+\begin{table}
+\caption{\label{EMRI1} Errors for challenge 1.3.X.}
+\begin{indented}\lineup
+\item[]\begin{tabular}{@{}lllllllllll}
+\br
 Entry &  $\frac{d\beta}{\Delta\beta}$ & 
 $\frac{d\lambda}{\Delta\lambda}$ &
  $\frac{d\theta_K}{\Delta\theta_K}$ & $\frac{d\phi_K}{\Delta\phi_K}$ 
@@ -359,14 +367,21 @@ EtfAG-1B.3.4 & -0.56   &   0.49   &   0.56   &   -0.34   &   0.059   &   0.12   
 \hline
 BBGP-1B.3.5 &  -0.48   &   -0.14   &   -0.35   &   0.1   &   -0.094   &   -0.094   &   0.55   &   -0.0021    &   -0.017      &   -0.060  \\
 EtfAG-1B.3.5 &  -0.58   &   0.46   &   0.27   &   -0.084   &   0.20   &   -0.7   &   0.83   &   -0.066     &   0.066     &   0.27  \\
-\hline
+\br
 \end{tabular}
+\end{indented}
 \end{table}
 
+%\begin{table}
+%\caption{\label{EMRI2} Overlaps for challenge 1.3.X, the true SNR are: 1.3.1 - 123.7, 1.3.2 - 133.46, 1.3.3 - 81.0, 1.3.4 - 104.5, 1.3.5 - 57.6.} 
+%\begin{tabular}{|c|c|c|c|c|c|}
+%\hline
+
 \begin{table}
-\caption{\label{EMRI2} Overlaps for challenge 1.3.X, the true SNR are: 1.3.1 - 123.7, 1.3.2 - 133.46, 1.3.3 - 81.0, 1.3.4 - 104.5, 1.3.5 - 57.6.} 
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline
+\caption{\label{EMRI2} Overlaps for challenge 1.3.X, the true SNR are: 1.3.1 - 123.7, 1.3.2 - 133.46, 1.3.3 - 81.0, 1.3.4 - 104.5, 1.3.5 - 57.6.}
+\begin{indented}\lineup
+\item[]\begin{tabular}{@{}llllll}
+\br
 Entry & overlap (A) & $SNR_A$ &  overlap (E) & $SNR_E$ & $SNR$ \\
 \hline
 BBGP-1B.3.1 & 0.57 & 51 .0 & 0.58 & 51.6 & 72.5\\
@@ -384,8 +399,9 @@ BBGP-1B.3.4 & 0.0007 & 2.1 & -0.0002 & 0.8 & 2.1\\
 BBGP-1B.3.4$^\mathrm{b}$ & 0.16 & 13.9 & 0.04 & 6.7 & 14.6 \\ 
 \hline
 BBGP-1B.3.5 & 0.09 & 3.4 & 0.1 & 4.2 & 5.3\\
-\hline
-\end{tabular}\\
+\br
+\end{tabular}
+\end{indented}
 $^\mathrm{a}$ corrected sign of the latitude\\
 $^\mathrm{b}$ corrected phases at $t=0$
 \end{table}
@@ -587,7 +603,7 @@ the functions $C(t)$ and $S(t)$ describe slowly varying effects such as the rota
 The starting point for each realization of data set 3.1 are two large catalogs provided by Gijs Nelemans (files \url{MLDCwaveforms/Galaxy3/Data/AMCVn_GWR_MLDC.dat} and \url{dwd_GWR_MLDC.dat} in the LISAtools installation), which contain the parameters of $26.1 \times 10^6$ detached and $34.2 \times 10^6$ interacting systems produced by the population synthesis codes described in \cite{Nelemans:2001hp, Nelemans:2003ha}. Figure \ref{fig:binaries} shows the distribution of the binaries in the catalogs over $f$ and $\dot{f}$. Recent work by Roelofs, Nelemans and Groot \cite{Roelofs:2007rn} suggests that the model in \cite{Nelemans:2003ha} overpredicts the number of (AM CVn) interacting systems by a factor of 5--10, but we did not implement this correction for Challenge 3. 
 %
 \begin{figure}
-\centerline{\includegraphics[width=10cm]{densities2b-r.eps}}
+\centerline{\includegraphics[width=10cm]{densities2b-r}}
 \caption{Histogram of the density of Galactic binaries in the Nelemans catalogs, binned by $\log_{10} f$ and $\log_{10} \dot{f}$.\label{fig:binaries}}
 \end{figure}
 
