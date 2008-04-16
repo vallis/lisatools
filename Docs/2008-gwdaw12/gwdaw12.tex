@@ -255,7 +255,7 @@ Challenge 1b.1.4 was a test of the search algorithms in the presence of mild sou
 \br
 Group & SNR & $C$ & \# Recovered & False Positives \\
 \br
-\centre{5}{Challenge 1b.1.4 (${\rm SNR}_{\rm key}=340.233$, $51$ Sources)}  \\
+\centre{5}{Challenge 1B.1.4 (${\rm SNR}_{\rm key}=340.233$, $51$ Sources)}  \\
 \mr
 AEI		& 375.366	& 0.774		& 13	& 2	\\
 AEI*		& 329.344	& 0.966		& 13	& 2	\\
@@ -272,7 +272,7 @@ GSFC*		& 90.506	& 0.282		& 6	& 1	\\
 \br
 Group & SNR & $C$ & \# Recovered & False Positives\\
 \br
-\centre{5}{Challenge 1b.1.5 (${\rm SNR}_{\rm key}=273.206$, $44$ Sources)}  \\
+\centre{5}{Challenge 1B.1.5 (${\rm SNR}_{\rm key}=273.206$, $44$ Sources)}  \\
 \mr
 AEI		& 208.273	& 0.453		& 3	 & 0	\\
 AEI*		& 251.985	& 0.929		& 3	 & 0	\\
@@ -282,20 +282,14 @@ AEI*		& 251.985	& 0.929		& 3	 & 0	\\
 
 \subsection{Massive Black Hole Binary Systems: Challenges 1B.2.X}
 
-Two data sets were released each containing a single and loud in-spiral signal from a MHB binary embedded in Gaussian and stationary noise; as in all the challenges so far, the in-spiral waveform was approximated the restricted post$^2$-Newtonian order and the black holes are assumed to be non-spinning and in a circular orbit (see Section~\ref{s:challenge-3} for the important difference in the waveform model introduced starting from Challenge 3). Nine parameters described the waveform: the two masses $m_{1,2}$, the time to coalescence of the binary $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The prior range, known to the Challenge participants, from which the signals were drawn was The groups were given the following limited prior information on the parameters of the systems.  One of the individual masses in each case would be in the range $1\leq m_1/10^6\,M_{\odot}\leq 5$, while the other mass would be in the range $m_2=m_1/x$ where $1\leq x\leq 4$.  The time to coalescence  would be $t_c = 6\pm 1$ months for Challenge 2.1 and $t_c=400\pm40$ days for Challenge 2.2.\\
+Two data sets were released each containing a single and loud in-spiral signal from a MHB binary embedded in Gaussian and stationary noise; as in all the challenges so far, the in-spiral waveform was approximated at the restricted post$^2$-Newtonian order and the black holes were assumed to be non-spinning and in a circular orbit (see Section~\ref{s:challenge-3} for the important difference in the waveform model introduced in Challenge 3). Nine parameters described the waveform: the two masses $m_{1,2}$, the time to coalescence of the binary $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial gravitational wave phase $\varphi_0$.  The prior range, known to the Challenge participants, from which the signals were drawn was $m_1 = 1-5 \times 10^6\,M_{\odot}$, $m_1/m_2 = 1-4$ and the time to coalescence $t_c = 6\pm 1$ months and $400\pm40$ days for Challenge 1B.2.1 and Challenge 1B.2.2, respectively. All the other parameters were selected randomly from the full range.
 
-
-\noindent Two groups submitted results for the massive black hole search :\\
-
-\noindent\emph{ JPL} : used a three step strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, finishing with a Metropolis-Hastings Monte Carlo refinement.  The JPL group submitted entries for both 2.1 and 2.2.\\
-\emph{ Cardiff} : used a stochastic template bank matched filter search\cite{cardiffmbh}.  The Cardiff group submitted an entry for 2.1.\\
-
-We can see from Table~\ref{mbh} that both groups did well in recovering the parameters of the injected binary systems.  In all cases the groups recovered almost all of the combined key SNR: the key values were 531.84 and 80.67 for 1B.2.1 and 1B.2.2 respectively.  For challenge 1B.2.1, JPL recovered an SNR of 531.57, while Cardiff recovered an SNR of 511.78.  In challenge 1B.2.2, JPL recovered an SNR of 79.86.  In the table we have adjusted the error estimates for degeneracies when certain symmetries are taken into account.  In challenge 1B.2.1, for both JPL and Cardiff, the error values for the polarization angle are given using the symmetry $\psi\rightarrow\psi+2\pi$.  In challenge 1B.2.2, the error values for both $\psi$ and $\varphi_0$ in the JPL entry are due to the symmetries $\psi\rightarrow\psi+\pi/2$ and $\varphi_0\rightarrow\varphi_0-\pi$.  
-
-It is interesting to note that in challenge 1B.2.1, both JPL and Cardiff ended up on secondary sky positions that affected the precision of the other extracted parameters.  In fact the JPL entry is almost at the antipodal sky position, which explains the large errors in $\beta$ and $\lambda$, while still recovering almost the full SNR.  This result is a continuing reminder of a role that the antipodal sky solutions play for the extraction of MBHs from the LISA data stream.  It is clear after the three challenges to date,  for MBHs, it is always safer to try and return two sky solutions for recovered parameters.  In the real LISA case, because of the symmetric sensitivity of the beam pattern functions, we will be unable to distinguish between the two sky solutions a priori.
+Two groups submitted results for the massive black hole search. A collaboration of JPL scientists (that tackled both data sets) employed a three step hierarchical strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, and a final stage based on a Metropolis-Hastings Monte Carlo technique to evaluate of posterior density functions of the model parameters. A group from Cardiff University used a stochastic template bank matched filter search\cite{cardiffmbh} to analyse the Challenge 1B.2.1 data set. The results of the analyses are summarised in Table~\ref{mbh}.  The recovered SNR associated to the estimate of the parameters is very close to $SNR_\mathrm{key}$, which provide reassurance on the success of the analysis. However closer inspection of the errors on the individual parameters, in particular sky position $\beta$ and $\lambda$, shows large discrepancies. In fact for Challenge 1B.2.1, both JPL and Cardiff analyses converged on secondary maxima of the likelihood function, very close in value to the true mode (as shown by the recovered SNR), but far in some of the parameters from the actual source parameters. In fact the JPL result places the source at almost at the antipodal sky position, while still recovering the SNR to better than one part in a thousand. This is a genuine result, which shows the benefit of actual analyses on mock data, compared to simple studies of the variance-covariance matrix that cannot uncover these subtleties. The specific results of Challenge 1B.2.1  have important repercussions for astronomy, \emph{e.g.} in follow-ups of LISA-identified sources with other telescopes and call therefore for . It would however be an error to draw conclusive statements about the LISA ability of identifying MBH binaries in the sky: the waveforms used so far in MLDCs include simplifications, such as lack of spins and higher order harmonics in the amplitude that are known to break degeneracy amongst parameters. Challenge 3 MBH binaries waveforms will include the effect of spins, see next Section, and the results of the analyses will provide a more realistic insight into such issues.
 
 \begin{table}
-\caption{\label{mbh}Relative/absolute errors for the MBH binaries recovered by the JPL and Cardiff groups in Challenges 1B.2.1 and 1B.2.2.}
+\caption{\label{mbh}Relative/absolute errors for the MBH binaries in Challenges 1B.2.1 and 1B.2.2.
+Error estimates have been adjusted for degeneracies when certain symmetries are taken into account.  In Challenge 1B.2.1, the error values for the polarization angle are given using the symmetry $\psi\rightarrow\psi+2\pi$.  In Challenge 1B.2.2, the error values for both $\psi$ and $\varphi_0$ are due to the symmetries $\psi\rightarrow\psi+\pi/2$ and $\varphi_0\rightarrow\varphi_0-\pi$.  
+}
 \begin{indented}\lineup
 \item[]\begin{tabular}{@{}llll}
 \br
