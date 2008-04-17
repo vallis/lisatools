@@ -315,21 +315,11 @@ $\Delta \varphi_0$    &$-2.846$                    & $-2.389$        & $-1.584$\
 \end{indented}
 \end{table}
 
-\subsection{Challenges 1B.3.X: EMRIs}
+\subsection{Extreme Mass Ratio Inspirals: Challenges 1B.3.X}
 
-Three groups participated in this challenge and those are the same groups which 
-submitted results for the challenge 2 \cite{mldcgwdaw2}. The basic underlying techniques 
-used in the extracting the parameters remained the same, but were further 
-improved and tuned (see more detailed article on EMRIs in this issue).
-The challenge for EMRIs had five data sets with a single signal in each, for details on the 
-parameter distribution and SNRs we refer reader to \cite{mldcgwdaw2}. The evaluation of the 
-results was performed along the same line as for the challenge 2 and similar to the MBH binaries 
-evaluation. In particular we have computed overlaps of the signals generated with recovered 
-parameters with the true signal for each $A$ and $E$ channels. We have also evaluated 
-combined SNR between the data set and the recovered signal (see Table~\ref{EMRI1}).
- For the results submitted by Gair, Mandel, and Wen (EtfAG, \cite{gmw}) we could not evaluate overlaps and 
- SNR since their method (based on the time-frequency analysis) targeted only intrinsic parameters and was insensitive to the initial phases. Therefore we have produced also the table of the relative errors in the parameter estimation and the results are summarized in the 
- Table~\ref{EMRI2}.
+Searches for EMRIs were only partially attempted for Challenge 2 due to the complexity of an even basic end-to-end analysis pipeline. EMRIs data sets in Challenge 1B -- five of them each containing a single EMRI superimposed to Gaussian and stationary noise with combined optimal SNRs between $\approx 55$ and 135 and a range of source parameters, see~\cite{mldcgwdaw2} for details -- represented the first real test-bed for analysis algorithms developed for this critical source class. Three groups -- here identified by EtfAG, BBGP and MT2 -- involving scientists at the AEI, Caltech, Cambridge University, Montana State University,  University of Southampton and the University of Western Australia submitted entries for this challenge. EftAG employed a time-frequency technique~\cite{gmw}, whereas BBGP and MT2 developed coherent approaches based on Monte Carlo techniques that differed in implementation (NEED GWDAW REF). The results were assessed using the criteria described in the introduction, although the EtfAG time-frequency analysis is insensitive to extrinsic parameters and the correlation and recovered SNR could not be computed. A summary of the results is given in Tables~\ref{EMRI1, EMRI2}. 
+
+Overall the results of this exercise were positive and provide a tangible proof that such complex problem is being successfully tackled. In fact, at least two radically different techniques are being pursued, both of which perform well on present MLDC data sets; all the EMRIs were detected, although only two groups analysed each data set and there was a spread of performance of the same analysis pipeline depending on the data set; somewhat poorer performances of selected analyses were due to lack of computational time before the deadline for submission and/or issues that were well understood but could not be resolved in time. It is worth highlighting some of the exquisite results for Challenge 1B.3.1, that seem to confirm (although in a simplified scenario) that LISA could indeed provide measurements of MBH parameters with unprecedented accuracy. It is also interesting to notice that for this specific type of data sets time-frequency techniques performed as well (and in some cases outperformed) in parameter estimation coherent analyses in Challenge 1B.3.3-4. We caution the reader that general conclusions about the relative merit of analyses approaches and/or the overall quality of LISA astronomy for EMRIs would be inappropriate: it is not known as yet how these techniques scale as the SNR decreases -- and this will begin to be addressed by Challenge 3 -- and in situations in which EMRIs overlap a with large number of galactic binary signals and possibly with each other.
  
 % \begin{table}
 %\caption{\label{EMRI1} Errors for challenge 1.3.X}
@@ -378,40 +368,40 @@ EtfAG-1B.3.5 &  -0.58   &   0.46   &   0.27   &   -0.084   &   0.20   &   -0.7  
 %\hline
 
 \begin{table}
-\caption{\label{EMRI2} Overlaps for challenge 1.3.X, the true SNR are: 1.3.1 - 123.7, 1.3.2 - 133.46, 1.3.3 - 81.0, 1.3.4 - 104.5, 1.3.5 - 57.6.}
+\caption{\label{EMRI2} The overlaps and recovered SNRs for the TDI channels A, E and the combined recovered SNR for Challenge 1.3.X. Entries labelled with (a) and (b) have been corrected for the sign of the latitude and the reference phases at $t=0$, respectively.}
 \begin{indented}\lineup
 \item[]\begin{tabular}{@{}llllll}
 \br
-Entry & overlap (A) & $SNR_A$ &  overlap (E) & $SNR_E$ & $SNR$ \\
+Entry & overlap (A) & $\mathrm{SNR}_A$ &  overlap (E) & $\mathrm{SNR}_E$ & $\mathrm{SNR}$ \\
 \hline
+	&&&&& ($\mathrm{SNR}_\mathrm{key} = 123.7$)	\\
 BBGP-1B.3.1 & 0.57 & 51 .0 & 0.58 & 51.6 & 72.5\\
 MT2-1B.3.1  & 0.998 & 86.1 & 0.997 & 88.3 & 123.4\\
 \hline
+	&&&&& ($\mathrm{SNR}_\mathrm{key} = 133.5$)	\\
 BBGP-1B.3.2 & 0.07 & 6.6 & 0.18 & 18.2 & 17.6\\
 BBGP-1B.3.2$^\mathrm{a}$ & 0.39 & 37.6 & 0.41 & 39.8 & 54.7\\
 MT2-1B.3.2  & 0.54 & 49.5 & 0.54 & 50.8 & 70.9 \\
 \hline
+	&&&&& ($\mathrm{SNR}_\mathrm{key} = 81.0$)	\\
 BBGP-1B.3.3 & -0.06 & -4.2 & -0.0003 & -0.05 & -3.0 \\
 BBGP-1B.3.3$^\mathrm{a}$ & -0.2 & -11.5 & -0.32 & -19.0 & -21.5\\
 MT2-1B.3.3  & 22.0 &  22.0 & 20.5 & 20.9 & 30.4 \\
 \hline
+	&&&&& ($\mathrm{SNR}_\mathrm{key} = 104.5$)	\\
 BBGP-1B.3.4 & 0.0007 & 2.1 & -0.0002 & 0.8 & 2.1\\
 BBGP-1B.3.4$^\mathrm{b}$ & 0.16 & 13.9 & 0.04 & 6.7 & 14.6 \\ 
 \hline
+	&&&&& ($\mathrm{SNR}_\mathrm{key} = 57.6$)	\\
 BBGP-1B.3.5 & 0.09 & 3.4 & 0.1 & 4.2 & 5.3\\
 \br
 \end{tabular}
 \end{indented}
-$^\mathrm{a}$ corrected sign of the latitude\\
-$^\mathrm{b}$ corrected phases at $t=0$
+%$^\mathrm{a}$ corrected sign of the latitude\\
+%$^\mathrm{b}$ corrected phases at $t=0$
 \end{table}
 
-
-From booth tables one can see clear detection and excellent estimation of the parameters for
-1.3.1 by MT2 group (N. Cornish). Other submissions seem to suffer by the same problem as before (in challenge 1): the search algorithm got stack at the secondary maxima. 
- 
-
-
+From this early development work and analysis results it is clearly emerging that the main challenge for (isolated) EMRI analyses is to deal with a very complex structure of the parameter space that produces a number of secondary maxima of the likelihood function with fairly similar values but well separated in parameter space. A similar issue was discussed for the MBH binary analyses.
 
 \section{Synopsis of Challenge 3}
 \label{s:challenge-3}
