@@ -108,30 +108,18 @@ Challenge 3 data sets have just been released and results are due in December 20
 \section{Report on Challenge 1B}
 \label{s:challenge-1b}
 
-Challenge 1B focuses on three classes of sources treated independently: (monochromatic) galactic binaries, massive black hole binaries and extreme mass ratio inspirals. The results submitted by the participants were assessed still using the simple criteria considered in previous rounds~\cite{mldcgwdaw1, mldcamaldi2} whereby the parameters and waveform from the key file (corresponding to the true signal included in the data set) were compared to those recovered, using as figures of merit the {\em best recovered} SNR
+Challenge 1B focused on three classes of GW sources, each tackled in a separate subchallenge: monochromatic Galactic binaries, MBH binaries and EMRIs. The challenge solutions submitted by the participants were assessed with the simple criteria adopted in previous rounds \cite{mldcgwdaw1, mldcamaldi2}. Detector-response data were generated with the \emph{best-fit} source parameters $\vec{\lambda}_\mathrm{sub}$ submitted by the participants, using the same code previously employed to build the challenge data sets. These data were then compared to the noiseless data containing the \emph{true} waveforms, using as a figure of merit the \emph{recovered} SNR
 %
 \begin{equation}
-\mathrm{SNR}_\mathrm{best}  = \frac{(A_\mathrm{true}|A_\mathrm{best}) + (E_\mathrm{true}|E_\mathrm{best})}
-{\sqrt{(A_\mathrm{best}|A_\mathrm{best}) + (E_\mathrm{best}|E_\mathrm{best})}}\,,
+\mathrm{SNR}(\vec{\lambda}_\mathrm{sub}) = \frac{(A_\mathrm{true}|A_\mathrm{sub}) + (E_\mathrm{true}|E_\mathrm{sub})} {\sqrt{(A_\mathrm{sub}|A_\mathrm{sub}) + (E_\mathrm{sub}|E_\mathrm{sub})}}\,,
 \label{e:SNR}
 \end{equation}
 %
-the {\em correlation}  
-%
-\begin{equation}
-\label{cor}
-C = \frac{\left(h_{\rm key}|h_{\rm rec}\right)}{\sqrt{\left(h_{\rm key}|h_{\rm key}\right)\left(h_{\rm rec}|h_{\rm rec}\right)}}\,,
-\label{e:C}
-\end{equation}
-%
-of the true waveform $h_{\rm key}$ with the recovered one $h_{\rm rec}$, and the simple difference 
-%
-\begin{equation}
-\Delta\lambda = \lambda_{\rm key} - \lambda_{\rm rec}\,.
-\label{e:deltalambda}
-\end{equation}
-%
-between the true parameter in the key file $\lambda_{\rm key}$ and the "best fit" of the recovered parameter $h_{\rm rec}$. In the previous equations, $(.|.)$ stands for the usual inner product and $A$ and $E$ denote the two noise-orthogonal TDI channels.
+where $A$ and $E$ denote time series for the noise-orthogonal TDI observables $(2X - Y - Z)/3$ and $(Z - Y)/\sqrt{3}$ \cite{sensitivity} and $(\cdot|\cdot)$ denotes the usual signal product weighted by instrument noise.
+We also quote the \emph{correlation} $C = \mathrm{SNR} / \mathrm{SNR}_\mathrm{opt}$, where 
+$\mathrm{SNR}_\mathrm{opt} = \sqrt{(A_\mathrm{true}|A_\mathrm{true}) + (E_\mathrm{true}|E_\mathrm{true})}$ is the \emph{optimal} SNR. For a perfect detection $C = 1$, but fluctuations $\sim 1 / \mathrm{SNR}_\mathrm{opt}$ are expected because of instrument noise. When we examine parameter errors, these are defined simply as
+$\Delta\lambda^i = \lambda^i_\mathrm{sub} - \lambda^i_\mathrm{true}$; in some cases it makes sense to consider the \emph{fractional} parameter errors $\Delta \lambda^i / \lambda^i = (\lambda^i_\mathrm{sub} - \lambda^i_\mathrm{true}) / \lambda^i_\mathrm{true}$.
+%PROBLEM: The text previously had the opposite definition!
 
 \subsection{Galactic binaries: Challenges 1B.1.X}
 
@@ -145,7 +133,7 @@ A fair range of techniques was considered. They broadly belong to the same class
 %For monochromatic white dwarf--white dwarf (WDWD) binary systems seven parameters are required to fully characterize each source. These parameters are the amplitude $\mathcal{A}$, the frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. 
 
 
-Three data sets, Challenges 1B.1.1a-c, contained a single monochromatic binary -- the main difference between the data sets was the source's frequency -- with SNR $\approx 13-25$. Table~\ref{Table_1b_1_1_correlations} summarises the values of the correlations, see Eq.~(\ref{e:C}) for each challenge entry. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1B.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
+Three data sets, Challenges 1B.1.1a-c, contained a single monochromatic binary -- the main difference between the data sets was the source's frequency -- with SNR $\approx 13-25$. Table~\ref{Table_1b_1_1_correlations} summarises the values of the correlations for each challenge entry. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1B.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
 
 \begin{figure}
 \centerline{\includegraphics[width=7.5cm]{MLDC_1b-1_1a_sky_positions}}
@@ -869,7 +857,8 @@ Cannon K and Read J 2006 \textit{Phys. Rev. D} {\bf 73} 105001
 % 
 \bibitem{PorterCornish} Porter E K  and Cornish N J \ 2008, \textit{Preprint} arXiv:0804.0332
 %
-
+\bibitem{sensitivity} Vallisneri M, Crowder J Tinto M 2008 \textit{Class. Quant. Grav.} \textbf{25} 065005
+%
 \end{thebibliography}
 \end{document}
 
