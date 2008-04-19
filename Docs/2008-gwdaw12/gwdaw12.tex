@@ -123,17 +123,13 @@ $\Delta\lambda^i = \lambda^i_\mathrm{sub} - \lambda^i_\mathrm{true}$; in some ca
 
 \subsection{Galactic binaries: Challenges 1B.1.X}
 
-Seven different Challenge 1B.1.X data sets contained signals from monochromatic binaries in a variety of combinations. Seven parameters are required to fully characterize each source: the amplitude $\mathcal{A}$, the (constant) frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. Five groups -- members of the Goddard Space Flight Center (GSFC), a group from the Institute of Mathematics of the Polish Academy of Science and the Institute of Theoretical Physics at the University of Wroc{\l}aw (IMPAN), members of the Max Planck Institute for Gravitational Physics, the Albert Einstein Institute (AEI), a collaboration of scientists from the Institute of Applied Mathematics of the Chinese Academy of Sciences and the Department of Astronomy of Nanjing University (MCMNJU) and members of the Universitat de les Illes Balears and the University of Birmingham (UIBBham) --   submitted entries for this class of Challenges, though many groups concentrated only on  selected data sets and only AEI provided entries for every challenge. 
+Data sets 1B.1.1a--c and 1B.1.2--5 contained GW signals from monochromatic Galactic binaries, in a variety of parameter ranges and source combinations. Seven parameters are required to fully characterize each such source: the amplitude $\mathcal{A}$, the (constant) frequency $f$, the ecliptic latitude and longitude $\beta$ and $\lambda$, the inclination and polarization angles $\iota$ and $\psi$, and the initial phase $\phi_0$. Entries were submitted by five groups: \textbf{GSFC} (scientists at Goddard Space Flight Center); \textbf{IMPAN} (the Institute of Mathematics of the Polish Academy of Science and the Institute of Theoretical Physics at the University of Wroc{\l}aw); \textbf{AEI} (the Albert Einstein Institute in Golm, Germany); \textbf{MCMNJU} (the Institute of Applied Mathematics of the Chinese Academy of Sciences and the Department of Astronomy of Nanjing University); \textbf{UIBBham} (the University of the Balearic Islands and the University of Birmingham). However, all groups except AEI concentrated only on a subset of the challenges.
 
-A fair range of techniques was considered. They broadly belong to the same classes adopted in the past for similar MLDCs, see Refs.~\cite{mldcgwdaw1, mldcamaldi2} and references therein. An healthy spectrum of techniques has therefore been identified and has begun to consolidate for this class of signals, but new implementations and different technical solutions are being pursued. GSFC used the X-Ray Spectral Fitting Package (XSPEC)~\cite{XSPECwebsite} to fit templates to the energy spectra. The package includes a Levenberg-Marquardt optimization algorithm which was used to obtain an initial guess for the source parameters. A Markov Chain Monte Carlo (MCMC) routine, also available in XSPEC, was then used to arrive at the best fit parameters for the sources. IMPAN used a grid-based search featuring a constraint optimal hypercube lattice and matched filtering; the ${\cal F}$-statistic~\cite{fstat} was employed to reduced the search space from $7$ to $3$ parameters. A similar technique was adopted by AEI, and a more complete description of the method is found in~\cite{prixwhelan}, though the current modeling of the waveform has been updated to the rigid adiabatic approximation instead of using the long-wavelength limit. MCMNJU, used a genetic algorithm featuring the ${\cal F}$-statistic to determine the source parameters, and UIBBham used a MCMC approach, described in more detail in~\cite{tvv}.
+Participants employed a fair range of techniques, in the same broad class as adopted for similar challenges in the past \cite{mldcgwdaw1,mldcamaldi2}; however, new implementations and different technical solutions are being pursued. \textbf{GSFC} used the X-Ray Spectral Fitting Package (XSPEC) \cite{XSPECwebsite} to fit templates to energy spectra. The package includes a Levenberg--Marquardt optimization algorithm, which was used to obtain an initial guess for the source parameters. A Markov-Chain Monte Carlo (MCMC) routine, also available in XSPEC, was then used to converge to the best-fit source parameters. \textbf{IMPAN} set up a grid-based matched-filtering search with an optimized placement of templates on a hypercubic lattice. The ${\cal F}$-statistic \cite{fstat} was used to reduce the search space from $7$ to $3$ parameters. A similar technique was adopted by \textbf{AEI} \cite{prixwhelan}, in conjunction with a rigid--adiabatic model of detector response. \textbf{MCMNJU} used a genetic algorithm that optimized the ${\cal F}$-statistic; \textbf{UIBBham} implemented a MCMC search described in more detail in \cite{tvv}.
 
-%There were four collaborations that participated in the searches of the MLDC data sets containing monochromatic sources. The participants from the Goddard Space Flight Center (GSFC) used the X-Ray Spectral Fitting Package (XSPEC)~\cite{XSPECwebsite} to fit templates to the energy spectra. The package includes a Levenberg-Marquardt optimization algorithm which was used to get an initial guess for the source parameters. A Markov Chain Monte Carlo (MCMC) routine, also available in XSPEC, was then used to arrive at the best fit parameters for the sources. The collaboration from the Institute of Mathematics of the Polish Academy of Science (IMPAN) and the Institute of Theoretical Physics at the University of Wroc{\l}aw, performed a grid-based search featuring a constraint optimal hypercube lattice and matched filtering. They also use the ${\cal F}$-statistic~\cite{fstat} to shrink the search space from $7$ to $3$ parameters. The participants from the Max Planck Institute for Gravitational Physics, the Albert Einstein Institute (AEI), also used a grid-based approach using the ${\cal F}$-statistic. A more complete description of the method is found in \cite{AEI_MLDC_1_paper}, though the current modeling of the waveform has been updated to the rigid adiabatic approximation instead of using the long-wavelength limit. A collaboration of people from the Institute of Applied Mathematics of the Chinese Academy of Sciences and the Department of Astronomy of Nanjing University (MCMNJU), used a genetic algorithm featuring the ${\cal F}$-statistic to determine the source parameters.
-
-
-%For monochromatic white dwarf--white dwarf (WDWD) binary systems seven parameters are required to fully characterize each source. These parameters are the amplitude $\mathcal{A}$, the frequency $f$, the sky location $\theta,~\phi$, the inclination angle $\iota$, the polarization angle $\psi$, and the initial phase $\phi_0$. 
-
-
-Three data sets, Challenges 1B.1.1a-c, contained a single monochromatic binary -- the main difference between the data sets was the source's frequency -- with SNR $\approx 13-25$. Table~\ref{Table_1b_1_1_correlations} summarises the values of the correlations for each challenge entry. As some of the entries had close fits to the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues matching the remaining (extrinsic) parameters, these parameters were recalculated using the ${\cal F}$-statistic~\cite{fstat}. Results for these recalculated parameters are also provided. Table~\ref{Table_1b_1_1_parameter_differences} provides the deviations of the parameter values from the values in the key files of Challenges 1B.1.1a-c. Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
+Each of data sets 1B.1.1a--c contained a GW signal from a single monochromatic binary (differing by frequency band), with SNR $\approx 13\mbox{--}25$. Table \ref{Table_1b_1_1_correlations} lists the SNRs and correlations recovered by each collaboration. Because some of the entries included close matches for the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues in matching the remaining (extrinsic) parameters, we recomputed these by maximizing the ${\cal F}$-statistic \cite{fstat} for the intrinsic parameters provided. The resulting SNRs and $C$s are denoted by asterisks. Table \ref{Table_1b_1_1_parameter_differences} lists parameter errors (also as recomputed by maximizing the ${\cal F}$-statistic, in the rows with asterisks).
+%UPTOHERE...
+Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
 
 \begin{figure}
 \centerline{\includegraphics[width=7.5cm]{MLDC_1b-1_1a_sky_positions}}
@@ -141,72 +137,67 @@ Three data sets, Challenges 1B.1.1a-c, contained a single monochromatic binary -
 \end{figure} 
 
 \begin{table}
-\caption{\label{Table_1b_1_1_correlations} The performance of challenge entries on the single galactic binary challenges as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*); numbers are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is only fitting to noise.}
-\begin{indented}
-\item[]\begin{tabular}{lrrrrrr}
+\caption{SNRs and correlations for single--Galactic-binary challenges 1B.1.1a--c. Asterisks denote entries corrected by maximizing the ${\cal F}$-statistic and using the resulting extrinsic parameters; these corrections are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is merely fitting noise. \textbf{PROBLEM: the SNRs reported are not what we define above.}\label{Table_1b_1_1_correlations}}
+%PROBLEM: these values are minus the parameter errors as defined above
+%PROBLEM: parentheses maybe nicer than asterisks
+\begin{indented} \lineup
+\item[]\begin{tabular}{lllllll}
 \br
-Group & SNR & $C$ & SNR & $C$ & SNR & $C$ \\
-\br
-& \centre{2}{Challenge 1b.1.1a}
-& \centre{2}{Challenge 1b.1.1b}
-& \centre{2}{Challenge 1b.1.1c} \\
-& \centre{2}{(${\rm SNR}_{\rm key}=13.819$)}
-& \centre{2}{(${\rm SNR}_{\rm key}=24.629$)}
-& \centre{2}{(${\rm SNR}_{\rm key}=15.237$)} \\
+& \centre{2}{1B.1.1a}
+& \centre{2}{1B.1.1b}
+& \centre{2}{1B.1.1c} \\
+& \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} & \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} & \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} \\
 \mr
-AEI			& 20.435	& 0.108	& 18.652	& 0.922 & 1.949	& -0.190		\\
-AEI*			& 14.199	& 0.984	& 23.266	& 0.996	& 14.770	& 0.989 \\
-GSFC			& 13.805	& 0.992	& 20.310	& 0.807	& 4.827		& -0.138\\
+true source & 13.819 & & 24.629 & & 15.237 & \\
+AEI			& 20.435	& 0.108	& 18.652	& 0.922 & \01.949	& $-0.190$		\\
+AEI*			& 14.199	& 0.984	& 23.266	& 0.996	& 14.770	& \m0.989 \\
+GSFC			& 13.805	& 0.992	& 20.310	& 0.807	& \04.827		& $-0.138$ \\
 GSFC*		&       &     	& 20.987	& 0.814 \\
-IMPAN		& 14.427	& 0.988	& 25.235	& 0.981 & 16.465	& 0.925	\\
-IMPAN*		&       &     	& 23.152	& 0.997 & 14.194	& 0.946	\\
-MCMNJU			& 13.524	& 0.952	& 22.641	& 0.906	& 6.830	& 0.033 \\
+IMPAN		& 14.427	& 0.988	& 25.235	& 0.981 & 16.465	& \m0.925	\\
+IMPAN*		&       &     	& 23.152	& 0.997 & 14.194	& \m0.946	\\
+MCMNJU			& 13.524	& 0.952	& 22.641	& 0.906	& \06.830	& \m0.033 \\
 MCMNJU*			& 14.193	& 0.996	& 23.270	& 0.994	\\
 UIBBham			& 13.577	& 0.992	& 23.479	& 0.996 	\\
 \br
 \end{tabular}
 \end{indented}
 \end{table}
-
+%
 \begin{table}
-\caption{\label{Table_1b_1_1_parameter_differences} The performance of challenge entries on the single galactic binary challenges as calculated using recovered parameter differences. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
-\begin{indented}
-\item[]\begin{tabular}{lrrrrrrr}
+\caption{Parameter errors for Challenges 1B.1.1a--c. Asterisks denote extrinsic parameters corrected by maximizing the ${\cal F}$-statistic.\label{Table_1b_1_1_parameter_differences}}
+\lineup \scriptsize \flushright
+\begin{tabular}{llllllll}
 \br
-Group & $\Delta \theta$ & $\Delta \phi$ & $\Delta f$ (nHz) & $\Delta\psi$ & $\Delta \iota$ & $\Delta \varphi$ & $\Delta \mathcal{A} (\times 10^{-23})$ \\
-\br
-\centre{8}{Challenge 1b.1.1a} \\
+Group & \centre{1}{$\Delta \beta$} & \centre{1}{$\Delta \lambda$} & \centre{1}{$\Delta f$ [nHz]} & \centre{1}{$\Delta\psi$} & \centre{1}{$\Delta \iota$} & \centre{1}{$\Delta \varphi$} & \centre{1}{$\Delta \mathcal{A}$ [$10^{-23}$]}\\
 \mr
-AEI		& 0.0318	& -0.120	& -2.43		& 0.217		& -0.454 	& 1.17		& 1.22		\\
-AEI*		& 0.0318	& -0.120	& -2.43		& 0.700		& 0.215		& -1.23		& 1.18		\\
-GSFC		& 0.00412	& -0.0715	& -1.81	 	& 0.708	 	& 0.252 	& 1.33	 	& 1.20		\\
-IMPAN		& 0.0311	& 0.0185 	& 2.13		& 0.454 	& 0.212	 	& -1.06 	& 1.25		\\ 
-MCMNJU		& 0.0170	& -0.0424	& -0.534	& 0.662		& 0.426		& -1.57		& 2.34		\\
-MCMNJU*		& 0.0170	& -0.0424	& -0.534	& 0.746		& 0.248		& -1.44		& 1.37		\\
-UIBBham		& -0.00540	& -0.0790	& -1.51		& 0.708		& 0.173		& -1.32		& 0.647		\\
-\br
-\centre{8}{Challenge 1b.1.1b} \\
+\centre{8}{Challenge 1B.1.1a} \\
+AEI		& \m0.0318	& $-0.120$	& \0$-2.43$		& \m0.217		& $-0.454$ 	& \m1.17		& \m1.22		\\
+AEI*		& 	& 	& 		                         & \m0.700		& \m0.215		& $-1.23$		& \m1.18		\\
+GSFC		& \m0.0041	& $-0.0715$	& \0$-1.81$	 	& \m0.708	 	& \m0.252 	& \m1.33	 	& \m1.20		\\
+IMPAN		& \m0.0311	& \m0.0185 	& \0\m2.13		& \m0.454 	    & \m0.212	 	& $-1.06$ 	& \m1.25		\\ 
+MCMNJU		& \m0.0170	& $-0.0424$	& \0$-0.53$	& \m0.662		& \m0.426		& $-1.57$		& \m2.34		\\
+MCMNJU*		& 	& 	& 	                         & \m0.746		& \m0.248		& $-1.44$		& \m1.37		\\
+UIBBham		& $-0.0054$	& $-0.0790$	& \0$-1.51$	& \m0.708		& \m0.173		& $-1.32$		& \m0.65		\\
 \mr
-AEI		& 0.0558	& -0.00899	& 0.946		& -1.05		& 0.283		& 1.63		& -0.0664	\\
-AEI*		& 0.0558	& -0.00899	& 0.946		& -0.761	& 0.0776	& 1.46		& 0.00307	\\
-GSFC		& 0.462		& 0.0606	& -30.9		& 2.56		& 0.182		& 0.516		& -0.0245	\\
-GSFC*		& 0.462		& 0.0606	& -30.9		& -0.534	& 0.198		& 0.624		& 0.0665	\\
-IMPAN		& -0.0203 	& 0.000708	& 0.852 	& 0.333 	& 0.339 	& -0.603 	& 0.713		\\ 
-MCMNJU		& 0.0670	& -0.00627	& 2.069530	& -0.732	& -0.0643	& 0.844		& -0.223	\\
-MCMNJU*		& 0.0670	& -0.00627	& 2.069530	& -0.739	& 0.0633	& 1.30		& -0.0165	\\
-UIBBham		& 0.0436	& -0.00817	& 1.777530	& -0.636	& 0.0428	& 1.13		& -0.0293	\\
-\br
-\centre{8}{Challenge 1b.1.1c} \\
+\centre{8}{Challenge 1B.1.1b} \\
+AEI		& \m0.0558	& $-0.00899$	& \m\00.946		& $-1.05$		& \m0.283		& \m1.63		& $-0.0664$	\\
+AEI*		& 	         & 	& 		                & $-0.761$	& \m0.078	& \m1.46		& \m0.0031	\\
+GSFC		& \m0.4620		& \m0.0606	& $-30.9$		& \m2.56		& \m0.182		& \m0.52		& $-0.0245$	\\
+GSFC*		& 		& 	&		& $-0.534$	& \m0.198		& \m0.62		& \m0.0665	\\
+IMPAN		& $-0.0203$ 	& \m0.00071	& \m\00.852 	& \m0.333 	& \m0.339 	& $-0.60$ 	& \m0.713		\\ 
+MCMNJU		& \m0.0670	& $-0.00627$	& \m\02.070	& $-0.732$	& $-0.064$	& \m0.84		& $-0.223$	\\
+MCMNJU*		& 	& 	& 	& $-0.739$	& \m0.063	& \m1.30		& $-0.0165$	\\
+UIBBham		& \m0.0436	& $-0.00817$	& \m\01.778	& $-0.636$	& \m0.043	& \m1.13		& $-0.0293$	\\
 \mr
-AEI		& 0.0261	& 0.00530	& 1.84		& -0.499	& -1.12		& 3.02		& 0.124		\\ 
-AEI*		& 0.0261	& 0.00530	& 1.84		& 0.0410	& -0.0937	& -0.123	& 0.106		\\ 
-GSFC		& 0.452		& -1.48		& 140		& 1.82		& -0.471	& -0.663	& -0.695	\\ 
-IMPAN		& 0.0158	& 0.0248	& 3.72		& -1.51		& -0.197	& 2.68		& 0.478		\\ 
-IMPAN*		& 0.0158	& 0.0248	& 3.72		& -0.0287	& -0.113	& 0.356		& 0.0792	\\ 
-MCMNJU		& 0.555		& -0.368	& 359		& -1.59		& -0.250	& -0.943	& -0.532	\\ 
+\centre{8}{Challenge 1B.1.1c} \\
+AEI		& \m0.0261	 & \m0.00530	& \0\01.84		& $-0.499$	& $-1.12$		& \m3.02		& \m0.124		\\ 
+AEI*		&  & 	& 		& \m0.0410	& $-0.0937$	& $-0.123$	& \m0.106		\\ 
+GSFC		& \m0.452		& $-1.48$		& 140		& \m1.82		& $-0.471$	& $-0.663$	& $-0.695$	\\ 
+IMPAN		& \m0.0158	& \m0.0248	& \0\03.72		& $-1.51$		& $-0.197$	& \m2.68		& \m0.478		\\ 
+IMPAN*		& 	& 	& 		& $-0.0287$	& $-0.113$	& \m0.356		& \m0.0792	\\ 
+MCMNJU		& \m0.555		& $-0.368$	& 359		& $-1.59$		& $-0.250$	& $-0.943$	& $-0.532$	\\ 
 \br
 \end{tabular}
-\end{indented}
 \end{table}
 
 The Challenge 1b.1.2 data set contained 25 ``verification'' binaries, defined as sources for which frequency and sky location are exactly known. This simulates the search for signals from galactic binaries that are already known to exist. In fact, five of these binaries are taken from a list of known binaries available on Gijs Nelemans' website~\cite{nelemanswiki}, while the remaining twenty were simulated binaries. Table~\ref{Table_1b_1_2_correlations} contains the global SNRs and correlations between all sources characterized by the parameters in the key file and the sources recovered by the three groups that participated in this challenge. As in Challenges 1B.1.1a-c the issue with the extrinsic parameters caused the correlations to be less than ideal. However, as the intrinsic parameters were provided to the participants an ${\cal F}$-statistic calculations were not performed. 
