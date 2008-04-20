@@ -120,174 +120,158 @@ We also quote the \emph{correlation} $C = \mathrm{SNR} / \mathrm{SNR}_\mathrm{op
 $\mathrm{SNR}_\mathrm{opt} = \sqrt{(A_\mathrm{true}|A_\mathrm{true}) + (E_\mathrm{true}|E_\mathrm{true})}$ is the \emph{optimal} SNR. For a perfect detection $C = 1$, but fluctuations $\sim 1 / \mathrm{SNR}_\mathrm{opt}$ are expected because of instrument noise. When we examine parameter errors, these are defined simply as
 $\Delta\lambda^i = \lambda^i_\mathrm{sub} - \lambda^i_\mathrm{true}$; in some cases it makes sense to consider the \emph{fractional} parameter errors $\Delta \lambda^i / \lambda^i = (\lambda^i_\mathrm{sub} - \lambda^i_\mathrm{true}) / \lambda^i_\mathrm{true}$.
 %PROBLEM: The text previously had the opposite definition!
+In the rest of this section we briefly discuss the entries submitted by participants; their own write-ups of their work can be found at \url{www.tapir.caltech.edu/~mldc/results1B/results.html}.
 
 \subsection{Galactic binaries: Challenges 1B.1.X}
 
 Data sets 1B.1.1a--c and 1B.1.2--5 contained GW signals from monochromatic Galactic binaries, in a variety of parameter ranges and source combinations. Seven parameters are required to fully characterize each such source: the amplitude $\mathcal{A}$, the (constant) frequency $f$, the ecliptic latitude and longitude $\beta$ and $\lambda$, the inclination and polarization angles $\iota$ and $\psi$, and the initial phase $\phi_0$. Entries were submitted by five groups: \textbf{GSFC} (scientists at Goddard Space Flight Center); \textbf{IMPAN} (the Institute of Mathematics of the Polish Academy of Science and the Institute of Theoretical Physics at the University of Wroc{\l}aw); \textbf{AEI} (the Albert Einstein Institute in Golm, Germany); \textbf{MCMNJU} (the Institute of Applied Mathematics of the Chinese Academy of Sciences and the Department of Astronomy of Nanjing University); \textbf{UIBBham} (the University of the Balearic Islands and the University of Birmingham). However, all groups except AEI concentrated only on a subset of the challenges.
 
 Participants employed a fair range of techniques, in the same broad class as adopted for similar challenges in the past \cite{mldcgwdaw1,mldcamaldi2}; however, new implementations and different technical solutions are being pursued. \textbf{GSFC} used the X-Ray Spectral Fitting Package (XSPEC) \cite{XSPECwebsite} to fit templates to energy spectra. The package includes a Levenberg--Marquardt optimization algorithm, which was used to obtain an initial guess for the source parameters. A Markov-Chain Monte Carlo (MCMC) routine, also available in XSPEC, was then used to converge to the best-fit source parameters. \textbf{IMPAN} set up a grid-based matched-filtering search with an optimized placement of templates on a hypercubic lattice. The ${\cal F}$-statistic \cite{fstat} was used to reduce the search space from $7$ to $3$ parameters. A similar technique was adopted by \textbf{AEI} \cite{prixwhelan}, in conjunction with a rigid--adiabatic model of detector response. \textbf{MCMNJU} used a genetic algorithm that optimized the ${\cal F}$-statistic; \textbf{UIBBham} implemented a MCMC search described in more detail in \cite{tvv}.
-
-Each of data sets 1B.1.1a--c contained a GW signal from a single monochromatic binary (differing by frequency band), with SNR $\approx 13\mbox{--}25$. Table \ref{Table_1b_1_1_correlations} lists the SNRs and correlations recovered by each collaboration. Because some of the entries included close matches for the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues in matching the remaining (extrinsic) parameters, we recomputed these by maximizing the ${\cal F}$-statistic \cite{fstat} for the intrinsic parameters provided. The resulting SNRs and $C$s are denoted by asterisks. Table \ref{Table_1b_1_1_parameter_differences} lists parameter errors (also as recomputed by maximizing the ${\cal F}$-statistic, in the rows with asterisks).
-%UPTOHERE...
-Figure~\ref{Figure_1b_1_1a_sky_positions} shows how the various groups succeeded in extracting the sky position of the source in Challenge 1b.1.1a.
-
+%
 \begin{figure}
 \centerline{\includegraphics[width=7.5cm]{MLDC_1b-1_1a_sky_positions}}
-\caption{Plot of the sky position for the source from the key file, for Challenge 1b.1.1a, and the recovered sky position for each of the entries.\label{Figure_1b_1_1a_sky_positions}}
-\end{figure} 
+\caption{Sky positions reported by participants in Challenge 1B.1.1a, compared to the true location of the source. Angles are given in radians.\label{Figure_1b_1_1a_sky_positions}}
+%PROBLEM: would be nice to put [rad] in the axis labels rather than here in the caption
+%PROBLEM: would be nice to show error ellipse
+\end{figure}
 
+Each of data sets 1B.1.1a--c contained a GW signal from a single monochromatic binary (differing by frequency band), with SNR $\approx 13\mbox{--}25$. Table \ref{Table_1b_1_1_correlations} lists the SNRs and correlations recovered by each collaboration. Because some of the entries included close matches for the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues in matching the remaining (extrinsic) parameters, we recomputed these by maximizing the ${\cal F}$-statistic \cite{fstat} for the intrinsic parameters provided. The resulting SNRs and $C$s are denoted by asterisks. Table \ref{Table_1b_1_1_parameter_differences} lists parameter errors (also as recomputed by maximizing the ${\cal F}$-statistic, in the rows with asterisks). Figure \ref{Figure_1b_1_1a_sky_positions} shows where participants placed the source of data set 1B.1.1a, compared to its true position.
+%
 \begin{table}
-\caption{SNRs and correlations for single--Galactic-binary challenges 1B.1.1a--c. Asterisks denote entries corrected by maximizing the ${\cal F}$-statistic and using the resulting extrinsic parameters; these corrections are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is merely fitting noise. \textbf{PROBLEM: the SNRs reported are not what we define above.}\label{Table_1b_1_1_correlations}}
+\caption{Correlations for single--Galactic-binary challenges 1B.1.1a--c. Asterisks denote entries corrected by maximizing the ${\cal F}$-statistic and using the resulting extrinsic parameters; these corrections are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is merely fitting noise.\label{Table_1b_1_1_correlations}}
+%PROBLEM: the SNRs reported are not what we define above.
 %PROBLEM: these values are minus the parameter errors as defined above
 %PROBLEM: parentheses maybe nicer than asterisks
 \begin{indented} \lineup
-\item[]\begin{tabular}{lllllll}
+\item[]\begin{tabular}{llll}
 \br
-& \centre{2}{1B.1.1a}
-& \centre{2}{1B.1.1b}
-& \centre{2}{1B.1.1c} \\
-& \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} & \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} & \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} \\
+Group & \centre{1}{1B.1.1a}
+& \centre{1}{1B.1.1b}
+& \centre{1}{1B.1.1c} \\
+& \centre{1}{$\mathrm{SNR}_\mathrm{opt}=13.819$}
+& \centre{1}{$\mathrm{SNR}_\mathrm{opt}=24.629$}
+& \centre{1}{$\mathrm{SNR}_\mathrm{opt}=15.237$} \\
 \mr
-true source & 13.819 & & 24.629 & & 15.237 & \\
-AEI			& 20.435	& 0.108	& 18.652	& 0.922 & \01.949	& $-0.190$		\\
-AEI*			& 14.199	& 0.984	& 23.266	& 0.996	& 14.770	& \m0.989 \\
-GSFC			& 13.805	& 0.992	& 20.310	& 0.807	& \04.827		& $-0.138$ \\
-GSFC*		&       &     	& 20.987	& 0.814 \\
-IMPAN		& 14.427	& 0.988	& 25.235	& 0.981 & 16.465	& \m0.925	\\
-IMPAN*		&       &     	& 23.152	& 0.997 & 14.194	& \m0.946	\\
-MCMNJU			& 13.524	& 0.952	& 22.641	& 0.906	& \06.830	& \m0.033 \\
-MCMNJU*			& 14.193	& 0.996	& 23.270	& 0.994	\\
-UIBBham			& 13.577	& 0.992	& 23.479	& 0.996 	\\
+AEI & $0.108 \rightarrow 0.984^*$ & $0.922 \rightarrow 0.996^*$ & $-0.190 \rightarrow 0.989^*$ \\
+GSFC & $0.992$ & $0.807 \rightarrow 0.814^*$ & $-0.138$ \\
+IMPAN & $0.988$ & $0.981 \rightarrow 0.997^*$ & \m$0.924 \rightarrow 0.946^*$ \\
+MCMNJU & $0.952 \rightarrow 0.996^*$ & $0.906 \rightarrow 0.994^*$ & \m$0.033$ \\
+UIBBham & $0.992$ & $0.996$ & \\
 \br
 \end{tabular}
 \end{indented}
 \end{table}
 %
 \begin{table}
-\caption{Parameter errors for Challenges 1B.1.1a--c. Asterisks denote extrinsic parameters corrected by maximizing the ${\cal F}$-statistic.\label{Table_1b_1_1_parameter_differences}}
+\caption{Parameter errors for Challenges 1B.1.1a--c. All angles are expressed in radians. Asterisks denote extrinsic parameters corrected by maximizing the ${\cal F}$-statistic.\label{Table_1b_1_1_parameter_differences}}
+%PROBLEM: may be more graceful to label corrected errors with asterisks and omit the row label
 \lineup \scriptsize \flushright
 \begin{tabular}{llllllll}
 \br
 Group & \centre{1}{$\Delta \beta$} & \centre{1}{$\Delta \lambda$} & \centre{1}{$\Delta f$ [nHz]} & \centre{1}{$\Delta\psi$} & \centre{1}{$\Delta \iota$} & \centre{1}{$\Delta \varphi$} & \centre{1}{$\Delta \mathcal{A}$ [$10^{-23}$]}\\
 \mr
-\centre{8}{Challenge 1B.1.1a} \\
-AEI		& \m0.0318	& $-0.120$	& \0$-2.43$		& \m0.217		& $-0.454$ 	& \m1.17		& \m1.22		\\
+\centre{8}{Challenge 1B.1.1a} \\[2pt]
+AEI		& \m0.032	& $-0.120$	& \0$-2.43$		& \m0.217		& $-0.454$ 	& \m1.17		& \m1.22		\\
 AEI*		& 	& 	& 		                         & \m0.700		& \m0.215		& $-1.23$		& \m1.18		\\
-GSFC		& \m0.0041	& $-0.0715$	& \0$-1.81$	 	& \m0.708	 	& \m0.252 	& \m1.33	 	& \m1.20		\\
-IMPAN		& \m0.0311	& \m0.0185 	& \0\m2.13		& \m0.454 	    & \m0.212	 	& $-1.06$ 	& \m1.25		\\ 
-MCMNJU		& \m0.0170	& $-0.0424$	& \0$-0.53$	& \m0.662		& \m0.426		& $-1.57$		& \m2.34		\\
+GSFC		& \m0.004	& $-0.071$	& \0$-1.81$	 	& \m0.708	 	& \m0.252 	& \m1.33	 	& \m1.20		\\
+IMPAN		& \m0.031	& \m0.018 	& \0\m2.13		& \m0.454 	    & \m0.212	 	& $-1.06$ 	& \m1.25		\\ 
+MCMNJU		& \m0.017	& $-0.042$	& \0$-0.53$	& \m0.662		& \m0.426		& $-1.57$		& \m2.34		\\
 MCMNJU*		& 	& 	& 	                         & \m0.746		& \m0.248		& $-1.44$		& \m1.37		\\
-UIBBham		& $-0.0054$	& $-0.0790$	& \0$-1.51$	& \m0.708		& \m0.173		& $-1.32$		& \m0.65		\\
+UIBBham		& $-0.005$	& $-0.079$	& \0$-1.51$	& \m0.708		& \m0.173		& $-1.32$		& \m0.65		\\
 \mr
-\centre{8}{Challenge 1B.1.1b} \\
-AEI		& \m0.0558	& $-0.00899$	& \m\00.946		& $-1.05$		& \m0.283		& \m1.63		& $-0.0664$	\\
-AEI*		& 	         & 	& 		                & $-0.761$	& \m0.078	& \m1.46		& \m0.0031	\\
-GSFC		& \m0.4620		& \m0.0606	& $-30.9$		& \m2.56		& \m0.182		& \m0.52		& $-0.0245$	\\
-GSFC*		& 		& 	&		& $-0.534$	& \m0.198		& \m0.62		& \m0.0665	\\
-IMPAN		& $-0.0203$ 	& \m0.00071	& \m\00.852 	& \m0.333 	& \m0.339 	& $-0.60$ 	& \m0.713		\\ 
-MCMNJU		& \m0.0670	& $-0.00627$	& \m\02.070	& $-0.732$	& $-0.064$	& \m0.84		& $-0.223$	\\
-MCMNJU*		& 	& 	& 	& $-0.739$	& \m0.063	& \m1.30		& $-0.0165$	\\
-UIBBham		& \m0.0436	& $-0.00817$	& \m\01.778	& $-0.636$	& \m0.043	& \m1.13		& $-0.0293$	\\
+\centre{8}{Challenge 1B.1.1b} \\[2pt]
+AEI		& \m0.056	& $-0.0090$	& \m\00.95		& $-1.050$		& \m0.283		& \m1.63		& $-0.066$	\\
+AEI*		& 	         & 	& 		                & $-0.761$	& \m0.078	& \m1.46		& \m0.003	\\
+GSFC		& \m0.462		& \m0.0606	& $-30.9$		& \m2.560		& \m0.182		& \m0.52		& $-0.024$	\\
+GSFC*		& 		& 	&		& $-0.534$	& \m0.198		& \m0.62		& \m0.066	\\
+IMPAN		& $-0.020$ 	& \m0.0007	& \m\00.85 	& \m0.333 	& \m0.339 	& $-0.60$ 	& \m0.713		\\ 
+MCMNJU		& \m0.067	& $-0.0063$	& \m\02.07	& $-0.732$	& $-0.064$	& \m0.84		& $-0.223$	\\
+MCMNJU*		& 	& 	& 	& $-0.739$	& \m0.063	& \m1.30		& $-0.016$	\\
+UIBBham		& \m0.044	& $-0.0082$	& \m\01.78	& $-0.636$	& \m0.043	& \m1.13		& $-0.029$	\\
 \mr
-\centre{8}{Challenge 1B.1.1c} \\
-AEI		& \m0.0261	 & \m0.00530	& \0\01.84		& $-0.499$	& $-1.12$		& \m3.02		& \m0.124		\\ 
-AEI*		&  & 	& 		& \m0.0410	& $-0.0937$	& $-0.123$	& \m0.106		\\ 
-GSFC		& \m0.452		& $-1.48$		& 140		& \m1.82		& $-0.471$	& $-0.663$	& $-0.695$	\\ 
-IMPAN		& \m0.0158	& \m0.0248	& \0\03.72		& $-1.51$		& $-0.197$	& \m2.68		& \m0.478		\\ 
-IMPAN*		& 	& 	& 		& $-0.0287$	& $-0.113$	& \m0.356		& \m0.0792	\\ 
-MCMNJU		& \m0.555		& $-0.368$	& 359		& $-1.59$		& $-0.250$	& $-0.943$	& $-0.532$	\\ 
+\centre{8}{Challenge 1B.1.1c} \\[2pt]
+AEI		& \m0.026	 & \m0.0053	& \0\01.84		& $-0.499$	& $-1.120$		& \m3.02		& \m0.124		\\ 
+AEI*		&  & 	& 		& \m0.041	& $-0.094$	& $-0.12$	& \m0.106		\\ 
+GSFC		& \m0.452		& $-1.48$		& 140		& \m1.820		& $-0.471$	& $-0.66$	& $-0.695$	\\ 
+IMPAN		& \m0.016	& \m0.0248	& \0\03.72		& $-1.510$		& $-0.197$	& \m2.68		& \m0.478		\\ 
+IMPAN*		& 	& 	& 		& $-0.029$	& $-0.113$	& \m0.35		& \m0.079	\\ 
+MCMNJU		& \m0.555		& $-0.3680$	& 359		& $-1.590$		& $-0.250$	& $-0.94$	& $-0.532$	\\ 
 \br
 \end{tabular}
 \end{table}
+%PROBLEM: alignment of third column (could to the right)
 
-The Challenge 1b.1.2 data set contained 25 ``verification'' binaries, defined as sources for which frequency and sky location are exactly known. This simulates the search for signals from galactic binaries that are already known to exist. In fact, five of these binaries are taken from a list of known binaries available on Gijs Nelemans' website~\cite{nelemanswiki}, while the remaining twenty were simulated binaries. Table~\ref{Table_1b_1_2_correlations} contains the global SNRs and correlations between all sources characterized by the parameters in the key file and the sources recovered by the three groups that participated in this challenge. As in Challenges 1B.1.1a-c the issue with the extrinsic parameters caused the correlations to be less than ideal. However, as the intrinsic parameters were provided to the participants an ${\cal F}$-statistic calculations were not performed. 
+Data set 1B.1.2 contained GW signals from 25 ``verification'' binaries of known (i.e., disclosed) frequency and sky location. Five of them were taken from the list of observed binaries on Gijs Nelemans' wiki \cite{nelemanswiki}, while the remaining 20 were placed randomly in the Galaxy over a representative range of frequencies. Table \ref{Table_1b_1_4_correlations} lists the \emph{global} SNRs and correlations (computed on for the combined signals of all reported and true binaries) recovered by the three groups that participated in this challenge. As for Challenges 1B.1.1a--c, problems in assigning extrinsic parameters reduced the correlations. (Since the intrinsic parameters were provided to the participants, we did not perform ${\cal F}$-statistic--based adjustments, which would amount to solving the entire problem. As a result, the low $C$ values of table \ref{Table_1b_1_4_correlations} may be symptomatic only of extrinsic-parameter systematics.)
 
+Data set 1B.1.3 contained GW signals from 20 unknown binaries distributed across the LISA band, well separated in frequencies. Unfortunately, a bug in the random generation of source parameters caused all SNRs to be too small for detection (all were below 1).
+Happily, no participating group reported a positive detection, consistently with the correct behavior expected of search algorithms.
+
+Challenge 1B.1.4 was meant to test search algorithms in the presence of mild source confusion. Fifty-one sources were spread across a band of $15\, \mu{\rm Hz}$ beginning at $3\, {\rm mHz}$, with an average density of 0.108 sources per frequency bin. By contrast, Challenge 1B.1.5 tested algorithms in the presence of a higher level of source confusion, comparable to that expected from our Galaxy. Forty-four sources were spread across a band of $3\, \mu{\rm Hz}$ centered at $3\, {\rm mHz}$, with an average density of 0.465 sources per frequency bin. Table \ref{Table_1b_1_4_correlations} lists the global correlations and the number of sources recovered by the participating groups, as well as the number of \emph{false positives}, defined here as reported sources farther than one frequency bin (1/year) from any true source, or with $\mathcal{F}$-statistic--adjusted correlation less than 0.7 with all true sources within a frequency bin.
+Figure \ref{Figure_1b_1_4_AEI} shows the combined $A$ and $E$ spectral amplitude for the noiseless data set 1B.1.4, together with its residual after subtracting the signal model submitted by \textbf{AEI}. The bottom panel shows the same subtraction after extrinsic parameters have been recomputed for this entry by maximizing the $\mathcal{F}$-statistic.
+
+The extrinsic-parameter reporting errors seen in this round of challenges are very easy to make while coding searches, because the definitions of extrinsic parameters are all somewhat conventional. To avoid such problems in the future, we plan to provide a web tool to check the recovered SNR against the challenge data sets using the fiducial MLDC waveform-generation code.
+%
 \begin{table}
-\caption{\label{Table_1b_1_2_correlations} The performance of challenge entries on the verification binaries challenge as calculated using SNR, and $C$.}
-\begin{indented}
-\item[]\begin{tabular}{lrrc}
+\caption{\label{Table_1b_1_4_correlations} Correlations, number of recovered sources, and number of false positives for Challenges 1B.1.2, 1B.1.4, 1B.1.5. Correlations computed after correcting extrinsic parameters using the ${\cal F}$-statistic are denoted with an asterisk (*).}
+\begin{indented} \lineup
+\item[]\begin{tabular}{lll}
 \br
-Group & SNR & $C$ & \# Recovered\\
-\br
-\centre{4}{Challenge 1b.1.2 (${\rm SNR}_{\rm key}=634.918$, $25$ Sources)}  \\
+Group & \centre{1}{$C$} & \centre{1}{\# recovered} \\
 \mr
-AEI		& 891.677	& -0.822	& 25	 	\\
-GSFC		& 807.012	& 0.006		& 25	 	\\
-MCMNJU		& 603.805	& 0.267		& 25	 	\\
+\centre{3}{1B.1.2 (${\rm SNR}_{\rm opt}=634.918$, $25$ sources)}  \\[2pt]
+AEI		& $-0.822$	& 25		\\
+GSFC		& \m0.006	& 25		\\
+MCMNJU	& \m0.267	& 25		\\
+\mr
+\centre{3}{1B.1.4 (${\rm SNR}_{\rm opt}=340.233$, $51$ sources)} \\[2pt]
+AEI		& \m$0.774 \rightarrow 	0.966^*$	& 13	 (2 false pos.)	\\
+GSFC		& \m$0.003 \rightarrow 	0.282^*$	& \06 (1 false pos.)	\\
+\mr
+\centre{3}{1B.1.5 (${\rm SNR}_{\rm opt}=273.206$, $44$ sources)} \\[2pt]
+AEI		& \m$0.453 \rightarrow 0.929^*$	& \03 \\
+\br
 \end{tabular}
 \end{indented}
 \end{table}
-
-The data set for Challenge 1b.1.3 contained the signals from $20$ unknown binaries distributed across the LISA band and therefore well separated in frequency space. Unfortunately, there was an issue with the generation of the signals that caused their SNRs to be too small for detection (all were below $1$). As a silver lining to this cloud, none of the participating groups responding to this challenge reported a positive detection, providing therefore a meaningful consistency test of the performance of the algorithms.
-
-Challenge 1b.1.4 was a test of the search algorithms in the presence of mild source confusion. Fifty-one sources were spread across a $15 \mu{\rm Hz}$ band starting at $3\, {\rm mHz}$, with an average source density of 0.108 sources per frequency bin. Challenge 1b.1.5 tested the algorithms in the presence of a higher level of source confusion, comparable to that actually produced by our Galaxy during the LISA mission: forty-four sources were spread across a $3 \mu{\rm Hz}$ band centered on $3 {\rm mHz}$; a source density of 0.465 sources per frequency bin. The presence of multiple sources in the data streams of these challenges introduces the possibility of the search algorithms missing sources (false negatives) as well as returning detections when no source is actually present (false positives). To determine the presence of false positives we first matched the frequencies of the recovered sources and those from the key file to within one frequency bin (${1}/{{\rm year}}$) of each other. If the correlation between the pair was less than 0.7 (after correcting with the ${\cal F}$-statistic) the recovered source was considered a false positive. The two measures for the matches in these challenges, as in Challenge 1B.1.2, are the SNR and correlation. Again, we use the combined signal from all recovered sources compared to the signal from the sources in the key file. Tables~\ref{Table_1b_1_4_correlations} and~\ref{Table_1b_1_5_correlations} give the results of the two entries to Challenge 1b.1.4 and the single entry to Challenge 1B.1.5. Figure~\ref{Figure_1b_1_4_AEI} shows plots the MLDC signal from the sources in Challenge 1B.1.4 and the residuals after subtracting the signal from the sources entered by the AEI, before and after the ${\cal F}$-statistic correction.
-
+%
 \begin{figure}
-\centerline{\includegraphics[width=10cm]{MLDC_1b-1_4_AEI_comb}}
-\caption{\label{Figure_1b_1_4_AEI}Plot of the amplitude of the signal in MLDC 1b.1.4 and the residual after subtracting the signal from the AEI entry, before and after the ${\cal F}$-statistic correction.}
+{\flushright\includegraphics[width=10cm]{MLDC_1b-1_4_AEI_comb}\\}
+\caption{Combined $A$ and $E$ spectral amplitude for noiseless data set MLDC 1B.1.4, before and after subtracting the \textbf{AEI} signal model. In the bottom panel, the extrinsic parameters for all binaries in the model were adjusted by maximizing the ${\cal F}$-statistic.\label{Figure_1b_1_4_AEI}}
 \end{figure} 
-
-\begin{table}
-\caption{\label{Table_1b_1.4_correlations} The performance of challenge entries on the mildly confused binaries challenge as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
-\begin{indented}
-\item[]\begin{tabular}{lrrcc}
-\br
-Group & SNR & $C$ & \# Recovered & False Positives \\
-\br
-\centre{5}{Challenge 1B.1.4 (${\rm SNR}_{\rm key}=340.233$, $51$ Sources)}  \\
-\mr
-AEI		& 375.366	& 0.774		& 13	& 2	\\
-AEI*		& 329.344	& 0.966		& 13	& 2	\\
-GSFC		& 209.411	& 0.003		& 6	& 1	\\
-GSFC*		& 90.506	& 0.282		& 6	& 1	\\
-\end{tabular}
-\end{indented}
-\end{table}
-
-\begin{table}
-\caption{\label{Table_1b_1_5_correlations} The performance of challenge entries on the highly confused binaries challenge as calculated using SNR, and $C$. Data in which the extrinsic parameters were corrected using the ${\cal F}$-statistic are denoted with an asterisk (*).}
-\begin{indented}
-\item[]\begin{tabular}{lrrcc}
-\br
-Group & SNR & $C$ & \# Recovered & False Positives\\
-\br
-\centre{5}{Challenge 1B.1.5 (${\rm SNR}_{\rm key}=273.206$, $44$ Sources)}  \\
-\mr
-AEI		& 208.273	& 0.453		& 3	 & 0	\\
-AEI*		& 251.985	& 0.929		& 3	 & 0	\\
-\end{tabular}
-\end{indented}
-\end{table}
 
 \subsection{Massive Black Hole Binary Systems: Challenges 1B.2.X}
 
-Two data sets were released each containing a single and loud in-spiral signal from a MHB binary embedded in Gaussian and stationary noise; as in all the challenges so far, the in-spiral waveform was approximated at the restricted post$^2$-Newtonian order and the black holes were assumed to be non-spinning and in a circular orbit (see Section~\ref{s:challenge-3} for the important difference in the waveform model introduced in Challenge 3). Nine parameters described the waveform: the two masses $m_{1,2}$, the time to coalescence of the binary $t_c$, the sky position $(\beta,\lambda)$, the luminosity distance $D_L$, the orbital inclination angle $\iota$, the gravitational polarization angle $\psi$ and the initial orbital phase $\varphi_0$.  The prior range, known to the Challenge participants, from which the signals were drawn was $m_1 = 1-5 \times 10^6\,M_{\odot}$, $m_1/m_2 = 1-4$ and the time to coalescence $t_c = 6\pm 1$ months and $400\pm40$ days for Challenge 1B.2.1 and Challenge 1B.2.2, respectively. All the other parameters were selected randomly from the full range.
+Each of data sets 1B.2.1 and 1B.2.2 contained a loud GW signal from a single MBH binary embedded in instrument noise. Gravitational radiation was modeled as the \emph{restricted} waveform for spinless point masses moving on an adabatic sequence of circular orbits, evolving according to 2PN energy-balance equations \cite[sec.\ 4.4]{mldcgwdaw2}. (See section \ref{sec:ch3mbh} for the new waveform features being introduced for Challenge 3.) Nine parameters are needed to describe each source: the two masses $m_1$ and $m_2$, the time of coalescence $t_c$, the sky-position angles $\beta$ and $\lambda$, the luminosity distance $D_L$, the orbital-inclination and GW-polarization angles $\iota$ and $\psi$, and the initial orbital phase $\varphi_0$. 
+The binaries in both data sets had masses drawn from the same ranges ($m_1 = 1\mbox{--}5 \times 10^6\,M_{\odot}$, $m_1/m_2 = 1\mbox{--}4$, but were distinguished by times of coalescence $t_c = 6\pm 1$ months for Challenge 1B.2.1 and $400 \pm 40$ days (past the end of the data set) for Challenge 1B.2.2; the $\mathrm{SNR}_\mathrm{opt}$ for the sources were chosen to be $\simeq 500$ and $\simeq 80$, respectively.
 
-Two groups submitted results for the massive black hole search. A collaboration of JPL scientists (that tackled both data sets) employed a three step hierarchical strategy combining a time-frequency track search analysis, followed by a template bank matched filter search, and a final stage based on a Metropolis-Hastings Monte Carlo technique to evaluate of posterior density functions of the model parameters. A group from Cardiff University used a stochastic template bank matched filter search\cite{cardiffmbh} to analyse the Challenge 1B.2.1 data set. The results of the analyses are summarised in Table~\ref{mbh}.  The recovered SNR associated to the estimate of the parameters is very close to $SNR_\mathrm{key}$, which provide reassurance on the success of the analysis. However closer inspection of the errors on the individual parameters, in particular sky position $\beta$ and $\lambda$, shows large discrepancies. In fact for Challenge 1B.2.1, both JPL and Cardiff analyses converged on secondary maxima of the likelihood function, very close in value to the true mode (as shown by the recovered SNR), but far in some of the parameters from the actual source parameters. In fact the JPL result places the source at almost at the antipodal sky position, while still recovering the SNR to better than one part in a thousand. This is a genuine result, which shows the benefit of actual analyses on mock data, compared to simple studies of the variance-covariance matrix that cannot uncover these subtleties. The specific results of Challenge 1B.2.1  have important repercussions for astronomy, \emph{e.g.} in follow-ups of LISA-identified sources with other telescopes and need to be further investigated. It would however be an error to draw conclusive statements about LISA's ability to identify MBH binaries in the sky: the waveforms used so far in MLDCs include simplifications, such as lack of spins and higher order harmonics in the amplitude that could break, at least to some extent, the degeneracy amongst parameters~\cite{Vecchio, LangHughes, TriasSintes, PorterCornish}. Challenge 3 MBH binaries waveforms will include the effect of spins, see next Section, and the results of the analyses will provide a more realistic insight into such issues. In the context of electromagnetic follow-ups, it is also worth pointing out that the results of the analyses provided very accurate determination of the time of coalescence of the binaries, corresponding to a time-windown of a few minutes and about 45 minutes for Challenge 1B.2.1 and 1B.2.2, respectively.
+Two groups submitted entries: \textbf{JPL} (a collaboration between researchers at Caltech and at the Jet Propulsion Laboratory) employed a three-step hierarchical strategy combining a time--frequency track-search analysis, a template-bank matched-filtering search, and a final MCMC stage to evaluate the posterior probability densities of source parameters for data sets 1B.2.1 and 1B.2.2. \textbf{Cardiff} (a collaboration based at that university) used a stochastic--template-bank matched-filtering search \cite{cardiffmbh} to analyze data set 1B.2.1.
+
+Table \ref{mbh} summarizes these entries. While the recovered SNRs are very close to $\mathrm{SNR}_\mathrm{opt}$, which indicates detections of very high confidence, there are large discrepancies in the sky-position angles for Challenge 1B.2.1. There both the \textbf{JPL} and \textbf{Cardiff} searches converged on secondary likelihood maxima, very close in height to the true mode (as shown by the recovered SNR), but quite distant in parameter space.
+In fact, the \textbf{JPL} result places the source almost at the antipodal sky position, even if $\mathrm{SNR} \simeq \mathrm{SNR}_\mathrm{opt}$ to better than one part in a thousand.
+
+This is a true global degeneracy, which does not appear in local Fisher-matrix analyses (another example of why mock-data endeavors are useful!), and which may indicate the need, in EM searches of counterparts to LISA binary-MBH detections, to examine unconnected regions of the sky. It may however premature to make such an inference, since the degeneracy could be broken by the addition to the waveforms of spin effects (now included in Challenge-3 waveforms) and high-order amplitude harmonics. In addition, since data set 1B.2.1 included the inspiral waveform up to the approximate merger frequency, this challenge was \emph{not} aimed directly at sky-position determination, for which it may be possible to adopt targeted data-analysis strategies.
+In this context, it is also worth pointing out that the entries provided very accurate determinations of the times of coalescence, corresponding to time windows of a few minutes (for Challenge 1B.2.1) and about 45 minutes (for 1B.2.2).
 
 \begin{table}
-\caption{\label{mbh}Relative/absolute errors for the MBH binaries in Challenges 1B.2.1 and 1B.2.2.
-Error estimates have been adjusted for degeneracies when certain symmetries are taken into account.  In Challenge 1B.2.1, the error values for the polarization angle are given using the symmetry $\psi\rightarrow\psi+\pi$.  In Challenge 1B.2.2, the error values for both $\psi$ and $\varphi_0$ are due to the symmetries $\psi\rightarrow\psi+\pi/2$ and $\varphi_0\rightarrow\varphi_0-\pi/2$.
-% MV: This should be right, because of the quadrupolar pattern for polarization, and because the phase is orbital, not GW.
-}
+\caption{\label{mbh}Relative/absolute errors for the MBH binaries in Challenges 1B.2.1 and 1B.2.2. All angles are given in radians.
+Error estimates have been adjusted to account for two \emph{perfect} symmetries of the waveforms with respect to source parameters:
+$\psi\rightarrow\psi+\pi$, and the simultaneous transformation $\psi\rightarrow\psi+\pi/2$, $\varphi_0\rightarrow\varphi_0-\pi/2$.}
 \begin{indented}\lineup
 \item[]\begin{tabular}{@{}llll}
 \br
-Challenge          & \multicolumn{2}{c}{1B.2.1} & \multicolumn{1}{c}{1B.2.2} \\
-${\rm SNR}_{\rm key}$        & \multicolumn{2}{c}{531.84}	&	\multicolumn{1}{c}{80.67} \\
-\mr
+& \multicolumn{2}{c}{1B.2.1 (${\rm SNR}_{\rm opt}=531.84$)} & \multicolumn{1}{c}{1B.2.2 (${\rm SNR}_{\rm opt}=80.67$)} \\
 Group          & \multicolumn{1}{c}{JPL} & \multicolumn{1}{c}{Cardiff} & \multicolumn{1}{c}{JPL} \\
 \mr
-${\rm SNR}$ 	& \multicolumn{1}{c}{531.57}	&	\multicolumn{1}{c}{511.78}	&	\multicolumn{1}{c}{79.86}	\\
-$\Delta m_{1}/m_{1}$  & \m$5.991 \times10^{-3}$   & \m0.108    & \m0.122\\
-$\Delta m_{2}/ m_{2}$ & $-5.252 \times10^{-3}$    & $-0.111$    & $-0.134$\\
-$\Delta t_c/$ sec     & \m206.1  & -541.8 & -2688.2 \\
-$\Delta D_L/ D_L$     & $-0.139$                    & $-1.438$         & \m$4.781\times10^{-3}$\\
-$\Delta \beta$        & \m2.429                   & \m1.374         & \m$5.862\times10^{-3}$\\
-$\Delta \lambda$      & \m3.133                   & \m0.548          & $-1.461\times10^{-2}$\\
-$\Delta \iota$        & \m0.713                   & \m0.678         & $-6.955\times10^{-2}$\\
-$\Delta \psi$         &$-0.564$                     & \m1.448 & $-4.878\times10^{-2}$\\
-$\Delta \varphi_0$    &$-2.846$                    & $-2.389$        & $-1.584$\\
+${\rm SNR}$ 	& \m531.57	& \m511.78 & \0\0\m79.86	\\
+$\Delta m_{1}/m_{1}$  & \0\0\m$5.991 \times10^{-3}$   & \0\0\m0.108    & \0\0\0\m0.122\\
+$\Delta m_{2}/ m_{2}$ & \0\0$-5.252 \times10^{-3}$    & \0\0$-0.111$    & \0\0\0$-0.134$\\
+$\Delta t_c$ [s]     & \m206.1  & $-541.8$ & $-2688.2$ \\
+$\Delta D_L/ D_L$     & \0\0$-0.139$                    & \0\0$-1.438$         & \0\0\0\m$4.781\times10^{-3}$\\
+$\Delta \beta$        & \0\0\m2.429                   & \0\0\m1.374         & \0\0\0\m$5.862\times10^{-3}$\\
+$\Delta \lambda$      & \0\0\m3.133                   & \0\0\m0.548          & \0\0\0$-1.461\times10^{-2}$\\
+$\Delta \iota$        & \0\0\m0.713                   & \0\0\m0.678         & \0\0\0$-6.955\times10^{-2}$\\
+$\Delta \psi$         & \0\0$-0.564$                     & \0\0\m1.448 & \0\0\0$-4.878\times10^{-2}$\\
+$\Delta \varphi_0$    & \0\0$-2.846$                    & \0\0$-2.389$        & \0\0\0\m$1.293 \times 10^{-2}$ \\
 \br
 \end{tabular}
 \end{indented}
@@ -295,98 +279,94 @@ $\Delta \varphi_0$    &$-2.846$                    & $-2.389$        & $-1.584$\
 
 \subsection{Extreme Mass Ratio Inspirals: Challenges 1B.3.X}
 
-Searches for EMRIs were only partially attempted for Challenge 2 due to the complexity of an even basic end-to-end analysis pipeline. EMRIs data sets in Challenge 1B -- five of them each containing a single EMRI superimposed to Gaussian and stationary noise with combined optimal SNRs between $\approx 55$ and 135 and a range of source parameters, see~\cite{mldcgwdaw2} for details -- represented the first real test-bed for analysis algorithms developed for this critical source class. Three groups -- here identified by EtfAG, BBGP and MT2 -- involving scientists at the AEI, Caltech, Cambridge University, Montana State University,  University of Southampton and the University of Western Australia submitted entries for this challenge. EftAG employed a time-frequency technique~\cite{gmw}, whereas BBGP and MT2 developed coherent approaches based on Monte Carlo techniques that differed in implementation (NEED GWDAW REF). The results were assessed using the criteria described in the introduction, although the EtfAG time-frequency analysis is insensitive to extrinsic parameters and the correlation and recovered SNR could not be computed. A summary of the results is given in Tables~\ref{EMRI1}, \ref{EMRI2}. 
+Although Challenge 2 saw a few successful detections of EMRI signals \cite{mldcamaldi2}, data sets 1B.3.1--5 represented the first real testbed for the search algorithms developed for this critical source class. Each data set contained a GW signal from a single EMRI embedded in instrument noise, with $\mathrm{SNR}_\mathrm{opt}$ between $\simeq$ 55 and $\simeq$ 135, and source parameters chosen randomly as described in \cite{mldcgwdaw2}. Fourteen parameters are needed to describe each EMRI source \cite{mldcgwdaw2}: 
+the ecliptic latitude and longitude $\beta$ and $\lambda$ and the luminosity distance $D$; the central-BH and compact-object masses $M$ and $\mu$;  the magnitude $a$ and orientation angles $\theta_K$, $\phi_K$ of the central-BH spin; the initial radial orbital frequency $\nu_0$ and eccentricity $e_0$; and three angles $\tilde{\gamma}_0$, $\alpha_0$ and $\lambda$ describing the initial orientation of the orbit.
 
-Overall the results of this exercise were positive and provide a tangible proof that such complex problem is being successfully tackled. In fact, at least two radically different techniques are being pursued, both of which perform well on present MLDC data sets; all the EMRIs were detected, although only two groups analysed each data set and there was a spread of performance of the same analysis pipeline depending on the data set; somewhat poorer performances of selected analyses were due to lack of computational time before the deadline for submission and/or issues that were well understood but could not be resolved in time. It is worth highlighting some of the exquisite results for Challenge 1B.3.1, that seem to confirm (although in a simplified scenario) that LISA could indeed provide measurements of MBH parameters with unprecedented accuracy.  It is also interesting to notice that for this specific type of data sets time-frequency techniques performed quite well.
-%It is also interesting to notice that for this specific type of data sets time-frequency techniques performed as well (and in some cases outperformed) in parameter estimation coherent analyses in Challenge 1B.3.3-4. ([Stas] It is not entirely true, coherent search got stack at secondary maxima and we knew it!)
+Entries were received from three groups: \textbf{BBGP} (a collaboration of scientists at the AEI, Cambridge, and the University of Southampton); \textbf{EtfAG} (AEI, Northwestern, and Cambridge); and \textbf{MT} (Montana State University).
+\textbf{EtfAG} employed a time--frequency technique \cite{gmw}, whereas \textbf{BBGP} and \textbf{MT} developed coherent approaches based on Monte Carlo techniques, differing in their implementation.
+%PROBLEM: need GWDAW ref for BBGP and MT
+The entries were assessed as discussed at the beginning of this section, although the \textbf{EtfAG} time--frequency analysis cannot determine the extrinsic parameters, so recovered SNR and correlation could not be computed. Tables \ref{EMRI2} and \ref{EMRI1} summarize all results.
 
-Because the signals used in this challenge were quite strong, they could be relatively easy detected, as it was already 
-shown in the challenge 1.3. The main achievement in the challenge 1B.3 as compared to 1.3, is the parameter estimation of the detected signals, as it is obvious from the Table~\ref{EMRI1} (especially MT2 entry for 1B.3.1). The techniques were 
-significantly improved and they allowed to identify the secondary maxima, some results were submitted as ``the best available'' by the deadline, even though the groups have realized that this is not yet the true answer.  
+Both the time--frequency and coherent approaches succeeded in detecting these relatively strong EMRI signals and in constraining their parameters (with especially remarkable accuracy for data set 1B.3.1), although not all groups analyzed all data sets, and the performance of the same search pipeline varied across them. Challenge participants report that in some cases this was due to a lack of time for extended computations before the challenge deadline, so some parameters set were submitted as ``best fits'' although they were clearly understood to be secondary likelihood maxima. Thus, this early development work indicates that the main challenge for (isolated) EMRI analyses is the very complex structure of the likelihood surface in source parameter, which features a number of secondary maxima of similar height, even more so than for MBH binaries.
 
- We caution the reader that general conclusions about the relative merit of analyses approaches and/or the overall quality of LISA astronomy for EMRIs would be inappropriate: it is not known as yet how these techniques scale as the SNR decreases -- and this will begin to be addressed by Challenge 3 -- and in situations in which EMRIs overlap a with large number of galactic binary signals and possibly with each other.
- 
-% \begin{table}
-%\caption{\label{EMRI1} Errors for challenge 1.3.X}
-%\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-%\hline
-
-
+We caution the reader that it would be inappropriate at this time to draw general conclusions about the relative merits of search methods and about the expected science payoff of LISA EMRI astronomy: it is not known how these techniques scale as the SNR decreases and in situations where EMRI signals overlap with each other and are affected by Galactic confusion noise. The first two complications will be addressed in Challenge 3.
+%
 \begin{table}
-\caption{\label{EMRI1} Errors for challenge 1.3.X.}
-\begin{indented}\lineup
-\item[]\begin{tabular}{@{}lllllllllll}
-\br
-Entry &  $\frac{d\beta}{\Delta\beta}$ & 
-$\frac{d\lambda}{\Delta\lambda}$ &
- $\frac{d\theta_K}{\Delta\theta_K}$ & $\frac{d\phi_K}{\Delta\phi_K}$ 
- & $\frac{da}{\Delta a}$ & $\frac{d\mu}{\Delta\mu}$ & 
- $\frac{dM}{\Delta M}$ &  $\frac{d\nu_0}{\nu_0}$ 
-  &  $\frac{de_0}{0.15}$  & 
- $\frac{d\lambda_{SL}}{\Delta\lambda_{SL}}$ \\ 
-\hline
-BBGP-1B.3.1 & -0.03   &   -0.0059   &   -0.14   &   0.053   &   0.31   &   -0.20   &   -0.84   &   0.026    &   0.37     &   -0.022   \\
-EtfAG-1B.3.1  & 0.019   &   -0.0045   &   0.56   &   0.33   &   0.16   &   -0.11   &   -0.27   &   -9.3e-05    &   0.17     &   0.078    \\
-MT2-1B.3.1  &  0.0058   &   0.0027   &   0.00044   &   0.0051   &   -0.0022   &   0.0065   &   0.014   &   3.2e-06      &   -0.0085    &   -0.0020   \\
-\hline
-BBGP-1B.3.2  &  -0.16   &   -0.43   &   0.46   &   -0.33   &   -0.0088   &   -0.0040   &   0.016   &   0.00014     &   -0.010    &   -0.0013   \\
-EtfAG-1B.3.2  &  -0.014   &   0.0042   &   0.97   &   -0.36   &   0.0043   &   -0.046   &   -0.069   &   -6.5e-05     &   0.041     &   0.0041  \\
-MT2-1B.3.2  & 0.0040   &   -0.0086   &   0.79   &   0.41   &   0.093   &   -0.064   &   0.35   &   -0.035    &   0.068    &   0.092    \\
-\hline
-BBGP-1B.3.3 &   0.091   &   0.50   &   -0.23   &   0.045   &   -0.32   &   -0.49   &   -0.029   &   0.00061      &   0.019     &   0.054   \\
-EtfAG-1B.3.3  &  -0.01   &   -0.004   &   0.49   &   -0.34   &   0.0073   &   -0.059   &   -0.061   &   -7.8e-05    &   0.038      &   0.0061  \\
-MT2-1B.3.3  &  0.045   &   -0.019   &   -0.1   &   0.077   &   -0.066   &   0.13   &   0.59   &   0.00036   &   -0.33     &   0.010  \\
-\hline
-BBGP-1B.3.4 &  -0.57   &   -0.37   &   0.37   &   -0.31   &   -0.025   &   0.020   &   -0.88   &   0.066     &   0.065     &   -0.16   \\
-EtfAG-1B.3.4 & -0.56   &   0.49   &   0.56   &   -0.34   &   0.059   &   0.12   &   0.04   &   0.00028    &   -0.039    &   0.0040   \\
-\hline
-BBGP-1B.3.5 &  -0.48   &   -0.14   &   -0.35   &   0.1   &   -0.094   &   -0.094   &   0.55   &   -0.0021    &   -0.017      &   -0.060  \\
-EtfAG-1B.3.5 &  -0.58   &   0.46   &   0.27   &   -0.084   &   0.20   &   -0.7   &   0.83   &   -0.066     &   0.066     &   0.27  \\
-\br
-\end{tabular}
-\end{indented}
-\end{table}
-
-%\begin{table}
-%\caption{\label{EMRI2} Overlaps for challenge 1.3.X, the true SNR are: 1.3.1 - 123.7, 1.3.2 - 133.46, 1.3.3 - 81.0, 1.3.4 - 104.5, 1.3.5 - 57.6.} 
-%\begin{tabular}{|c|c|c|c|c|c|}
-%\hline
-
-\begin{table}
-\caption{\label{EMRI2} The overlaps and recovered SNRs for the TDI channels A, E and the combined recovered SNR for Challenge 1.3.X. Entries labelled with (a) and (b) have been corrected for the sign of the latitude and the reference phases at $t=0$, respectively.}
+\caption{\label{EMRI2} Overlaps and recovered SNRs for TDI observables $A$, $E$ and combined recovered SNR for data sets 1B.3.1--5.}
 \begin{indented}\lineup
 \item[]\begin{tabular}{@{}llllll}
 \br
-Entry & overlap (A) & $\mathrm{SNR}_A$ &  overlap (E) & $\mathrm{SNR}_E$ & $\mathrm{SNR}$ \\
-\hline
-	&&&&& ($\mathrm{SNR}_\mathrm{key} = 123.7$)	\\
-BBGP-1B.3.1 & 0.57 & 51 .0 & 0.58 & 51.6 & 72.5\\
-MT2-1B.3.1  & 0.998 & 86.1 & 0.997 & 88.3 & 123.4\\
-\hline
-	&&&&& ($\mathrm{SNR}_\mathrm{key} = 133.5$)	\\
-BBGP-1B.3.2 & 0.07 & 6.6 & 0.18 & 18.2 & 17.6\\
-BBGP-1B.3.2$^\mathrm{a}$ & 0.39 & 37.6 & 0.41 & 39.8 & 54.7\\
-MT2-1B.3.2  & 0.54 & 49.5 & 0.54 & 50.8 & 70.9 \\
-\hline
-	&&&&& ($\mathrm{SNR}_\mathrm{key} = 81.0$)	\\
-BBGP-1B.3.3 & -0.06 & -4.2 & -0.0003 & -0.05 & -3.0 \\
-BBGP-1B.3.3$^\mathrm{a}$ & -0.2 & -11.5 & -0.32 & -19.0 & -21.5\\
-MT2-1B.3.3  & 0.38 &  22.0 & 0.35 & 20.9 & 30.4 \\
-\hline
-	&&&&& ($\mathrm{SNR}_\mathrm{key} = 104.5$)	\\
-BBGP-1B.3.4 & 0.0007 & 2.1 & -0.0002 & 0.8 & 2.1\\
-BBGP-1B.3.4$^\mathrm{b}$ & 0.16 & 13.9 & 0.04 & 6.7 & 14.6 \\ 
-\hline
-	&&&&& ($\mathrm{SNR}_\mathrm{key} = 57.6$)	\\
-BBGP-1B.3.5 & 0.09 & 3.4 & 0.1 & 4.2 & 5.3\\
+Group & \centre{1}{$C_A$} & \centre{1}{$\mathrm{SNR}_A$} &  \centre{1}{$C_E$} & \centre{1}{$\mathrm{SNR}_E$} & \centre{1}{total SNR} \\
+\mr
+	 \centre{6}{1B.3.1 ($\mathrm{SNR}_\mathrm{opt} = 123.7$)}	\\[2pt]
+BBGP & \m0.57 & \m51.0 & \m0.58 & \m51.6 & \m\072.5\\
+MT  & \m0.998 & \m86.1 & \m0.997 & \m88.3 & \m123.4\\
+\mr
+	 \centre{6}{1B.3.2 ($\mathrm{SNR}_\mathrm{opt} = 133.5$)}	\\[2pt]
+BBGP & \m0.07 & \m\06.6 & \m0.18 & \m18.2 & \m\017.6\\
+BBGP$^\mathrm{a}$ & \m0.39 & \m37.6 & \m0.41 & \m39.8 & \m\054.7\\
+MT  & \m0.54 & \m49.5 & \m0.54 & \m50.8 & \m\070.9 \\
+\mr
+	 \centre{6}{1B.3.3 ($\mathrm{SNR}_\mathrm{opt} = 81.0$)}	\\[2pt]
+BBGP & $-0.06$ & $-4.2$ & $-0.0003$ & $-0.05$ & \0$-3.0$ \\
+BBGP$^\mathrm{a}$ & $-0.2$ & $-11.5$ & $-0.32$ & $-19.0$ & \0$-21.5$\\
+MT  & \m0.38 &  \m22.0 & \m0.35 & \m20.9 & \m\030.4 \\
+\mr
+	 \centre{6}{1B.3.4 ($\mathrm{SNR}_\mathrm{opt} = 104.5$)}	\\[2pt]
+BBGP & \m0.0007 & \m\02.1 & $-0.0002$ & \m0.8 & \m\02.1\\
+BBGP$^\mathrm{b}$ & \m0.16 & \m13.9 & \m0.04 & \m6.7 & \m\014.6 \\ 
+\mr
+	 \centre{6}{1B.3.5 ($\mathrm{SNR}_\mathrm{opt} = 57.6$)}	\\[2pt]
+BBGP & \m0.09 & \m\03.4 & \m0.1 & \m4.2 & \m\05.3\\
 \br
 \end{tabular}
+\item[]$^\mathrm{a}$ $C$ and SNR after correcting the sign of the latitude, which was lost when \textbf{BBGP} input parameters in the MLDC webform.
+\item[]$^\mathrm{b}$ $C$ and SNR after correcting phases at $t=0$, to account for a bug in the \textbf{BBGP} pipeline.
 \end{indented}
-%$^\mathrm{a}$ corrected sign of the latitude\\
-%$^\mathrm{b}$ corrected phases at $t=0$
 \end{table}
-
-From this early development work and analysis results it is clearly emerging that the main challenge for (isolated) EMRI analyses is to deal with a very complex structure of the parameter space that produces a number of secondary maxima of the likelihood function with fairly similar values but well separated in parameter space. A similar issue was discussed for the MBH binary analyses.
+%
+\begin{table}
+\caption{Errors for a subset of EMRI parameters in Challenges 1.3.1--5. ``$\Delta x/[x]$'' denote fractional errors relative to the physical or prior range of the parameter.\label{EMRI1}}
+\scriptsize\lineup
+\begin{tabular}{l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l}
+\br
+Group &
+\centre{1}{$\frac{\Delta\beta}{[\beta]}$} & 
+\centre{1}{$\frac{\Delta\lambda}{[\lambda]}$} &
+\centre{1}{$\frac{\Delta\theta_K}{[\theta_K]}$} &
+\centre{1}{$\frac{\Delta\phi_K}{[\phi_K]}$} &
+\centre{1}{$\frac{\Delta a}{[a]}$} &
+\centre{1}{$\frac{\Delta\mu}{[\mu]}$} & 
+\centre{1}{$\frac{\Delta M}{[M]}$} &
+\centre{1}{$\frac{\Delta \nu_0}{\nu_0}$} &
+\centre{1}{$\frac{\Delta e_0}{0.15}$} & 
+\centre{1}{$\frac{\Delta\lambda_{SL}}{[\lambda_{SL}]}$} \\
+\mr
+\centre{11}{Challenge 1B.3.1}	\\[2pt]
+BBGP   & $-0.03$   &   $-0.0059$   &   $-0.14$   &   \m0.053   &   \m0.31   &  $-0.20$   &   $-0.84$   &   \m0.026    &   \m0.37     &   $-0.022$   \\
+EtfAG  & \m0.019   &   $-0.0045$   &   \m0.56   &   \m0.33   &   \m0.16   &   $-0.11$   &   $-0.27$   &   $-9.3 \times 10^{-5}$    &   \m0.17     &   \m0.078    \\
+MT     &  \m0.0058   &   \m0.0027   &   \m$4.4 \times 10^{-4}$   &   \m0.0051   &   $-0.0022$   &   \m0.0065   &   \m0.014   &   \m$3.2\times 10^{-6}$      &   $-0.0085$    &   $-0.0020$   \\
+\mr
+\centre{11}{Challenge 1B.3.2}	\\[2pt]
+BBGP   &  $-0.16$   &   $-0.43$   &   \m0.46   &   $-0.33$   &   $-0.0088$   &   $-0.0040$   &   \m0.016   &   \m$1.4 \times 10^{-4}$     &   $-0.010$    &   $-0.0013$   \\
+EtfAG  &  $-0.014$   &   \m0.0042   &   \m0.97   &   $-0.36$   &   \m0.0043   &   $-0.046$   &   $-0.069$   &   $-6.5\times 10^{-5}$     &   \m0.041     &   \m0.0041  \\
+MT     & \m0.0040   &   $-0.0086$   &   \m0.79   &   \m0.41   &   \m0.093   &   $-0.064$   &   \m0.35   &   $-0.035$    &   \m0.068    &   \m0.092    \\
+\mr
+\centre{11}{Challenge 1B.3.3}	\\[2pt]
+BBGP   &  \m0.091   &   \m0.50   &   $-0.23$   &   \m0.045   &   $-0.32$   &   $-0.49$   &   $-0.029$   &   \m$6.1 \times 10^{-4}$      &   \m0.019     &   \m0.054   \\
+EtfAG  &  $-0.01$   &   $-0.004$   &   \m0.49   &   $-0.34$   &   \m0.0073   &   $-0.059$   &   $-0.061$   &   $-7.8\times 10^{-5}$    &   \m0.038      &   \m0.0061  \\
+MT    &  \m0.045   &   $-0.019$   &   $-0.1$   &   \m0.077   &   $-0.066$   &   \m0.13   &   \m0.59   &   \m$3.6 \times 10^{-4}$   &   $-0.33$     &   \m0.010  \\
+\mr
+\centre{11}{Challenge 1B.3.4}	\\[2pt]
+BBGP   & $-0.57$   &   $-0.37$   &   \m0.37   &   $-0.31$   &   $-0.025$   &   \m0.020   &   $-0.88$   &   \m0.066     &   \m0.065     &   $-0.16$   \\
+EtfAG  & $-0.56$   &   \m0.49   &   \m0.56   &   $-0.34$   &   \m0.059   &   \m0.12   &   \m0.04   &   \m$2.8 \times 10^{-4}$    &   $-0.039$    &   \m0.0040   \\
+\mr
+\centre{11}{Challenge 1B.3.5}	\\[2pt]
+BBGP   & $-0.48$   &   $-0.14$   &   $-0.35$   &   \m0.1   &   $-0.094$   &   $-0.094$   &   \m0.55   &   $-0.0021$    &   $-0.017$      &   $-0.060$  \\
+EtfAG  & $-0.58$   &   \m0.46   &   \m0.27   &   $-0.084$   &   \m0.20   &   $-0.7$   &   \m0.83   &   $-0.066$     &   \m0.066     &   \m0.27  \\
+\br
+\end{tabular}
+\end{table}
 
 \section{Synopsis of Challenge 3}
 \label{s:challenge-3}
@@ -455,7 +435,7 @@ See \cite{mldcgwdaw2} for the conversion of the GW polarizations in source frame
 \textbf{[Verify definition of SNR?]}
 %
 \begin{table}
-\caption{Source parameters in Challenge 3. We do not deal explicitly with the redshifting of sources at cosmological distances; thus, $D$ is a \emph{luminosity} distance, and all masses and frequencies are those measured at the SSB, which are red/blue-shifted by factors $(1+z)^{\pm 1}$ with respect to those measured locally near the sources.\label{tab:parameters}}
+\caption{Source parameters in Challenge 3.\label{tab:parameters}}
 \small
 \begin{tabular}{llll}
 \br
@@ -517,7 +497,7 @@ The MBH time of coalescence $t_c$ and the cosmic-string--cusp burst central time
 \lineup
 \begin{tabular}{l@{\hspace{6pt}}l@{\hspace{6pt}}l}
 \br
-Dataset & Sources & Parameters \\
+Data set & Sources & Parameters \\
 \mr
 \textbf{3.1}
 & \textit{Galactic-binary background} & randomized population (see section \ref{sec:ch3galaxy}) \\
@@ -661,7 +641,7 @@ h_{\times}^\mathrm{SSB} &=& h_{+}\sin{2\psi} - h_{\times}\cos{2\psi}.
 Masses, SNRs, and times of coalescence are chosen as in Challenge 2 (see also table \ref{table:MLDC3}); the spin magnitudes $S_1/M_1^2$ and $S_2/M_2^2$
 are drawn uniformly in $[0,1]$; all the angles (spin directions, initial orbital angular momentum, sky position) are drawn uniformly over spheres. See \url{lisatools/MLDCwaveforms/FastBBH} for the source code.
 
-Dataset 3.2 includes also a Galactic confusion background generated from the same detached-binary population as used in Challenge 3.1 (interacting systems have typically very small chirp masses and are not expected to make a significant contribution), but withholding all binaries with individual SNR $> 5$ relative to instrument noise \textbf{[Neil: is this right?]} The resulting confusion background is described well \textbf{[Neil: is this true?]} by the analytical PSD expression
+Data set 3.2 includes also a Galactic confusion background generated from the same detached-binary population as used in Challenge 3.1 (interacting systems have typically very small chirp masses and are not expected to make a significant contribution), but withholding all binaries with individual SNR $> 5$ relative to instrument noise \textbf{[Neil: is this right?]} The resulting confusion background is described well \textbf{[Neil: is this true?]} by the analytical PSD expression
 %
 \begin{equation} \fl
 S_{X,\mathrm{gal}} = 16 \, x^2 \sin^2 x \, \mathrm{Hz}^{-1} \times \left\{ \begin{array}{l@{}l@{\;}l@{\;}l}
@@ -746,7 +726,7 @@ S^\mathrm{tot}_h(f) = 0.7\mbox{--}1.3 \times 10^{-47} (f/\mathrm{Hz})^{-3} \, \m
 %
 (taking $H_0 = 70 \, \mathrm{km} / \mathrm{s} / \mathrm{Mpc}$, this corresponds to $\Omega_\mathrm{gw}=8.95\times 10^{-12}\mbox{--}1.66\times 10^{-11}$). \textbf{[Check the 1/2 for the one-sided spectrum.]}
 
-One of the more promising approaches to detect GW backgrounds with LISA relies on estimating instrument noise levels by way of symmetrized TDI observables that is insensitive to GWs at low frequencies in the LISA band \cite{zetapaper}. For realistic LISA orbits, however, the low-frequency behavior of such observables becomes more complicated than discussed in the literature. To simplify the initial investigation of the background-detection problem in data set 3.5, we have therefore approximated 
+One of the more promising approaches to detect GW backgrounds with LISA relies on estimating instrument noise levels by way of symmetrized TDI observables that is insensitive to GWs at low frequencies in the LISA band \cite{zetapaper,hoganbender,rrv}. For realistic LISA orbits, however, the low-frequency behavior of such observables becomes more complicated than discussed in the literature. To simplify the initial investigation of the background-detection problem in data set 3.5, we have therefore approximated 
 LISA as a rigidly rotating triangle with equal and constant armlengths (i.e., Synthetic LISA's \url{CircularRotating}).
 
 \section{Conclusion}
@@ -842,6 +822,10 @@ Cannon K and Read J 2006 \textit{Phys. Rev. D} {\bf 73} 105001
 %
 \bibitem{zetapaper} Tinto M, Armstrong J W and Estabrook F B 2000 \textit{Phys. Rev. D} \textbf{63} 021101
 %
+\bibitem{hoganbender} Hogan, C J and Bender P L 2001 \textit{Phys. Rev. D} \textbf{64} 062002 
+%
+\bibitem{rrv} Robinson E L, Romano J D and Vecchio A 2008 ``Search for a stochastic gravitational-wave signal in the second round of the Mock LISA Data Challenges'' in this volume
+%
 \bibitem{Vecchio} Vecchio A \ 2004  \textit{Phys. Rev. D} {\bf 70} 042001 
 %
 \bibitem{TriasSintes} Trias M and Sintes A M \ 2008 \textit{Phys. Rev. D} {\bf 77} 024030
@@ -853,6 +837,50 @@ Cannon K and Read J 2006 \textit{Phys. Rev. D} {\bf 73} 105001
 \end{thebibliography}
 \end{document}
 
+\item[]\begin{tabular}{lllllll}
+\br
+& \centre{2}{1B.1.1a}
+& \centre{2}{1B.1.1b}
+& \centre{2}{1B.1.1c} \\
+& \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} & \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} & \centre{1}{$\mathrm{SNR}_\mathrm{opt}$} & \centre{1}{$C$} \\
+\mr
+true source & 13.819 & & 24.629 & & 15.237 & \\
+AEI			& 20.435	& 0.108	& 18.652	& 0.922 & \01.949	& $-0.190$		\\
+AEI*			& 14.199	& 0.984	& 23.266	& 0.996	& 14.770	& \m0.989 \\
+GSFC			& 13.805	& 0.992	& 20.310	& 0.807	& \04.827		& $-0.138$ \\
+GSFC*		&       &     	& 20.987	& 0.814 \\
+IMPAN		& 14.427	& 0.988	& 25.235	& 0.981 & 16.465	& \m0.925	\\
+IMPAN*		&       &     	& 23.152	& 0.997 & 14.194	& \m0.946	\\
+MCMNJU			& 13.524	& 0.952	& 22.641	& 0.906	& \06.830	& \m0.033 \\
+MCMNJU*			& 14.193	& 0.996	& 23.270	& 0.994	\\
+UIBBham			& 13.577	& 0.992	& 23.479	& 0.996 	\\
+\br
+\end{tabular}
 
-
+\begin{table}
+\caption{\label{Table_1b_1_2_correlations} The performance of challenge entries on the verification binaries challenge as calculated using SNR, and $C$.}
+\begin{indented} \lineup
+\item[]\begin{tabular}{lll}
+\br
+Group & $C$ & \# recovered \\
+\centre{3}{Challenge 1B.1.2}  \\
+\centre{3}{${\rm SNR}_{\rm opt}=634.918$, $25$ sources}  \\
+\mr
+AEI		& $-0.822$	& 25	 	\\
+GSFC		& \m0.006	& 25	 	\\
+MCMNJU	& \m0.267	& 25	 	\\
+\br
+\end{tabular}
+\item[]\begin{tabular}{lrrc}
+\br
+Group & SNR & $C$ & \# Recovered\\
+\br
+\centre{4}{Challenge 1B.1.2 (${\rm SNR}_{\rm key}=634.918$, $25$ Sources)}  \\
+\mr
+AEI		& 891.677	& -0.822	& 25	 	\\
+GSFC		& 807.012	& 0.006		& 25	 	\\
+MCMNJU		& 603.805	& 0.267		& 25	 	\\
+\end{tabular}
+\end{indented}
+\end{table}
 
