@@ -396,7 +396,7 @@ sources = glob.glob('*.c') + glob.glob('*.h') + glob.glob('../../lisaXML/io-C/*.
 
 if ( newer_group(sources,'Setup') or newer_group(sources,'Fast_Response') or newer_group(sources,'Galaxy_Maker')
      or newer_group(sources,'Galaxy_key') or newer_group(sources,'Fast_XML_LS') 
-     or newer_group(sources,'Fast_XML_SL') or newer_group(sources,'Confusion_Maker')     ):
+     or newer_group(sources,'Fast_XML_SL')      ): # or newer_group(sources,'Confusion_Maker')
     print "    (recompiling Galaxy_General)"
     assert(0 == os.system('python Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
