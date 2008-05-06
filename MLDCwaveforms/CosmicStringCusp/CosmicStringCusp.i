@@ -66,7 +66,7 @@ class CosmicStringCusp(lisaxml.Source):
         # of samples. A positive inittime does not really fit this scheme...
         
         if inittime > 0:
-            raise NotImplementedError, "Sorry, FastSpinBlackHoleBinary currently supports only negative inittime (used for padding)"
+            raise NotImplementedError, "Sorry, CosmicStringCusp currently supports only negative inittime (used for padding)"
         
         Cusp.Samples = int(samples + 2 * inittime / deltat)
         Cusp.Cadence = 1.0 / deltat
