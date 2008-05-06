@@ -96,7 +96,7 @@ mysystem.CentralTime                = options.Tc + random.uniform(-options.delta
 if options.MaximumFrequency != None:
     mysystem.MaximumFrequency = options.MaximumFrequency
 else:
-    mysystem.MaximumFrequency = 10**random.uniform(-3.0,1.0)
+    mysystem.MaximumFrequency = 10**random.uniform(-3.0,-1.0)
 
 if options.RequestSN:
     mysystem.RequestSN = options.RequestSN
