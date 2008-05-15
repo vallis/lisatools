@@ -81,6 +81,7 @@ We also introduce the next round, Challenge 3. Its data sets feature more realis
 \pacs{04.80.Nn, 95.55.Ym}
 
 % \maketitle
+% TO DO: check all SNRs
 
 \section{Introduction}
 
@@ -633,11 +634,7 @@ The end of the inspiral is handled with the exponential taper used also for the 
 See \url{lisatools/MLDCwaveforms/FastBBH} for the source code for these waveforms.
 %PROBLEM Neil: check waveforms; how are the angular momentum and spin angles defined? Are they all relative to SSB frame?
 
-Data set 3.2 includes also a Galactic confusion background generated from the same detached-binary population as used in Challenge 3.1 (interacting systems have typically very small chirp masses and are not expected to make a significant contribution), but withholding all binaries with individual SNR $> 5$ relative to instrument noise 
-%PROBLEM Neil: is this right?
-The resulting confusion background is described well
-%PROBLEM Neil: is this true?
-by the analytical PSD expression for fractional frequency fluctuations
+Data set 3.2 includes also a Galactic confusion background generated from the same detached-binary population as used in Challenge 3.1 (interacting systems have typically very small chirp masses and are not expected to make a significant contribution), but withholding all binaries with individual $A + E$ SNR $> 5$ relative to instrument noise plus an estimate of confusion noise, which was derived using a BIC criterion for the resolvability of individual Galactic binaries \cite{Cornish:2007if}:
 %
 \begin{equation} \fl
 S_{X,\mathrm{gal}} = 16 \, x^2 \sin^2 x \, \mathrm{Hz}^{-1} \times \left\{ \begin{array}{l@{}l@{\;}l@{\;}l}
@@ -646,9 +643,10 @@ S_{X,\mathrm{gal}} = 16 \, x^2 \sin^2 x \, \mathrm{Hz}^{-1} \times \left\{ \begi
 10^{-62.8}  &(f/\mathrm{Hz})^{-8.8}  & \mathrm{for} \, f \in [10^{-2.7},10^{-2.4}] & \mathrm{Hz}, \\
 10^{-89.68} &(f/\mathrm{Hz})^{-20.0} & \mathrm{for} \, f \in [10^{-2.4},10^{-2.0}] & \mathrm{Hz},
 \end{array}\right.
+\label{eq:confusionback}
 \end{equation}
 %
-(with $x = 2 \pi f L$, $L \simeq 16.6782$ s), which was derived using a BIC criterion for the resolvability of individual Galactic binaries \cite{Cornish:2007if}, and is used in Challenge 3 (on top of instrument noise) to define the SNRs of GW signals from MBH binaries, and also EMRIs (Challenge 3.3) and cosmic-string cusps (Challenge 3.4).
+(fractional frequency fluctuations, with $x = 2 \pi f L$, $L \simeq 16.6782$ s). The resulting confusion background is consistent with \eqref{eq:confusionback}, which is also used in Challenge 3 (on top of instrument noise) to define the SNRs of GW signals from MBH binaries, and also EMRIs (Challenge 3.3) and cosmic-string cusps (Challenge 3.4).
 
 \subsection{EMRIs}
 \label{sec:ch3emri}
@@ -768,7 +766,7 @@ IM was partially supported by NASA ATP Grant NNX07AH22G to Northwestern Universi
 %
 \bibitem{fstat} Jaranowski P, Krolak A and Schutz B F 1998 \textit{Phys. Rev. D} \textbf{58} 063001
 %
-\bibitem{prixwhelan} Prix R and Whelan J T 2007 \textit{Class. Quant. Grav.} \textbf{24} S565; \textit{Poster} \url{www.ligo.caltech.edu/docs/G/G070462-00.pdf}
+\bibitem{prixwhelan} Whelan J T, Prix R and Khurana D 2008 ``Mock LISA Data Challenge 1B: improved search for galactic white dwarf binaries using an F-statistic template bank'' in this volume (\textit{Preprint} arXiv:0805.1972)
 %
 \bibitem{tvv} Trias M, Vecchio M and Veitch J 2008
 ``Markov Chain Monte Carlo searches for Galactic binaries in MLDC-1B data sets'' in this volume (\textit{Preprint} arXiv:0804.4029)
