@@ -299,7 +299,7 @@ MT  & \m0.54 & \m49.5 & \m0.54 & \m50.8 & \m\070.9 \\
 \mr
 	 \centre{6}{1B.3.3 ($\mathrm{SNR}_\mathrm{opt} = 81.0$)}	\\[2pt]
 BBGP & $-0.06$ & $-4.2$ & $-0.0003$ & $-0.05$ & \0$-3.0$ \\
-BBGP$^\mathrm{a}$ & $-0.2$ & $-11.5$ & $-0.32$ & $-19.0$ & \0$-21.5$\\
+BBGP$^\mathrm{a,c}$ & $-0.2$ & $-11.5$ & $-0.32$ & $-19.0$ & \0$-21.5$\\
 MT  & \m0.38 &  \m22.0 & \m0.35 & \m20.9 & \m\030.4 \\
 \mr
 	 \centre{6}{1B.3.4 ($\mathrm{SNR}_\mathrm{opt} = 104.5$)}	\\[2pt]
@@ -312,11 +312,18 @@ BBGP & \m0.09 & \m\03.4 & \m0.1 & \m4.2 & \m\05.3\\
 \end{tabular}
 \item[]$^\mathrm{a}$ $C$ and SNR after correcting the sign of the latitude, which was lost when \textbf{BBGP} input parameters in the MLDC webform.
 \item[]$^\mathrm{b}$ $C$ and SNR after correcting phases at $t=0$, to account for a bug in the \textbf{BBGP} pipeline.
+\item[]$^\mathrm{c}$ SNR is negative because the \textbf{BBGP} group maximizes likelihood
+over the amplitude (distance) analytically which makes it sign insensitive (minus sign corresponds to the phase difference $\pi$ in the dominant harmonic). This degeneracy is 
+broken once all harmonics are found correctly.
 \end{indented}
 \end{table}
 %
 \begin{table}
-\caption{Errors for a subset of EMRI parameters in Challenges 1.3.1--5. ``$\Delta x/[x]$'' denote fractional errors relative to the physical or prior range of the parameter.\label{EMRI1}}
+\caption{Errors for a subset of EMRI parameters in Challenges 1.3.1--5. ``$\Delta x/[x]$'' denote fractional errors relative to the physical or prior range of the parameter.
+Note that due to the narrow prior range the relative error could be limited to $\sim 10\%$,
+therefore we give the number which would show by how much we have decreased the prior range. Large errors correspond to the secondary maxima in the likelihood, the only true 
+parameters (global maximum) were found by \textbf{MT} in Challenge 1.3.1.
+\label{EMRI1}}
 \scriptsize\lineup
 \begin{tabular}{l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l@{\hspace{3pt}}l}
 \br
