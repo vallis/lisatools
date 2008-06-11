@@ -1,0 +1,182 @@
+Article ID:	CQG/278816/SPE
+Title:	The Mock LISA Data Challenges: from Challenge 1B to Challenge 3
+
+Response to Publisher's Note
+============================
+
+> Please note that the agreed page extent for articles for GWDAW workshop
+> proceedings is 10 journal pages. In present form your article exceeds this
+> considerably. If you feel an exception should be made to this limit for your
+> article, please let us know so we can take this to the Guest Editors for
+> consideration. Otherwise, please could you consider where your article could
+> be condensed without detracting from the scientific content.
+
+We have corresponded with the Guest Editors about the length of this proceeding, and they agree that it should be allowed more space, since the corresponding contribution at GWDAW-12 was a long invited talk that covered two separate topics in the Mock LISA Data Challenges (the past Challenge 1B, and future Challenge 3), and since this proceeding provides context for several other articles about the MLDCs, which were submitted to this same CQG volume.
+
+	
+Response to first referee's report
+==================================
+
+> The article by Babak et al. reports on the latest results and future
+> challenges for the Mock LISA Data Challenges (MLDCs). Among the
+> results reported here are the findings from the now complete 1B
+> challenge. Additionally, the article describes the simulated data
+> sets that will be used in the next round of challenges.
+> 
+> This particular article is the latest in a sequence of articles which
+> reports on the incremental progression from developing simple to
+> complex data analyses routines applicaple to the anticipated LISA
+> data. As such, the article is essential for the gravitational wave
+> community in that it delivers the latest accomplishments while stating
+> unforeseen complications. Moreover, these papers continue to raise
+> the visibility of the LISA mission.
+> 
+> Overall, the paper is well written. It followed a logical sequence of
+> arguments and was clear in the writing. Moreover, the text was
+> thorough and left little to comment on. Given the content and
+> prospective audience, Classical and Quantum Gravity is an
+> appropriate journal for this article. I would recommend that this
+> article be published in its current form.
+
+Thank you!
+
+
+Response to second referee's report
+===================================
+
+> This paper is a summary of past Mock LISA Data Challenge results and
+> the content of the next Challenge round. It is a topic of interest
+> and is well written, though I wonder if it is really useful to present
+> so many numbers in tables with so little interpretation. For
+> instance, how accurately do the parameters NEED to be determined to
+> satisfy the scientific goals of the mission?
+
+This is a very good point. However, the LISA science requirements are not completely settled, and they are usually stated in terms of detection, rather than parameter estimation accuracy. Therefore the quantification of LISA's scientific goals in terms of parameter errors is a somewhat subjective exercise. Still, we have tried to add some information in this direction. Namely:
+
+- For Challenges 1B.1.X, a statement was added at the end of section 2.1 acknowledging that the best demonstration of the feasibility of LISA's science objectives was given with Challenge 2, and that 1B.1.X had principally a tutorial role for new groups.
+
+- For Challenges 1B.2.X, we have added a statement at the end of 2.2 comparing the parameter errors of Table 4 with Fisher-matrix errors, which give a rough idea of the parameter accuracies possible for a given signal.
+
+- For Challenge 1B.3.X the main finding is again that detection was achieved, and there's still a long way to go to achieve LISA's potential in parameter estimation.
+
+Still, the numbers in the tables are interesting in connection with the descriptions of the individual MLDC entries (and their performance) discussed elsewhere in this proceeding volume.
+
+> The most significant concern I have about the content of the paper
+> regards the maximisation of the F-statistic after the fact, done for
+> Challenge 1B.1.X. My concern has a few aspects:
+> 
+> 1. I don't understand how the decision was made to maximise the
+> F-statistic for some cases and not for others. The paper suggests
+> that it was done when the intrinsic parameters were recovered fairly
+> closely. However, it was done for the 1b GSFC case, which had
+> rather poor matching in the intrinsic parameters, while it wasn't
+> done for the 1a IMPAN case, which had better matching of the
+> intrinsic parameters.
+> 
+> 2. What does the F-statistic maximisation really tell us, anyway?
+> It certainly improves the correlations, but that is by construction
+> and it doesn't seem to improve the parameter accuracy on the whole.
+> The paper says it was because the participants had issues/problems
+> assigning extrinsic parameters, but the extrinsic parameter errors
+> don't always get better when it is done!
+> 
+> 3. Why did the AEI, MCMNJU, and (I think) IMPAN groups fail to
+> maximise the F-statistic in the first place, given that their
+> analysis techniques were supposedly based on the F-statistic?
+
+The referee is quite right. The point to maximizing the F-statistic was to show that the estimates of intrinsic parameters made by the participants would have led to solid detections, except for systematic problems with their treatment of extrinsic parameters. For instance, the AEI entry for 1B.1.1a has very bad correlation (0.1), but it can be improved to 0.984 using the AEI-provided intrinsic parameters with the correct treatment of extrinsic parameters. 
+
+We agree that the F-stat maximization does not tell a whole lot, and we have de-emphasized it in the article. As the referee points out, the estimates of the extrinsic parameters after maximization do not generally improve (they do for 1B.1.1c), quite probably because of correlations with the intrinsic parameters, which are held fixed. To avoid confusion, we have removed the F-stat-maximized parameter errors from Table 1.
+
+To respond to the referee's comments 1 and 3: F-stat maximization does not significantly improve IMPAN's 1B.1.1a correlation, so it was not shown. The failure in maximizing the F statistic by AEI, MCMNJU, and IMPAN is due either to systematic errors in their definition of the extrinsic parameters (for instance, AEI suffered from a 7.5-second offset in the definition of time) or to the approximations used to model the LISA response to monochromatic signals (such as the long-wavelength or rigid adiabatic approximations).
+
+> The only other complaint I have is that section 3 reads partly like a
+> user guide for LISAtools, in the way that it refers to specific files
+> and directories in the LISAtools distribution. I guess it is OK to do
+> that, but I think it would be better to say 'see the {\tt
+> MLDCwaveforms/Galaxy3} directory in LISAtools for the source code'
+> instead of 'see {\tt lisatools/MLDCwaveforms/Galaxy3} for the source code',
+> for example.
+
+We have changed the text as suggested by the referee. We think it's important to point the reader to the GW-generating code in LISAtools, because the source code itself may be considered the canonical reference for the waveforms used in the challenges. Although we have tried to be as explicit as possible in our discussion of the waveforms in this article and elsewhere, there are many small implementation details that may be important to calibrate MLDC searches, and that are fully expressed only in the software itself.
+
+> * Clarification requests/suggestions
+> 
+> I think the Challenge 1B.1 data sets consisted of one year of data,
+> but that isn't said directly. Also, it isn't clear whether some/all
+> the 1B data sets were noiseless; the second-to-last paragraph of
+> section 2.1 mentions 'noiseless data set 1B.1.4', but I don't know
+> whether that is the distributed version of that data set or something
+> special. It would be good to say whether noise is or isn't included
+> when describing these data sets. If there ARE noiseless data sets,
+> then how are the SNR values calculated??
+
+We thank the referee for the many useful corrections in this part of his/her report. Indeed, we have added a statement about the length of Challenge 1B datasets, and we have clarified the issue of "noiseless" data: noise is always included in the challenge datasets, but for the purpose of challenge evaluation, correlations are computed between the GW-signal-only content of the challenge datasets, and the GW-signal-only models submitted by challenge participants. The same applies to the subtraction displayed in Figure 2. In the resubmitted version of this article we avoid the confusing word "noiseless".
+
+> I do not understand this statement in section 2.2, paragraph 4:
+> '...since data set 1B.2.1 included the inspiral waveform up to the
+> approximate merger frequency, this challenge was NOT aimed directly at
+> sky-position determination...'
+
+We agree with the referee that this statement was elliptic. We have expanded it to the following:
+
+<<This is a true global degeneracy, which does not appear in local Fisher-matrix analyses (another example of why mock-data endeavors are useful!), and which may indicate the need, in EM searches of counterparts to LISA binary-MBH detections, to examine unconnected regions of the sky. It may however be premature to make such an inference, since the degeneracy could be broken by the addition to the waveforms of spin effects (now included in Challenge-3 waveforms) and higher harmonics. In addition, EM-counterpart searches would require a data-analysis system capable of determining the sky position of MBH binaries a few days in advance of their merger (corresponding to the interval between data dumps from LISA to the ground), whereas data set 1B.2.1 included the entire inspiral waveform, up to the approximate merger frequency. Therefore this challenge was _not_ aimed directly at establishing the feasibility of sky-position determination for EM-counterpart searches. 
+In this context, it is however worth pointing out that the entries provided very accurate determinations of the times of coalescence, corresponding to time windows of a few minutes (for Challenge 1B.2.1) and about 45 minutes (for 1B.2.2).>>
+
+> Figure 3: You probably should put absolute-value marks around f-dot
+> to cover the case when it is negative.
+
+We did this, thanks.
+
+> * Minor errors in the paper
+> 
+> The text of the paper says that tables 1 and 3 contain the SNRs and
+> correlations recovered by each collaboration; however, they don't
+> contain the recovered SNRs.
+
+We have corrected this statement. The SNR is not included to save space, since it is equal to the correlation times the optimal SNR.
+
+> There seems to be a sign definition error in the whole of the
+> $\Delta \beta$ column of table 2. For instance, the 1B.1.1a
+> $\Delta \beta$ values should be negative for all of the groups
+> except UIBBham (as shown in figure 1, for instance).
+
+This is true, and we have corrected the table. (The problem was due to having computed the errors for colatitudes, rather than latitudes...)
+
+> Also in table 2, should the 1B.1.1b section have an F-statistic-maximised
+> row for IMPAN? Table 1 indicates that F-statistic maximisation was done for 
+> that case.
+
+Yes, but we have now removed all F-statistic-maximised parameter errors, as discussed above.
+
+> In table 5, the 1B.3.4 part, BBGP has a negative value for C_E but a
+> positive value for SNR_E. Don't they have to have the same sign?
+
+We have corrected this sign (a typo), and added a footnote to the table explaining how negative SNRs come about for the BBGP entries.
+
+> * Suggestions for minor corrections to the writing:
+> 
+> Introduction
+> End of paragraph 4: 'five more' -> 'and five more'
+> Last paragraph: 'new sources classes' -> 'new source classes'
+> Section 2.1
+> Paragraph 4: 'computed on for' -> 'computed for'
+> Paragraph 5: 'consistently with' -> 'consistent with'
+> Section 2.2
+> Paragraph 1: Missing a close-parenthesis after 'm_1/m_2 = 1-4'
+> Paragraph 4: 'may however premature' -> 'may however be premature'
+> Section 2.3
+> Paragraph 3: 'some parameters set were' -> 'some parameter sets were'
+> Paragraph 3: 'likelihood surface in source parameter' ->
+> 'likelihood surface in source parameters'
+> Table 6 caption: 'Challenges 1.3.1-5' -> 'Challenges 1B.3.1-5'
+> Section 3, first footnote: 'with with PSD' -> 'with PSD'
+> Table 7:
+> Has an extra horizontal line below 'Spinning massive black-hole binaries' ?
+> Section 3.1, last paragraph: 'noise The' -> 'noise. The'
+> Conclusion: 'scope all important aspects' ->
+> 'scope out all important aspects'
+
+All implemented, thanks!
+
+We have also corrected a few typos in the main text, updated references, and enhanced some of the figures for readability.
