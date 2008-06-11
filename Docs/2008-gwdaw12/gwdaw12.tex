@@ -66,7 +66,7 @@ John T. Whelan$^1$}
 \address{$^{16}$ Indian Institute of Technology, Kharagpur, India}
 \address{$^{17}$ Inst.\ of Mathematics, Polish Academy of Sciences, Warsaw, Poland}
 \address{$^{18}$ Max-Planck-Institut f\"ur Gravitationsphysik (Albert-Einstein-Institut), D-30167 Hannover, Germany}
-\address{$^{19}$ Dept. de F\'{\i}sica, Universitat de les Illes Balears, Cra. Valldemossa km 7.5, E-07122 Palma de Mallorca, Spain}
+\address{$^{19}$ Dept. de F\'{\i}sica, Universitat de les Illes Balears, Cra.\ Valldemossa km 7.5, E-07122 Palma de Mallorca, Spain}
 \address{$^{20}$ Dept.\ of Astronomy, Nanjing Univ., 22 Hankou Road, Nanjing, 210093, China}
 \address{$^{21}$ School of Physics, M013, Univ.\ of Western Australia, 35 Stirling Highway, Crawley, WA 6009, Australia}
 
@@ -75,8 +75,10 @@ John T. Whelan$^1$}
 \begin{abstract}
 The Mock LISA Data Challenges are a programme to demonstrate and encourage the development of LISA data-analysis capabilities, tools and techniques. At the time of this workshop, three rounds of challenges had been completed, and the next was about to start.
 In this article we provide a critical analysis of entries to the latest completed round, Challenge 1B. The entries confirm the consolidation of a range of data-analysis techniques for Galactic and massive--black-hole binaries, and they include the first convincing examples of detection and parameter estimation of extreme--mass-ratio inspiral sources.
-We also introduce the next round, Challenge 3. Its data sets feature more realistic waveform models (e.g., Galactic binaries may now chirp, and massive--black-hole binaries may precess due to spin interactions), as well as new source classes (bursts from cosmic strings, isotropic stochastic backgrounds) and more complicated nonsymmetric instrument noise.
+In this article we also introduce the next round, Challenge 3. Its data sets feature more realistic waveform models (e.g., Galactic binaries may now chirp, and massive--black-hole binaries may precess due to spin interactions), as well as new source classes (bursts from cosmic strings, isotropic stochastic backgrounds) and more complicated nonsymmetric instrument noise.
 \end{abstract}
+
+\vspace{-0.5cm}
 
 \pacs{04.80.Nn, 95.55.Ym}
 
@@ -91,11 +93,11 @@ Such a variety of signals, overlapping in both the time and frequency domains (t
 At the end of 2005, the LISA International Science Team (LIST) initiated a programme of Mock LISA Data Challenges (MLDCs) with the goal of understanding at the conceptual and quantitative level the peculiarities of LISA data analysis, of demonstrating LISA's observational capabilities, and of kickstarting the development of data-analysis algorithms, pipelines, and infrastructural elements.
 An MLDC Task Force, chartered by the LIST, periodically issues \emph{challenge} data sets containing GW signals from sources of undisclosed parameters, embedded in synthetic LISA noise; challenge participants have a few months to analyze the data and submit detection candidates, which are then compared with the sources originally injected in the data sets. (\emph{Training} data sets with public source parameters are also provided to help participants tune and troubleshoot their codes.)
 
-Three rounds of MLDCs had been completed at the time of this workshop, each spanning approximately six months. Challenge 1 \cite{mldclisasymp,mldcgwdaw1} was focused on establishing basic techniques to observe GWs from compact Galactic binaries, intrinsically monochromatic, isolated or moderately interfering; as well as from the inspiral phase of bright, isolated, nonspinning massive--black-hole (MBH) binaries. Challenge 2 \cite{mldcgwdaw2,mldcamaldi2} featured three considerably more complex data-analysis problems: a data set containing GW signals from approximately 26 million Galactic binaries (again monochromatic) drawn from a randomized population-synthesis catalog; a data set (the ``whole enchilada'') with a similar Galactic-binary population, plus GW signals from an unknown number (between 4 and 6) of nonspinning-MBH binary and from five extreme--mass-ratio inspirals (EMRI); and five more data sets with single EMRI signals.
+Three rounds of MLDCs had been completed at the time of this workshop, each spanning approximately six months. Challenge 1 \cite{mldclisasymp,mldcgwdaw1} was focused on establishing basic techniques to observe GWs from compact Galactic binaries, intrinsically monochromatic, isolated or moderately interfering; as well as from the inspiral phase of bright, isolated, nonspinning massive--black-hole (MBH) binaries. Challenge 2 \cite{mldcgwdaw2,mldcamaldi2} featured three considerably more complex data-analysis problems: a data set containing GW signals from approximately 26 million Galactic binaries (again monochromatic) drawn from a randomized population-synthesis catalog; a data set (the ``whole enchilada'') with a similar Galactic-binary population, plus GW signals from an unknown number (between 4 and 6) of nonspinning-MBH binary and from five extreme--mass-ratio inspirals (EMRI); and five more data sets with single-EMRI signals.
 
-The very steep increase in complexity introduced over a short time-scale with Challenge 2 and the need to consolidate analysis techniques  (especially so for EMRIs) before moving to even more taxing challenges motivated the organization of Challenge 1B, a repeat of Challenge 1 with the addition of single-EMRI data sets. The Challenge-1B challenge data sets were distributed in the late summer 2007, with a deadline of December 2007 for entries. Ten collaborations submitted solutions. Highlights from this round include the range of techniques used, a number of new groups that successfully recovered signals from galactic binaries and MBH binaries, and the first convincing demonstration of EMRI detection \emph{and} parameter estimation. Section \ref{s:challenge-1b} provides a brief summary of the entries; additional details about the work of individual collaborations are given elsewhere in this volume.
+The very steep increase in complexity introduced over a short time-scale with Challenge 2 and the need to consolidate analysis techniques  (especially so for EMRIs) before moving to even more taxing challenges motivated the organization of Challenge 1B, a repeat of Challenge 1 with the addition of single-EMRI data sets. Challenge-1B data sets were distributed in the late summer 2007, with a deadline of December 2007 for entries. Ten collaborations submitted solutions. Highlights from this round include the range of techniques used, the participation of a number of new groups that successfully recovered signals from galactic binaries and MBH binaries, and the first convincing demonstration of EMRI detection \emph{and} parameter estimation. Section \ref{s:challenge-1b} provides a brief summary of the entries; additional details about the work of individual collaborations are given elsewhere in this volume.
 
-As we write (April 2008), Challenge-3 data sets have just been released, with entries due at the beginning of December 2008. Challenge 3 represents a definite step in the direction of more realistic source models (such as chirping Galactic binaries and spinning-MBH binaries) and of new source classes (short-lived bursts and stochastic backgrounds). Section \ref{s:challenge-3} describes the Challenge-3 data sets and waveform models in detail.
+As we write (April 2008), Challenge-3 data sets have just been released, with entries due at the beginning of December 2008. Challenge 3 represents a definite step in the direction of more realistic source models (such as chirping Galactic binaries and spinning-MBH binaries) and of new source classes (such as short-lived bursts and stochastic backgrounds). Section \ref{s:challenge-3} describes the Challenge-3 data sets and waveform models in detail.
 
 \section{Report on Challenge 1B}
 \label{s:challenge-1b}
@@ -108,11 +110,10 @@ Challenge 1B focused on three classes of GW sources, each tackled in a separate 
 \end{equation}
 %
 where $A$ and $E$ denote time series for the noise-orthogonal TDI observables $(2X - Y - Z)/3$ and $(Z - Y)/\sqrt{3}$ \cite{sensitivity} and $(\cdot|\cdot)$ denotes the usual signal product weighted by instrument noise.
-We sometimes quote the \emph{correlation} $C = \mathrm{SNR} / \mathrm{SNR}_\mathrm{opt}$, where 
+We also quote the \emph{correlation} $C = \mathrm{SNR} / \mathrm{SNR}_\mathrm{opt}$, where 
 $\mathrm{SNR}_\mathrm{opt} = \sqrt{(A_\mathrm{true}|A_\mathrm{true}) + (E_\mathrm{true}|E_\mathrm{true})}$ is the \emph{optimal} SNR. For a perfect detection $C = 1$, but fluctuations $\sim 1 / \mathrm{SNR}_\mathrm{opt}$ are expected because of instrument noise. When we examine parameter errors, these are defined simply as
 $\Delta\lambda^i = \lambda^i_\mathrm{sub} - \lambda^i_\mathrm{true}$; in some cases it makes sense to consider the \emph{fractional} parameter errors $\Delta \lambda^i / \lambda^i = (\lambda^i_\mathrm{sub} - \lambda^i_\mathrm{true}) / \lambda^i_\mathrm{true}$.
-%PROBLEM: The text previously had the opposite definition!
-In the rest of this section we briefly discuss the entries submitted by participants; their own write-ups of their work can be found at \url{www.tapir.caltech.edu/~mldc/results1B/results.html}.
+In the rest of this section we briefly discuss the entries submitted by participants; the technical notes accompanying the entries can be found at \url{www.tapir.caltech.edu/~mldc/results1B/results.html}.
 
 \subsection{Galactic binaries: Challenges 1B.1.X}
 
@@ -122,17 +123,14 @@ Participants employed a fair range of techniques, in the same broad class as ado
 %
 \begin{figure}
 \centerline{\includegraphics[width=7.5cm]{MLDC_1b-1_1a_sky_positions}}
-\caption{Sky positions reported by participants in Challenge 1B.1.1a, compared to the true location of the source. Angles are given in radians.\label{Figure_1b_1_1a_sky_positions}}
-%PROBLEM: would be nice to put [rad] in the axis labels rather than here in the caption
-%PROBLEM: would be nice to show error ellipse
+\caption{Sky positions reported by participants in Challenge 1B.1.1a, compared to the true location of the source. All the sky positions fall within the Fisher-matrix 1-$\sigma$ contour, shown as a dotted line. (The spread of the reported sky positions is due to both the difference in noise realizations between the Synthetic LISA and LISA Simulator versions of data set 1B.1.1a, and the systematic errors of the searches.)\label{Figure_1b_1_1a_sky_positions}}
 \end{figure}
 
-Each of data sets 1B.1.1a--c contained a GW signal from a single monochromatic binary (differing by frequency band), with SNR $\approx 13\mbox{--}25$. Table \ref{Table_1b_1_1_correlations} lists the correlations recovered by each collaboration. Because some of the entries included close matches for the intrinsic parameters ($f$, $\theta$, and $\phi$), but had issues in matching the remaining (extrinsic) parameters, we recomputed these by maximizing the ${\cal F}$-statistic \cite{fstat} for the intrinsic parameters provided. The resulting SNRs and $C$s are denoted by asterisks. Table \ref{Table_1b_1_1_parameter_differences} lists parameter errors (also as recomputed by maximizing the ${\cal F}$-statistic, in the rows labeled with asterisks). Figure \ref{Figure_1b_1_1a_sky_positions} shows where participants placed the source of data set 1B.1.1a, compared to its true position.
+Each of data sets 1B.1.1a--c contained a GW signal from a single monochromatic binary (differing by frequency), with SNR $\approx 13\mbox{--}25$. Table \ref{Table_1b_1_1_correlations} lists the correlations recovered by each collaboration. Some of the entries included close matches for the intrinsic parameters ($f$, $\theta$, and $\phi$), but not for the remaining (extrinsic) parameters: this was due to the (relative) inaccuracy of the LISA response models used by the participants, or by mismatch between their definitions of the extrinsic parameters and the MLDC's. In these cases we recomputed $C$ by maximizing the ${\cal F}$-statistic \cite{fstat} for the intrinsic parameters provided; the resulting $C$s are denoted by asterisks, and show that the intrinsic parameters were indeed recovered well enough to ensure solid detections. 
+Table \ref{Table_1b_1_1_parameter_differences} lists parameter errors, and figure \ref{Figure_1b_1_1a_sky_positions} shows where in the sky each collaboration placed the single binary of data set 1B.1.1a, compared to its true position, and to the Fisher-matrix 1-$\sigma$ error contour.
 %
 \begin{table}
 \caption{Correlations for single--Galactic-binary challenges 1B.1.1a--c. Asterisks denote entries corrected by maximizing the ${\cal F}$-statistic and using the resulting extrinsic parameters; these corrections are not reported where the frequency is well off, and the $\mathcal{F}$-statistic is merely fitting noise.\label{Table_1b_1_1_correlations}}
-%PROBLEM: these values are minus the parameter errors as defined above
-%PROBLEM: parentheses maybe nicer than asterisks
 \begin{indented} \lineup
 \item[]\begin{tabular}{llll}
 \br
@@ -154,53 +152,44 @@ UIBBham & $0.992$ & $0.996$ & \\
 \end{table}
 %
 \begin{table}
-\caption{Parameter errors for Challenges 1B.1.1a--c. All angles are expressed in radians. Asterisks denote extrinsic parameters corrected by maximizing the ${\cal F}$-statistic.\label{Table_1b_1_1_parameter_differences}}
-%PROBLEM: may be more graceful to label corrected errors with asterisks and omit the row label
+\caption{Parameter errors for Challenges 1B.1.1a--c. All angles are expressed in radians.\label{Table_1b_1_1_parameter_differences}}
 \lineup \scriptsize \flushright
 \begin{tabular}{llllllll}
 \br
 Group & \centre{1}{$\Delta \beta$} & \centre{1}{$\Delta \lambda$} & \centre{1}{$\Delta f$ [nHz]} & \centre{1}{$\Delta\psi$} & \centre{1}{$\Delta \iota$} & \centre{1}{$\Delta \varphi$} & \centre{1}{$\Delta \mathcal{A}$ [$10^{-23}$]}\\
 \mr
-\centre{8}{Challenge 1B.1.1a} \\[2pt]
-AEI		& $-0.032$	& $-0.120$	& \0$-2.43$		& \m0.217		& $-0.454$ 	& \m1.17		& \m1.22		\\
-AEI*		& 	& 	& 		                         & \m0.700		& \m0.215		& $-1.23$		& \m1.18		\\
-GSFC		& $-0.004$	& $-0.071$	& \0$-1.81$	 	& \m0.708	 	& \m0.252 	& \m1.33	 	& \m1.20		\\
-IMPAN		& $-0.031$	& \m0.018 	& \0\m2.13		& \m0.454 	    & \m0.212	 	& $-1.06$ 	& \m1.25		\\ 
-MCMNJU		& $-0.017$	& $-0.042$	& \0$-0.53$	& \m0.662		& \m0.426		& $-1.57$		& \m2.34		\\
-MCMNJU*		& 	& 	& 	                         & \m0.746		& \m0.248		& $-1.44$		& \m1.37		\\
-UIBBham		& \m0.005	& $-0.079$	& \0$-1.51$	& \m0.708		& \m0.173		& $-1.32$		& \m0.65		\\
+\centre{8}{Challenge 1B.1.1a ($f_\mathrm{true} = 1.060$ mHz)} \\[2pt]
+AEI		& $-0.032$	& $-0.120$	& \0\0$-2.43$		& \m0.217		& $-0.454$ 	& \m1.17		& \m1.22		\\
+GSFC		& $-0.004$	& $-0.071$	& \0\0$-1.81$	 	& \m0.708	 	& \m0.252 	& \m1.33	 	& \m1.20		\\
+IMPAN		& $-0.031$	& \m0.018 	& \0\0\m2.13		& \m0.454 	    & \m0.212	 	& $-1.06$ 	& \m1.25		\\ 
+MCMNJU		& $-0.017$	& $-0.042$	& \0\0$-0.53$	& \m0.662		& \m0.426		& $-1.57$		& \m2.34		\\
+UIBBham		& \m0.005	& $-0.079$	& \0\0$-1.51$	& \m0.708		& \m0.173		& $-1.32$		& \m0.65		\\
 \mr
-\centre{8}{Challenge 1B.1.1b} \\[2pt]
-AEI		& $-0.056$	& $-0.0090$	& \m\00.95		& $-1.050$		& \m0.283		& \m1.63		& $-0.066$	\\
-AEI*		& 	         & 	& 		                & $-0.761$	& \m0.078	& \m1.46		& \m0.003	\\
-GSFC		& $-0.462$		& \m0.0606	& $-30.9$		& \m2.560		& \m0.182		& \m0.52		& $-0.024$	\\
-GSFC*		& 		& 	&		& $-0.534$	& \m0.198		& \m0.62		& \m0.066	\\
-IMPAN		& \m0.020 	& \m0.0007	& \m\00.85 	& \m0.333 	& \m0.339 	& $-0.60$ 	& \m0.713		\\ 
-MCMNJU		& $-0.067$	& $-0.0063$	& \m\02.07	& $-0.732$	& $-0.064$	& \m0.84		& $-0.223$	\\
-MCMNJU*		& 	& 	& 	& $-0.739$	& \m0.063	& \m1.30		& $-0.016$	\\
-UIBBham		& $-0.044$	& $-0.0082$	& \m\01.78	& $-0.636$	& \m0.043	& \m1.13		& $-0.029$	\\
+\centre{8}{Challenge 1B.1.1b ($f_\mathrm{true} = 2.904$ mHz)} \\[2pt]
+AEI		& $-0.056$	& $-0.0090$	& \0\m\00.95		& $-1.050$		& \m0.283		& \m1.63		& $-0.066$	\\
+GSFC		& $-0.462$		& \m0.0606	& \0$-30.9$		& \m2.560		& \m0.182		& \m0.52		& $-0.024$	\\
+IMPAN		& \m0.020 	& \m0.0007	& \0\m\00.85 	& \m0.333 	& \m0.339 	& $-0.60$ 	& \m0.713		\\ 
+MCMNJU		& $-0.067$	& $-0.0063$	& \0\m\02.07	& $-0.732$	& $-0.064$	& \m0.84		& $-0.223$	\\
+UIBBham		& $-0.044$	& $-0.0082$	& \0\m\01.78	& $-0.636$	& \m0.043	& \m1.13		& $-0.029$	\\
 \mr
-\centre{8}{Challenge 1B.1.1c} \\[2pt]
-AEI		& $-0.026$	 & \m0.0053	& \0\01.84		& $-0.499$	& $-1.120$		& \m3.02		& \m0.124		\\ 
-AEI*		&  & 	& 		& \m0.041	& $-0.094$	& $-0.12$	& \m0.106		\\ 
-GSFC		& $-0.452$		& $-1.48$		& 140		& \m1.820		& $-0.471$	& $-0.66$	& $-0.695$	\\ 
-IMPAN		& $-0.016$	& \m0.0248	& \0\03.72		& $-1.510$		& $-0.197$	& \m2.68		& \m0.478		\\ 
-IMPAN*		& 	& 	& 		& $-0.029$	& $-0.113$	& \m0.35		& \m0.079	\\ 
-MCMNJU		& $-0.555$		& $-0.3680$	& 359		& $-1.590$		& $-0.250$	& $-0.94$	& $-0.532$	\\ 
+\centre{8}{Challenge 1B.1.1c ($f_\mathrm{true} = 9.943$ mHz)} \\[2pt]
+AEI		& $-0.026$	 & \m0.0053	& \m\0\01.84		& $-0.499$	& $-1.120$		& \m3.02		& \m0.124		\\ 
+GSFC		& $-0.452$		& $-1.48$		& \m140		& \m1.820		& $-0.471$	& $-0.66$	& $-0.695$	\\ 
+IMPAN		& $-0.016$	& \m0.0248	& \m\0\03.72		& $-1.510$		& $-0.197$	& \m2.68		& \m0.478		\\ 
+MCMNJU		& $-0.555$		& $-0.3680$	& \m359		& $-1.590$		& $-0.250$	& $-0.94$	& $-0.532$	\\ 
 \br
 \end{tabular}
 \end{table}
-%PROBLEM: alignment of third column (could to the right)
 
-Data set 1B.1.2 contained GW signals from 25 ``verification'' binaries of known (i.e., disclosed) frequency and sky location. Five of them were taken from the list of observed binaries on Gijs Nelemans' wiki \cite{nelemanswiki}, while the remaining 20 were placed randomly in the Galaxy over a representative range of frequencies. Table \ref{Table_1b_1_4_correlations} lists the \emph{global} correlations (computed for the combined signals of all reported and true binaries) recovered by the three groups that participated in this challenge. As for Challenges 1B.1.1a--c, problems in assigning extrinsic parameters reduced the correlations. (Since the intrinsic parameters were provided to the participants, we did not perform ${\cal F}$-statistic--based adjustments, which would amount to solving the entire problem. As a result, the low $C$ values of table \ref{Table_1b_1_4_correlations} may be symptomatic only of extrinsic-parameter systematics.)
+Data set 1B.1.2 contained GW signals from 25 ``verification'' binaries of known (i.e., disclosed) frequency and sky location. Five of them were taken from the list of observed binaries on Gijs Nelemans' wiki \cite{nelemanswiki}, while the remaining 20 were placed randomly in the Galaxy, varying their frequencies over a representative range. Table \ref{Table_1b_1_4_correlations} lists the \emph{global} correlations (computed for the combined signals of all reported and true binaries) recovered by the three groups that participated in this challenge. Just as it happened for Challenges 1B.1.1a--c, problems in assigning extrinsic parameters reduced the correlations. (Since the intrinsic parameters were provided to the participants, we did not perform ${\cal F}$-statistic--based adjustments, which would amount to solving the entire problem. As a result, the low $C$ values of table \ref{Table_1b_1_4_correlations} may be symptomatic only of extrinsic-parameter systematics.)
 
 Data set 1B.1.3 contained GW signals from 20 unknown binaries distributed across the LISA band, well separated in frequencies. Unfortunately, a bug in the random generation of source parameters caused all SNRs to be too small for detection (all were below 1).
 Happily, no participating group reported a positive detection, consistent with the correct behavior expected of search algorithms.
 
 Challenge 1B.1.4 was meant to test search algorithms in the presence of mild source confusion. Fifty-one sources were spread across a band of $15\, \mu{\rm Hz}$ beginning at $3\, {\rm mHz}$, with an average density of 0.108 sources per frequency bin. By contrast, Challenge 1B.1.5 tested algorithms in the presence of a higher level of source confusion, comparable to that expected from our Galaxy. Forty-four sources were spread across a band of $3\, \mu{\rm Hz}$ centered at $3\, {\rm mHz}$, with an average density of 0.465 sources per frequency bin. Table \ref{Table_1b_1_4_correlations} lists the global correlations and the number of sources recovered by the participating groups, as well as the number of \emph{false positives}, defined here as reported sources farther than one frequency bin (1/year) from any true source, or with $\mathcal{F}$-statistic--adjusted correlation less than 0.7 with all true sources within a frequency bin.
-Figure \ref{Figure_1b_1_4_AEI} shows the combined $A$ and $E$ spectral amplitude for the GW signals in data set 1B.1.4, together with the residual after subtracting the signal model submitted by \textbf{AEI}. The bottom panel shows the same subtraction after extrinsic parameters have been recomputed for this entry by maximizing the $\mathcal{F}$-statistic.
+The top panel of figure \ref{Figure_1b_1_4_AEI} shows the combined $A$ and $E$ spectral amplitude for the GW signals in data set 1B.1.4, together with the residual after subtracting the signal model submitted by \textbf{AEI}. The bottom panel shows the same subtraction after extrinsic parameters have been recomputed for this entry by maximizing the $\mathcal{F}$-statistic.
 
-The extrinsic-parameter reporting errors seen in this round of challenges are very easy to make while coding searches, because the definitions of extrinsic parameters are all somewhat conventional. To avoid such problems in the future, we plan to provide a web tool to check the recovered SNR against the challenge data sets using the fiducial MLDC waveform-generation code.
+Altogether, it must be said that Challenge 2 provided a more forceful demonstration of LISA's science objectives for Galactic binaries \cite{mldcamaldi2}; but this round of challenges was still very useful for new groups to start implementing search methods, and for established groups to continue tuning them. The extrinsic-parameter reporting errors seen here are easy to commit, because these parameters are very sensitive to the modeling of the LISA response, and because their definitions are somewhat conventional, but these errors have little bearing on detection confidence. To avoid such problems in the future, we plan to provide a web tool to check the recovered SNR against the challenge data sets using the fiducial MLDC waveform-generation code.
 %
 \begin{table}
 \caption{\label{Table_1b_1_4_correlations} Correlations, number of recovered sources, and number of false positives for Challenges 1B.1.2, 1B.1.4, 1B.1.5. Correlations computed after correcting extrinsic parameters using the ${\cal F}$-statistic are denoted with asterisks.}
@@ -232,16 +221,18 @@ AEI		& \m$0.453 \rightarrow 0.929^*$	& \03 \\
 
 \subsection{Massive Black Hole Binary Systems: Challenges 1B.2.X}
 
-Each of data sets 1B.2.1 and 1B.2.2 contained a loud GW signal from a single MBH binary embedded in instrument noise. Gravitational radiation was modeled as the \emph{restricted} waveform for spinless point masses moving on an adabatic sequence of circular orbits, evolving according to 2PN energy-balance equations \cite[sec.\ 4.4]{mldcgwdaw2}. (See section \ref{sec:ch3mbh} for the new waveform features being introduced for Challenge 3.) Nine parameters are needed to describe each source: the two masses $m_1$ and $m_2$, the time of coalescence $t_c$, the sky-position angles $\beta$ and $\lambda$, the luminosity distance $D_L$, the orbital-inclination and GW-polarization angles $\iota$ and $\psi$, and the initial orbital phase $\varphi_0$. 
-The binaries in both data sets had masses drawn from the same ranges ($m_1 = 1\mbox{--}5 \times 10^6\,M_{\odot}$, $m_1/m_2 = 1\mbox{--}4$), but were distinguished by times of coalescence $t_c = 6\pm 1$ months for Challenge 1B.2.1 and $400 \pm 40$ days (past the end of the data set) for Challenge 1B.2.2; the $\mathrm{SNR}_\mathrm{opt}$ for the sources were chosen to be $\simeq 500$ and $\simeq 80$, respectively.
+Each of data sets 1B.2.1 and 1B.2.2 contained a loud GW signal from a single MBH binary embedded in instrument noise. Gravitational radiation was modeled as the \emph{restricted} waveform for spinless point masses moving on an adabatic sequence of circular orbits, evolving according to 2PN energy-balance equations \cite[sec.\ 4.4]{mldcgwdaw2}. (See also section \ref{sec:ch3mbh} for the new waveform features being introduced for Challenge 3.) Nine parameters are needed to describe each source: the two masses $m_1$ and $m_2$, the time of coalescence $t_c$, the sky-position angles $\beta$ and $\lambda$, the luminosity distance $D_L$, the orbital-inclination and GW-polarization angles $\iota$ and $\psi$, and the initial orbital phase $\varphi_0$. 
+The binaries in both data sets had masses drawn from the same ranges ($m_1 = 1\mbox{--}5 \times 10^6\,M_{\odot}$, $m_1/m_2 = 1\mbox{--}4$), but were distinguished by the times of coalescence $t_c = 6\pm 1$ months for Challenge 1B.2.1 and $400 \pm 40$ days (past the end of the data set) for Challenge 1B.2.2; the $\mathrm{SNR}_\mathrm{opt}$ for the sources were chosen to be $\simeq 500$ and $\simeq 80$, respectively.
 
 Two groups submitted entries: \textbf{JPL} (a collaboration between researchers at Caltech and at the Jet Propulsion Laboratory) employed a three-step hierarchical strategy combining a time--frequency track-search analysis, a template-bank matched-filtering search, and a final MCMC stage to evaluate the posterior probability densities of source parameters for data sets 1B.2.1 and 1B.2.2. \textbf{Cardiff} (a collaboration based at that university) used a stochastic--template-bank matched-filtering search \cite{cardiffmbh} to analyze data set 1B.2.1.
 
-Table \ref{mbh} summarizes these entries. While the recovered SNRs are very close to $\mathrm{SNR}_\mathrm{opt}$, which indicates detections of very high confidence, there are large discrepancies in the sky-position angles for Challenge 1B.2.1. There both the \textbf{JPL} and \textbf{Cardiff} searches converged on secondary likelihood maxima, very close in height to the true mode (as shown by the recovered SNR), but quite distant in parameter space.
+Table \ref{mbh} summarizes these entries. While the recovered SNRs are very close to $\mathrm{SNR}_\mathrm{opt}$, which indicates detections of very high confidence, there are large discrepancies in the sky-position angles for Challenge 1B.2.1, where both the \textbf{JPL} and \textbf{Cardiff} searches converged on secondary likelihood maxima, very close in height to the true mode (as shown by the recovered SNR), but quite distant in parameter space.
 In fact, the \textbf{JPL} result places the source almost at the antipodal sky position, even if $\mathrm{SNR} \simeq \mathrm{SNR}_\mathrm{opt}$ to better than one part in a thousand.
 
-This is a true global degeneracy, which does not appear in local Fisher-matrix analyses (another example of why mock-data endeavors are useful!), and which may indicate the need, in EM searches of counterparts to LISA binary-MBH detections, to examine unconnected regions of the sky. It may however be premature to make such an inference, since the degeneracy could be broken by the addition to the waveforms of spin effects (now included in Challenge-3 waveforms) and higher harmonics. In addition, EM-counterpart searches would require a data-analysis system capable of determining the sky position of MBH binaries a few days in advance of their merger (corresponding to the interval between data dumps from LISA to the ground), whereas data set 1B.2.1 included the inspiral waveform up to the approximate merger frequency. Therefore this challenge was \emph{not} aimed directly at establishing the feasibility of sky-position determination for EM-counterpart searches, for which it may be possible to adopt targeted data-analysis strategies that emphasize the accuracy of sky position over the other parameters.
-In this context, it is worth pointing out that the entries provided very accurate determinations of the times of coalescence, corresponding to time windows of a few minutes (for Challenge 1B.2.1) and about 45 minutes (for 1B.2.2).
+This is a true global degeneracy, which does not appear in local Fisher-matrix analyses (another example of why mock-data endeavors are useful!), and which may indicate the need, in EM searches of counterparts to LISA binary-MBH detections, to examine unconnected regions of the sky. It may however be premature to make such an inference, since the degeneracy could be broken by spin effects (now included in Challenge-3 waveforms) and higher waveform harmonics. In addition, EM-counterpart searches would require a data-analysis system capable of determining the sky position of MBH binaries a few days in advance of their merger (corresponding to the interval between data dumps from LISA to the ground), whereas data set 1B.2.1 included the inspiral waveform all the way to the approximate merger frequency. Therefore this challenge was \emph{not} aimed directly at establishing the feasibility of sky-position determination for EM-counterpart searches.
+In this context, it is however worth pointing out that the entries provided very accurate determinations of the times of coalescence, corresponding to time windows of a few minutes (for Challenge 1B.2.1) and about 45 minutes (for 1B.2.2).
+
+If we can compare the errors of Table 4 with the parameter-determination accuracies predicted in the Fisher-matrix formalism, we see that the \textbf{JPL} estimates for $m_1$ and $m_2$ fall within the 2-$\sigma$ contour for data set 1B.2.1 (notwithstanding the problem with sky position), and near the 1-$\sigma$ contour for 1B.2.2. For data set 1B.2.2, \textbf{JPL}'s $\Delta t_c$, $\Delta D_L$, $\Delta \beta$, and $\Delta \varphi_0$, are also close to 1-$\sigma$, and $\Delta \lambda$ is $\sim 2.2 \sigma$; the errors in $\iota$ and $\psi$ are all tens of $\sigma$s (but the Fisher-matrix formalism is often unreliable for extrinsic parameters). Altogether, we conclude that the \textbf{JPL} search essentially achieves the theoretical limits of parameter extraction for data set 1B.2.2, while it does so for an important subset of parameters for data set 1B.2.1.
 
 \begin{table}
 \caption{\label{mbh}Relative/absolute errors for the MBH binaries in Challenges 1B.2.1 and 1B.2.2. All angles are given in radians.
@@ -271,11 +262,11 @@ $\Delta \varphi_0$    & \0\0$-2.846$                    & \0\0$-2.389$        & 
 \subsection{Extreme Mass Ratio Inspirals: Challenges 1B.3.X}
 
 Although Challenge 2 saw a few successful detections of EMRI signals \cite{mldcamaldi2}, data sets 1B.3.1--5 represented the first real testbed for the search algorithms developed for this critical source class. Each data set contained a GW signal from a single EMRI embedded in instrument noise, with $\mathrm{SNR}_\mathrm{opt}$ between $\simeq$ 55 and $\simeq$ 135, and source parameters chosen randomly as described in \cite{mldcgwdaw2}. Fourteen parameters are needed to describe each EMRI source \cite{mldcgwdaw2}: 
-the ecliptic latitude and longitude $\beta$ and $\lambda$ and the luminosity distance $D$; the central-BH and compact-object masses $M$ and $\mu$;  the magnitude $a$ and orientation angles $\theta_K$, $\phi_K$ of the central-BH spin; the initial radial orbital frequency $\nu_0$ and eccentricity $e_0$; and three angles $\tilde{\gamma}_0$, $\alpha_0$ and $\lambda$ describing the initial orientation of the orbit.
+the ecliptic latitude and longitude $\beta$ and $\lambda$ and the luminosity distance $D_L$; the central-BH and compact-object masses $M$ and $\mu$;  the magnitude $a$ and orientation angles $\theta_K$, $\phi_K$ of the central-BH spin; the initial radial orbital frequency $\nu_0$ and eccentricity $e_0$; and three angles $\tilde{\gamma}_0$, $\alpha_0$ and $\lambda$ describing the initial orientation of the orbit.
 
 Entries were received from three groups: \textbf{BBGP} (a collaboration of scientists at the AEI, Cambridge, and the University of Southampton); \textbf{EtfAG} (AEI, Northwestern, and Cambridge); and \textbf{MT} (Montana State University).
 \textbf{EtfAG} employed a time--frequency technique \cite{gmw}, whereas \textbf{BBGP} \cite{bbgpemri} and \textbf{MT} \cite{cornishemri} developed coherent approaches based on Monte Carlo techniques, differing in their implementation.
-The entries were assessed as discussed at the beginning of this section, although the \textbf{EtfAG} time--frequency analysis cannot determine the extrinsic parameters, so recovered SNR and correlation could not be computed. Tables \ref{EMRI2} and \ref{EMRI1} summarize all results.
+The entries were assessed as discussed at the beginning of this section, although the \textbf{EtfAG} time--frequency analysis cannot determine the extrinsic parameters, so their recovered SNR and correlation could not be computed. Tables \ref{EMRI2} and \ref{EMRI1} summarize all results.
 
 Both the time--frequency and coherent approaches succeeded in detecting these relatively strong EMRI signals and in constraining their parameters (with especially remarkable accuracy for data set 1B.3.1), although not all groups analyzed all data sets, and the performance of the same search pipeline varied across them. Challenge participants report that in some cases this was due to a lack of time for extended computations before the challenge deadline, so some parameter set were submitted as ``best fits'' although they were clearly understood to be secondary likelihood maxima. Thus, this early development work indicates that the main challenge for (isolated) EMRI analyses is the very complex structure of the likelihood surface in source-parameter space, which features a number of secondary maxima of similar height, even more so than for MBH binaries.
 
@@ -303,18 +294,16 @@ BBGP$^\mathrm{a,c}$ & $-0.2$ & $-11.5$ & $-0.32$ & $-19.0$ & \0$-21.5$\\
 MT  & \m0.38 &  \m22.0 & \m0.35 & \m20.9 & \m\030.4 \\
 \mr
 	 \centre{6}{1B.3.4 ($\mathrm{SNR}_\mathrm{opt} = 104.5$)}	\\[2pt]
-BBGP & \m0.0007 & \m\02.1 & $-0.0002$ & \m0.8 & \m\02.1\\
+BBGP$^\mathrm{c}$ & \m0.0007 & \m\02.1 & $-0.0002$ & $-0.8$ & \m\02.1\\
 BBGP$^\mathrm{b}$ & \m0.16 & \m13.9 & \m0.04 & \m6.7 & \m\014.6 \\ 
 \mr
 	 \centre{6}{1B.3.5 ($\mathrm{SNR}_\mathrm{opt} = 57.6$)}	\\[2pt]
 BBGP & \m0.09 & \m\03.4 & \m0.1 & \m4.2 & \m\05.3\\
 \br
 \end{tabular}
-\item[]$^\mathrm{a}$ $C$ and SNR after correcting the sign of the latitude, which was lost when \textbf{BBGP} input parameters in the MLDC webform.
-\item[]$^\mathrm{b}$ $C$ and SNR after correcting phases at $t=0$, to account for a bug in the \textbf{BBGP} pipeline.
-\item[]$^\mathrm{c}$ SNR is negative because the \textbf{BBGP} group maximizes likelihood
-over the amplitude (distance) analytically which makes it sign insensitive (minus sign corresponds to the phase difference $\pi$ in the dominant harmonic). This degeneracy is 
-broken once all harmonics are found correctly.
+\item[]$^\mathrm{a}$ $C$ and SNR after correcting the sign of $\beta$, lost on input to the MLDC webform.
+\item[]$^\mathrm{b}$ $C$ and SNR after correcting phases at $t=0$, to account for a \textbf{BBGP} bug.
+\item[]$^\mathrm{c}$ The \textbf{BBGP} SNRs can be negative because \textbf{BBGP} maximized likelihood analytically over amplitude, which makes SNR sign-insensitive (a minus sign corresponds to a change of $\pi$ in the phase of the dominant harmonic). This degeneracy is broken when all the harmonics are found correctly.
 \end{indented}
 \end{table}
 %
@@ -368,22 +357,7 @@ EtfAG  & $-0.58$   &   \m0.46   &   \m0.27   &   $-0.084$   &   \m0.20   &   $-0
 \section{Synopsis of Challenge 3}
 \label{s:challenge-3}
 
-The third round of the MLDCs consists of five challenges (3.1--3.5):
-%
-\begin{itemize}
-%
-\item \textit{Data set 3.1} contains a Galactic GW foreground from $\sim$ 60 million compact binary systems.
-This data set is a direct descendant of Challenge 2.1, but it improves on the realism of the latter by including both detached and interacting binaries with intrinsic frequency drifts (either positive or negative). Section \ref{sec:ch3galaxy} gives details about the binary waveform models, about their implementation in the LISAtools suite \cite{lisatools}, and about the generation of the Galactic population. 
-%
-\item \textit{Data set 3.2} contains GW signals from 4--6 binaries of spinning MBHs, on top of a confusion Galactic-binary background. This data set improves on the realism of Challenges 1.2.1--2 and 2.2 by modeling the orbital precession (and ensuing GW modulations) due to spin--orbit and spin--spin interactions. Section \ref{sec:ch3mbh} gives details about the MBH-binary waveforms.
-
-Because this challenge focuses on the effects of spins rather than on the joint search for MBH signals and for the brightest Galactic binaries, the background is already \emph{partially subtracted}---it is generated from the population of detached binaries used for Challenge 3.1, withholding all signals with SNR $> 5$.
-%
-\item \textit{Data set 3.3} contains five GW signals from EMRIs. As in Challenges 1.3.1--5, EMRI waveforms are modeled with Barack and Cutler's ``analytic kludge'' waveforms \cite{barackcutler}; this challenge introduces the complication of detecting five such signals with lower SNRs, and \emph{in the same data set}. By contrast, Galactic confusion is not included. See section \ref{sec:ch3emri} for details.
-%
-\end{itemize}
-%
-Data sets 3.1--3 consist of approximately two years of data ($2^{22}$ samples at a cadence of $15$ s) for time-delay interferometry (TDI) observables $X$, $Y$, and $Z$. These data sets are released both as time series of equivalent strain generated by the LISA Simulator \cite{lisasimulator} and as time series of fractional frequency fluctuations generated by Synthetic LISA \cite{synthlisa}; see \cite[p.\ S556]{mldcgwdaw2} for the conversion between the two. Indeed (with a few exceptions, described below, for 3.4 and 3.5), the Challenge-3 data sets are built using the ``pseudo-LISA'' model of Challenges 1 and 2: the orbits of the LISA spacecraft are $e^2$-accurate Keplerian ellipses with conventional orientations and time offsets; \emph{modified} TDI (a.k.a.\ TDI 1.5) expressions are used for the observables; and Gaussian, stationary instrument noise is included from six proof masses and six optical benches with known noise levels that are identical across each set of six.\footnote{The six proof-mass noises are uncorrelated and white in acceleration, with one-sided power spectral density (PSD)
+The third round of the MLDCs consists of five challenges (3.1--3.5). Data sets 3.1--3 consist of approximately two years of data ($2^{22}$ samples at a cadence of $15$ s) for time-delay interferometry (TDI) observables $X$, $Y$, and $Z$. These data sets are released both as time series of equivalent strain generated by the LISA Simulator \cite{lisasimulator} and as time series of fractional frequency fluctuations generated by Synthetic LISA \cite{synthlisa}; see \cite[p.\ S556]{mldcgwdaw2} for the conversion between the two. Indeed (with a few exceptions, described below, for 3.4 and 3.5), the Challenge-3 data sets are built using the ``pseudo-LISA'' model of Challenges 1 and 2: the orbits of the LISA spacecraft are $e^2$-accurate Keplerian ellipses with conventional orientations and time offsets; \emph{modified} TDI (a.k.a.\ TDI 1.5) expressions are used for the observables; and Gaussian, stationary instrument noise is included from six proof masses and six optical benches with known noise levels that are identical across each set of six.\footnote{The six proof-mass noises are uncorrelated and white in acceleration, with one-sided power spectral density (PSD)
 %
 \begin{displaymath}
 S_\mathrm{acc}^{1/2}(f) = 3 \times 10^{-15} [1 + (10^{-4}\,{\rm Hz}/f)^2]^{1/2} \, \mathrm{m}\, \mathrm{s}^{-2}\, \mathrm{Hz}^{-1/2};
@@ -403,22 +377,34 @@ S_\mathrm{acc}(f) = 2.5 \times 10^{-48} (f/\mathrm{Hz})^{-2} [1 + (10^{-4}\,{\rm
 \begin{displaymath}
 S_\mathrm{opt}(f) = 1.8 \times 10^{-37} (f/\mathrm{Hz})^{2} \, \mathrm{Hz}^{-1}.
 \end{displaymath}
-%PROBLEM: Neil: insert conversion to LISA Simulator values?
 } See \cite{mldcgwdaw2} for details.
+%
+\begin{itemize}
+%
+\item \textit{Data set 3.1} contains a Galactic GW foreground from $\sim$ 60 million compact binary systems.
+This data set is a direct descendant of Challenge 2.1, but it improves on the realism of the latter by including both detached and interacting binaries with intrinsic frequency drifts (either positive or negative). Section \ref{sec:ch3galaxy} gives details about the binary waveform models, about their implementation in the LISAtools suite \cite{lisatools}, and about the generation of the Galactic population. 
+%
+\item \textit{Data set 3.2} contains GW signals from 4--6 binaries of spinning MBHs, on top of a confusion Galactic-binary background. This data set improves on the realism of Challenges 1.2.1--2 and 2.2 by modeling the orbital precession (and ensuing GW modulations) due to spin--orbit and spin--spin interactions. Section \ref{sec:ch3mbh} gives details about the MBH-binary waveforms.
 
+Because this challenge focuses on the effects of spins rather than on the joint search for MBH signals and for the brightest Galactic binaries, the background is already \emph{partially subtracted}---it is generated from the population of detached binaries used for Challenge 3.1, withholding all signals with SNR $> 5$.
+%
+\item \textit{Data set 3.3} contains five GW signals from EMRIs. As in Challenges 1.3.1--5, EMRI waveforms are modeled with Barack and Cutler's ``analytic kludge'' waveforms \cite{barackcutler}; this challenge introduces the complication of detecting five such signals with lower SNRs, and \emph{in the same data set}. By contrast, Galactic confusion is not included. See section \ref{sec:ch3emri} for details.
+%
+\end{itemize}
+%
 Challenges 3.4 and 3.5 address the detection of two GW sources that are \emph{new} to the MLDCs, and that have (respectively) bursty and stochastic characters: thus, these searches require an accurate characterization of instrument noise, which in reality will not be available \emph{a priori}, but will be obtained from the LISA measurements themselves.
-To model this problem, in data sets 3.4 and 3.5 the levels of the six + six secondary noises have been independently randomized by $\pm 20 \%$ (the noises are however still uncorrelated). In addition, these data sets contain time series for all twelve ``raw'' LISA phase measurements $y_{ijk}$ and $z_{ijk}$ \cite{synthlisa}, so that contestants may now build additional TDI observables to help characterize instrument noise. The phase measurements \emph{do} include laser phase noise, because otherwise they would convey extra information unavailable from the real LISA; but laser noise is reduced in level to $\sim$ ten times the secondary noise at 1 mHz, so that it can be canceled relatively easily with TDI 1.5 implemented with moderate timing precision.
+To model this problem, in data sets 3.4 and 3.5 the levels of the six + six secondary noises have been independently randomized by $\pm 20 \%$; the noises are however still uncorrelated. In addition, these data sets contain time series for all twelve ``raw'' LISA phase measurements $y_{ijk}$ and $z_{ijk}$ \cite{synthlisa}, so that contestants may now build additional TDI observables to help characterize instrument noise. The phase measurements \emph{do} include laser phase noise, because otherwise they would convey extra information unavailable from the real LISA; but laser noise is reduced in level to $\sim$ ten times the secondary noise at 1 mHz, so that it can be canceled relatively easily with TDI 1.5 implemented with moderate timing precision.
 To wit:
 %
 \begin{itemize}
 %
 \item \textit{Data set 3.4} consists of $2^{21}$ samples at a cadence of 1 s ($\sim$ 24 days), and it contains GW burst signals from cosmic string cusps, occurring as a Poissonian random process throughout the data set, with a mean of five events. Details about the waveforms are given in section \ref{sec:ch3string}. The data set is provided only as fractional frequency fluctuations generated by Synthetic LISA.
 %
-\item \textit{Data set 3.5} consists of $2^{20}$ samples at a cadence of 2 s (again $\sim$ 24 days), and it contains a stochastic GW background, which is isotropic, unpolarized, Gaussian and stationary; its spectrum grows at low frequencies as $1/f^3$, and its magnitude is set to a few times the secondary noise over a broad range of frequencies. Details about the synthesis of the background and the simpler model of the LISA orbits used for this challenge are given in section \ref{sec:ch3background}. The data set is provided as fractional frequency fluctuations generated by Synthetic LISA and by the new LISA simulator LISACode \cite{lisacode}, recently integrated into the LISAtools suite \cite{lisatools}; thus, cross checks are possible between the two simulators.
+\item \textit{Data set 3.5} consists of $2^{20}$ samples at a cadence of 2 s (again $\sim$ 24 days), and it contains a stochastic GW background, which is isotropic, unpolarized, Gaussian and stationary; its spectrum grows at low frequencies as $1/f^3$, and its magnitude is set to a few times the secondary noise over a broad range of frequencies. Details about the synthesis of the background and the simpler model of the LISA orbits used for this challenge are given in section \ref{sec:ch3background}. The data set is provided as fractional frequency fluctuations generated by Synthetic LISA and by the new simulator LISACode \cite{lisacode}, recently integrated into the LISAtools suite \cite{lisatools}; thus, cross checks are possible between the two simulators.
 %
 \end{itemize}
 %
-LISACode \cite{lisacode} was developed at APC-Paris with the purpose of accurately mapping the impact of the different LISA subsystems on its science observations, and of bridging the gap between the basic principles of the LISA measurement and a future, more sophisticated end-to-end simulator. Thus, LISACode includes realistic representations of most of the ingredients that will influence LISA's sensitivity (such as orbits, instrument noise, Ultra Stable Oscillator time stamps, phasemeter response functions), internal generators for several gravitational waveforms (monochromatic and chirping binaries, stochastic backgrounds, etc.), as well as the construction of various TDI combinations.
+LISACode \cite{lisacode} was developed at APC-Paris with the purpose of accurately mapping the impact of the different LISA subsystems on its science observations, and of bridging the gap between the basic principles of the LISA measurement and a future, more sophisticated end-to-end simulator. Thus, LISACode includes realistic representations of most of the ingredients that will influence LISA's sensitivity (such as orbits, instrument noise, ultra-stable--oscillator time stamps, phasemeter response functions), internal waveform generators for several kinds of sources (monochromatic and chirping binaries, stochastic backgrounds, etc.), as well as the the possibility to build various TDI combinations.
 Many user-defined parameters make it possible to study the impact of different LISA configurations on its sensitivity. LISACode's conventions follow closely those of the MLDCs and of Synthetic LISA.
 
 All the Challenge-3 data sets can be downloaded at \url{astrogravs.nasa.gov/docs/mldc/round3/datasets.html}, encoded in lisaXML \cite{mldclisasymp}, an XML-based format that can be displayed directly in modern web browsers, and handled easily in C/C++, Python, and MATLAB with the LISAtools I/O libraries \cite{lisatools}. Each data set is released in the blind challenge version and in a training version that includes the source parameters used to generate it. Additional training data sets can be generated easily with the LISAtools suite.\footnote{After installing LISAtools following the instructions at \url{code.google.com/p/lisatools/wiki/Install}, generating a training set is as simple as running (say, for Challenge 3.1) 
@@ -431,7 +417,6 @@ See \cite{mldcgwdaw2} for the conversion of the GW polarizations in source frame
 %
 \begin{table}
 \caption{Source parameters in Challenge 3.\label{tab:parameters}}
-%PROBLEM: Verify definition of SNR?
 \small
 \begin{tabular}{llll}
 \br
@@ -446,7 +431,7 @@ Ecliptic latitude   & $\beta$   & \texttt{EclipticLatitude}  & \texttt{Radian} \
 Ecliptic longitude  & $\lambda$ & \texttt{EclipticLongitude} & \texttt{Radian} \\
 Polarization angle  & $\psi$    & \texttt{Polarization}      & \texttt{Radian} \\
 Inclination         & $\iota$   & \texttt{Inclination}       & \texttt{Radian} \\
-Luminosity distance$^\mathrm{a}$ & $D$       & \texttt{Distance}          & \texttt{Parsec} \\
+Luminosity distance$^\mathrm{a}$ & $D_L$       & \texttt{Distance}          & \texttt{Parsec} \\
 \mr
 \multicolumn{4}{c}{\textit{Galactic binaries}} \\
 Amplitude$^\mathrm{b}$ & $\mathcal{A}$ & \texttt{Amplitude}    & \texttt{1} (GW strain) \\
@@ -477,15 +462,15 @@ Maximum frequency$^\mathrm{c}$ & $f_\mathrm{max}$ & \texttt{MaximumFrequency}   
 PSD$^\mathrm{b,d}$ at 1 Hz  & $S_h$ & \texttt{PowerSpectralDensity} & \verb|(f/Hz)^-3/Hz| \\
 \br
 \end{tabular} \\
-$^\mathrm{a}$~We do not deal explicitly with the redshifting of sources at cosmological distances, so $D$ is a \emph{luminosity} distance, and all masses and frequencies are measured at the Solar-system barycenter and red/blue-shifted by factors $(1+z)^{\pm 1}$ with respect to those measured locally near the sources. \\
-$^\mathrm{b}$~Replaces $D$ for Galactic binaries, cosmic-string--cusp bursts, and stochastic-background pseudosources. \\
+$^\mathrm{a}$~We do not deal explicitly with the redshifting of sources at cosmological distances, so $D_L$ is a \emph{luminosity} distance, and all masses and frequencies are measured at the Solar-system barycenter and red/blue-shifted by factors $(1+z)^{\pm 1}$ with respect to those measured locally near the sources. \\
+$^\mathrm{b}$~Replaces $D_L$ for Galactic binaries, cosmic-string--cusp bursts, and stochastic-background pseudosources. \\
 $^\mathrm{c}$~Effectively replaces $\iota$ for cosmic-string--cusp bursts. \\
-$^\mathrm{d}$~Also: $S_h = S_h^\mathrm{tot}/384$; $\psi$ is set to 0, and $\iota$ not used.
+$^\mathrm{d}$~Note also that $S_h = S_h^\mathrm{tot}/384$; $\psi$ is set to 0, and $\iota$ not used.
 \end{table}
 %
 \begin{table}
 \caption{Summary of data-set content and source-parameter selection in Challenge 3.
-Parameters are sampled randomly from uniform distributions across the ranges given below, and all angular parameters (including spin and orbital--angular-momentum directions for MBH binaries) are drawn randomly from uniform distributions over the whole appropriate ranges.
+Parameters are sampled randomly from uniform distributions across the ranges given below, and all angular parameters (including spin and orbital--angular-momentum directions for MBH binaries) are drawn randomly from uniform distributions over the entire appropriate ranges.
 Source distances are set from individual-source SNRs, which are drawn randomly from the ranges specified below (in Challenge 3, ``SNR'' refers to the multiple--TDI-observable SNR approximated as $\sqrt{2} \times \mathrm{max} \{\textrm{SNR}_X,\textrm{SNR}_Y,\textrm{SNR}_Z\}$).
 The MBH time of coalescence $t_c$ and the cosmic-string--cusp burst central time $t_C$ are given relative to the beginning of the relevant data sets. \label{table:MLDC3}}
 \small
@@ -502,13 +487,13 @@ Data set & Sources & Parameters \\
 \textbf{3.2}
 & 4--6 \textit{MBH binaries} & for each: $m_1 = 1\mbox{--}5 \times 10^6\,M_\odot$, $m_1/m_2 = 1\mbox{--}4$, \\
 & & $a_1/m_1 = 0\mbox{--}1, a_2/m_2 = 0\mbox{--}1$ \\[3pt]
-& \multicolumn{1}{r}{\ldots including} & $\textsc{mbh}_1$: $t_c = \090 \pm \030$ days, $\textsc{snr} \sim 2000$ \\
-& & $\textsc{mbh}_2$: $t_c = 765 \pm \015$ days, $\textsc{snr} \sim 20$ \\
-& \multicolumn{1}{r}{\ldots and 2--4 chosen from} & $\textsc{mbh}_3$: $t_c = 450 \pm 270$ days, $\textsc{snr} \sim 1000$ \\
-& & $\textsc{mbh}_4$: $t_c = 450 \pm 270$ days, $\textsc{snr} \sim 200$ \\
-& & $\textsc{mbh}_5$: $t_c = 540 \pm \045$ days, $\textsc{snr} \sim 100$\\
-& & $\textsc{mbh}_6$: $t_c = 825 \pm \015$ days, $\textsc{snr} \sim 10$ \\[3pt]
-& plus \textit{Galactic confusion} & randomized population with approx.\ $\textsc{snr} < 5$ \\
+& \multicolumn{1}{r}{\ldots including} & $\textsc{mbh}_1$: $t_c = \090 \pm \030$ days, $\textrm{SNR} \sim 2000$ \\
+& & $\textsc{mbh}_2$: $t_c = 765 \pm \015$ days, $\textrm{SNR} \sim 20$ \\
+& \multicolumn{1}{r}{\ldots and 2--4 chosen from} & $\textsc{mbh}_3$: $t_c = 450 \pm 270$ days, $\textrm{SNR} \sim 1000$ \\
+& & $\textsc{mbh}_4$: $t_c = 450 \pm 270$ days, $\textrm{SNR} \sim 200$ \\
+& & $\textsc{mbh}_5$: $t_c = 540 \pm \045$ days, $\textrm{SNR} \sim 100$\\
+& & $\textsc{mbh}_6$: $t_c = 825 \pm \015$ days, $\textrm{SNR} \sim 10$ \\[3pt]
+& plus \textit{Galactic confusion} & randomized population with approx.\ $\textrm{SNR} < 5$ \\
 & & $\sim 26 \times 10^6$ binaries; no verification \\
 \mr
 \textbf{3.3} & 5 \textit{EMRIs} & for each: $\mu = 9.5\mbox{--}10.5 \, M_\odot$, $S = 0.5\mbox{--}0.7 \, M^2$, \\
@@ -519,7 +504,7 @@ Data set & Sources & Parameters \\
 && $\textsc{emri}_4$ and $\textsc{emri}_5$: $M = 0.95\mbox{--}1.05 \times 10^6 M_\odot$ \\
 \mr
 \textbf{3.4} & \textit{n Cosmic-string--cusp bursts} & (with $n$ Poisson-distributed with mean 5) \\
-&                                             & $f_\mathrm{max} = 10^{-3\mbox{--}1} \, \mathrm{Hz}$, $t_C = 0\mbox{--}2^{21}$ s, $\textsc{snr} = 10\mbox{--}100$ \\
+&                                             & $f_\mathrm{max} = 10^{-3\mbox{--}1} \, \mathrm{Hz}$, $t_C = 0\mbox{--}2^{21}$ s, $\textrm{SNR} = 10\mbox{--}100$ \\
 &                                             & all instrument noise levels randomized $\pm 20\%$ \\
 \mr
 \textbf{3.5} & \textit{Isotropic stochastic background} & $2 \times 192$ incoherent $h_+$ and $h_\times$ sources over sky \\
@@ -539,12 +524,12 @@ h^S_+(t) & = & \mathcal{A} \left(1 + \cos^2{\iota}\right) \cos[2\pi (f t + \dot{
 h^S_\times(t) & = & -2 \mathcal{A} (\cos{\iota}) \sin[2\pi (f t + \dot{f} t^2 / 2) + \phi_0], \nonumber
 \end{eqnarray}
 %
-where the amplitude is derived from the physical parameters of the source as $\mathcal{A} = (2 \mu / D) (\pi M f)^{2/3}$, with $M = m_1 + m_2$ the total mass, $\mu = m_1 m_2 / M $ the reduced mass, and $D$ the distance; $\dot{f}$ is the (constant) frequency derivative, and $\phi_0$ is the phase at $t = 0$.
+where the amplitude is derived from the physical parameters of the source as $\mathcal{A} = (2 \mu / D_L) (\pi M f)^{2/3}$, with $M = m_1 + m_2$ the total mass, $\mu = m_1 m_2 / M $ the reduced mass, and $D_L$ the distance; $\dot{f}$ is the (constant) frequency derivative, and $\phi_0$ is the phase at $t = 0$.
 
 Since it would be unfeasible to process millions of barycentric binary waveforms individually through the LISA simulators to compute the TDI-observable time series, we adopt a fast frequency-domain method \cite{Cornish:2007if} that rewrites the LISA phase measurements as the fast--slow decomposition
 %
 \begin{equation}
-y_{ij}(t) = C(t) \cos(2 \pi f_0 t) + S(t) \sin(2 \pi f_0 t) \;
+y_{ij}(t) = C(t) \cos(2 \pi f_0 t) + S(t) \sin(2 \pi f_0 t) ;
 \end{equation}
 %
 the functions $C(t)$ and $S(t)$ describe slowly varying effects such as the rotation of the LISA arms, the Doppler shift induced by orbital motion, and the intrinsic frequency evolution of the source. These ``slow'' terms can be sampled very sparsely and Fourier-transformed numerically, while the ``fast'' sine and cosine terms can be Fourier-transformed analytically. The results are then convolved to produce the LISA phase measurements, and these are assembled into the desired TDI variables. This algorithm is three to four orders of magnitude faster than the time-domain LISA simulators, although it effectively approximates LISA as a rigidly rotating triangle with equal and constant armlengths. See \cite{Cornish:2007if} for full details, and directory \url{MLDCwaveforms/Galaxy3} in LISAtools for the source code.
@@ -568,7 +553,7 @@ M\omega = \frac1{8}\tau^{-3/8} \biggl[1 &+& \left(\frac{743}{2688} + \frac{11}{3
             \frac3{10}\left(\pi - \frac{\beta}{4}\right)\tau^{-3/8}  \nonumber \\ 
             &+& \left.
             \left(\frac{1855099}{14450688} + 
-           \frac{56975}{258048}\eta + \frac{371}{2048}\eta^2 - \frac{3}{64}\sigma\right)\tau^{-1/2}\right]
+           \frac{56975}{258048}\eta + \frac{371}{2048}\eta^2 - \frac{3}{64}\sigma\right)\tau^{-1/2}\right],
 \end{eqnarray}
 where $M = m_1 + m_2$ is the total mass, $\eta = m_1 m_2/M^2 \equiv \mu/M$ is the symmetric mass ratio, and 
 %
@@ -597,7 +582,7 @@ however, because the spin--orbit coupling causes the orbital angular momentum to
 the phase that enters the gravitational waveforms contains an additional correction \cite{ACST}:
 %
 \begin{equation}
-\dot{\Phi} = \omega + \frac{(\bL\cdot\hn)[\bL\times \hn]\dot{\bf \hat{L}}_N}{1-(\bL\cdot\hn)^2}
+\dot{\Phi} = \omega + \frac{(\bL\cdot\hn)[\bL\times \hn]\cdot\dot{\bf \hat{L}}_N}{1-(\bL\cdot\hn)^2}
 \equiv \omega + \delta\dot{\Phi},\label{totPhi}
 \end{equation}
 %
@@ -625,8 +610,8 @@ where $\cos{i} = (\bL \cdot \hn)$.
 The polarizations $h^S_+$ and $h^S_\times$ in a fixed polarization basis are obtained by way of a rotation by the instantaneous polarization angle
 %
 \begin{equation}
-\tan{\psi} = \frac{\cos{\beta}\cos{(\lambda -\phi_L)}\sin{\theta_L} - \cos{\theta_L}\sin{\beta}}
-{\sin{\beta}\sin{(\lambda - \phi_L)}},
+\tan{\psi} = \frac{\sin{\beta}\cos{(\lambda -\phi_L)}\sin{\theta_L} - \cos{\theta_L}\cos{\beta}}
+{\cos{\beta}\sin{(\lambda - \phi_L)}},
 \end{equation}
 %
 (where $\theta_L$ and $\phi_L$ define the direction of ${\bf L}_N$) yielding
@@ -638,21 +623,20 @@ h_{\times}^S &=& h_{+}\sin{2\psi} - h_{\times}\cos{2\psi}.
 %
 The end of the inspiral is handled with the exponential taper used also for the MBH-binary waveforms of Challenge 2 \cite{mldcgwdaw2}.
 See directory \url{MLDCwaveforms/FastBBH} in LISAtools for the source code for these waveforms.
-%PROBLEM Neil: check waveforms; how are the angular momentum and spin angles defined? Are they all relative to SSB frame?
 
-Data set 3.2 includes also a Galactic confusion background generated from the same detached-binary population as used in Challenge 3.1 (interacting systems have typically very small chirp masses and are not expected to make a significant contribution), but withholding all binaries with individual $A + E$ SNR $> 5$ relative to instrument noise plus an estimate of confusion noise, which was derived using a BIC criterion for the resolvability of individual Galactic binaries \cite{Cornish:2007if}:
+Data set 3.2 includes also a Galactic confusion background generated from the same \emph{detached-binary} population as used in Challenge 3.1 (interacting systems have typically very small chirp masses and are not expected to make a significant contribution), but withholding all binaries with individual $A + E$ SNR $> 5$, relative to instrument noise plus an estimate of confusion noise, which was derived using a BIC criterion for the resolvability of individual Galactic binaries \cite{Cornish:2007if}:
 %
 \begin{equation} \fl
 S_{X,\mathrm{gal}} = 16 \, x^2 \sin^2 x \, \mathrm{Hz}^{-1} \times \left\{ \begin{array}{l@{}l@{\;}l@{\;}l}
 10^{-44.62} &(f/\mathrm{Hz})^{-2.3}  & \mathrm{for} \, f \in [10^{-4}  ,10^{-3}  ] & \mathrm{Hz}, \\ 
 10^{-50.92} &(f/\mathrm{Hz})^{-4.4}  & \mathrm{for} \, f \in [10^{-3}  ,10^{-2.7}] & \mathrm{Hz}, \\
 10^{-62.8}  &(f/\mathrm{Hz})^{-8.8}  & \mathrm{for} \, f \in [10^{-2.7},10^{-2.4}] & \mathrm{Hz}, \\
-10^{-89.68} &(f/\mathrm{Hz})^{-20.0} & \mathrm{for} \, f \in [10^{-2.4},10^{-2.0}] & \mathrm{Hz},
+10^{-89.68} &(f/\mathrm{Hz})^{-20.0} & \mathrm{for} \, f \in [10^{-2.4},10^{-2.0}] & \mathrm{Hz}
 \end{array}\right.
 \label{eq:confusionback}
 \end{equation}
 %
-(fractional frequency fluctuations, with $x = 2 \pi f L$, $L \simeq 16.6782$ s). The resulting confusion background is consistent with \eqref{eq:confusionback}, which is also used in Challenge 3 (on top of instrument noise) to define the SNRs of GW signals from MBH binaries, and also EMRIs (Challenge 3.3) and cosmic-string cusps (Challenge 3.4).
+(fractional frequency fluctuations, with $x = 2 \pi f L$, $L \simeq 16.6782$ s). The resulting confusion background is consistent with \eqref{eq:confusionback}, which is also used in Challenge 3 (on top of instrument noise) to define the SNRs of GW signals from MBH binaries, EMRIs (Challenge 3.3) and cosmic-string cusps (Challenge 3.4).
 
 \subsection{EMRIs}
 \label{sec:ch3emri}
@@ -666,20 +650,20 @@ Data set 3.4 contains a number of bursts from cosmic strings, the first of two n
 In the limit where the tip of a cusp is moving directly
 toward the observer, the observed metric perturbation is a linearly polarized GW with \cite{cusp2}
 %
-\begin{equation}\label{cusp}
-h(t) = A \vert t - t_C \vert^{1/3}, \quad
-A \sim \frac{G \mu L^{2/3}}{D_L};
+\begin{equation} \fl
+h(t) = A \vert t - t_C \vert^{1/3} \times (\mathrm{incomplete} \; \Gamma \; \mathrm{function} \; \mathrm{envelope}) , \quad
+A \sim \frac{G \mu L^{2/3}}{D_L}; \label{cusp}
 \end{equation}
 %PROBLEM: something missing in this equation after power law
 %
 here $t_C$ is the burst's central time of arrival, 
-$G$ is Newton's constant, $\mu$ is the string's mass per unit length, $D$
+$G$ is Newton's constant, $\mu$ is the string's mass per unit length, $D_L$
 is the luminosity distance to the source, and $L$
 is the size of the feature that produces the cusp (e.g., the length of
 a cosmic string loop). If the observer's line of sight does not coincide
 with the cusp's direction of motion, the waveform becomes a much more
 complicated mixture of polarizations~\cite{cusp3}. If the viewing angle $\alpha$ departs
-only slightly from zero, the waveform remains dominantly linearly
+only slightly from zero (which is our assumption), the waveform remains dominantly linearly
 polarized, and the sharp spike in \eqref{cusp} is rounded
 off, introducing an exponential suppression of Fourier-domain power for frequencies above $f_{\rm max} = 2 / (\alpha^3 L)$.
 
@@ -690,7 +674,7 @@ in the Fourier domain according to
 |h_+(f)| = {\cal A} f^{-4/3} \left(1 + (f_{\rm low}/f)^2\right)^{-4}, \quad h_\times = 0,
 \end{equation}
 %
-with $\exp(1 - f/f_\mathrm{max})$ suppression above $f_\mathrm{max}$. The amplitude ${\cal A}$ has dimensions ${\rm Hz}^{1/3}$; $f_{\rm low}$ sets the low-frequency cut-off of what is effectively a fourth-order Butterworth filter, which prevents dynamic-range issues
+with $\exp(1 - f/f_\mathrm{max})$ suppression above $f_\mathrm{max}$. The amplitude ${\cal A}$ has dimensions ${\rm Hz}^{1/3}$; $f_{\rm low}$ sets the low-frequency cutoff of what is effectively a fourth-order Butterworth filter, which prevents dynamic-range issues
 with the inverse Fourier transforms (for Challenge 3 we set $f_{\rm low} = 1 \times 10^{-5}$ Hz).
 The phase of the waveform is set to $\exp \rmi(\pi - 2 \pi f t_C)$ before inverse-Fourier transforming to the time domain. See directory \url{MLDCwaveforms/CosmicStringCusp} in LISAtools for the source code.
 % MV 20080328: I checked that Neil's polarization recipe is equivalent to the standard MLDC [see Challenge 2 GWDAW proc, Eq. (5)] if the cusp burst polarization is identified as hp.
@@ -704,7 +688,7 @@ Data set 3.5 contains the second GW source new to Challenge 3: an isotropic, unp
 \Omega_\mathrm{gw}(f) = \frac{1}{\rho_\mathrm{crit}} \frac{\rmd \rho_\mathrm{gw}}{\rmd \log f},
 \end{equation}
 %
-with $\rho_\mathrm{gw}$ the energy density in GWs, and $\rho_\mathrm{crit} = 3 c^2 H_0^2 / (8 \pi G)$ the closure energy density of the Universe, and they are idealized as the collective, incoherent radiation of uncorrelated infinitesimal emitters distributed across the sky. If the background is isotropic, unpolarized, Gaussian and stationary, the Fourier amplitude $\tilde{h}_A(f,\hat{\Omega})$ of each emitter (with $A$ indexing the  $+$ and $\times$ polarizations, and $\hat{\Omega}$ the direction on the two sphere) is completely characterized by the power-spectral-density relation \cite{stochastic}
+with $\rho_\mathrm{gw}$ the energy density in GWs, and $\rho_\mathrm{crit} = 3 c^2 H_0^2 / (8 \pi G)$ the closure energy density of the Universe, and they are idealized as the collective, incoherent radiation of uncorrelated infinitesimal emitters distributed across the sky. If the background is isotropic, unpolarized, Gaussian and stationary, the Fourier amplitude $\tilde{h}_A(f,\hat{\Omega})$ of each emitter (with $A$ indexing the  $+$ and $\times$ polarizations, and $\hat{\Omega}$ the direction on the two-sphere) is completely characterized by the power-spectral-density relation \cite{stochastic}
 %
 \begin{equation} \fl
 \big\langle \tilde{h}^*_A(f,\hat{\Omega}) \tilde{h}_{A'}(f',\hat{\Omega}') \big\rangle =
@@ -714,7 +698,7 @@ with $\rho_\mathrm{gw}$ the energy density in GWs, and $\rho_\mathrm{crit} = 3 c
 \label{eq:pseudosourcepsd}
 \end{equation}
 %
-In Challenge 3, we assume a constant $\Omega_\mathrm{gw}(f)$, as appropriate for the primordial background predicted in many cosmological scenarios. We implement the uncorrelated emitters as a collection of 192 pseudosources distributed at \emph{HEALPix} pixel centers across the sky. HEALPix (the Hierarchical Equal Area isoLatitude Pixelization of spherical surfaces \cite{healpix}) is often used to represent cosmic microwave background data sets; 192 pixels correspond to a twice-refined HEALPix grid with $N_\mathrm{side} = 2^2$.
+In Challenge 3, we assume a constant $\Omega_\mathrm{gw}(f)$, as appropriate for the primordial background predicted in simple cosmological scenarios. We implement the uncorrelated emitters as a collection of 192 pseudosources distributed at \emph{HEALPix} pixel centers across the sky. HEALPix (the Hierarchical Equal Area isoLatitude Pixelization of spherical surfaces \cite{healpix}) is often used to represent cosmic microwave background data sets; 192 pixels correspond to a twice-refined HEALPix grid with $N_\mathrm{side} = 2^2$.
 
 Each pseudosource consists of uncorrelated pseudorandom processes for $h_+$ and $h_\times$, generated as white noise in the time domain, and filtered to achieve the $f^{-3}$ spectrum of \eqref{eq:pseudosourcepsd}, using the the recursive $1/f^2$ filtering algorithm proposed by Plaszczynski \cite{filtering}, extended to spectral slope $-3$. The algorithm employs a chain of $1/f^2$ infinite--impulse-response filters to reshape the white noise spectrum between minimum and maximum frequencies $f_\mathrm{low}$ and $f_\mathrm{knee}$, set to $10^{-5}$ and $10^{-2}$ Hz in this Challenge (see the source file \url{MLDCwaveforms/Stochastic.py} in LISAtools for the Synthetic LISA implementation).
 
@@ -726,15 +710,14 @@ S^\mathrm{tot}_h(f) = 0.7\mbox{--}1.3 \times 10^{-47} (f/\mathrm{Hz})^{-3} \, \m
 \end{equation}
 %
 (taking $H_0 = 70 \, \mathrm{km} / \mathrm{s} / \mathrm{Mpc}$, this corresponds to $\Omega_\mathrm{gw}=8.95\times 10^{-12}\mbox{--}1.66\times 10^{-11}$).
-%PROBLEM: Check the 1/2 for the one-sided spectrum.
 
-One of the more promising approaches to detect GW backgrounds with LISA relies on estimating instrument noise levels by way of symmetrized TDI observables that is insensitive to GWs at low frequencies in the LISA band \cite{zetapaper,hoganbender,rrv}. For realistic LISA orbits, however, the low-frequency behavior of such observables becomes more complicated than discussed in the literature. To simplify the initial investigation of the background-detection problem in data set 3.5, we have therefore approximated 
+One of the more promising approaches to detect GW backgrounds with LISA relies on estimating instrument noise levels by way of symmetrized TDI observables that are insensitive to GWs at low frequencies in the LISA band \cite{zetapaper,hoganbender,rrv}. For realistic LISA orbits, however, the low-frequency behavior of such observables becomes more complicated than discussed in the literature. To simplify the initial investigation of the background-detection problem in data set 3.5, we have therefore approximated 
 LISA as a rigidly rotating triangle with equal and constant armlengths (i.e., Synthetic LISA's \url{CircularRotating}).
 
 \section{Conclusion}
 
 Since their inception, the Mock LISA Data Challenges have received remarkable support from the GW community, and have set the stage for many practical demonstrations of the feasibility of LISA's exciting science with present-day data-analysis techniques. Future challenges will feature ever more realistic models of waveforms and instrument noise, and they will endeavour to scope out all important aspects of the LISA science objectives.
-In addition, the software tools developed for the MLDCs \cite{lisatools} can be used to generate data sets for many other data-analysis experiments outside the main challenges; and the MLDC \emph{standard model} of LISA's observations (including the MLDC ``pseudo-LISA'' and GW models) are proving extremely valuable to the current analytical investigations of the LISA science performance being run by LIST working groups.
+In addition, the software tools developed for the MLDCs \cite{lisatools} can be used to generate data sets for many other data-analysis experiments outside the main challenges; and the MLDC \emph{standard model} of LISA's observations (including the MLDC ``pseudo-LISA'' and GW models) is proving extremely valuable to the current analytical investigations of the LISA science performance that are being run by the LIST.
 
 To obtain more information and to participate in the MLDCs, see the official MLDC website (\url{astrogravs.nasa.gov/docs/mldc}) and the Task Force wiki (\url{www.tapir.caltech.edu/listwg1b}).
 
@@ -758,15 +741,15 @@ IM was partially supported by NASA ATP Grant NNX07AH22G to Northwestern Universi
 %
 \bibitem{lisa} Bender P, Danzmann P and the LISA Study Team 1998 ``Laser Interferometer Space Antenna for the Detection of Gravitational Waves, Pre-Phase A Report'' \textbf{MPQ 233} (Garching: Max-Planck-Instit\"ut f\"ur Quantenoptik) 
 %
-\bibitem{mldclisasymp} Arnaud K A et al. (the MLDC Task Force) 2006 \textit{Laser Interferometer Space Antenna: 6th International LISA Symp. (Greenbelt, MD, 19--23 Jun 2006)} ed Merkowitz S M and Livas J C (Melville, NY: AIP) p 619; \textit{ibid.} p 625 (long version with lisaXML description: \textit{Preprint} gr-qc/0609106)
+\bibitem{mldclisasymp} Arnaud K A et al. (the MLDC Task Force) 2006 \textit{Laser Interferometer Space Antenna: 6th International LISA Symp. (Greenbelt, MD, 19--23 Jun 2006)} ed Merkowitz S M and Livas J C (Melville, NY: AIP) p 619; \textit{ibid} p 625 (long version with lisaXML description: \textit{Preprint} gr-qc/0609106)
 %
 \bibitem{mldcgwdaw1} Arnaud K A et al. (the MLDC Task Force and Challenge 1 participants) 2007 \textit{Class. Quant. Grav.} \textbf{24} S529
 %
 \bibitem{mldcgwdaw2} Arnaud K A et al. (the MLDC Task Force) 2007 \textit{Class. Quant. Grav.} \textbf{24} S551
 %
-\bibitem{mldcamaldi2} Babak S et al. (the MLDC Task Force and Challenge 2 Participants) 2007 proceedings of the 7th Amaldi Conference on Gravitational Waves (8--14 July 2007, Sydney, Australia) \textit{Preprint} arXiv:0711.2667
+\bibitem{mldcamaldi2} Babak S et al. (the MLDC Task Force and Challenge 2 Participants) 2008 \textit{Class. Quant. Grav.} \textbf{25} 114037
 %
-\bibitem{sensitivity} Vallisneri M, Crowder J Tinto M 2008 \textit{Class. Quant. Grav.} \textbf{25} 065005
+\bibitem{sensitivity} Vallisneri M, Crowder J and Tinto M 2008 \textit{Class. Quant. Grav.} \textbf{25} 065005
 %
 \bibitem{XSPECwebsite} Xspec, an X-ray Spectral Fitting Package, \url{heasarc.gsfc.nasa.gov/docs/xanadu/xspec}
 %
