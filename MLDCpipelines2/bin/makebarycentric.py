@@ -53,6 +53,11 @@ parser.add_option("-P", "--poldebug",
 
 (options, args) = parser.parse_args()
 
+if options.duration == 1:
+    options.duration = 31457280
+elif options.duration == 2:
+    options.duration = 62914560
+
 # currently we support only a single source parameter file
 
 if len(args) != 2:

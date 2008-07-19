@@ -67,6 +67,11 @@ parser.add_option("-v", "--verbose",
 
 (options, args) = parser.parse_args()
 
+if options.duration == 1:
+    options.duration = 31457280
+elif options.duration == 2:
+    options.duration = 62914560
+
 # for the moment, support a single input barycentric file
 
 samples = int( options.duration / options.timestep + 0.1 )
