@@ -103,12 +103,15 @@ fftwdir = None
 
 newsynthlisa = False
 newlisasim   = False
+nolisasim    = False
 newlisacode  = False
+nolisacode   = False
 dotraits     = False
 installgsl   = False
 installswig  = False
 installfftw  = False
 downloadgalaxy = False
+makeclib = False
 
 for arg in sys.argv:
     if arg.startswith('--prefix='):             # main library dir
@@ -119,10 +122,16 @@ for arg in sys.argv:
         fftwdir = arg.split('=',1)[1]        
     elif arg.startswith('--newsynthlisa'):      # force synthlisa reinstallation
         newsynthlisa = True
+    elif arg.startswith('--make-clib'):         # make clib (synthlisa alone, for the moment)
+        makeclib = True
     elif arg.startswith('--newlisasim'):        # force lisasim reinstallation
         newlisasim = True
+    elif arg.startswith('--nolisasim'):         # avoid lisasim installation
+        nolisasim = True
     elif arg.startswith('--newlisacode'):       # force lisacode reinstallation
-        newlisacode = True        
+        newlisacode = True
+    elif arg.startswith('--nolisacode'):        # avoid lisacode installation
+        nolisacode = True
     elif arg.startswith('--traits'):            # include experimental traits functionality
         dotraits = True
     elif arg.startswith('--installgsl'):        # force GSL install
@@ -493,6 +502,7 @@ except:
 if newsynthlisa:
     print "--> Installing Synthetic LISA"
     os.chdir('Packages')
+    assert(0 == os.system('rm -rf %s' % packagedir))
     assert(0 == os.system('tar zxf %s' % package))
     # apply some patches (for synthlisa 1.3.4d)
     for f in ['lisasim-swig.i']:
@@ -503,6 +513,8 @@ if newsynthlisa:
     # go in and compile
     os.chdir(packagedir)
     assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
+    if makeclib:
+        assert(0 == os.system('python setup.py install --prefix=%s --make-clib' % libdir))
     os.chdir('..')
     assert(0 == os.system('rm -rf %s' % packagedir))
     os.chdir(here)
@@ -511,7 +523,7 @@ if newsynthlisa:
 
 print "--> Checking LISACode"
 
-if (not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode:
+if ((not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode) and (not nolisacode):
     print "--> Installing LISACode"
     if os.path.isfile('LISACode/Makefile'):
         assert(0 == os.system('make -C LISACode clean'))
@@ -531,7 +543,7 @@ lisasimdir = packagedir
 
 # still will not upgrade automatically, need to save the version number somewhere...
 # could compact into a single installation section, iterating over '1year', '2year'
-if not os.path.isdir(libdir + '/share/lisasimulator-1year') or newlisasim:
+if (not os.path.isdir(libdir + '/share/lisasimulator-1year') or newlisasim) and (not nolisasim):
     print "--> Installing LISA Simulator (1-year version) from %s" % package
 
     if not os.path.isdir(libdir + '/share'):
@@ -561,7 +573,7 @@ if not os.path.isdir(libdir + '/share/lisasimulator-1year') or newlisasim:
     assert(0 == os.system('./Setup'))
     os.chdir('../..')
 
-if not os.path.isdir(libdir + '/share/lisasimulator-2year') or newlisasim:
+if (not os.path.isdir(libdir + '/share/lisasimulator-2year') or newlisasim) and (not nolisasim):
     print "--> Installing LISA Simulator (2-year version) from %s" % package
 
     if not os.path.isdir(libdir + '/share'):
