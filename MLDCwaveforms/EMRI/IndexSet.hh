@@ -22,6 +22,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #ifndef INDEXSETHH
 #define INDEXSETHH
+
+#include <cstdlib>
+
 namespace LISAWP{ 
     /**Class IndexSet
        A class allow access to  members of matrix class

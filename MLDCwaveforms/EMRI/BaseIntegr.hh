@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define BASEINTEGRHH
 
 #include <iostream>
+#include <cstdlib>
 #include "Matrix.hh"
 //#include <gsl/gsl_errno.h>
 //#include <gsl/gsl_odeiv.h>

@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
+#include <cstdlib>
 #include "IndexSet.hh"
 #include "Macros.hh"
 
