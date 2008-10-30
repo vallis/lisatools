@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #ifndef MACROSHH
 #define MACROSHH
 #include <iostream> 
+#include <cstdlib>
 
 #define LISAWPAssert(assertion,mesg) if(!(assertion))\
 {std::cout<< " Error in line " << __LINE__ << " of file " \

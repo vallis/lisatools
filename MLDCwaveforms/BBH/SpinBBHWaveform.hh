@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include <iomanip>
 #include <fstream>
 #include <math.h>
+#include <cstdlib>
 #include <vector>
 #include "BaseIntegr.hh"
 #include "Constants.hh"
