@@ -11,6 +11,8 @@ class GalacticBinary(lisaxml.Source):
     # this is the list of parameters that will be recorded in the lisaXML SourceData sections
     # give ParameterName, DefaultUnit, DefaultValue (a string), Description
     
+    # should add FrequencyDerivative, but will it be written out even if not defined?
+    
     outputlist = ( ('EclipticLatitude',           'Radian',    None, 'standard ecliptic latitude'),
                    ('EclipticLongitude',          'Radian',    None, 'standard ecliptic longitude'),
                    ('Polarization',               'Radian',    None, 'standard source polarization'),
@@ -23,8 +25,13 @@ class GalacticBinary(lisaxml.Source):
         super(GalacticBinary, self).__init__('GalacticBinary',name)
     
     def waveforms(self,samples,deltat,inittime):
+        # would be better to use linspace, but should test it
         t = numpy.arange(inittime,inittime + deltat*samples,deltat,'d')    
-        phase = 2.0 * math.pi * self.Frequency * t + self.InitialPhase
+        
+        if hasattr(self,'FrequencyDerivative') and self.FrequencyDerivative != 0:
+            phase = 2.0 * math.pi * (self.Frequency * t + 0.5 * self.FrequencyDerivative * t**2) + self.InitialPhase
+        else:
+            phase = 2.0 * math.pi * self.Frequency * t + self.InitialPhase
         
         Ap = self.Amplitude * (1.0 + math.cos(self.Inclination)**2)
         Ac = -2.0 * self.Amplitude * math.cos(self.Inclination)        
