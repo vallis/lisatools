@@ -54,6 +54,14 @@ parser.add_option("-g", "--deltaf",
                   type="float", dest="deltaf", default=None,
                   help="half width of uniform probability distribution for frequency (Hz) [required]")
 
+parser.add_option("-d", "--centerdotf",
+                  type="float", dest="centerdotf", default=None,
+                  help="frequency derivative (Hz/s) [optional, defaults to zero]")
+                  
+parser.add_option("-e", "--deltadotf",
+                  type="float", dest="deltadotf", default=None,
+                  help="half width of uniform probability distribution for frequency derivative (Hz/s) [optional]")
+
 parser.add_option("-n", "--sourceName",
                   type="string", dest="sourceName", default="monochromatic Galactic binary",
                   help='name of source [defaults to "monochromatic Galactic binary"]')
@@ -78,6 +86,9 @@ if options.centerf == None:
 if options.deltaf == None:
     parser.error("You must specify the frequency width!")
 
+if options.centerdotf != None and options.deltadotf == None:
+    parser.error("If you specify the frequency derivative, you must give me its width!")
+
 # get the name of the output file
 
 outXMLfile = args[0]
@@ -88,7 +99,11 @@ random.seed(options.seed)
 
 mysystem = GalacticBinary.GalacticBinary('GalacticBinary')
 
-mysystem.Frequency         = options.centerf + random.uniform(-options.deltaf,options.deltaf)
+mysystem.Frequency = options.centerf + random.uniform(-options.deltaf,options.deltaf)
+
+if options.centerdotf != None:
+    mysystem.FrequencyDerivative = options.centerdotf + random.uniform(-options.deltadotf,options.deltadotf)
+    mysystem.FrequencyDerivative_Unit = 'Hz/s'
 
 if options.latitude == None:
     mysystem.EclipticLatitude  = 0.5*math.pi - math.acos(random.uniform(-1.0,1.0))
