@@ -1,0 +1,50 @@
+ Evaluation of SMBH and EMRI results from the challenge 1/1B
+
+
+(I) Preliminary preparations:
+
+(1) you need to download key files and result xml files.
+(2) place result xml files in the appropriate directory:
+ Source/Challenge1B.2.1/   Source/Challenge1B.2.2/   Source/Challenge1B.3/  
+(3) place key files in the directory
+Key/ or in Key/Challenge1B
+(4) make sure that directories 
+Barycentric/ TDI/
+contain subdirectories:
+ Challenge1.2.1  Challenge1.3     Challenge1B.2.2  
+ Challenge1.2.2  Challenge1B.2.1  Challenge1B.3 
+
+
+(II)
+1. Use the script evaluate-challenge1.py 
+
+use it with --help to get all possible options.
+
+(2) if you want to maximize over the phase signal in BBH challenge,
+you need to run 
+
+bin/create_quadratures  Key/Challenge1B/challenge1B.2.1-key.xml
+
+and place the resulting file challenge1B.2.1-key_0.xml 
+in the directory Key/Challenge1B/
+
+(3) run the script 
+
+evaluate-challenge1.py [options] CHALLENGENAME 
+
+
+As script runs you'll see output on the screen of the stage at which you are.
+At the end you'll get on screen chi^2, SNR, overlaps for each source in the 
+challenge.
+
+
+To get errors in the parameters for EMRI challenge yuo'll need 
+to run script 
+
+bin/estimateEMRIerrors.py
+
+use ./bin/estimateEMRIerrors.py --help for help and range of options
+
+The result will be outputed on the screen, order is the same as in the xml file.
+
+
