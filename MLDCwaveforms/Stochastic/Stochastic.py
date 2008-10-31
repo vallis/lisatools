@@ -104,7 +104,7 @@ class Stochastic(lisaxml.Source):
         logp = [logp0 + i * deltap for i in range(0,order)]
         logz = [logpi + 0.5 * alpha * deltap for logpi in logp]
         
-        thenoise = synthlisa.WhiteNoiseSource(sigbuffer,0)
+        thenoise = synthlisa.WhiteNoiseSource(sigbuffer,seed)
         
         for i in range(0,order):
             newbandfilter = synthlisa.BandIntFilter(deltat,10**logp[i]/(2 * math.pi),10**logz[i]/(2 * math.pi))
