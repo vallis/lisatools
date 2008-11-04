@@ -38,6 +38,18 @@ parser.add_option("-S", "--requestSN",
                   type="float", dest="RequestSN", default=None,
                   help="requested source amplitude SN (satisfied at TDI-generation time)")
 
+parser.add_option("-i", "--inclination",
+                type="float", dest="inclination", default=None,
+                help="requested source inclination (rad) [will be randomized if not given]")
+
+parser.add_option("-p", "--polarization",
+                type="float", dest="polarization", default=None,
+                help="requested source polarization (rad) [will be randomized if not given]")
+
+parser.add_option("-P", "--initialPhase",
+                type="float", dest="initialPhase", default=None,
+                help="requested source initial phase (rad) [will be randomized if not given]")
+
 parser.add_option("-b", "--latitude",
                 type="float", dest="latitude", default=None,
                 help="requested source latitude (rad) [will be randomized if not given]")
@@ -116,9 +128,21 @@ else:
     mysystem.EclipticLongitude = options.longitude
 
 mysystem.Amplitude         = options.A
-mysystem.Inclination       = math.acos(random.uniform(-1.0,1.0))
-mysystem.Polarization      = random.uniform(0.0,2.0*math.pi)
-mysystem.InitialPhase      = random.uniform(0.0,2.0*math.pi)
+
+if options.inclination == None:
+    mysystem.Inclination = math.acos(random.uniform(-1.0,1.0))
+else:
+    mysystem.Inclination = options.inclination
+
+if options.polarization == None:
+    mysystem.Polarization = random.uniform(0.0,2.0*math.pi)
+else:
+    mysystem.Polarization = options.polarization
+
+if options.initialPhase == None:
+    mysystem.InitialPhase = random.uniform(0.0,2.0*math.pi)
+else:
+    mysystem.InitialPhase = options.initialPhase
 
 if options.RequestSN:
     mysystem.RequestSN = options.RequestSN
