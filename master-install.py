@@ -472,7 +472,7 @@ if ( newer_group(sources,'Fast_Response') or newer_group(sources,'Galaxy_Maker')
 if not os.path.isfile('Data/dwd_GWR_all_pars.dat'):
     if downloadgalaxy == True:
         print "    (downloading Nelemans challenge 2 galaxy (388M), this will take a while...)"
-        assert(0 == os.system('curl http://www.physics.montana.edu/faculty/cornish/LISA/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
+        assert(0 == os.system('curl http://www.tapir.caltech.edu/mldc/data/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
         assert(0 == os.system('gunzip dwd_GWR_all_pars.dat.gz'))
         assert(0 == os.system('mv dwd_GWR_all_pars.dat Data/.'))
     else:
