@@ -434,7 +434,7 @@ if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3
 if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
     if downloadgalaxy == True:
         print "    (downloading Nelemans AMCV galaxy (791M), this will take a while...)"
-        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/AMCVn_GWR_MLDC.dat.bz2  > Data/AMCVn_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('curl http://www.tapir.caltech.edu/mldc/data/AMCVn_GWR_MLDC.dat.bz2  > Data/AMCVn_GWR_MLDC.dat.bz2'))
         assert(0 == os.system('bunzip2 Data/AMCVn_GWR_MLDC.dat.bz2'))
     else:
         print "!!! If you want to generate galactic backgrounds, you'll need to download"
@@ -444,7 +444,7 @@ if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
 if not os.path.isfile('Data/dwd_GWR_MLDC.dat'):
     if downloadgalaxy == True:
         print "    (downloading Nelemans dwd galaxy (427M), this will take a while...)"
-        assert(0 == os.system('curl http://www.astro.ru.nl/~nelemans/Neil/dwd_GWR_MLDC.dat.bz2  > Data/dwd_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('curl http://www.tapir.caltech.edu/mldc/data/dwd_GWR_MLDC.dat.bz2  > Data/dwd_GWR_MLDC.dat.bz2'))
         assert(0 == os.system('bunzip2 Data/dwd_GWR_MLDC.dat.bz2'))
     else:
         print "!!! If you want to generate galactic backgrounds, you'll need to download"
