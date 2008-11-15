@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string>
+#include <cstring>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"
 #include "LISACODE-LISAConstants.h"
