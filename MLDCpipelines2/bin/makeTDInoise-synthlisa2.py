@@ -79,6 +79,10 @@ parser.add_option("-k", "--keyOnly",
                   action="store_true", dest="keyOnly", default=False,
                   help="produce key only, don't compute noise [off by default]")
 
+parser.add_option("-A", "--keyOmitsLISA",
+                  action="store_true", dest="keyOmitsLISA", default=False,
+                  help="do not include LISA specification in key [included by default]")
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default]")
@@ -239,15 +243,17 @@ if not options.keyOnly:
 
 outputXML = lisaxml.lisaXML(outputfile,'w')
 
-# save the standard LISA...
-lisa = lisaxml.LISA('Standard MLDC PseudoLISA')
-lisa.TimeOffset      = 0; lisa.TimeOffset_Unit      = 'Second'
-lisa.InitialPosition = 0; lisa.InitialPosition_Unit = 'Radian'
-lisa.InitialRotation = 0; lisa.InitialRotation_Unit = 'Radian'
-lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
+if not options.keyOmitsLISA:
+    # save the standard LISA...
+    lisa = lisaxml.LISA('Standard MLDC PseudoLISA')
+    lisa.TimeOffset      = 0; lisa.TimeOffset_Unit      = 'Second'
+    lisa.InitialPosition = 0; lisa.InitialPosition_Unit = 'Radian'
+    lisa.InitialRotation = 0; lisa.InitialRotation_Unit = 'Radian'
+    lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
+    lisa.OrbitApproximation = options.LISAmodel; lisa.OrbitApproximation_Unit = 'String'
 
-# old call: outputXML.LISAData(lisa)
-outputXML.LISAData.append(lisa)
+    # old call: outputXML.LISAData(lisa)
+    outputXML.LISAData.append(lisa)
 
 for noise in proofnoises:
     outputXML.NoiseData.append(noise)

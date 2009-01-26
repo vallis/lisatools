@@ -311,6 +311,7 @@ lisa.TimeOffset      = 0; lisa.TimeOffset_Unit      = 'Second'
 lisa.InitialPosition = 0; lisa.InitialPosition_Unit = 'Radian'
 lisa.InitialRotation = 0; lisa.InitialRotation_Unit = 'Radian'
 lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
+lisa.OrbitApproximation = options.LISAmodel; lisa.OrbitApproximation_Unit = 'String'
 
 outputXML.LISAData(lisa)
 
