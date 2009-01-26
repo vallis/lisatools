@@ -477,11 +477,12 @@ if dolisacode and glob.glob('LISACode/source-*.xml'):
                      challengename=cname,
                      cadence=timestep,
                      duration=duration,
-                     randomseed=lcseednoise)
+                     randomseed=lcseednoise,
+                     orbit=options.LISAmodel)
     
     if donoise:
         # make lisacode noise (note that the random seed is really set above in the standard instruction set)
-        run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
+        run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
     
         # merge with source data into a single lisacode input file
         run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/noise.xml LISACode/source-*.xml')
