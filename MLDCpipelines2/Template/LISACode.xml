@@ -48,4 +48,24 @@
             and sets the interpolation level to 7.
         </Comment>
     </XSIL>
+    
+    <XSIL Type="LISAData">
+        <XSIL Name="Standard MLDC PseudoLISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+            <Param Name="OrbitApproximation" Unit="String">
+                {orbit}
+            </Param>
+        </XSIL>
+    </XSIL>
 </XSIL>
