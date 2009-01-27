@@ -7,7 +7,6 @@ EXTRA_DIST = \
 			Bruits/Include \
 			Bruits/Doc \
 			Ondes_Gravit/Include \
-			Ondes_Gravit/NoFFTW/Include \
 			Ondes_Gravit/Doc \
 			Orbitographie/Include \
 			Orbitographie/Doc \
@@ -20,14 +19,18 @@ EXTRA_DIST = \
 			Memoire/Doc \
 			Input_data/Include \
 			Input_data/Doc \
+			Input_data/Test/ConfigTest \
 			Detecteur/Include \
 			Detecteur/Doc \
 			TDI/Include \
 			TDI/Doc \
 			Main/Include \
 			Main/Doc \
+			configue.ini \
 			lisa-xml.xsl \
 			lisa-xml.css \
+			ConfigRefBase.xml \
+			ConfigRefBase \
 			Documentation/ManuelTex/ManuelEN_v1.4.tex \
 			Documentation/ManuelTex/ManuelEN_v1.4.pdf \
 			Documentation/ManuelTex/ManuelEN_v1.4.bbl \
@@ -50,6 +53,8 @@ EXTRA_DIST = \
 			Example_Input/Delay.txt
 			
 			
+			
+			
 
 SUBDIRS = \
 		Generalites \
@@ -59,12 +64,8 @@ SUBDIRS = \
 		Bruits \
 		Bruits/SRC \
 		Bruits/Test \
-		Ondes_Gravit
-
-SUBDIRS += $(SLISAGRAVWAVES_FFTWSRC)
-		
-SUBDIRS += \
-		Ondes_Gravit/SRC \
+		Ondes_Gravit \
+		Ondes_Gravit/NoFFTW/SRC \
 		Ondes_Gravit/Test \
 		Orbitographie \
 		Orbitographie/SRC \

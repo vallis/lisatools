@@ -1,5 +1,3 @@
-/*! \todo Create a variable for the default configuration file name ("ConfigBase").*/
-
 // $Id: LISACODE-ConfigSim.cpp,v 1.8 2007/03/29 15:17:01 lalanne Exp $
 /*
  *  LISACODE-ConfigSim.cpp
@@ -23,7 +21,7 @@
 ConfigSim::ConfigSim()
 {
 	//It sets "ConfigBase" as configuration file
-        //and set all basical simulation parameters
+	//and set all basical simulation parameters
 	DefaultConfig("ConfigBase");
 	//Read parameters from the file "ConfigBase"
 	ReadFile();
@@ -39,11 +37,11 @@ ConfigSim::ConfigSim()
 ConfigSim::ConfigSim(char * NameConfigFile_n)
 {
 	//It sets input as configuration file
-        //and set all basical simulation parameters
+	//and set all basical simulation parameters
 	DefaultConfig(NameConfigFile_n);
 	//Read parameters from the input file (NameConfigFile_n). 
-        //The input file name is stored in variable ConfigFileName
-        ReadFile();
+	//The input file name is stored in variable ConfigFileName
+	ReadFile();
 	
 }
 
@@ -52,7 +50,7 @@ ConfigSim::ConfigSim(char * NameConfigFile_n)
 /*! \brief Destructor.
  *
  * It does not do any particular action.
-*/
+ */
 ConfigSim::~ConfigSim()
 {
 	
@@ -112,14 +110,15 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
     tMemNoiseFirst = 5.0;
 	tMemNoiseLast = -30.0;
     tMemSig = 100.0;
-	tDisplay = 1000.0;
+	tDisplay = -1.0;
 	tDeltaTDIDelay = 0.0;
 	TDIInterp = LAG;
 	TDIInterpUtilVal = 20;
 	Armlength = L0_m_default;
 	OrbStartTime = 0.0;
 	OrbInitRot = 0.0;
-	OrbMove = 1;
+	OrbType = 1; // MLDC
+	OrbApprox = 1; // rigid
 	OrbOrder = 2;
 	TDIDelayApprox = false;
 	LaserPower = LaserPower_W_default;
@@ -129,6 +128,7 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
 	PhaMetFilterParam[1] = 0.1;
 	PhaMetFilterParam[2] = 0.1;
 	PhaMetFilterParam[3] = 0.3;
+	InternalPhasemeters = true;
     strcpy(FileNameSigSC1, "None");
     strcpy(FileNameSigSC2, "None");
     strcpy(FileNameSigSC3, "None");
@@ -152,6 +152,32 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
     Endian = 0 ;
 	
 }
+
+/*!\brief
+ * Returns FileNameSig corresponding to iSC input.
+ *
+ * iSC : spacecraft number (expected values : 1, 2, 3)
+ */
+void ConfigSim::getGeometry(Geometry * & SCPos)
+{
+	SCPos = NULL;
+	switch (OrbType){
+		case 0:
+			SCPos = new GeometryAnalytic(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy);
+			break;
+		case 1:
+			SCPos = new GeometryMLDC(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy);
+			break;
+		case 2:
+			SCPos = new GeometryFile(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy, "Orbit_ESA.input.txt");
+			break;
+		default:
+			SCPos = new GeometryAnalytic(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy);
+	};
+}
+
+
+
 /*!\brief
  * Returns FileNameSig corresponding to iSC input.
  *
@@ -178,10 +204,10 @@ char * ConfigSim::getFileNameSig(int iSC)
 }
 
 /*!\brief
-* Returns FileEncodingSig corresponding to iSC input.
-*
-* iSC : spacecraft number (expected values : 1, 2, 3)
-*/
+ * Returns FileEncodingSig corresponding to iSC input.
+ *
+ * iSC : spacecraft number (expected values : 1, 2, 3)
+ */
 
 int ConfigSim::getFileEncodingSig(int iSC)
 {
@@ -238,6 +264,19 @@ vector<int> ConfigSim::getGenTDIPacks(int iGen)
     return(TDIsPacks[iGen]);
 }
 
+/*!\brief
+ * Returns TDIsPackFact corresponding to iGen input.
+ *
+ * iGen : TDI generator index (expected values : [0, size of #TDIsPacksFact)
+ *
+ */
+vector<double> ConfigSim::getGenTDIPacksFact(int iGen)
+{
+    if((iGen<0)||(iGen>=TDIsPacksFact.size()))
+        throw invalid_argument("ConfigSim::getGenTDIPacks : This TDI generator doesn't exist ! ");
+    return(TDIsPacksFact[iGen]);
+}
+
 /*****************/
 /* Other methods */
 /*****************/
@@ -248,44 +287,50 @@ vector<int> ConfigSim::getGenTDIPacks(int iGen)
  */
 void ConfigSim::ReadFile()
 {
-       char * ptr;
-       ptr=ConfigFileName+strlen(ConfigFileName);
-       //cout << " filename = " << ConfigFileName << endl;
-       //cout << strncmp(ptr-4,".xml",4) << endl;
-       Endian = testbyteorder();       
-       if(Endian == 0) {
-           BigEndian = true;
-           SystemEncoding = "BigEndian";
-       } else {
-           BigEndian = false;
-           SystemEncoding = "LittleEndian";
-       }
-       cout << endl << "System Encoding for Binary files is  " <<  getSystemEncoding()<< endl << endl ;
-       if(strncmp(ptr-4,".xml",4)==0) {
-               ReadXMLFile();
-       }else{
-               ReadASCIIFile();
-       }
-
-       //ReadASCIIFile();
-}
-/*void ConfigSim::ReadFile()
-{
-	char * extention;
 	char * ptr;
-	extention=(char*)malloc(16*sizeof(char));
-	ptr=strchr(ConfigFileName,'\0');
-	if(ptr!=NULL) strncat(extention,ptr-4,16);
-	//cout << " Extention = " << extention << endl;
-	//cout << strcmp(extention,".xml") << endl;
-	if(strncmp(extention,".xml",4)==0) {
+	
+	// Detect system encoding type
+	Endian = testbyteorder();       
+	if(Endian == 0) {
+		BigEndian = true;
+		SystemEncoding = "BigEndian";
+	} else {
+		BigEndian = false;
+		SystemEncoding = "LittleEndian";
+	}
+	cout << endl << "System Encoding for Binary files is  " <<  getSystemEncoding() << endl << endl ;
+	
+	// Read extention of configuration file
+	ptr=ConfigFileName+strlen(ConfigFileName);
+	//cout << " filename = " << ConfigFileName << endl;
+	//cout << strncmp(ptr-4,".xml",4) << endl;
+	
+	// Read configuration file
+	if(strncmp(ptr-4,".xml",4)==0) {
 		ReadXMLFile();
 	}else{
 		ReadASCIIFile();
 	}
 	
 	//ReadASCIIFile();
-	}*/
+}
+/*void ConfigSim::ReadFile()
+ {
+ char * extention;
+ char * ptr;
+ extention=(char*)malloc(16*sizeof(char));
+ ptr=strchr(ConfigFileName,'\0');
+ if(ptr!=NULL) strncat(extention,ptr-4,16);
+ //cout << " Extention = " << extention << endl;
+ //cout << strcmp(extention,".xml") << endl;
+ if(strncmp(extention,".xml",4)==0) {
+ ReadXMLFile();
+ }else{
+ ReadASCIIFile();
+ }
+ 
+ //ReadASCIIFile();
+ }*/
 
 /*!\brief
  * Reads ASCII configuration file
@@ -306,7 +351,7 @@ void ConfigSim::ReadFile()
  */
 void ConfigSim::ReadASCIIFile()
 {
-	cout << "  Read ASCII configuration file : " << ConfigFileName << endl;
+	cout << " Read ASCII configuration file : " << ConfigFileName << endl;
 	
     ifstream ConfigFile;
     string Buf;
@@ -336,43 +381,43 @@ void ConfigSim::ReadASCIIFile()
 		}
 		
 		/* Informations temporelles 
-			---------------------------*/
-		if(Buf == "Time"){ 
+		 ---------------------------*/
+		if(scmp(Buf,"Time")){ 
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
-			if(Buf == "StepPhysic"){
+			if(scmp(Buf,"StepPhysic")){
 				ConfigFile >> tStepPhy;
 				//cout << " Pas en temps = " << tStepPhy << endl;
 			}
-			if(Buf == "StepMeasure"){
+			if(scmp(Buf,"StepMeasure")){
 				ConfigFile >> tStepMes;
 				//cout << " Duree d'une mesure = " << tStepMes << endl;
 			}
-			if(Buf == "Max"){
+			if(scmp(Buf,"Max")){
 				ConfigFile >> tMax;
 				//cout << " Temps max = " << tMax << endl;
 			}
-			if(Buf == "NoiseStoreFirst"){
+			if(scmp(Buf,"NoiseStoreFirst")){
 				//ConfigFile >> tMemNoiseFirst;
 				//cout << " Temps relatif de debut de memorisation du bruit = " << tMemNoiseFirst << endl;
 				ConfigFile >> Buf;
 				cout << " ConfigSim::ReadFile : Warning : NoiseStoreFirst is not use in this new version !" << endl;
 			}
-			if(Buf == "NoiseStoreLast"){
+			if(scmp(Buf,"NoiseStoreLast")){
 				//ConfigFile >> tMemNoiseLast;
 				//cout << " Temps relatif de fin de memorisation du bruit = " << tMemNoiseLast << endl;
 				ConfigFile >> Buf;
 				cout << " ConfigSim::ReadFile : Warning : NoiseStoreLast is not use in this new version !" << endl;
 			}			
-			if(Buf == "SignalStore"){
+			if(scmp(Buf,"SignalStore")){
 				ConfigFile >> tMemSig;
 				//cout << " Duree de memorisation du signal = " << tMemSig << endl;
 			}
-			if(Buf == "StepDisplay"){
+			if(scmp(Buf,"StepDisplay")){
 				ConfigFile >> tDisplay;
 				//cout << " Pas d'affichage = " << tDisplay<< endl;
 			}
-			if(Buf == "DeltaTDIDelay"){
+			if(scmp(Buf,"DeltaTDIDelay")){
 				ConfigFile >> tDeltaTDIDelay;
 				//cout << " Pas d'affichage = " << tDisplay<< endl;
 			}
@@ -385,12 +430,12 @@ void ConfigSim::ReadASCIIFile()
 		
 		
 		/* Informations interpolation 
-			---------------------------*/
-		if(Buf == "Interpolation"){
+		 ---------------------------*/
+		if(scmp(Buf,"Interpolation")){
 			TDIInterpUtilVal = 0.0;
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
-			if(Buf == "LAG"){
+			if(scmp(Buf,"LAG")){
 				ConfigFile >> TDIInterpUtilVal;
 				TDIInterp = LAG;
 			}
@@ -400,14 +445,14 @@ void ConfigSim::ReadASCIIFile()
 			}
 		}
 		/* Informations la precision 
-			---------------------------*/
-		if(Buf == "TDIDelayApprox"){
+		 ---------------------------*/
+		if(scmp(Buf,"TDIDelayApprox")){
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
-			if((Buf == "ON")||(Buf == "On")||(Buf == "on")){
+			if(scmp(Buf,"ON")){
 				TDIDelayApprox = true;
 			}else{
-				if((Buf == "OFF")||(Buf == "Off")||(Buf == "off")){
+				if(scmp(Buf,"OFF")){
 					TDIDelayApprox = false;
 				}else{
 					throw invalid_argument("ConfigSim::ReadFile : Bad syntax for approximation of TDI Delay (ON or OFF) !");
@@ -417,51 +462,90 @@ void ConfigSim::ReadASCIIFile()
 			if(Buf == ";"){
 				Readable = true;
 			}
+			cout << "  Approximation of TDI Delay = " << TDIDelayApprox << endl;
 		}
 		
 		
 		/* Informations sur les orbites 
-			------------------------------*/
-		if(Buf == "Orbits"){ 
+		 ------------------------------*/
+		if(scmp(Buf,"Orbits")){ 
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
 			// Lecture de l'element bruite
-			if(Buf == "Armlength"){
+			if(scmp(Buf,"Armlength")){
 				ConfigFile >> Armlength;
 				ConfigFile >> Buf ;
 			}
-			if(Buf == "StartTime"){
+			if(scmp(Buf,"StartTime")){
 				ConfigFile >> OrbStartTime;
 				ConfigFile >> Buf ;
 			}
-			if(Buf == "InitialRotation"){
+			if(scmp(Buf,"InitialRotation")){
 				ConfigFile >> OrbInitRot;
 				ConfigFile >> Buf ;
 			}
-			if(Buf == "Move"){
+			if(scmp(Buf,"Move")){
 				ConfigFile >> Buf;
-				if((Buf == "ON")||(Buf == "On")||(Buf == "on")){
-					OrbMove = 1;
+				if(scmp(Buf, "On")){
+					OrbType = 0;
+					OrbApprox = 2;
 				}else{
-					if((Buf == "OFF")||(Buf == "Off")||(Buf == "off")){
-						OrbMove = 0;
+					if(scmp(Buf,"Off")){
+						OrbType = 0;
+						OrbApprox = 0;
 					}else{
-						if(Buf == "MLDC_ON"){
-							OrbMove = 1+2;
+						if(scmp(Buf,"MLDC_ON")){
+							OrbType = 1;
+							OrbApprox = 2;
 						}else{
-							if(Buf == "MLDC_OFF"){
-								OrbMove = 0+2;
+							if(scmp(Buf,"MLDC_OFF")){
+								OrbType = 1;
+								OrbApprox = 0;
 							}else{
-								throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the orbit move specification (ON,OFF, MLDC_ON or MLDC_OFF) !");
+								if(scmp(Buf,"ESA_ON")){
+									OrbType = 2;
+									OrbApprox = 2;
+								}else{
+									if(scmp(Buf,"ESA_OFF")){
+										OrbType = 2;
+										OrbApprox = 0;
+									}else{
+										throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the orbit move specification (ON, OFF, MLDC_ON, MLDC_OFF, ESA_ON or ESA_OFF) !");
+									}
+								}
 							}
 						}
 					}
 				}
-				cout << " OrbMove =  " << OrbMove << endl ;
-				cout << " - Approximation of TDI Delay = " << TDIDelayApprox << endl;
 				ConfigFile >> Buf ;
+				cout << "  OrbType =  " << OrbType << endl ;
+				cout << "  OrbApprox =  " << OrbApprox << endl ;
+			}	
+			if(scmp(Buf,"Type")){
+				ConfigFile >> Buf;
+				if(scmp(Buf,"LISACode_Orbits")||scmp(Buf,"LISACode"))
+					OrbType = 0;
+				if(scmp(Buf,"PseudoLISA")||scmp(Buf,"MLDC"))
+					OrbType = 1;
+				if(scmp(Buf,"ESA_Orbits")||scmp(Buf,"ESA"))
+					OrbType = 2;
+				ConfigFile >> Buf;
+				cout << "  OrbType =  " << OrbType << endl ;
 			}
-			if(Buf == "Order"){
+			
+			if(scmp(Buf,"Approx")){
+				ConfigFile >> Buf;
+				if(scmp(Buf,"Static")||scmp(Buf,"static"))
+					OrbApprox = 0;
+				if(scmp(Buf,"Rigid")||scmp(Buf,"rigid"))
+					OrbApprox = 1;
+				if(scmp(Buf,"Eccentric")||scmp(Buf,"eccentric"))
+					OrbApprox = 2;
+				ConfigFile >> Buf;
+				cout << "  OrbApprox =  " << OrbApprox << endl ;
+			}
+			
+			if(scmp(Buf,"Order")){
 				ConfigFile >> OrbOrder;
 				ConfigFile >> Buf ;
 			}
@@ -471,51 +555,66 @@ void ConfigSim::ReadASCIIFile()
 		}		
 		
 		/* Informations sur le detecteur 
-			------------------------------*/
-		if(Buf == "Detector"){ 
+		 ------------------------------*/
+		if(scmp(Buf,"Detector")){ 
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
 			// Lecture du parametre du detecteur
-			if(Buf == "LaserPower"){
+			if(scmp(Buf,"LaserPower")){
 				ConfigFile >> LaserPower;
 				ConfigFile >> Buf ;
 			}
-			if(Buf == "PhaMetFilter"){
+			if(scmp(Buf,"PhaMetFilter")){
 				ConfigFile >> Buf;
-				if((Buf == "ON")||(Buf == "On")||(Buf == "on")){
+				if(scmp(Buf,"On")){
 					PhaMetFilterON = true;
 				}else{
-					if((Buf == "OFF")||(Buf == "Off")||(Buf == "off")){
+					if(scmp(Buf,"Off")){
 						PhaMetFilterON = false;
 					}else{
 						throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the phasemeter filter specification (ON or OFF) !");
 					}
 				}
 				ConfigFile >> Buf ;
+				cout << "  Phasemeter filter : " << PhaMetFilterON << endl;
 			}
-			if(Buf == "PhaMetFilterParameters"){
+			if(scmp(Buf,"PhaMetFilterParameters")){
 				ConfigFile >> Buf;  // Lecture de :
 				ConfigFile >> Buf;
 				do{
-					if(Buf == "attenuation"){
+					if(scmp(Buf,"attenuation")){
 						ConfigFile >> PhaMetFilterParam[0];
 						//cout << " Frequency = " << freq << endl;
 					}
-					if(Buf == "oscillation"){
+					if(scmp(Buf,"oscillation")){
 						ConfigFile >> PhaMetFilterParam[1];
 						//cout << " h+ = " << hp << endl;
 					}
-					if(Buf == "FactFmesForHighFreq"){
+					if(scmp(Buf,"FactFmesForHighFreq")){
 						ConfigFile >> PhaMetFilterParam[2];
 						//cout << " hx = " << hc << endl;
 					}
-					if(Buf == "FactFmesForLowFreq"){
+					if(scmp(Buf,"FactFmesForLowFreq")){
 						ConfigFile >> PhaMetFilterParam[3];
 						//cout << " Phi0hp = " << Phi0hp << endl;
 					}
 					ConfigFile >> Buf;
 				}while((Buf != ";")&&(!ConfigFile.eof()));
 			}			
+			if(scmp(Buf,"InternalPhasemeters")){
+				ConfigFile >> Buf;
+				if(scmp(Buf,"Always")){
+					InternalPhasemeters = true;
+				}else{
+					if(scmp(Buf,"IfNoises")){
+						InternalPhasemeters = false;
+					}else{
+						throw invalid_argument("ConfigSim::ReadASCIIFile : The InternalPhasemeters arguments must be 'Always' or 'IfNoises' (Ex : 'Detector : InternalPhasemeters Always ;' ) !");
+					}
+				}
+				ConfigFile >> Buf;
+			}
+			
 			if(Buf == ";"){
 				Readable = true;
 			}
@@ -523,12 +622,12 @@ void ConfigSim::ReadASCIIFile()
 		
 		
 		/* Informations sur le Fond d'ondes gravitationnelles 
-			-------------------------------------------------*/
-		if(Buf == "GWB"){ 
+		 -------------------------------------------------*/
+		if(scmp(Buf,"GWB")){ 
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
 			// Lecture du parametre du detecteur
-			if(Buf == "File"){
+			if(scmp(Buf,"File")){
 				char FileName[256];
 				double Factor(0.0);
 				//cout << "GWB Fichier : " << endl; 
@@ -541,64 +640,64 @@ void ConfigSim::ReadASCIIFile()
 				if(Buf == ";"){
 					Readable = true;
 				}
-				cout << " Loading gravitationnal wave background signal from " << FileName << " ... " << endl;
+				cout << "  Loading gravitationnal wave background signal from " << FileName << " ... " << endl;
 				GWB = new BackgroundGalactic(FileName, Factor);
-				cout << " Loading gravitationnal wave background signal --> OK !" << endl;
+				cout << "  Loading gravitationnal wave background signal --> OK !" << endl;
 			}
 		}
 		
 		
 		
 		/* Informations sur l'enregistrement
-			------------------------------------*/
-		if(Buf == "Record"){ 
+		 ------------------------------------*/
+		if(scmp(Buf,"Record")){ 
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
-			if(Buf == "SignalSC"){
+			if(scmp(Buf,"SignalSC")){
 				int iSC;
 				ConfigFile >> iSC;
 				switch (iSC){
-				case 1 :
-				  ConfigFile >> FileNameSigSC1 >> Buf;
-				  FileEncodingSC1 = 0 ;
-				  if(Buf == "BINARY")
-				    FileEncodingSC1 = 1 ;
-				  break;
-				case 2 :
-				  ConfigFile >> FileNameSigSC2  >> Buf;
-				  FileEncodingSC2 = 0 ;
-				  if(Buf == "BINARY")
-				    FileEncodingSC2 = 1;
-				  break;
-				case 3 :
-				  ConfigFile >> FileNameSigSC3  >> Buf;
-				  FileEncodingSC3 = 0 ;
-				  if(Buf == "BINARY")
-				    FileEncodingSC3 = 1 ;
-				  break;
-				default :
-				  throw invalid_argument("ConfigSim::ReadFile : The spacecraft number must be 1, 2 or 3 !");
+					case 1 :
+						ConfigFile >> FileNameSigSC1 >> Buf;
+						FileEncodingSC1 = 0 ;
+						if(scmp(Buf,"BINARY"))
+							FileEncodingSC1 = 1 ;
+						break;
+					case 2 :
+						ConfigFile >> FileNameSigSC2  >> Buf;
+						FileEncodingSC2 = 0 ;
+						if(scmp(Buf,"BINARY"))
+							FileEncodingSC2 = 1;
+						break;
+					case 3 :
+						ConfigFile >> FileNameSigSC3  >> Buf;
+						FileEncodingSC3 = 0 ;
+						if(scmp(Buf,"BINARY"))
+							FileEncodingSC3 = 1 ;
+						break;
+					default :
+						throw invalid_argument("ConfigSim::ReadFile : The spacecraft number must be 1, 2 or 3 !");
 				};
 			}
-			if(Buf == "TDI"){
+			if(scmp(Buf,"TDI")){
 				ConfigFile >> FileNameTDI >> Buf;
 				FileEncodingTDI = 0;
-				if(Buf == "BINARY")
+				if(scmp(Buf,"BINARY"))
 					FileEncodingTDI = 1;
 				//cout << " Fichier d'enregistrement de TDI = " << FileNameTDI << endl;
 			}
-			if(Buf == "Delay"){
+			if(scmp(Buf,"Delay")){
 				ConfigFile >> FileNameDelays >> Buf;
 				FileEncodingDelays = 0;
-				if(Buf == "BINARY")
+				if(scmp(Buf,"BINARY"))
 					FileEncodingDelays = 1;
 				//cout << " Fichier d'enregistrement des retards = " << FileNamedelays << endl;
 			}
-			if(Buf == "Position"){
+			if(scmp(Buf,"Position")){
 				ConfigFile >> FileNamePositions >> Buf;
 				FileEncodingPos = 0;
-				if(Buf == "BINARY")
-				  FileEncodingPos = 1;
+				if(scmp(Buf,"BINARY"))
+					FileEncodingPos = 1;
 				//cout << " Fichier d'enregistrement des positions = " << FileNamePositions << endl;
 			}
 			//cout << "-----------------------> " << Buf << endl;
@@ -610,25 +709,26 @@ void ConfigSim::ReadASCIIFile()
 		}
 		
 		/* Informations sur les ondes gravitationnelles 
-			------------------------------------------------*/
-		if(Buf == "GW"){
+		 ------------------------------------------------*/
+		if(scmp(Buf,"GW")){
 			double Beta(0.0), Lambda(0.0), Psi(0.0);
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
-			// Lecture de Beta, Lambda et Psi
+			// ***** Lecture de Beta, Lambda et Psi
 			do{
-				if(Buf == "Bet"){
+				if(scmp(Buf,"Bet")){
 					double tmpAng(0.0);
 					ConfigFile >> tmpAng;
 					Beta = MathUtils::deg2rad(tmpAng);
 					//cout << " Beta = " << Beta << endl;
 				}
-				if(Buf == "Lam"){double tmpAng(0.0);
+				if(scmp(Buf,"Lam")){
+					double tmpAng(0.0);
 					ConfigFile >> tmpAng;
 					Lambda = MathUtils::deg2rad(tmpAng);
 					//cout << " Lambda = " << Lambda << endl;
 				}
-				if(Buf == "Psi"){
+				if(scmp(Buf,"Psi")){
 					double tmpAng(0.0);
 					ConfigFile >> tmpAng;
 					Psi = MathUtils::deg2rad(tmpAng);
@@ -636,95 +736,158 @@ void ConfigSim::ReadASCIIFile()
 				}
 				ConfigFile >> Buf;
 			}while((Buf != ":")&&(!ConfigFile.eof()));
-			// Lecture du type d'onde
+			
+			// ***** Lecture du type d'onde
 			ConfigFile >> Buf;
-			// Monochromatic gravitational wave
-			if(Buf == "Mono"){
+			// ** Template for New gravitational wave
+			if(scmp(Buf,"New")){
 				Readable = true;
-				//cout << "OG Monochromatique : " << endl; 
+				//cout << "OG New : " << endl; 
 				ConfigFile >> Buf;
 				double freq(0.0), hp(0.0), hc(0.0), Phi0hp(0.0), Phi0hc(0.0);
 				do{
-					if(Buf == "f"){
+					if(scmp(Buf,"f")){
 						ConfigFile >> freq;
 						//cout << " Frequency = " << freq << endl;
 					}
-					if(Buf == "hp"){
+					if(scmp(Buf,"hp")){
 						ConfigFile >> hp;
 						//cout << " h+ = " << hp << endl;
 					}
-					if(Buf == "hc"){
+					if(scmp(Buf,"hc")){
 						ConfigFile >> hc;
 						//cout << " hx = " << hc << endl;
 					}
-					if(Buf == "Phi0hp"){
+					if(scmp(Buf,"Phi0hp")){
 						ConfigFile >> Phi0hp;
 						//cout << " Phi0hp = " << Phi0hp << endl;
 					}
-					if(Buf == "Phi0hc"){
+					if(scmp(Buf,"Phi0hc")){
 						ConfigFile >> Phi0hc;
 						//cout << " Phi0hc = " << Phi0hc << endl;
 					}
 					ConfigFile >> Buf;
 				}while((Buf != ";")&&(!ConfigFile.eof()));
-				//cout.precision(15);
-				//cout << "GWMono   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-				//cout.precision(15);
-				//cout << " f=" << freq << " hp=" << hp << " hc=" << hc << " Phi0hp=" << Phi0hp << " Phi0hc=" << Phi0hc << endl;
+				cout.precision(15);
+				cout << "  + GWNew   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+				cout.precision(15);
+				cout << " f=" << freq << " hp=" << hp << " hc=" << hc << " Phi0hp=" << Phi0hp << " Phi0hc=" << Phi0hc << endl;
+				GWs.push_back(new GWNew(Beta, Lambda, Psi, freq, hp, hc, Phi0hp, Phi0hc));
+				NbSrc++;
+			}
+			if(scmp(Buf,"Cusp")){
+				Readable = true;
+				//cout << "GW Cusp : " << endl; 
+				ConfigFile >> Buf;
+				double Amplitude(1.0e-10), CentralTime(tMax/2.0), MaximumFrequency(0.1), Tpad(900.0);
+				do{
+					if(scmp(Buf,"Amplitude")){
+						ConfigFile >> Amplitude;
+						//cout << " Amplitude = " << Amplitude << endl;
+					}
+					if(scmp(Buf,"CentralTime")){
+						ConfigFile >> CentralTime;
+						//cout << " CentralTime = " << CentralTime << endl;
+					}
+					if(scmp(Buf,"MaximumFrequency")){
+						ConfigFile >> MaximumFrequency;
+						//cout << " MaximumFrequency = " << MaximumFrequency << endl;
+					}
+					ConfigFile >> Buf;
+				}while((Buf != ";")&&(!ConfigFile.eof()));
+				cout.precision(15);
+				cout << "  + GWCusp   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+				cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << endl;
+				GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, tMax, Tpad));
+				NbSrc++;
+			}
+			if(scmp(Buf,"Mono")){
+				Readable = true;
+				//cout << "OG Monochromatique : " << endl; 
+				ConfigFile >> Buf;
+				double freq(0.0), hp(0.0), hc(0.0), Phi0hp(0.0), Phi0hc(0.0);
+				do{
+					if(scmp(Buf,"f")){
+						ConfigFile >> freq;
+						//cout << " Frequency = " << freq << endl;
+					}
+					if(scmp(Buf,"hp")){
+						ConfigFile >> hp;
+						//cout << " h+ = " << hp << endl;
+					}
+					if(scmp(Buf,"hc")){
+						ConfigFile >> hc;
+						//cout << " hx = " << hc << endl;
+					}
+					if(scmp(Buf,"Phi0hp")){
+						ConfigFile >> Phi0hp;
+						//cout << " Phi0hp = " << Phi0hp << endl;
+					}
+					if(scmp(Buf,"Phi0hc")){
+						ConfigFile >> Phi0hc;
+						//cout << " Phi0hc = " << Phi0hc << endl;
+					}
+					ConfigFile >> Buf;
+				}while((Buf != ";")&&(!ConfigFile.eof()));
+				cout.precision(15);
+				cout << "  + GWMono   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+				cout.precision(15);
+				cout << " f=" << freq << " hp=" << hp << " hc=" << hc << " Phi0hp=" << Phi0hp << " Phi0hc=" << Phi0hc << endl;
 				GWs.push_back(new GWMono(Beta, Lambda, Psi, freq, hp, hc, Phi0hp, Phi0hc));
 				NbSrc++;
 			}
-			// Stochastic gravitational wave
-			if(Buf == "Stochastic"){
+			// ** Stochastic gravitational wave
+			if(scmp(Buf,"Stochastic")){
 				Readable = true;
-				cout << "============   OG Stochastic : " << endl; 
+				//cout << "============   OG Stochastic : " << endl; 
 				ConfigFile >> Buf;
 				double hp_sto(0.0), hc_sto(0.0), Slope_sto(0.0), Fmin_sto(0.0), Fknee_sto(0.0);
 				// tFirst = tStepPhy ;
 				// tDurAdd = tStepPhy ; 
 				// Tsample_sto = tStepPhy ;
 				do{
-					if(Buf == "hp"){
+					if(scmp(Buf,"hp")){
 						ConfigFile >> hp_sto;
 						//cout << " h+ = " << hp << endl;
 					}
-					if(Buf == "hc"){
+					if(scmp(Buf,"hc")){
 						ConfigFile >> hc_sto;
 						//cout << " hx = " << hc << endl;
 					}
-					if(Buf == "Slope"){
+					if(scmp(Buf,"Slope")){
 						ConfigFile >> Slope_sto;
 						//cout << " Slope_sto = " << Slope_sto << endl;
 					}
-					if(Buf == "Fmin"){
+					if(scmp(Buf,"Fmin")){
 						ConfigFile >> Fmin_sto;
 						//cout << " Fmin_sto = " << Fmin_sto << endl;
 					}
-					if(Buf == "Fknee"){
+					if(scmp(Buf,"Fknee")){
 						ConfigFile >> Fknee_sto;
 						//cout << " Fknee_sto = " << Fknee_sto << endl;
 					}
 					ConfigFile >> Buf;
 				}while((Buf != ";")&&(!ConfigFile.eof()));
-				cout << "  +++ GW Stochastic : Beta,Lambda,hp,hc,Slope_sto,Fknee_sto,Fmin_sto = "<<endl <<NbSrc<<"   "<<MathUtils::rad2deg(Beta)<< "  " <<MathUtils::rad2deg(Lambda)<< "  " << hp_sto<< "  "<< hc_sto<< "  " <<Slope_sto<< "  " <<Fknee_sto<< "  " <<Fmin_sto<< endl ;
-				GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));
+				Beta = M_PI/2.-Beta ;  //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! a verifier modif_eric !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				cout << "  + GW Stochastic : " << NbSrc << " : Beta,Lambda,hp,hc,dt,Slope_sto,Fknee_sto,Fmin_sto =    " <<MathUtils::rad2deg(Beta)<< "  " <<MathUtils::rad2deg(Lambda)<< "  " << tStepPhy << "  " << hp_sto<< "  "<< hc_sto<< "  " <<Slope_sto<< "  " <<Fknee_sto<< "  " <<Fmin_sto<< endl ;
+				GWs.push_back(new GWSto(Beta,Lambda,tStepMes,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));
 				NbSrc++;
 			}
-			if(Buf == "PeriGate"){
+			if(scmp(Buf,"PeriGate")){
 				Readable = true;
 				//cout << "OG Porte periodique : " << endl; 
 				ConfigFile >> Buf;
 				double freq(0.0), hp(0.0), hc(0.0) ;
 				do{
-					if(Buf == "f"){
+					if(scmp(Buf,"f")){
 						ConfigFile >> freq;
 						//cout << " Frequency = " << freq << endl;
 					}
-					if(Buf == "hp"){
+					if(scmp(Buf,"hp")){
 						ConfigFile >> hp;
 						//cout << " h+ = " << hp << endl;
 					}
-					if(Buf == "hc"){
+					if(scmp(Buf,"hc")){
 						ConfigFile >> hc;
 						//cout << " hx = " << hc << endl;
 					}
@@ -733,49 +896,49 @@ void ConfigSim::ReadASCIIFile()
 				GWs.push_back(new GWPeriGate(Beta, Lambda, Psi, freq, hp, hc));
 				NbSrc++;
 			}			
-			// Binary gravitational wave
-			if(Buf == "Binary"){ 
+			// ** Binary gravitational wave
+			if(scmp(Buf,"Binary")){ 
 				Readable = true;
 				//cout << "OG Binaire : " << endl; 
 				ConfigFile >> Buf; // Lecture de :
 				double M1(0.5), M2(0.033), forb(1./1028.76), inc(1.53921), phi0(0.0), r(0.1); 
 				do{
-					if(Buf == "M1"){
+					if(scmp(Buf,"M1")){
 						ConfigFile >> M1;
 						//cout << " Masse 1 = " << M1 << endl;
 					}
-					if(Buf == "M2"){
+					if(scmp(Buf,"M2")){
 						ConfigFile >> M2;
 						//cout << " Masse 2 = " << M2 << endl;
 					}
-					if(Buf == "forb"){
+					if(scmp(Buf,"forb")){
 						ConfigFile >> forb;
 						//cout << " Frequence orbital = " << forb << endl;
 					}
-					if(Buf == "inc"){
+					if(scmp(Buf,"inc")){
 						double tmpAng(0.0);
 						ConfigFile >> tmpAng;
 						inc = MathUtils::deg2rad(tmpAng);
 						//cout << " Inclinaison = " << inc << endl;
 					}
-					if(Buf == "phi0"){
+					if(scmp(Buf,"phi0")){
 						ConfigFile >> phi0;
 						//cout << " Phase initial = " << phi0 << endl;
 					}
-					if(Buf == "r"){
+					if(scmp(Buf,"r")){
 						ConfigFile >> r;
 						//cout << " Distance = " << r << endl;
 					}			
 					ConfigFile >> Buf;
 				}while((Buf != ";")&&(!ConfigFile.eof()));
-				//cout.precision(15);
-				//cout << "GWBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-				//cout << " M1=" << M1 << " M2=" << M2 << " forb=" << forb << " inc=" << inc << " phi0=" << phi0 << " r=" << r << endl;
+				cout.precision(15);
+				cout << "  + GWBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+				cout << " M1=" << M1 << " M2=" << M2 << " forb=" << forb << " inc=" << inc << " phi0=" << phi0 << " r=" << r << endl;
 				GWs.push_back(new GWBinary(Beta, Lambda, Psi, M1, M2, forb, inc, phi0, r));
 				NbSrc++;
 			}
-			// Gravitational wave from a binary system compute at 1 or 2.5 PN
-			if(Buf == "PostNewtonBinary"){ 
+			// ** Gravitational wave from a binary system compute at 1 or 2.5 PN
+			if(scmp(Buf,"PostNewtonBinary")){ 
 				Readable = true;
 				//cout << "OG Binaire : " << endl; 
 				ConfigFile >> Buf; // Lecture de :
@@ -784,71 +947,231 @@ void ConfigSim::ReadASCIIFile()
 				double omega0(0.), taud0(0.), gw(1.);
 				do{
 					ConfigFile >> Buf;
-					if(Buf == "M1"){
+					if(scmp(Buf,"M1")){
 						ConfigFile >> M1;
 						//cout << " Masse 1 = " << M1 << endl;
 					}
-					if(Buf == "M2"){
+					if(scmp(Buf,"M2")){
 						ConfigFile >> M2;
 						//cout << " Masse 2 = " << M2 << endl;
 					}
-					if(Buf == "tcoal"){
+					if(scmp(Buf,"tcoal")){
 						ConfigFile >> tcoal;
 						//cout << " Frequence orbital = " << forb << endl;
 					}
-					if(Buf == "inc"){
+					if(scmp(Buf,"inc")){
 						double tmpAng(0.0);
 						ConfigFile >> tmpAng;
 						inc = MathUtils::deg2rad(tmpAng);
 						//cout << " Inclinaison = " << inc << endl;
 					}
-					if(Buf == "phase"){
+					if(scmp(Buf,"phase")){
 						ConfigFile >> phase;
 						//cout << " Phase initial = " << phi0 << endl;
 					}
-					if(Buf == "r"){
+					if(scmp(Buf,"r")){
 						ConfigFile >> dist;
 						//cout << " Distance = " << r << endl;
 					}
-					if(Buf == "type"){
+					if(scmp(Buf,"type")){
 						ConfigFile >> PNtype;
 						//cout << " type = " << PNtype << endl;
 						do{
 							ConfigFile >> Buf;
-							if(Buf == "omega0"){
+							if(scmp(Buf,"omega0")){
 								ConfigFile >> omega0;
 							}
-							if(Buf == "taud0"){
+							if(scmp(Buf,"taud0")){
 								ConfigFile >> taud0;
 							}
-							if(Buf == "gw"){
+							if(scmp(Buf,"gw")){
 								ConfigFile >> gw;
 							}
 						}while((Buf != ";")&&(!ConfigFile.eof()));
 					}
 				}while((Buf != ";")&&(!ConfigFile.eof()));
-				//cout.precision(15);
-				//cout << "GWPostNewtonBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-				//cout << " M1=" << M1 << " M2=" << M2 << " tcoal=" << tcoal << " inc=" << inc << " phase=" << phase << " dist=" << dist;
-				//cout << " type=" << PNtype << " omega0=" << omega0 << " taud0=" << taud0 << " gw=" << gw << endl;
+				cout.precision(15);
+				cout << "  + GWPostNewtonBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+				cout << " M1=" << M1 << " M2=" << M2 << " tcoal=" << tcoal << " inc=" << inc << " phase=" << phase << " dist=" << dist;
+				cout << " type=" << PNtype << " omega0=" << omega0 << " taud0=" << taud0 << " gw=" << gw << endl;
 				GWs.push_back(new GWNewton2(Beta, Lambda, Psi, PNtype, M1, M2, tcoal, inc, phase, dist, taud0, omega0, gw));
 				NbSrc++;
 			}
-			// Source dans un fichier
-			if(Buf == "File"){
-				char FileName[256];
+			// ** Gravitational wave from a binary system compute at 1 or 2.5 PN
+			if(scmp(Buf,"FastSpinBBH")){ 
+				Readable = true;
+				//cout << "OG Binaire : " << endl; 
+				ConfigFile >> Buf; // Lecture de :
+				double M1(1.0e6), M2(1.0e6), tcoal(600000.0), dist(1.0e6), phase(0.0);
+				double S1(0.7), S2(0.3), polS1(1.7), polS2(2.0), azS1(3.2), azS2(2.5), polL(2.0), azL(4.7);  
+				double AmplPNorder(0.0);
+				double GWTimeOffset(-2000.0);
+				do{
+					ConfigFile >> Buf;
+					if(scmp(Buf,"M1")){
+						ConfigFile >> M1;
+						//cout << " Masse 1 = " << M1 << endl;
+					}
+					if(scmp(Buf,"M2")){
+						ConfigFile >> M2;
+						//cout << " Masse 2 = " << M2 << endl;
+					}
+					if(scmp(Buf,"tcoal")){
+						ConfigFile >> tcoal;
+						//cout << " Frequence orbital = " << forb << endl;
+					}
+					if(scmp(Buf,"phase")){
+						ConfigFile >> phase;
+						//cout << " Phase initial = " << phi0 << endl;
+					}
+					if(scmp(Buf,"r")){
+						ConfigFile >> dist;
+						//cout << " Distance = " << r << endl;
+					}
+					if(scmp(Buf,"S1")){
+						ConfigFile >> S1;
+						//cout << " Spin1 S1 = " << S1 << endl;
+					}
+					if(scmp(Buf,"S2")){
+						ConfigFile >> S2;
+						//cout << " Spin1 S2 = " << S2 << endl;
+					}
+					if(scmp(Buf,"polS1")){
+						double tmpAng(0.0);
+						ConfigFile >> tmpAng;
+						polS1 = MathUtils::deg2rad(tmpAng);
+						//cout << " S1 polar angle = " << polS1 << " rd" << endl;
+					}
+					if(scmp(Buf,"polS2")){
+						double tmpAng(0.0);
+						ConfigFile >> tmpAng;
+						polS2 = MathUtils::deg2rad(tmpAng);
+						//cout << " S2 polar angle = " << polS2 << " rd" << endl;
+					}
+					if(scmp(Buf,"azS1")){
+						double tmpAng(0.0);
+						ConfigFile >> tmpAng;
+						azS1 = MathUtils::deg2rad(tmpAng);
+						//cout << " S1 azimuth = " << azS1 << " rd" << endl;
+					}
+					if(scmp(Buf,"azS2")){
+						double tmpAng(0.0);
+						ConfigFile >> tmpAng;
+						azS2 = MathUtils::deg2rad(tmpAng);
+						//cout << " S2 azimuth = " << azS2 << " rd" << endl;
+					}
+					if(scmp(Buf,"polL")){
+						double tmpAng(0.0);
+						ConfigFile >> tmpAng;
+						polL = MathUtils::deg2rad(tmpAng);
+						//cout << " Inclinaison = " << inc << endl;
+					}
+					if(scmp(Buf,"azL")){
+						double tmpAng(0.0);
+						ConfigFile >> tmpAng;
+						azL = MathUtils::deg2rad(tmpAng);
+						//cout << " Inclinaison = " << inc << endl;
+					}
+					if(scmp(Buf,"PN")){
+						ConfigFile >> AmplPNorder;
+						//cout << " type = " << PNtype << endl;
+					}
+					
+				}while((Buf != ";")&&(!ConfigFile.eof()));
+				cout.precision(15);
+				cout << "  + GWFastSpinBBH : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+				cout << " M1=" << M1 << " M2=" << M2 << " tcoal=" << tcoal << " phase=" << phase << " dist=" << dist << " AmpPN=" << AmplPNorder;
+				cout << " L0=(theta=" << polL << ",phi=" << azL << ") S1=" << S1 << "(" << polS1 << "," << azS1 << ") S2=" << S2 << "(" << polS2 << "," << azS2 << ")" << endl;
+				GWs.push_back(new GWFastSpinBBH(Beta, Lambda, M1, M2, tcoal, dist, S1, S2, polS1, polS2, azS1, azS2, phase, polL, azL, AmplPNorder, GWTimeOffset, tMax-GWTimeOffset, 7.0, 150.0, 6.0));
+				NbSrc++;
+			}
+			// ** Source dans un fichier
+			if(scmp(Buf,"File")){
+				char GWFileName[256];
+				int GWFileEncoding(0);
+				double GWTimeOffset(-1.0), GWTimeStep(-1.0);
+				int GWLength(100), GWRecords(2);
+				char *ptr;
+				
 				//cout << "OG Fichier : " << endl; 
 				ConfigFile >> Buf; // Lecture de :
-				ConfigFile >> FileName;
+				ConfigFile >> GWFileName; // Name of file
 				//cout << " Nom du fichier contenant l'onde = " << FileName << endl;
-				ConfigFile >> Buf; // Verifie si la syntaxe est bonne c-a-d le ;
+				
+				ptr=GWFileName+strlen(GWFileName);
+				if(strncmp(ptr-4,".xml",4)==0) {
+					int typedata;
+					// Binary file described in xml file
+					ezxml_t tree, section;
+					tree = ezxml_parse_file(GWFileName);
+					cout << "  Read GW (SampledPlaneWave) in XML file " << GWFileName << " : " << endl;
+					for (section = ezxml_child(tree, "XSIL"); section; section = section->next) {
+						if(strcmp(ezxml_attr(section,"Type"),"SourceData")==0){
+							ezxml_t source;
+							for (source = ezxml_child(section, "XSIL"); source; source = source->next) {
+								if(strcmp(ezxml_attr(source,"Type"),"SampledPlaneWave")==0){
+									ezxml_t filedata;
+									for (filedata = ezxml_child(source, "XSIL"); filedata; filedata = filedata->next) {
+										ezxml_t param ;
+										for(param = ezxml_child(filedata,"Param"); param; param = param->next){
+											if(strcmp(ezxml_attr(param,"Name"),"TimeOffset")==0)
+												GWTimeOffset = gXMLTime(param);
+											if(strcmp(ezxml_attr(param,"Name"),"Cadence")==0)
+												GWTimeStep = gXMLTime(param);
+										}
+										char * TmpFileName;
+										TmpFileName = gXMLTimeSeries(filedata, typedata, GWFileEncoding, GWLength, GWRecords);
+										strcpy(GWFileName,TmpFileName);
+									}
+								}else
+									throw invalid_argument("ConfigSim::ReadASCIIFile : Doesn't find SampledPlaneWave in informations of source !");
+							}
+						}else
+							throw invalid_argument("ConfigSim::ReadASCIIFile : Doesn't find SourceData in XML file !");
+					}
+					//cout << "   - TimeOffset   = " << GWTimeOffset  << " s" << endl;
+					//cout << "   - Cadence      = " << GWTimeStep  << " s" << endl;
+					//cout << "   - FileName     = " << GWFileName << endl;
+					//cout << "   - TypeData     = " << typedata << " o " << endl;
+					//cout << "   - Encoding     = " << GWFileEncoding << endl;
+					//cout << "   - Length       = " << GWLength << endl;
+					//cout << "   - Records      = " << GWRecords << endl;
+					ConfigFile >> Buf;
+				}else{
+					ConfigFile >> Buf;
+					if(scmp(Buf,"BINARY")){
+						// Binary file described in configuration file by the following parameters 
+						// (TimeOffset, Cadence, Length, Records[2 or 3])
+						GWFileEncoding = 1 ;
+						ConfigFile >> GWLength ;
+						ConfigFile >> GWRecords ;
+						ConfigFile >> GWTimeOffset;
+						ConfigFile >> GWTimeStep;
+						ConfigFile >> Buf;
+					}else{
+						if(scmp(Buf,"ASCII")){
+							ConfigFile >> GWTimeOffset;
+							ConfigFile >> GWTimeStep;
+							ConfigFile >> Buf;
+						}
+						// ASCII file with 3 records included time
+						GWFileEncoding = 0 ;
+					}
+				}
+				
 				if(Buf == ";"){
 					Readable = true;
 				}
 				cout.precision(15);
-				//cout << "GWFile   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-				//cout << " File=" << FileName << endl;
-				GWs.push_back(new GWFile(Beta, Lambda, Psi, FileName));
+				cout << "  + GWFile : Beta = " << Beta << " , Lambda = " << Lambda << " , Psi = " << Psi << " : " << GWFileName;
+				if(GWFileEncoding){
+					cout << ", BINARY , Offset = " << GWTimeOffset << " , TimeStep = " << GWTimeStep << " , GWLength = " << GWLength << " , GWRecords = " << GWRecords;
+				}else{
+					cout << ", ASCII,  Offset = " << GWTimeOffset << " , TimeStep = " << GWTimeStep;
+				}
+				cout << " : Load file ..."; fflush(stdout);
+				GWs.push_back(new GWFile(Beta, Lambda, Psi, GWFileName, GWFileEncoding, GWTimeOffset, GWTimeStep, GWLength, GWRecords));
+				cout << " --> OK" << endl;
 				NbSrc++;				
 			}
 		}
@@ -856,14 +1179,14 @@ void ConfigSim::ReadASCIIFile()
 		
 		
 		/* Informations sur les bruits 
-			------------------------------*/
-		if(Buf == "Noise"){ 
+		 ------------------------------*/
+		if(scmp(Buf,"Noise")){ 
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
 			int Index(0);
 			NoiseSpec tmp_noise;
 			// Lecture de l'element bruite
-			if(Buf == "Laser"){
+			if(scmp(Buf,"Laser")){
 				int iSC(0), IndDir(0);
 				//cout << " Laser de ";
 				ConfigFile >> iSC;
@@ -872,7 +1195,7 @@ void ConfigSim::ReadASCIIFile()
 				//cout << " Sens " << IndDir << " : ";
 				Index = iSC-1+3*IndDir;
 			}
-			if(Buf == "Shot"){
+			if(scmp(Buf,"Shot")){
 				int iSC(0), IndDir(0);
 				//cout << " Laser de ";
 				ConfigFile >> iSC;
@@ -881,7 +1204,7 @@ void ConfigSim::ReadASCIIFile()
 				//cout << " Sens " << IndDir << " : ";
 				Index = iSC-1+3*IndDir+6;
 			}
-			if(Buf == "OOPN"){
+			if(scmp(Buf,"OOPN")){
 				int iSC(0), IndDir(0);
 				//cout << " Laser de ";
 				ConfigFile >> iSC;
@@ -890,7 +1213,7 @@ void ConfigSim::ReadASCIIFile()
 				//cout << " Sens " << IndDir << " : ";
 				Index = iSC-1+3*IndDir+6;
 			}
-			if(Buf == "Mass"){
+			if(scmp(Buf,"Mass")){
 				int iSC(0), IndDir(0);
 				//cout << " Laser de ";
 				ConfigFile >> iSC;
@@ -899,7 +1222,7 @@ void ConfigSim::ReadASCIIFile()
 				//cout << " Sens " << IndDir << " : ";
 				Index = iSC-1+3*IndDir+12;
 			}
-			if(Buf == "Bench"){
+			if(scmp(Buf,"Bench")){
 				int iSC(0), IndDir(0);
 				//cout << " Laser de ";
 				ConfigFile >> iSC;
@@ -914,30 +1237,31 @@ void ConfigSim::ReadASCIIFile()
 				throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the noise !");
 			}
 			ConfigFile >> Buf;
-			if(Buf == "White"){
+			if(scmp(Buf,"White")){
 				double SqPSD(0.0);
-                //cout << "Bruit blanc ";
-                ConfigFile >> SqPSD;
-                //cout << " de SqPSD = " << SqPSD << endl;
+				//cout << "Bruit blanc ";
+				ConfigFile >> SqPSD;
+				//cout << " de SqPSD = " << SqPSD << endl;
 				//tmp_noise = new NoiseWhite(tStepPhy, tStepMes, tMemNoiseFirst, tMemNoiseLast, SqPSD);
 				tmp_noise.NType = 1;
 				tmp_noise.NVal0=SqPSD;
 				ConfigFile >> Buf;
 			}
-			if(Buf == "File"){
+			if(scmp(Buf,"File")){
 				tmp_noise.NType = 2;
-				ConfigFile >> tmp_noise.NStr;
+				ConfigFile >> tmp_noise.NStr;  // File name
+				ConfigFile >> tmp_noise.NVal0; // Multiplication factor
 				//cout << "NoiseInFile File Name = " << FileNoiseName << endl;
 				//tmp_noise = new NoiseFile(tStepPhy, tStepMes, tMemNoiseFirst, tMemNoiseLast, FileNoiseName);
 				ConfigFile >> Buf;
 			}
-			if(Buf == "FilterCoef"){
+			if(scmp(Buf,"FilterCoef")){
 				tmp_noise.NType = 3;
-                //cout << "Bruit filtrer ";
-                ConfigFile >> Buf; // Lecture de :
+				//cout << "Bruit filtrer ";
+				ConfigFile >> Buf; // Lecture de :
 				ConfigFile >> Buf; 
 				do{
-					if(Buf == "alpha"){
+					if(scmp(Buf,"alpha")){
 						do{
 							double tmp_coef(0.0);
 							ConfigFile >> tmp_coef;
@@ -945,7 +1269,7 @@ void ConfigSim::ReadASCIIFile()
 							ConfigFile >> Buf;
 						}while(Buf == ",");
 					}
-					if(Buf == "beta"){
+					if(scmp(Buf,"beta")){
 						do{
 							double tmp_coef(0.0);
 							ConfigFile >> tmp_coef;
@@ -954,7 +1278,7 @@ void ConfigSim::ReadASCIIFile()
 							ConfigFile >> Buf;
 						}while(Buf == ",");
 					}
-					if(Buf == "stablization"){
+					if(scmp(Buf,"stablization")){
 						ConfigFile >> tmp_noise.NVal0;
 						ConfigFile >> Buf;
 					}
@@ -962,37 +1286,37 @@ void ConfigSim::ReadASCIIFile()
 			}
 			
 			
-			if(Buf == "Filter_1of"){
+			if(scmp(Buf,"Filter_1of")){
 				tmp_noise.NType = 4;
 				ConfigFile >> tmp_noise.NVal0; //Level
 				ConfigFile >> Buf;
 			}
-			if(Buf == "Filter_f"){
+			if(scmp(Buf,"Filter_f")){
 				tmp_noise.NType = 5;
 				ConfigFile >> tmp_noise.NVal0; //Level
 				ConfigFile >> Buf;
 			}
-			if(Buf == "Filter_fLosP"){
+			if(scmp(Buf,"Filter_fLosP")){
 				tmp_noise.NType = 6;
 				ConfigFile >> tmp_noise.NVal0; //Level
 				ConfigFile >> Buf;
 			}
-			if(Buf == "Filter_MLDC_IM"){
+			if(scmp(Buf,"Filter_MLDC_IM")){
 				tmp_noise.NType = 7;  // new number
 				ConfigFile >> tmp_noise.NVal0; // Level of 1/f
 				ConfigFile >> tmp_noise.NVal01; // Frequency at which 1/f becomes 1/f^2
 				ConfigFile >> Buf;
 			}
 			/*
-			if(Buf == "Filter_Sto"){
-				tmp_noise.NType = 8;  // new number
-				ConfigFile >> tmp_noise.NVal0; // parametre a definir
-				ConfigFile >> Slope_ep; // parametre a definir
-				ConfigFile >> Tsample_ep; // parametre a definir
-				ConfigFile >> Fknee_ep; // parametre a definir
-				ConfigFile >> Fmin_ep; // parametre a definir
-				ConfigFile >> Buf;
-			}*/
+			 if(scmp(Buf,"Filter_Sto")){
+			 tmp_noise.NType = 8;  // new number
+			 ConfigFile >> tmp_noise.NVal0; // parametre a definir
+			 ConfigFile >> Slope_ep; // parametre a definir
+			 ConfigFile >> Tsample_ep; // parametre a definir
+			 ConfigFile >> Fknee_ep; // parametre a definir
+			 ConfigFile >> Fmin_ep; // parametre a definir
+			 ConfigFile >> Buf;
+			 }*/
 			
 			if(Buf == ";"){
 				//cout << "Add noise in " << Index << endl;
@@ -1005,29 +1329,29 @@ void ConfigSim::ReadASCIIFile()
 		
 		
 		/* Informations sur les USO Clocks
-			------------------------------*/
-		if(Buf == "USO"){
+		 ------------------------------*/
+		if(scmp(Buf,"USO")){
 			int iSC(0);
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
-			if(Buf == "SC")
+			if(scmp(Buf,"SC"))
 				ConfigFile >> iSC;
-			cout << " Make USO " << iSC << " :" << endl;
+			cout << "  x Make USO " << iSC << " :" << endl;
 			if((iSC<1)||(iSC>3))
 				throw invalid_argument("ConfigSim::ReadFile : The spacecraft number must be 1, 2 or 3 !");
 			Readable = true;
 			ConfigFile >> Buf;
 			double USOOffset(0.0), USODerivs(0.0), USONoise(0.0) ;
 			do{
-				if(Buf == "offset"){
+				if(scmp(Buf,"offset")){
 					ConfigFile >> USOOffset;
 					//cout << " offset = " << USOOffset << endl;
 				}
-				if(Buf == "derivs"){
+				if(scmp(Buf,"derivs")){
 					ConfigFile >> USODerivs;
 					//cout << " derivs = " << USODerivs << endl;
 				}
-				if(Buf == "noise"){
+				if(scmp(Buf,"noise")){
 					ConfigFile >> USONoise;
 					//cout << " USONoise = " << USONoise << endl;
 				}
@@ -1038,38 +1362,46 @@ void ConfigSim::ReadASCIIFile()
 		
 		
 		/* Informations about TDI generator
-			---------------------------------------*/
-		if(Buf == "TDI"){
+		 ---------------------------------------*/
+		if(scmp(Buf,"TDI")){
 			char generatorname[256];
 			vector<int> tmp_TDIPacks;
+			vector<double> tmp_TDIPacksFact;
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> generatorname;
 			bool UnKnowTDI(true);
 			
-			// Search if TDI generator is predifined
-			UnKnowTDI = FindTDIName(generatorname, tmp_TDIPacks);
+			// *** Search if TDI generator is predifined
+			UnKnowTDI = FindTDIName(generatorname, tmp_TDIPacks, tmp_TDIPacksFact);
 			
-			// Read unknow TDI generator
+			// *** Read unknow TDI generator
 			if(UnKnowTDI){
-				cout << " TDI " << generatorname << " : Read package ... " ;
+				cout << "  o TDI " << generatorname << " : Read package ... " ;
+				// ** Read all packs
 				do{
 					int tmp_pack;
+					double tmp_Fact(1.0);
+					// * Read one packs
 					ConfigFile >> tmp_pack;
-					//cout << " Pack " << tmp_pack;
 					tmp_TDIPacks.push_back(tmp_pack);
 					ConfigFile >> Buf;
+					// * Count the number of delays and store as NbMaxDelays if the number of delays higher than the previous NbMaxDelays
 					int NbDelays(0);
 					while(!((double)(tmp_pack/pow(10.0,NbDelays))<1.0)){
-						//cout << "tmp_pack = " << tmp_pack << " et pow(10,NbDelays) = " << pow(10,NbDelays) << endl;
 						NbDelays++;
 					}
-					//cout << "NbMaxDelays = " << NbMaxDelays << endl;
 					if(NbDelays-1>NbMaxDelays)
 						NbMaxDelays = NbDelays-1;
+					// * Read factor if it's exist
+					if(scmp(Buf,"x")){
+						ConfigFile >> tmp_Fact;
+						ConfigFile >> Buf;
+					}
+					tmp_TDIPacksFact.push_back(tmp_Fact);
 				}while(Buf == ",");
 				cout << " --> OK !" <<  endl;
 			}else{
-				cout << " TDI " << generatorname << " is predefined generator : Packs isn't readed." << endl;
+				cout << "  o TDI " << generatorname << " is predefined generator : Packs isn't readed." << endl;
 				do{
 					ConfigFile >> Buf;
 				}while((Buf != ";")&&(!ConfigFile.eof()));
@@ -1080,14 +1412,14 @@ void ConfigSim::ReadASCIIFile()
 			
 			TDIsName.push_back(generatorname);
 			TDIsPacks.push_back(tmp_TDIPacks);
-			
-			
+			TDIsPacksFact.push_back(tmp_TDIPacksFact);
 		}
 		
 		
+		
 		/* Read end of configuration's file
-			---------------------------------------*/
-		if(Buf == "END"){
+		 ---------------------------------------*/
+		if(scmp(Buf,"END")){
 			ContinueRead = false;
 			Readable = true;
 		}
@@ -1095,7 +1427,7 @@ void ConfigSim::ReadASCIIFile()
 		
 		// Control if there is a good reading
 		if(!Readable){
-            cerr << "Error in file " <<  ConfigFileName << " , command " << nReadCmd << " : " << Buf << endl;
+			cerr << "Error in file " <<  ConfigFileName << " , command " << nReadCmd << " : " << Buf << endl;
 			throw invalid_argument("ConfigSim::ReadFile : No readable string !");
 			exit(1);
 		}
@@ -1113,27 +1445,40 @@ void ConfigSim::ReadASCIIFile()
 	NoisesCreation();
 	
 	// Display of TDI generators
+	cout << "  ----------" << endl;
 	for(int i=0; i<TDIsName.size(); i++){
-		cout << TDIsName[i] << " :";
-		for(int j=0; j<TDIsPacks[i].size(); j++)
+		cout << "  " << TDIsName[i] << " :";
+		for(int j=0; j<TDIsPacks[i].size(); j++){
 			cout << " " << (TDIsPacks[i])[j];
+			if(fabs((TDIsPacksFact[i])[j]-1.0) > PRECISION)
+				cout << "*" << (TDIsPacksFact[i])[j];
+		}
 		cout << endl;
 	}
-	cout << endl << " ----------" << endl;
-	cout << " Sources number = " << NbSrc << endl;
-	cout << " tStepPhy       = " << tStepPhy << " s" << endl;
-	cout << " tStepMes       = " << tStepMes << " s" << endl;
-	cout << " tDeltaTDIDelay = " << tDeltaTDIDelay << " s" << endl;
-	cout << " NbMaxDelays    = " << NbMaxDelays << endl;
-	cout << " InterpUtilVal  = " << TDIInterpUtilVal << endl;
+	
+	// ** Default value for display time step
+	if(tDisplay<0.0)
+		tDisplay = tMax/1000.0;
+	
+	cout << "  ----------" << endl;
+	cout << "  Sources number = " << NbSrc << endl;
+	cout << "  tStepPhy       = " << tStepPhy << " s" << endl;
+	cout << "  tStepMes       = " << tStepMes << " s" << endl;
+	cout << "  tDeltaTDIDelay = " << tDeltaTDIDelay << " s" << endl;
+	cout << "  tStepDisplay   = " << tDisplay << " s" << endl;
+	cout << "  NbMaxDelays    = " << NbMaxDelays << endl;
+	cout << "  InterpUtilVal  = " << TDIInterpUtilVal << endl;
+	cout << "  Orbits type    = " << OrbType << endl;
+	cout << "  Orbits approx  = " << OrbApprox << endl;
+	cout << "  Delay order    = " << OrbOrder << endl; 
 	
 	/*	for(int i=0; i<3; i++){
-		cout << " - USO " << i+1 << " : offset = " <<  USOs[i].getOffset();
-	cout << " , derivs = " << USOs[i].getDeriv() << " , noise = " << USOs[i].getNoise() << endl;	
-	}
-*/
+	 cout << " - USO " << i+1 << " : offset = " <<  USOs[i].getOffset();
+	 cout << " , derivs = " << USOs[i].getDeriv() << " , noise = " << USOs[i].getNoise() << endl;	
+	 }
+	 */
 	
-    ConfigFile.close();
+	ConfigFile.close();
 }
 
 /*************** XML Configuration File */
@@ -1171,18 +1516,18 @@ void ConfigSim::ReadXMLFile()
 		tree = ezxml_parse_file(ConfigFileName);
 		
 		for (head = ezxml_child(tree, "Param") ; head ; head=head->next){
-		
-		  if(strcmp(ezxml_attr(head, "Name"),"Author")==0){
-		    Author = gXMLstring(head);
-		  }
-		  if(strcmp(ezxml_attr(head,"Name"),"Simulator")==0){
-		    Simulator = gXMLstring(head);
-		  }
-		  if(strcmp(ezxml_attr(head,"Name"),"GenerationDate")==0){
-		    GenerationDate = gXMLstring(head);
-		    GenerationType = ezxml_attr(head,"Type");
-		    cout << " - Type = "<< GenerationType << endl ;
-		  }
+			
+			if(strcmp(ezxml_attr(head, "Name"),"Author")==0){
+				Author = gXMLstring(head);
+			}
+			if(strcmp(ezxml_attr(head,"Name"),"Simulator")==0){
+				Simulator = gXMLstring(head);
+			}
+			if(strcmp(ezxml_attr(head,"Name"),"GenerationDate")==0){
+				GenerationDate = gXMLstring(head);
+				GenerationType = ezxml_attr(head,"Type");
+				cout << " - Type = "<< GenerationType << endl ;
+			}
 		}
 		//modif E.P.
 		for (section = ezxml_child(tree, "XSIL"); section; section = section->next) {
@@ -1193,463 +1538,259 @@ void ConfigSim::ReadXMLFile()
 			/* Read General Data */
 			/******************/
 			/*if(strcmp(type,"General")==0){
-				ezxml_t param;
-				string str_xml;
-				//string Author,GenerationDate,GenerationType; 
-				double val ;
-				cout << "Section : "<< type  << endl ;
-				for(param = ezxml_child(section,"Param"); param; param = param->next){
-					if(strcmp(ezxml_attr(param,"Name"),"Author")==0){
-						Author = gXMLstring(param);
-					}
-					if(strcmp(ezxml_attr(param,"Name"),"Simulator")==0){
-						Simulator = gXMLstring(param);
-					}
-					if(strcmp(ezxml_attr(param,"Name"),"GenerationDate")==0){
-						GenerationDate = gXMLstring(param);
-						GenerationType = ezxml_attr(param,"Type");
-						cout << " - Type = "<< GenerationType << endl ;
-					}
-				}
-				//throw invalid_argument("Section : General : Stop") ;
-				}*/
+			 ezxml_t param;
+			 string str_xml;
+			 //string Author,GenerationDate,GenerationType; 
+			 double val ;
+			 cout << "Section : "<< type  << endl ;
+			 for(param = ezxml_child(section,"Param"); param; param = param->next){
+			 if(strcmp(ezxml_attr(param,"Name"),"Author")==0){
+			 Author = gXMLstring(param);
+			 }
+			 if(strcmp(ezxml_attr(param,"Name"),"Simulator")==0){
+			 Simulator = gXMLstring(param);
+			 }
+			 if(strcmp(ezxml_attr(param,"Name"),"GenerationDate")==0){
+			 GenerationDate = gXMLstring(param);
+			 GenerationType = ezxml_attr(param,"Type");
+			 cout << " - Type = "<< GenerationType << endl ;
+			 }
+			 }
+			 //throw invalid_argument("Section : General : Stop") ;
+			 }*/
 			// fin modif E.P.
-			/******************/
+			/**********************/
 			/* Read Simulate Data */
-			/******************/
+			/**********************/
 			if(strcmp(type,"Simulate")==0){
-				ezxml_t simulate,param;
+				ezxml_t param;
 				//vector<int> tmp_TDIPacks;
 				string str_xml;
-				double val ;
-				int loc_tdi;
+				int loc_tdi_start, loc_tdi_end;
 				bool UnKnowTDI(true);
 				cout << "Section : "<< type  << endl ;
 				for(param = ezxml_child(section,"Param"); param; param = param->next){
+					// Set time offset
 					if(strcmp(ezxml_attr(param,"Name"),"TimeOffset")==0){
 						TimeOffset = gXMLTime(param);
 					}
+					// Set time step of measurement
 					if(strcmp(ezxml_attr(param,"Name"),"Cadence")==0){
 						tStepMes = gXMLTime(param);
 					}
+					// Set duration
 					if(strcmp(ezxml_attr(param,"Name"),"Duration")==0){
 						tMax = gXMLTime(param);
 					}
-					if(strcmp(ezxml_attr(param,"Name"),"Observables")==0){
-						TDIParamName = gXMLstring(param) ; // Type ?? TDINameType
-						loc_tdi = TDIParamName.find( "Xf,", 0 );
-						if(loc_tdi > 0){
-						  vector<int> tmp_TDIPacks;
-						  //UnKnowTDI = FindTDIName("Xf", tmp_TDIPacks);
-						  UnKnowTDI = FindTDIName("Xf", tmp_TDIPacks);
-						  if(UnKnowTDI){
-						    cout << " --> Sorry, it is not known !" << endl;
-						  }else{
-						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Xf");
-						    TDIsPacks.push_back(tmp_TDIPacks);
-						  cout << " TDI Xf is calculated" <<endl;
-						  }
-						}
-						loc_tdi = TDIParamName.find( "Yf,", 0 );
-						if(loc_tdi > 0){
-						vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Yf", tmp_TDIPacks);
-						  if(UnKnowTDI){
-						    cout << " --> Sorry, it is not known !" << endl;
-						  }else{
-						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Yf");
-						    TDIsPacks.push_back(tmp_TDIPacks);
-						  cout << " TDI Yf is calculated" <<endl;
-						  }
-						}
-						loc_tdi = TDIParamName.find( "Zf,", 0 );
-						if(loc_tdi > 0){
-						  vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Zf", tmp_TDIPacks);
-						  if(UnKnowTDI){
-						    cout << " --> Sorry, it is not known !" << endl;
-						  }else{
-						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Zf");
-						    TDIsPacks.push_back(tmp_TDIPacks);
-						  cout << " TDI Zf is calculated" <<endl;
-						  }
-						}
-						loc_tdi = TDIParamName.find( "Xf2", 0 );
-						if(loc_tdi > 0){
-						  vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Xf2", tmp_TDIPacks);
-						  if(UnKnowTDI){
-						    cout << " --> Sorry, it is not known !" << endl;
-						  }else{
-						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Xf2");
-						    TDIsPacks.push_back(tmp_TDIPacks);
-						  cout << " TDI Xf2 is calculated" <<endl;
-						  }
-						}
-						loc_tdi = TDIParamName.find( "Yf2", 0 );
-						if(loc_tdi > 0){
-						  vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Yf2", tmp_TDIPacks);
-						  if(UnKnowTDI){
-						    cout << " --> Sorry, it is not known !" << endl;
-						  }else{
-						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Yf2");
-						    TDIsPacks.push_back(tmp_TDIPacks);
-						  cout << " TDI Yf2 is calculated" <<endl;
-						  }
-						}
-						loc_tdi = TDIParamName.find( "Zf2", 0 );
-						if(loc_tdi > 0){
-						  vector<int> tmp_TDIPacks;
-						  UnKnowTDI = FindTDIName("Zf2", tmp_TDIPacks);
-						  if(UnKnowTDI){
-						    cout << " --> Sorry, it is not known !" << endl;
-						  }else{
-						    //cout << "genname ="<<genname<< endl;
-						    TDIsName.push_back("Zf2");
-						    TDIsPacks.push_back(tmp_TDIPacks);
-						  cout << " TDI Zf2 is calculated" <<endl;
-						  }
-						}
-						//throw ;
+					// **** Set used TDI generators ****
+					if(strcmp(ezxml_attr(param,"Name"),"Observables")==0){					
+						// ** Extract string which contains TDI generator list (and others outputs as phasemeters)
+						TDIParamName = gXMLstring(param) ; // Type string
+						loc_tdi_start = 0;
+						do{
+							char generatorname[64];
+							vector<int> tmp_TDIPacks;
+							vector<double> tmp_TDIPacksFact;
+							loc_tdi_start = TDIParamName.find( ",", loc_tdi_start+1 );
+							if(loc_tdi_start > 0){
+								loc_tdi_end = TDIParamName.find( ",", loc_tdi_start+1 );
+								if(loc_tdi_end<0) // Last generator
+									loc_tdi_end = TDIParamName.length();
+								TDIParamName.copy(generatorname,loc_tdi_end-loc_tdi_start-1,loc_tdi_start+1);
+								generatorname[loc_tdi_end-loc_tdi_start-1] = '\0';
+								//cout << loc_tdi_start << " -> " << loc_tdi_end << " : " << loc_tdi_end-loc_tdi_start-1 << " : " << generatorname << endl; 
+								UnKnowTDI = FindTDIName(generatorname, tmp_TDIPacks, tmp_TDIPacksFact);
+								cout << "   o TDI " << generatorname; 
+								if(UnKnowTDI){
+									if((strcmp(generatorname,"y231")==0)||(strcmp(generatorname,"y321")==0)||
+									   (strcmp(generatorname,"z231")==0)||(strcmp(generatorname,"z321")==0)||
+									   (strcmp(generatorname,"y312")==0)||(strcmp(generatorname,"y132")==0)||
+									   (strcmp(generatorname,"z312")==0)||(strcmp(generatorname,"z132")==0)||
+									   (strcmp(generatorname,"y123")==0)||(strcmp(generatorname,"y213")==0)||
+									   (strcmp(generatorname,"z123")==0)||(strcmp(generatorname,"z213")==0))
+										cout << " --> Phasemeter data are not manage here." << endl;
+									else
+										cout << " --> Sorry, it is not known !" << endl;
+								}else{
+									TDIsName.push_back(generatorname);
+									TDIsPacks.push_back(tmp_TDIPacks);
+									TDIsPacksFact.push_back(tmp_TDIPacksFact);
+									cout << " --> OK " << endl;
+								}
+							} 
+						}while(loc_tdi_start > 0);  
 					}
+					
 					if(strcmp(ezxml_attr(param,"Name"),"OutputFile")==0){
-					  strcpy(XmlOutputFile,gXMLWord(param)) ;
+						strcpy(XmlOutputFile,gXMLWord(param)) ;
 					}
 				}
 				//throw invalid_argument("Section : Simulate : Stop") ;
 			}
 			
-			/******************/
-			/* Read LISACode Data */
-			/******************/
+			// **********************
+			// * Read LISACode Data *
+			// **********************
 			if(strcmp(type,"LISACode")==0){
-			  ezxml_t param;
-			  ezxml_t lisacode0;
-			  const char * lisacode0type;
-			  int Seed_MLDC;
-			  cout << "Section : LISACode " << endl ;
-			  for(param = ezxml_child(section,"Param"); param; param = param->next){
-			    if(strcmp(ezxml_attr(param,"Name"),"GlobalRandomSeed")==0)
-			      GlobalRandomSeed = gXMLint(param);
-			    if(strcmp(ezxml_attr(param,"Name"),"StepPhysic")==0)
-			      tStepPhy = gXMLTime(param);
-			    if(strcmp(ezxml_attr(param,"Name"),"StepMeasure")==0)
-			      tStepMes = gXMLTime(param);
-			    if(strcmp(ezxml_attr(param,"Name"),"Max")==0)
-			      tMax = gXMLTime(param);
-			    if(strcmp(ezxml_attr(param,"Name"),"DeltaTDIDelay")==0)
-			      tDeltaTDIDelay = gXMLTime(param);
-			    if(strcmp(ezxml_attr(param,"Name"),"StepDisplay")==0)
-			      tDisplay = gXMLTime(param);
-			    
-			  }  // all parameters are read
-			  //throw invalid_argument("Section : LISACode : Stop") ;
-			  
-			  for (lisacode0 = ezxml_child(section, "XSIL"); lisacode0; lisacode0 = lisacode0->next) {
-			    lisacode0type = ezxml_attr(lisacode0,"Type");
-			    cout << "  Subsection : " << lisacode0type << endl;
-			    // Read OutputData  (modif E.P.)
-			    //if((strcmp(lisacode0type,"OutputData"))||(strcmp(lisacode0type,"OutputFiles"))==0){
-			    if((strcmp(lisacode0type,"OutputData")==0)||(strcmp(lisacode0type,"OutputFiles")==0)){
-			      //ezxml_t param;
-			      for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
-				if(strcmp(ezxml_attr(param,"Name"),"SignalSC1")==0){
-				  strcpy(FileNameSigSC1,gXMLWord(param));
-				  cout << "   - filename = " << FileNameSigSC1 ;
-				  //throw ;
-				  FileEncodingSC1 = 0;
-				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-				    FileEncodingSC1 = 1 ;}
-				  cout << "   - Encoding = " << FileEncodingSC1  << endl;
-				}
-				//}
-				if(strcmp(ezxml_attr(param,"Name"),"SignalSC2")==0){
-				  strcpy(FileNameSigSC2,gXMLWord(param));
-				  cout << "   - filename = " << FileNameSigSC2 ;
-				  //throw ;
-				  FileEncodingSC2 = 0;
-				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-				    FileEncodingSC2 = 1;}
-				  cout << "   - Encoding = " << FileEncodingSC2  << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"SignalSC3")==0){
-				  strcpy(FileNameSigSC3,gXMLWord(param));
-				  cout << "   - filename = " << FileNameSigSC3 ;
-				  //throw ;
-				  FileEncodingSC3 = 0;
-				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-				    FileEncodingSC3 = 1 ;}
-				  cout << "   - Encoding = " << FileEncodingSC3  << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"TDI")==0){
-				  strcpy(FileNameTDI,gXMLWord(param));
-				  cout << "   - filename = " << FileNameTDI ;
-				  //throw ;
-				  FileEncodingTDI = 0;
-				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-				    FileEncodingTDI = 1 ;}
-				  cout << "   - Encoding = " <<  FileEncodingTDI << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"Delay")==0){
-				  strcpy(FileNameDelays,gXMLWord(param));
-				  cout << "   - filename = " << FileNameDelays ;
-				  //throw ;
-				  FileEncodingDelays = 0;
-				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-				    FileEncodingDelays = 1 ;}
-				  cout << "   - Encoding = " << FileEncodingDelays << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"Position")==0){
-				  strcpy(FileNamePositions,gXMLWord(param));
-				  cout << "   - filename = " << FileNamePositions ;
-				  //throw ;
-				  FileEncodingPos = 0;
-				  if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-				    FileEncodingPos = 1 ;}
-				  cout << "   - Encoding = " << FileEncodingPos  << endl;
-				}
-			      }
-			    }// End of Read OutputData  (modif E.P.)
-			    // Read Detector Data
-			    if(strcmp(ezxml_attr(lisacode0,"Type"),"Detector")==0){
-			      //ezxml_t param;
-			      for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
-				if(strcmp(ezxml_attr(param,"Name"),"LaserPower")==0){
-				  LaserPower = atof(ezxml_txt(param));
-				  //throw ;
-				  if(strcmp(ezxml_attr(param,"Unit"),"Watt")!=0)
-				    throw invalid_argument("ConfigSim::ReadXMLFile : The lasers' power unit isn't known (only Watt) !");
-				  cout << " - LaserPower = " << LaserPower << " W" << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"PhaMetFilter")==0){										  //if(strcmp(ezxml_txt(param),"On")==0){
-				  if(gXMLstring(param) == "On"){
-				    PhaMetFilterON = true;
-				  }else{ 
-				    if(gXMLstring(param) == "Off"){
-				      PhaMetFilterON = false;
-				    }else{
-				      throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the PhaMetFilterON  specification (ON or OFF) !");
-				    }
-				  }
-				  cout << " - Phasemeter filter = " << PhaMetFilterON << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"PMFAttenuation")==0){
-				  PhaMetFilterParam[0] = atof(ezxml_txt(param));
-				  if(strcmp(ezxml_attr(param,"Unit"),"dB")!=0)
-				    throw invalid_argument("ConfigSim::ReadXMLFile : The attenuation unit isn't known (only dB) !");
-				  cout << " - PMFilter : Attenuation = " << PhaMetFilterParam[0] << " dB" << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"PMFOscillation")==0){
-				  PhaMetFilterParam[1] = atof(ezxml_txt(param));
-				  if(strcmp(ezxml_attr(param,"Unit"),"dB")!=0)
-				    throw invalid_argument("ConfigSim::ReadXMLFile : The oscillation unit isn't known (only dB) !");
-				  cout << " - PMFilter : Oscillation = " << PhaMetFilterParam[1] << " dB" << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"PMFLowFreqFact")==0){
-				  PhaMetFilterParam[2] = atof(ezxml_txt(param));
-				  cout << " - PMFilter : Low Frequency factor of sample frequency = " << PhaMetFilterParam[2] << endl;
-				}
-				if(strcmp(ezxml_attr(param,"Name"),"PMFHighFreqFact")==0){
-				  PhaMetFilterParam[3] = atof(ezxml_txt(param));
-				  cout << " - PMFilter : High Frequency factor of sample frequency = " << PhaMetFilterParam[3] << endl;
-				}
-			      }
-			    }
-			  }
-			  //throw;
-			}
-			/******************/
-			/* Read LISA Data */
-			/******************/
-			if(strcmp(type,"LISAData")==0){
-				ezxml_t lisadata;
-				const char * lisadatatype; 
-				for (lisadata = ezxml_child(section, "XSIL"); lisadata; lisadata = lisadata->next) {
-					lisadatatype = ezxml_attr(lisadata,"Type");
-					cout << "LISAData : " << lisadatatype << endl;
+				ezxml_t param;
+				ezxml_t lisacode0;
+				const char * lisacode0type;
+				cout << "Section : LISACode " << endl ;
+				for(param = ezxml_child(section,"Param"); param; param = param->next){
+					if(strcmp(ezxml_attr(param,"Name"),"GlobalRandomSeed")==0)
+						GlobalRandomSeed = gXMLint(param);
+					if(strcmp(ezxml_attr(param,"Name"),"StepPhysic")==0)
+						tStepPhy = gXMLTime(param);
+					if(strcmp(ezxml_attr(param,"Name"),"StepMeasure")==0)
+						tStepMes = gXMLTime(param);
+					if(strcmp(ezxml_attr(param,"Name"),"Max")==0)
+						tMax = gXMLTime(param);
+					if(strcmp(ezxml_attr(param,"Name"),"DeltaTDIDelay")==0)
+						tDeltaTDIDelay = gXMLTime(param);
+					if(strcmp(ezxml_attr(param,"Name"),"StepDisplay")==0)
+						tDisplay = gXMLTime(param);
 					
-					/*************** Read LISACode XML File ***************/
+				}  // all parameters are read
+				//throw invalid_argument("Section : LISACode : Stop") ;
+				
+				for (lisacode0 = ezxml_child(section, "XSIL"); lisacode0; lisacode0 = lisacode0->next) {
+					lisacode0type = ezxml_attr(lisacode0,"Type");
+					cout << "  Subsection : " << lisacode0type << endl;
 					
-					// Read Time Data
-					if(strcmp(ezxml_attr(lisadata,"Type"),"Time")==0){
-						ezxml_t param;
-						for(param = ezxml_child(lisadata,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"StepPhysic")==0)
-								tStepPhy = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"StepMeasure")==0)
-								tStepMes = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Max")==0)
-								tMax = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"DeltaTDIDelay")==0)
-								tDeltaTDIDelay = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"StepDisplay")==0)
-								tDisplay = gXMLTime(param);
-						}
-					}
 					
-					// Read Interpolation Data
-					if(strcmp(ezxml_attr(lisadata,"Type"),"Interpolation")==0){
-						ezxml_t param;
-						for(param = ezxml_child(lisadata,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"InterpType")==0){
-								if(strcmp(ezxml_txt(param),"LAG")){
-									TDIInterp = LAG;
+					// **** Read OutputData **** //
+					if((strcmp(lisacode0type,"OutputData")==0)||(strcmp(lisacode0type,"OutputFiles")==0)){
+						for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
+							if(strcmp(ezxml_attr(param,"Name"),"SignalSC1")==0){
+								strcpy(FileNameSigSC1,gXMLWord(param));
+								cout << "   x filename = " << FileNameSigSC1 ;
+								//throw ;
+								FileEncodingSC1 = 0;
+								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+									FileEncodingSC1 = 1 ;
 								}
+								cout << "   --> Encoding = " << FileEncodingSC1  << endl;
 							}
-							if(strcmp(ezxml_attr(param,"Name"),"InterpValue")==0){
-								TDIInterpUtilVal = atoi(ezxml_txt(param));
-							}
-						}
-						cout << " - Type = " << TDIInterp << endl;
-						cout << " - Value = " << TDIInterpUtilVal << endl;
-					}
-					// Read Precision TDI Data
-					if(strcmp(ezxml_attr(lisadata,"Type"),"PrecisionTDI")==0){
-						ezxml_t param;
-						for(param = ezxml_child(lisadata,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"InterpType")==0){
-								if(strcmp(ezxml_txt(param),"LAG")){
-									TDIInterp = LAG;
+							if(strcmp(ezxml_attr(param,"Name"),"SignalSC2")==0){
+								strcpy(FileNameSigSC2,gXMLWord(param));
+								cout << "   x filename = " << FileNameSigSC2 ;
+								//throw ;
+								FileEncodingSC2 = 0;
+								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+									FileEncodingSC2 = 1;
 								}
+								cout << "   --> Encoding = " << FileEncodingSC2  << endl;
 							}
-							if(strcmp(ezxml_attr(param,"Name"),"InterpValue")==0){
-								TDIInterpUtilVal = atoi(ezxml_txt(param));
-							}
-							if(strcmp(ezxml_attr(param,"Name"),"DelayApprox")==0){
-								if(strcmp(ezxml_txt(param),"On")==0){
-									TDIDelayApprox = true;
-								}else{ 
-									if(strcmp(ezxml_txt(param),"Off")==0){
-										TDIDelayApprox = false;
-									}else{
-										throw invalid_argument("ConfigSim::ReadFile : Bad syntax for approximation of TDI Delay (ON or OFF) !");
-									}
+							if(strcmp(ezxml_attr(param,"Name"),"SignalSC3")==0){
+								strcpy(FileNameSigSC3,gXMLWord(param));
+								cout << "   x filename = " << FileNameSigSC3 ;
+								//throw ;
+								FileEncodingSC3 = 0;
+								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+									FileEncodingSC3 = 1 ;
 								}
-								cout << " - Approximation of TDI Delay = " << TDIDelayApprox << endl;
+								cout << "   --> Encoding = " << FileEncodingSC3  << endl;
 							}
-						}
-						cout << " - Type = " << TDIInterp << endl;
-						cout << " - Value = " << TDIInterpUtilVal << endl;
-					}
-					
-					// Read Orbits Data
-					if(strcmp(ezxml_attr(lisadata,"Type"),"Orbits")==0){
-						ezxml_t param;
-						for(param = ezxml_child(lisadata,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"Armlength")==0){
-								Armlength = atof(ezxml_txt(param));
-								if(strcmp(ezxml_attr(param,"Unit"),"Meter")!=0)
-									throw invalid_argument("ConfigSim::ReadXMLFile : The armlenght's unit isn't known (only Meter) !");
-								cout << " - Armlength = " << Armlength << " m" << endl;
-							}
-							if(strcmp(ezxml_attr(param,"Name"),"StartTime")==0)
-								OrbStartTime = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"InitialRotation")==0)
-								OrbInitRot = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Move")==0){								
-								if(strcmp(ezxml_txt(param),"On")==0){
-									OrbMove = 1;
-								}else{ 
-									if(strcmp(ezxml_txt(param),"Off")==0){
-										OrbMove = 0;
-										
-									}else{ 
-										if(strcmp(ezxml_txt(param),"MLDC_ON")==0){
-											OrbMove = 1+2;
-											
-										}else{ 
-											if(strcmp(ezxml_txt(param),"MLDC_OFF")==0){
-												OrbMove = 0+2;
-												
-											}else{
-												throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the orbit move specification (ON or OFF) !");
-											}
-										}
-									}
+							if(strcmp(ezxml_attr(param,"Name"),"TDI")==0){
+								strcpy(FileNameTDI,gXMLWord(param));
+								cout << "   x filename = " << FileNameTDI ;
+								//throw ;
+								FileEncodingTDI = 0;
+								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+									FileEncodingTDI = 1 ;
 								}
-								cout << " - Move = " << OrbMove << endl;
+								cout << "   --> Encoding = " <<  FileEncodingTDI << endl;
 							}
-							if(strcmp(ezxml_attr(param,"Name"),"Order")==0){
-								OrbOrder = atoi(ezxml_txt(param));
-								cout << " - Order = " << OrbOrder << endl;
+							if(strcmp(ezxml_attr(param,"Name"),"Delay")==0){
+								strcpy(FileNameDelays,gXMLWord(param));
+								cout << "   x filename = " << FileNameDelays ;
+								//throw ;
+								FileEncodingDelays = 0;
+								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+									FileEncodingDelays = 1 ;
+								}
+								cout << "   --> Encoding = " << FileEncodingDelays << endl;
+							}
+							if(strcmp(ezxml_attr(param,"Name"),"Position")==0){
+								strcpy(FileNamePositions,gXMLWord(param));
+								cout << "   x filename = " << FileNamePositions ;
+								//throw ;
+								FileEncodingPos = 0;
+								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+									FileEncodingPos = 1 ;
+								}
+								cout << "   --> Encoding = " << FileEncodingPos  << endl;
 							}
 						}
 					}
 					
-					// Read Detector Data
-					if(strcmp(ezxml_attr(lisadata,"Type"),"Detector")==0){
-						ezxml_t param;
-						for(param = ezxml_child(lisadata,"Param"); param; param = param->next){
+					
+					// **** Read Detector Data **** //
+					if(strcmp(ezxml_attr(lisacode0,"Type"),"Detector")==0){
+						for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
 							if(strcmp(ezxml_attr(param,"Name"),"LaserPower")==0){
 								LaserPower = atof(ezxml_txt(param));
 								if(strcmp(ezxml_attr(param,"Unit"),"Watt")!=0)
 									throw invalid_argument("ConfigSim::ReadXMLFile : The lasers' power unit isn't known (only Watt) !");
-								cout << " - LaserPower = " << LaserPower << " W" << endl;
+								cout << "   x LaserPower = " << LaserPower << " W" << endl;
 							}
-							if(strcmp(ezxml_attr(param,"Name"),"PhaMetFilter")==0){								
-								if(strcmp(ezxml_txt(param),"On")==0){
+							if(strcmp(ezxml_attr(param,"Name"),"PhaMetFilter")==0){
+								if(gXMLstring(param) == "On"){
 									PhaMetFilterON = true;
 								}else{ 
-									if(strcmp(ezxml_txt(param),"Off")==0){
+									if(gXMLstring(param) == "Off"){
 										PhaMetFilterON = false;
 									}else{
-										throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the orbit move specification (ON or OFF) !");
+										throw invalid_argument("ConfigSim::ReadFile : Bad syntax for the PhaMetFilterON  specification (ON or OFF) !");
 									}
 								}
-								cout << " - Phasemeter filter = " << PhaMetFilterON << endl;
+								cout << "   x Phasemeter filter = " << PhaMetFilterON << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"PMFAttenuation")==0){
 								PhaMetFilterParam[0] = atof(ezxml_txt(param));
 								if(strcmp(ezxml_attr(param,"Unit"),"dB")!=0)
 									throw invalid_argument("ConfigSim::ReadXMLFile : The attenuation unit isn't known (only dB) !");
-								cout << " - PMFilter : Attenuation = " << PhaMetFilterParam[0] << " dB" << endl;
+								cout << "   x PMFilter : Attenuation = " << PhaMetFilterParam[0] << " dB" << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"PMFOscillation")==0){
 								PhaMetFilterParam[1] = atof(ezxml_txt(param));
 								if(strcmp(ezxml_attr(param,"Unit"),"dB")!=0)
 									throw invalid_argument("ConfigSim::ReadXMLFile : The oscillation unit isn't known (only dB) !");
-								cout << " - PMFilter : Oscillation = " << PhaMetFilterParam[1] << " dB" << endl;
+								cout << "   x PMFilter : Oscillation = " << PhaMetFilterParam[1] << " dB" << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"PMFLowFreqFact")==0){
 								PhaMetFilterParam[2] = atof(ezxml_txt(param));
-								cout << " - PMFilter : Low Frequency factor of sample frequency = " << PhaMetFilterParam[2] << endl;
+								cout << "   x PMFilter : Low Frequency factor of sample frequency = " << PhaMetFilterParam[2] << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"PMFHighFreqFact")==0){
 								PhaMetFilterParam[3] = atof(ezxml_txt(param));
-								cout << " - PMFilter : High Frequency factor of sample frequency = " << PhaMetFilterParam[3] << endl;
+								cout << "   x PMFilter : High Frequency factor of sample frequency = " << PhaMetFilterParam[3] << endl;
 							}
+							if(strcmp(ezxml_attr(param,"Name"),"InternalPhasemeters")==0){	
+								if(gXMLstring(param)=="Always"){
+									InternalPhasemeters = true;
+								}else{ 
+									if(gXMLstring(param)=="IfNoises"){
+										InternalPhasemeters = false;
+									}else{
+										throw invalid_argument("ConfigSim::ReadXMLFile : Bad syntax for the internal phasemeter : 'Always' or 'IfNoises' !");
+									}
+								}
+								cout << "   x Phasemeter filter = " << InternalPhasemeters << endl;
+							}							
 						}
 					}
-					
-					// Read USO Data
-					if(strcmp(ezxml_attr(lisadata,"Type"),"USO")==0){
+					// ***** Read USO Data *****
+					if(strcmp(ezxml_attr(lisacode0,"Type"),"USO")==0){
 						ezxml_t param;
 						int iSC;
 						double USOOffset(0.0), USODerivs(0.0), USONoise(0.0) ;
-						for(param = ezxml_child(lisadata,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"SCNumber")==0){
-								bool UnKnowSCNumber(true);
-								if(strcmp(ezxml_txt(param),"SC1")==0){
-									iSC = 1;
-									UnKnowSCNumber = false;
-								}
-								if(strcmp(ezxml_txt(param),"SC2")==0){
-									iSC = 1;
-									UnKnowSCNumber = false;
-								}
-								if(strcmp(ezxml_txt(param),"SC3")==0){
-									iSC = 1;
-									UnKnowSCNumber = false;
-								}
-								if(UnKnowSCNumber)
-									throw invalid_argument("ConfigSim::ReadXMLFile : The name type isn't known (only SignalSC1, SignalSC2, SignalSC3, Delay, Position or TDI) !");
-								cout << " - USO SC Number = " << iSC << endl;
+						for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
+							if(strcmp(ezxml_attr(param,"Name"),"SCIndex")==0){
+								iSC = atoi(ezxml_txt(param));
+								if((iSC<1)||(iSC>3))
+									throw invalid_argument("ConfigSim::ReadXMLFile : The index of spacecraft can only be 1, 2 or 3 !");
+								cout << "   x USO SC Index = " << iSC << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"Offset")==0)
 								USOOffset = gXMLTime(param);
@@ -1660,97 +1801,118 @@ void ConfigSim::ReadXMLFile()
 								char * UnitType;
 								UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
 								USONoise = atof(ezxml_txt(param))*Fact;
-								cout << " - Noise = " <<USONoise << endl;
+								cout << "   x Noise = " <<USONoise << endl;
 							}
 						}
 						if((iSC<1)||(iSC>3))
-							throw invalid_argument("ConfigSim::ReadFile : Bad USO's spacecraft number (only 1, 2 or 3) !");
+							throw invalid_argument("ConfigSim::ReadXMLFile : Bad USO's spacecraft number (only 1, 2 or 3) !");
 						USOs[iSC-1].init(USOOffset, USODerivs, USONoise);
-						cout << endl;
 					}
 					
-					// Read Record Data
-					if(strcmp(ezxml_attr(lisadata,"Type"),"Records")==0){
-						ezxml_t param, series;
-						const char *recordname;
-						int typedata, encoding;
-						char * filename;
-						int length, records;
-						int iSC(0);
-						bool UnKnowRecords(true);
-						// Read the filename
-						series = ezxml_child(lisadata,"XSIL");
-						if(strcmp(ezxml_attr(series,"Type"),"TimeSeries")!=0)
-							throw invalid_argument("ConfigSim::ReadXMLFile : The record type isn't known (only TimeSeries) !");
-						filename = gXMLTimeSeries(series,typedata,encoding,length,records);
-						// Find the name of records
-						if(strcmp(ezxml_attr(lisadata,"Name"),"SignalSC1")==0){
-							strcpy(FileNameSigSC1,filename);
-							cout << " - FileNameSigSC1 = " << FileNameSigSC1 ;
-							FileEncodingSC1 = encoding ;
-							cout << "   Encoding =" << encoding << endl;
-							UnKnowRecords = false;
-						}
-						if(strcmp(ezxml_attr(lisadata,"Name"),"SignalSC2")==0){
-						  strcpy(FileNameSigSC2,filename); ;
-						  cout << " - FileNameSigSC2 = " << FileNameSigSC2 ;
-							FileEncodingSC2 = encoding ;
-							cout << "   Encoding =" << encoding << endl;
-							UnKnowRecords = false;
-						}
-						if(strcmp(ezxml_attr(lisadata,"Name"),"SignalSC3")==0){
-							strcpy(FileNameSigSC3,filename);
-							cout << " - FileNameSigSC3 = " << FileNameSigSC3 ;
-							FileEncodingSC3 = encoding ;
-							cout << "   Encoding =" << encoding << endl;
-							UnKnowRecords = false;
-						}
-						if(strcmp(ezxml_attr(lisadata,"Name"),"Delay")==0){
-							strcpy(FileNameDelays,filename);
-							cout << " - Delay = " << FileNameDelays ;
-							FileEncodingDelays= encoding ;
-							cout << "   Encoding =" << encoding << endl;
-							UnKnowRecords = false;
-						}
-						if(strcmp(ezxml_attr(lisadata,"Name"),"Position")==0){
-							strcpy(FileNamePositions,filename);
-							cout << " - Position = " << FileNamePositions ;
-							FileEncodingPos = encoding ;
-							cout << "   Encoding =" << encoding << endl;
-							UnKnowRecords = false;
-						}
-						if(strcmp(ezxml_attr(lisadata,"Name"),"TDI")==0){
-							strcpy(FileNameTDI,filename);
-							cout << " - TDI = " << FileNameTDI ;
-							FileEncodingTDI = encoding ;
-							cout << "   Encoding =" <<encoding << endl;
-							UnKnowRecords = false;
-						}
-						if(UnKnowRecords)
-							throw invalid_argument("ConfigSim::ReadXMLFile : The name type isn't known (only SignalSC1, SignalSC2, SignalSC3, Delay, Position or TDI) !");
-					}
-					
-					
-					
-					
-					/***************  Read Mock LISA Data Challenge XML File ***************/
-					
-					if(strcmp(ezxml_attr(lisadata,"Type"),"PseudoLISA")==0){
+					// **** Read Precision TDI Data ****
+					if(strcmp(ezxml_attr(lisacode0,"Type"),"PrecisionTDI")==0){
 						ezxml_t param;
+						for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
+							if(strcmp(ezxml_attr(param,"Name"),"InterpType")==0){
+								if(gXMLstring(param) == "LAG")
+									TDIInterp = LAG;
+								cout << "   x InterpType = " << TDIInterp << endl;
+							}
+							if(strcmp(ezxml_attr(param,"Name"),"InterpValue")==0){
+								TDIInterpUtilVal = atoi(ezxml_txt(param));
+								cout << "   x InterpValue = " << TDIInterpUtilVal << endl;
+							}
+							if(strcmp(ezxml_attr(param,"Name"),"DelayApprox")==0){
+								if(gXMLstring(param) == "On"){
+									TDIDelayApprox = true;
+								}else{ 
+									if(gXMLstring(param) == "Off"){
+										TDIDelayApprox = false;
+									}else{
+										throw invalid_argument("ConfigSim::ReadFile : Bad syntax for approximation of TDI Delay (ON or OFF) !");
+									}
+								}
+								cout << "   x Approximation of TDI Delay = " << TDIDelayApprox << endl;
+							}
+						}
+					}
+					// ***** Read specific TDI generator ***** //
+					if(strcmp(ezxml_attr(lisacode0,"Type"),"TDISpecificGenerator")==0){
+						const char * generatorname;
+						vector<int> tmp_TDIPacks;
+						vector<double> tmp_TDIPacksFact;
+						ezxml_t param;
+						
+						// ** Check if the generator don't already exist in LISABase
+						bool UnKnowTDI(true);
+						for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
+							if(strcmp(ezxml_attr(param,"Name"),"GeneratorName")==0){
+								generatorname = ezxml_txt(param);
+								cout << "   x Name = " << generatorname << endl;
+							}
+						}
+						UnKnowTDI = FindTDIName(generatorname, tmp_TDIPacks, tmp_TDIPacksFact);
+						
+						// Read unknow TDI generator
+						if(UnKnowTDI){
+							cout << "     x Pack = ";
+							for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"Pack")==0){
+									int tmp_pack;
+									int tmp_fact;
+									int NbDelays(0);
+									tmp_pack = atoi(ezxml_txt(param));
+									tmp_fact = atoi(ezxml_attr(param,"Unit"));
+									cout << " " << tmp_pack ;
+									tmp_TDIPacks.push_back(tmp_pack);
+									tmp_TDIPacksFact.push_back(tmp_fact);
+									while(!((double)(tmp_pack/pow(10.0,NbDelays))<1.0)){
+										NbDelays++;
+									}
+								}
+							}
+							cout << endl;
+						}else{
+							cout << "TDI generator " << generatorname << " is already defined therefore packs are read." << endl; 
+						}
+						
+						TDIsName.push_back(generatorname);
+						TDIsPacks.push_back(tmp_TDIPacks);
+						TDIsPacksFact.push_back(tmp_TDIPacksFact);
+					}
+				}
+			}
+			
+			// ******************
+			// * Read LISA Data *
+			// ******************
+			
+			if(strcmp(type,"LISAData")==0){
+				ezxml_t lisadata;
+				const char * lisadatatype;
+				cout << "Section : LISAData " << endl ;
+				for (lisadata = ezxml_child(section, "XSIL"); lisadata; lisadata = lisadata->next) {
+					lisadatatype = ezxml_attr(lisadata,"Type");
+					cout << "  Subsection : " << lisadatatype << endl;
+					
+					// ***********  Configure orbits *********** //
+					
+					if((strcmp(ezxml_attr(lisadata,"Type"),"LISACode_Orbits")==0)||(strcmp(ezxml_attr(lisadata,"Type"),"PseudoLISA")==0)||(strcmp(ezxml_attr(lisadata,"Type"),"ESA_Orbits")==0)){
+						ezxml_t param;
+						if(strcmp(ezxml_attr(lisadata,"Type"),"LISACode_Orbits")==0)
+							OrbType = 0;
+						if(strcmp(ezxml_attr(lisadata,"Type"),"PseudoLISA")==0)
+							OrbType = 1;
+						if(strcmp(ezxml_attr(lisadata,"Type"),"ESA_Orbits")==0)
+							OrbType = 2;
 						for(param = ezxml_child(lisadata,"Param"); param; param = param->next){
 							if(strcmp(ezxml_attr(param,"Name"),"InitialRotation")==0)
-							  //cout << " MLDC PeusoLisa Orbits" << endl ;
+								//cout << " MLDC PeusoLisa Orbits" << endl ;
 								OrbInitRot = gXMLAngle(param);
 							if(strcmp(ezxml_attr(param,"Name"),"InitialPosition")==0){
 								double tmpInitPos(0.0);
 								tmpInitPos = gXMLAngle(param);
 								OrbStartTime = tmpInitPos*Yr_SI/(2.0*M_PI);
-								OrbMove = 3 ;  // MLDC
-								OrbOrder = 2;
-								//OrbMove = 1 ;  // a verifier
-								//OrbOrder = 2;  // a verifier
-								//cout << "OrbMove " << OrbMove << endl ;
-								//throw ;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"Armlength")==0){
 								if(strcmp(ezxml_attr(param,"Unit"),"Meter")==0){
@@ -1760,19 +1922,32 @@ void ConfigSim::ReadXMLFile()
 									tmpArmTime = gXMLTime(param);
 									Armlength = tmpArmTime*c_SI;
 								}
-								cout << " - Armlength = " << Armlength << " m" << endl;
+								cout << "   x Armlength = " << Armlength << " m" << endl;
+							}
+							if(strcmp(ezxml_attr(param,"Name"),"OrderDelay")==0){
+								OrbOrder = atoi(ezxml_txt(param));
+								cout << "   x Order = " << OrbOrder << endl;
+							}
+							if(strcmp(ezxml_attr(param,"Name"),"OrbitApproximation")==0){
+								string tmpStr(gXMLstring(param));
+								if(tmpStr == "Static")
+									OrbApprox = 0;
+								if(tmpStr == "Rigid")
+									OrbApprox = 1;
+								if(tmpStr == "Eccentric")
+									OrbApprox = 2;
 							}
 						}
 					}
-					
-				}  // end for
-			} // end if
-			/* End of read LISA Data */			
+				}
+			}
+			// * End of read LISA Data * //
 			
 			
-			/********************/
-			/* Read Source Data */
-			/********************/
+			
+			// ********************
+			// * Read Source Data *
+			// ********************
 			if(strcmp(type,"SourceData")==0){
 				ezxml_t source;
 				const char *name;
@@ -1782,8 +1957,6 @@ void ConfigSim::ReadXMLFile()
 					name = ezxml_attr(source,"Name");
 					cout << endl << "Source : Name = " << name << endl;
 					
-					/*************** Read LISACode XML File ***************/
-					// pourquoi lire cela ici : modif_eric .. a deplacer ?
 					ezxml_t param;
 					for(param = ezxml_child(source,"Param"); param; param = param->next){
 						if(strcmp(ezxml_attr(param,"Name"),"EclipticLatitude")==0)
@@ -1794,140 +1967,207 @@ void ConfigSim::ReadXMLFile()
 							Psi = gXMLAngle(param);
 					}
 					cout << " Source : type = " << ezxml_attr(source,"Type")<< endl ;
-					//throw invalid_argument(" eric 999 ");
-					// Read Parameters for Mono
-					if(strcmp(ezxml_attr(source,"Type"),"Mono")==0){
-						double f(0.0), hp(0.0), hc(0.0), Phi0hp(0.0), Phi0hc(0.0);
-						for(param = ezxml_child(source,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"Frequency")==0)
-								f = gXMLFrequency(param);
-							if(strcmp(ezxml_attr(param,"Name"),"AmplitudePlus")==0){
-								double Fact(1.0);
-								char * UnitType;
-								UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
-								hp = atof(ezxml_txt(param))*Fact;
-								cout << " - hp = " << hp << endl;
-							}
-							if(strcmp(ezxml_attr(param,"Name"),"AmplitudeCross")==0){
-								double Fact(1.0);
-								char * UnitType;
-								UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
-								hc = atof(ezxml_txt(param))*Fact;
-								cout << " - hc = " << hc << endl;
-							}
-							if(strcmp(ezxml_attr(param,"Name"),"InitialPhasePlus")==0)
-								Phi0hp = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"InitialPhaseCross")==0)
-								Phi0hc = gXMLAngle(param);
-						}
-						cout.precision(15);
-						cout << "GWMono   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-						cout.precision(15);
-						cout << " f=" << f << " hp=" << hp << " hc=" << hc << " Phi0hp=" << Phi0hp << " Phi0hc=" << Phi0hc << endl;
-						GWs.push_back(new GWMono(Beta, Lambda, Psi, f, hp, hc, Phi0hp, Phi0hc));
-						NbSrc++;
-					}	
-					// Read Parameters for Binary
-					if(strcmp(ezxml_attr(source,"Type"),"Binary")==0){
-						double M1, M2, forb, inc, phi0, r;
-						for(param = ezxml_child(source,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"Mass1")==0)
-								M1 = gXMLAstroMass(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Mass2")==0)
-								M2 = gXMLAstroMass(param);
-							if(strcmp(ezxml_attr(param,"Name"),"OrbitalFrequency")==0)
-								forb = gXMLFrequency(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Inclination")==0)
-								inc = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"InitialPhase")==0)
-								phi0 = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Distance")==0)
-								r = gXMLAstroDistance(param);
-						}
-						cout.precision(15);
-						cout << "GWBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-						cout << " M1=" << M1 << " M2=" << M2 << " forb=" << forb << " inc=" << inc << " phi0=" << phi0 << " r=" << r << endl;
-						GWs.push_back(new GWBinary(Beta, Lambda, Psi, M1, M2, forb, inc, phi0, r));
-						NbSrc++;
-					}
-					// Read Parameters for PostNewtonBinary
-					if(strcmp(ezxml_attr(source,"Type"),"PostNewtonBinary")==0){
-						int PNtype;
-						double M1, M2, tcoal, inc, phase, dist, omega0(0.0), taud0(0.0), gw(1.0);
-						for(param = ezxml_child(source,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"Mass1")==0)
-								M1 = gXMLAstroMass(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Mass2")==0)
-								M2 = gXMLAstroMass(param);
-							if(strcmp(ezxml_attr(param,"Name"),"CoalescenceTime")==0)
-								tcoal = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Inclination")==0)
-								inc = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"CoalescencePhase")==0)
-								phase = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Distance")==0)
-								dist = gXMLAstroDistance(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Type")==0)
-								PNtype = atoi(ezxml_txt(param));
-							if(strcmp(ezxml_attr(param,"Name"),"Omega0")==0)
-								omega0 = atof(ezxml_txt(param));
-							if(strcmp(ezxml_attr(param,"Name"),"Taud0")==0)
-								taud0 = atof(ezxml_txt(param));
-							if(strcmp(ezxml_attr(param,"Name"),"gw")==0)
-								gw = atof(ezxml_txt(param));
-						}
-						cout.precision(15);
-						cout << "GWPostNewtonBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-						cout << " M1=" << M1 << " M2=" << M2 << " tcoal=" << tcoal << " inc=" << inc << " phase=" << phase << " dist=" << dist;
-						cout << " type=" << PNtype << " omega0=" << omega0 << " taud0=" << taud0 << " gw=" << gw << endl;
-						GWs.push_back(new GWNewton2(Beta, Lambda, Psi, PNtype, M1, M2, tcoal, inc, phase, dist, taud0, omega0, gw));
-						NbSrc++;
-						
-					}
-					// Read Parameters for "File" GW
-					if(strcmp(ezxml_attr(source,"Type"),"File")==0){
-						ezxml_t series;
-						const char *recordname;
-						int typedata, encoding;
-						char * filename;
-						int length, records;
-						series = ezxml_child(source,"XSIL");
-						if(strcmp(ezxml_attr(series,"Type"),"TimeSeries")!=0)
-							throw invalid_argument("ConfigSim::ReadXMLFile : The record type isn't known (only TimeSeries) !");
-						recordname = ezxml_attr(series,"Name");
-						cout << " Record " << recordname << " :" << endl;
-						filename = gXMLTimeSeries(series,typedata,encoding,length,records);
-						cout.precision(15);
-						cout << "GWFile   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-						cout << " File=" << filename << endl;
-						// WARNING : Impossible de reccuperer le nom de fichier qui devrait etre dans filename
-						GWs.push_back(new GWFile(Beta, Lambda, Psi, filename));
-						NbSrc++;
-					}	
 					
 					
-					/***************  Read Mock LISA Data Challenge XML File ***************/
-					// Adapted for stochastic background MLDC round 3
-					// Read direction and polarisation of GW
-					string SourceType_s ;
-					SourceType_s = "unknown" ;
-					if((strcmp(ezxml_attr(source,"Type"),"PlaneWave")==0)||(strcmp(ezxml_attr(source,"Type"),"SampledPlaneWave")==0)){
+					// ***************  Read PlaneWave Source *************** //
+
+					if(strcmp(ezxml_attr(source,"Type"),"PlaneWave")==0){
 						ezxml_t param;
-						double val ;
-						double hp(0.0), hc(0.0), Phi0hp(0.0), Phi0hc(0.0);
-						double hp_sto(0.0), hc_sto(0.0), Slope_sto(0.0), Fmin_sto(0.0), Fknee_sto(0.0);
-						double tDurAdd(0.0),  tFirst(40.0),  tLast(-100.0),  tder(-1000.0), Tsample_sto(0.0);
-						int Nb_Ageing(100000);
+						string SourceType ;
+						SourceType = "unknown" ;
+						// **** Read only source type
 						for(param = ezxml_child(source,"Param"); param; param = param->next){
 							if(strcmp(ezxml_attr(param,"Name"),"SourceType")==0){
-								SourceType_s = gXMLstring(param);
+								SourceType = gXMLstring(param);
 							}
-							// Read Parameters for Stochastic GW background
-							if(SourceType_s == "Stochastic"){
+						}
+						
+						// *** Read Parameters for Monochromatic
+						if(SourceType == "Monochromatic"){
+							double f(0.0), hp(0.0), hc(0.0), Phi0hp(0.0), Phi0hc(0.0);
+							for(param = ezxml_child(source,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"Frequency")==0)
+									f = gXMLFrequency(param);
+								if(strcmp(ezxml_attr(param,"Name"),"AmplitudePlus")==0){
+									double Fact(1.0);
+									char * UnitType;
+									UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
+									hp = atof(ezxml_txt(param))*Fact;
+									cout << "   x hp = " << hp << endl;
+								}
+								if(strcmp(ezxml_attr(param,"Name"),"AmplitudeCross")==0){
+									double Fact(1.0);
+									char * UnitType;
+									UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
+									hc = atof(ezxml_txt(param))*Fact;
+									cout << "   x hc = " << hc << endl;
+								}
+								if(strcmp(ezxml_attr(param,"Name"),"InitialPhasePlus")==0)
+									Phi0hp = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"InitialPhaseCross")==0)
+									Phi0hc = gXMLAngle(param);
+							}
+							cout.precision(15);
+							cout << "  + GWMono   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+							cout.precision(15);
+							cout << " f=" << f << " hp=" << hp << " hc=" << hc << " Phi0hp=" << Phi0hp << " Phi0hc=" << Phi0hc << endl;
+							GWs.push_back(new GWMono(Beta, Lambda, Psi, f, hp, hc, Phi0hp, Phi0hc));
+							NbSrc++;
+						}
+						
+						// *** Read Parameters for Binary
+						if(SourceType == "GalacticBinary"){
+							double forb, inc, phi0;
+							double M1, M2, r;
+							double Amp, freq;
+							bool SrcMLDC(false);
+							for(param = ezxml_child(source,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"Inclination")==0)
+									inc = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"InitialPhase")==0)
+									phi0 = gXMLAngle(param);
+								// * LISACode
+								if(strcmp(ezxml_attr(param,"Name"),"Mass1")==0)
+									M1 = gXMLAstroMass(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Mass2")==0)
+									M2 = gXMLAstroMass(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Distance")==0)
+									r = gXMLAstroDistance(param);
+								if(strcmp(ezxml_attr(param,"Name"),"OrbitalFrequency")==0)
+									forb = gXMLFrequency(param);
+								// * MLDC
+								if(strcmp(ezxml_attr(param,"Name"),"Amplitude")==0){
+									Amp = atof(ezxml_txt(param)) * atof(ezxml_attr(param,"Unit"));
+									SrcMLDC = true;
+								}
+								if(strcmp(ezxml_attr(param,"Name"),"Frequency")==0){
+									freq = gXMLFrequency(param);
+									SrcMLDC = true;
+								}
+								
+							}
+							cout.precision(15);
+							if(SrcMLDC){
+								// * MLDC
+								double ci(cos(inc));
+								cout << "  + GWMono : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+								cout << " Amplitude=" << Amp << " freq=" << freq << " inc=" << inc << " phi0=" << phi0 << endl;
+								GWs.push_back(new GWMono(Beta, Lambda, Psi, freq, Amp*(1.0+ci*ci), 2*Amp*ci, phi0+3.0*M_PI/2.0, phi0));
+							}else{
+								// * LISACode
+								cout << "  + GWBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+								cout << " M1=" << M1 << " M2=" << M2 << " forb=" << forb << " inc=" << inc << " phi0=" << phi0 << " r=" << r << endl;
+								GWs.push_back(new GWBinary(Beta, Lambda, Psi, M1, M2, forb, inc, phi0, r));
+							}
+							NbSrc++;
+						}
+						
+						
+						// *** Read Parameters for PostNewtonBinary
+						if(SourceType == "BlackHoleBinary"){
+							int PNtype;
+							double M1, M2, tcoal, inc, dist; // Commun
+							double omega0(0.0), taud0(0.0), gw(1.0); // LISACode
+							double phase(0.0), phase0(0.0); // LISACode or MLDC 
+							double tTrunc(0.0), taper(7.0); // Ready to use ... when taper is included in waveform
+							bool SrcMLDC(false);
+							for(param = ezxml_child(source,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"Mass1")==0)
+									M1 = gXMLAstroMass(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Mass2")==0)
+									M2 = gXMLAstroMass(param);
+								if(strcmp(ezxml_attr(param,"Name"),"CoalescenceTime")==0)
+									tcoal = gXMLTime(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Inclination")==0)
+									inc = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Distance")==0)
+									dist = gXMLAstroDistance(param);
+								if(strcmp(ezxml_attr(param,"Name"),"TruncationTime")==0)
+									tTrunc = gXMLTime(param);
+								if(strcmp(ezxml_attr(param,"Name"),"TaperApplied")==0)
+									taper = atof(ezxml_txt(param));
+								// * Specific for LISACode
+								if(strcmp(ezxml_attr(param,"Name"),"CoalescencePhase")==0)
+									phase = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Type")==0)
+									PNtype = atoi(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"Omega0")==0)
+									omega0 = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"Taud0")==0)
+									taud0 = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"gw")==0)
+									gw = atof(ezxml_txt(param));
+								// * Specific for MLDC
+								if(strcmp(ezxml_attr(param,"Name"),"InitialAngularOrbitalPhase")==0){
+									phase0 = gXMLAngle(param); // If it's possible it's better to use the phase
+									SrcMLDC = true;
+								}
+							}
+							cout.precision(15);
+							cout << "  + GWPostNewtonBinary : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+							cout << " M1=" << M1 << " M2=" << M2 << " tcoal=" << tcoal << " inc=" << inc << " phase=" << phase << " dist=" << dist;
+							cout << " type=" << PNtype << " omega0=" << omega0 << " taud0=" << taud0 << " gw=" << gw << endl;
+							GWs.push_back(new GWNewton2(Beta, Lambda, Psi, PNtype, M1, M2, tcoal, inc, phase, dist, taud0, omega0, gw));
+							NbSrc++;
+						}
+						
+						
+						// *** Read Fast spin Black Hole binary
+						if(SourceType == "FastSpinBlackHoleBinary"){
+							double M1(1.0e6), M2(1.0e6), tcoal(600000.0), dist(1.0e6), phase(0.0);
+							double S1(0.7), S2(0.3), polS1(1.7), polS2(2.0), azS1(3.2), azS2(2.5), polL(2.0), azL(4.7);  
+							double AmplPNorder(0.0), TaperApplied(7.0);
+							double GWTimeOffset(-2000.0);
+							for(param = ezxml_child(source,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"Mass1")==0)
+									M1 = gXMLAstroMass(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Mass2")==0)
+									M2 = gXMLAstroMass(param);
+								if(strcmp(ezxml_attr(param,"Name"),"CoalescenceTime")==0)
+									tcoal = gXMLTime(param);
+								if(strcmp(ezxml_attr(param,"Name"),"PhaseAtCoalescence")==0)
+									phase = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Distance")==0)
+									dist = gXMLAstroDistance(param);
+								if(strcmp(ezxml_attr(param,"Name"),"PolarAngleOfSpin1")==0)
+									polS1 = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"PolarAngleOfSpin2")==0)
+									polS2 = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"AzimuthalAngleOfSpin1")==0)
+									azS1 = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"AzimuthalAngleOfSpin2")==0)
+									azS2 = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"InitialPolarAngleL")==0)
+									polL = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"InitialAzimuthalAngleL")==0)
+									azL = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Spin1")==0)
+									S1 = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"Spin2")==0)
+									S2 = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"AmplPNorder")==0)
+									AmplPNorder = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"TaperApplied")==0)
+									TaperApplied = atof(ezxml_txt(param));
+							}
+							cout << "  + GWFastSpinBBH : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+							cout << " M1=" << M1 << " M2=" << M2 << " tcoal=" << tcoal << " phase=" << phase << " dist=" << dist << " AmpPN=" << AmplPNorder;
+							cout << " L0=(theta=" << polL << ",phi=" << azL << ") S1=" << S1 << "(" << polS1 << "," << azS1 << ") S2=" << S2 << "(" << polS2 << "," << azS2 << ")" << endl;
+							GWs.push_back(new GWFastSpinBBH(Beta, Lambda, M1, M2, tcoal, dist, S1, S2, polS1, polS2, azS1, azS2, phase, polL, azL, AmplPNorder, GWTimeOffset, tMax-GWTimeOffset, TaperApplied, 150.0, 6.0));
+							NbSrc++;
+						}
+						
+						// *** Read Parameters for Stochastic GW background
+						if(SourceType == "Stochastic"){
+							double val ;
+							double hp_sto(0.0), hc_sto(0.0), Slope_sto(0.0), Fmin_sto(0.0), Fknee_sto(0.0);
+							double tDurAdd(0.0), Tsample_sto(0.0);
+							//double tFirst(40.0),  tLast(-100.0),  tder(-1000.0);
+							for(param = ezxml_child(source,"Param"); param; param = param->next){
 								if(strcmp(ezxml_attr(param,"Name"),"PowerSpectralDensity")==0){
 									//hp_sto = gXMLdouble(param)*1e-23/0.0333 ;
-								  hp_sto = gXMLdouble(param);
-								  hp_sto=pow(hp_sto,0.5);
+									hp_sto = gXMLdouble(param);
+									hp_sto=pow(hp_sto,0.5);
 									hc_sto = hp_sto ;
 									//hc_sto = 0. ;
 								}
@@ -1947,132 +2187,162 @@ void ConfigSim::ReadXMLFile()
 									val = gXMLdouble(param) ;
 								}
 							}
-						}  // All parameters are read
-						tDurAdd = tStepPhy ; 
-						Tsample_sto = tStepPhy ;
-						Beta = M_PI/2.-Beta ;  //  a verifier modif_eric
-						cout << "creating stochastic" <<endl ;
-						cout << " GW Stochastic : nb_src,Beta,Lambda,hp,hc,tStepMes,tDurAdd,tFirst,tLast,tder,Slope_sto,Fknee_sto,Fmin_sto = "<<endl <<NbSrc<<"   "<<MathUtils::rad2deg(Beta)<< "  " <<MathUtils::rad2deg(Lambda)<< "  " << hp_sto<< "  "<< hc_sto<< "  " <<tStepPhy<< "  " <<tDurAdd<< "  " <<tFirst<< "  " <<tLast<< "  " <<tder<< "  " <<Slope_sto<< "  " <<Fknee_sto<< "  " <<Fmin_sto<< endl ;
-						//GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));
-						GWs.push_back(new GWSto(Beta,Lambda,tStepMes,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));						//GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,tDurAdd,tFirst,tLast,tder,Slope_sto,Tsample_sto,Fknee_sto,Fmin_sto,Nb_Ageing,hp_sto,hc_sto));
-						NbSrc++;
-						//throw ; 
-					}
-					// Read specific parameters for plane wave
-					if((strcmp(ezxml_attr(source,"Type"),"PlaneWave")==0) && (SourceType_s == "unknown")){
-						ezxml_t param;
-						char * SourceType;
-						double Amplitude(0.0), Inclination(0.0), Frequency(0.0), Initialphase(0.0);
-						double M1(0.0), M2(0.0), Distance(0.0), CoalTime(0.0);
-						double ci;
-						for(param = ezxml_child(source,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"SourceType")==0){
-								//SourceType = ezxml_txt(param);
-								SourceType = gXMLWord(param);
-							}
-							if(strcmp(ezxml_attr(param,"Name"),"Amplitude")==0){
-								Amplitude = atof(ezxml_txt(param))*atof(ezxml_attr(param,"Unit"));
-							}
-							if(strcmp(ezxml_attr(param,"Name"),"Inclination")==0)
-								Inclination = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Frequency")==0)
-								Frequency = gXMLFrequency(param);
-							if(strcmp(ezxml_attr(param,"Name"),"InitialPhase")==0)
-								Initialphase = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"InitialAngularOrbitalPhase")==0)
-								Initialphase = gXMLAngle(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Mass1")==0)
-								M1 = gXMLAstroMass(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Mass2")==0)
-								M2 = gXMLAstroMass(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Distance")==0)
-								Distance = gXMLAstroDistance(param);
-							if(strcmp(ezxml_attr(param,"Name"),"CoalescenceTime")==0)
-								CoalTime = gXMLTime(param);
-						}
-						cout << " New Compute GW (PlaneWave) : " << SourceType << endl;
-						cout << "   - Beta         = " << Beta << " rad" << endl;
-						cout << "   - Lambda       = " << Lambda << " rad" << endl;
-						cout << "   - Psi          = " << Psi << " rad" << endl;
-						cout << "   - Amplitude    = " << Amplitude  << endl;
-						cout << "   - Inclination  = " << Inclination << " rad" << endl;
-						cout << "   - Frequency    = " << Frequency << " Hz" << endl;
-						cout << "   - InitialPhase = " << Initialphase << " rad" << endl;
-						cout << "   - Mass 1       = " << M1 << " MS" << endl;
-						cout << "   - Mass 2       = " << M2 << " MS" << endl;
-						cout << "   - Distance     = " << Distance << " pc" << endl;
-						cout << "   - Coal. time   = " << CoalTime << " s" << endl;
-						
-						if(strcmp(SourceType,"GalacticBinary")==0){
-							ci = cos(Inclination);
-							GWs.push_back(new GWMono(Beta, Lambda, Psi, Frequency, Amplitude*(1.0+ci*ci), 2*Amplitude*ci, Initialphase+3.0*M_PI/2.0, Initialphase));
+							// All parameters are read
+							tDurAdd = tStepPhy ; 
+							Tsample_sto = tStepPhy ;
+							Beta = M_PI/2.-Beta ;  //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! a verifier modif_eric !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+							//cout << "creating stochastic" <<endl ;
+							cout << "  + GW Stochastic : " << NbSrc << " : Beta,Lambda,hp,hc,dt,Slope_sto,Fknee_sto,Fmin_sto =    " <<MathUtils::rad2deg(Beta)<< "  " <<MathUtils::rad2deg(Lambda)<< "  " << tStepPhy << "  " << hp_sto<< "  "<< hc_sto<< "  " <<Slope_sto<< "  " <<Fknee_sto<< "  " <<Fmin_sto<< endl ;
+							//GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));
+							GWs.push_back(new GWSto(Beta,Lambda,tStepMes,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));						
+							//GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,tDurAdd,tFirst,tLast,tder,Slope_sto,Tsample_sto,Fknee_sto,Fmin_sto,Nb_Ageing,hp_sto,hc_sto));
 							NbSrc++;
-						}else{ 
-							if(strcmp(SourceType,"BlackHoleBinary")==0){
-								GWs.push_back(new GWNewton2(Beta, Lambda, Psi, 2, M1, M2, CoalTime, Inclination, Initialphase, Distance, 1.0, 10.0, 1.0));
-								NbSrc++;
-							}else{
-								if(SourceType_s == "Stochastic"){
-									cout << "creating stochastic" << endl ;
-									//GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,tDurAdd,tFirst,tLast,tder,Slope_sto,Tsample_sto,Fknee_sto,Fmin_sto,Nb_Ageing,hp_sto,hc_sto));
-									NbSrc++;
-								}else{
-									if(strcmp(SourceType,"ExtremeMassRatioInspiral")==0){
-										cout << "  --> Sorry ! The EMRI are not computde actually by LISACode ! This work is in progress !" << endl;
-									}else{
-										throw invalid_argument("ConfigSim::ReadXMLFile : The gravitational wave SourceType isn't known (only GalacticBinary or BlackHoleBinary) !");
-									}
+							//throw ;
+						}
+
+						// **** Read Parameters for Cusp
+						if(SourceType == "CosmicStringCusp"){
+							double Amplitude(1.0e-10), CentralTime(tMax/2.0), MaximumFrequency(0.1), TPad (900.0);
+							for(param = ezxml_child(source,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"Amplitude")==0)
+									Amplitude = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"CentralTime")==0){
+									CentralTime = gXMLTime(param);
 								}
+								if(strcmp(ezxml_attr(param,"Name"),"Amplitude")==0)
+									MaximumFrequency = atof(ezxml_txt(param));
 							}
+							cout.precision(15);
+							cout << "  + GWCusp   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+							cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << endl;
+							GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, tMax, TPad));
+							NbSrc++;
+						}	
+						
+						
+						// **** Read Parameters for New (Template for adding a new GW type)
+						if(SourceType == "New"){
+							double f(0.0), hp(0.0), hc(0.0), Phi0hp(0.0), Phi0hc(0.0);
+							for(param = ezxml_child(source,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"Frequency")==0)
+									f = gXMLFrequency(param);
+								if(strcmp(ezxml_attr(param,"Name"),"AmplitudePlus")==0){
+									double Fact(1.0);
+									char * UnitType;
+									UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
+									hp = atof(ezxml_txt(param))*Fact;
+									cout << " - hp = " << hp << endl;
+								}
+								if(strcmp(ezxml_attr(param,"Name"),"AmplitudeCross")==0){
+									double Fact(1.0);
+									char * UnitType;
+									UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
+									hc = atof(ezxml_txt(param))*Fact;
+									cout << " - hc = " << hc << endl;
+								}
+								if(strcmp(ezxml_attr(param,"Name"),"InitialPhasePlus")==0)
+									Phi0hp = gXMLAngle(param);
+								if(strcmp(ezxml_attr(param,"Name"),"InitialPhaseCross")==0)
+									Phi0hc = gXMLAngle(param);
+							}
+							cout.precision(15);
+							cout << "  + GWNew   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+							cout.precision(15);
+							cout << " f=" << f << " hp=" << hp << " hc=" << hc << " Phi0hp=" << Phi0hp << " Phi0hc=" << Phi0hc << endl;
+							GWs.push_back(new GWNew(Beta, Lambda, Psi, f, hp, hc, Phi0hp, Phi0hc));
+							NbSrc++;
 						}
+						
+						// **** Read Parameters for Extreme Mass Ratio Inspiral
+						if(SourceType == "ExtremeMassRatioInspiral"){
+							cout << "  --> Sorry ! The EMRI are not computde actually by LISACode ! This work is in progress !" << endl;
+						}
+						
+						/*
+						// **** Read Parameters for "File" GW
+						if(SourceType == "File"){
+							ezxml_t series;
+							const char *recordname;
+							int typedata, encoding;
+							char * filename;
+							int length, records;
+							series = ezxml_child(source,"XSIL");
+							if(strcmp(ezxml_attr(series,"Type"),"TimeSeries")!=0)
+								throw invalid_argument("ConfigSim::ReadXMLFile : The record type isn't known (only TimeSeries) !");
+							recordname = ezxml_attr(series,"Name");
+							cout << " Record " << recordname << " :" << endl;
+							filename = gXMLTimeSeries(series,typedata,encoding,length,records);
+							cout.precision(15);
+							cout << "  + GWFile   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
+							cout << " File=" << filename << endl;
+							// WARNING : Impossible de reccuperer le nom de fichier qui devrait etre dans filename
+							GWs.push_back(new GWFile(Beta, Lambda, Psi, filename));
+							NbSrc++;
+						}
+						 */
+						
+						
 					}
-					// Read specific parameters for sampled plane wave (File with just hp and hc)
+					
+					
+					// ***************  Read SampledPlaneWave Source (read in file) *************** //
+					
 					if((strcmp(ezxml_attr(source,"Type"),"SampledPlaneWave")==0)||(strcmp(ezxml_attr(source,"Name"),"hp,hc")==0)){
-						ezxml_t param;
-						const char * SourceType;
-						double TimeOffset(0.0), Cadence(0.0), Duration(0.0); 
-						//double ci;
-						for(param = ezxml_child(source,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"TimeOffset")==0)
-								TimeOffset = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Cadence")==0)
-								Cadence = gXMLTime(param);
-							if(strcmp(ezxml_attr(param,"Name"),"Duration")==0)
-								Duration = gXMLTime(param);
+						ezxml_t filedata, param;
+						string SourceType;
+						char GWFileName[256];
+						int GWFileEncoding(0);
+						double GWTimeOffset(-1.0), GWTimeStep(-1.0), Duration(31457280.0);
+						int GWLength(100), GWRecords(2);
+						int typedata;
+						for (filedata = ezxml_child(source, "XSIL"); filedata; filedata = filedata->next) {
+							for(param = ezxml_child(filedata,"Param"); param; param = param->next){
+								if(strcmp(ezxml_attr(param,"Name"),"SourceType")==0)
+									SourceType = gXMLstring(param);
+								if(strcmp(ezxml_attr(param,"Name"),"TimeOffset")==0)
+									GWTimeOffset = gXMLTime(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Cadence")==0)
+									GWTimeStep = gXMLTime(param);
+								if(strcmp(ezxml_attr(param,"Name"),"Duration")==0)
+									Duration = gXMLTime(param);
+							}
+							char * TmpFileName;
+							TmpFileName = gXMLTimeSeries(filedata, typedata, GWFileEncoding, GWLength, GWRecords);
+							strcpy(GWFileName,TmpFileName);
 						}
-						cout << " New Read GW (SampledPlaneWave) : " << SourceType << endl;
-						cout << "   - Beta         = " << Beta << " rad" << endl;
-						cout << "   - Lambda       = " << Lambda << " rad" << endl;
-						cout << "   - Psi          = " << Psi << " rad" << endl;
-						cout << "   - TimeOffset   = " << TimeOffset  << " s" << endl;
-						cout << "   - Cadence      = " << Cadence  << " s" << endl;
-						cout << "   - Duration     = " << Duration  << " s" << endl;
-					}
-					// Read specific parameters for plane wave table ???
-					if(strcmp(ezxml_attr(source,"Type"),"PlaneWaveTable")==0){
-						cout << "  --> Sorry ! The GW type PlaneWaveTable is not included actually by LISACode ! This work is in progress !" << endl;
+						cout.precision(15);
+						cout << "  + GWFile : Beta = " << Beta << " , Lambda = " << Lambda << " , Psi = " << Psi << " : " << GWFileName;
+						if(GWFileEncoding){
+							cout << ", BINARY , Offset = " << GWTimeOffset << " , TimeStep = " << GWTimeStep << " , GWLength = " << GWLength << " , GWRecords = " << GWRecords;
+						}else{
+							cout << ", ASCII,  Offset = " << GWTimeOffset << " , TimeStep = " << GWTimeStep;
+						}
+						cout << " : Load file ..."; fflush(stdout);
+						GWs.push_back(new GWFile(Beta, Lambda, Psi, GWFileName, GWFileEncoding, GWTimeOffset, GWTimeStep, GWLength, GWRecords));
+						cout << " --> OK" << endl;
+						NbSrc++;
 					}
 				}
 			}
 			
 			
-			/*******************/
-			/* Read Noise Data */
-			/*******************/
+			// *******************
+			// * Read Noise Data *
+			// *******************
 			if(strcmp(type,"NoiseData")==0){
 				ezxml_t noisedata; 
 				double val ;
+				cout << "Section : NoiseData" << endl ;
 				for (noisedata = ezxml_child(section, "XSIL"); noisedata; noisedata = noisedata->next) {
 					ezxml_t param;
 					const char * instrument;
-					char * localise;
 					string str_xml,instrument_eric,SourceType,SpectralType;
 					//eric_nul = " \n";
-					int SCem, iSC(-1), IndDir(-1), InstrumentIndex ;
+					int iSC(-1), IndDir(-1), InstrumentIndex ;
 					double PSD ;
 					// Noise localisation in LISA : instrument and spacecraft
 					instrument = ezxml_attr(noisedata,"Name");
-					cout << endl << "Noise : Instrument = " << instrument << endl;
+					cout << endl << "  Noisy Instrument = " << instrument << endl;
 					for(param = ezxml_child(noisedata,"Param"); param; param = param->next){
 						if(strcmp(ezxml_attr(param,"Name"),"PowerSpectralDensity")==0){
 							PSD = gXMLdouble(param);
@@ -2141,7 +2411,7 @@ void ConfigSim::ReadXMLFile()
 						InstrumentIndex = 6; // (shot noise) a verifier
 						if(strcmp(instrument,"pd1")==0){
 							iSC = 1 ; IndDir = 0 ;
-							cout << "case pd1 "<< endl ;
+							//cout << "case pd1 "<< endl ;
 						}else{
 							if(strcmp(instrument,"pd1s")==0){
 								iSC = 1 ; IndDir = 1 ;
@@ -2172,7 +2442,7 @@ void ConfigSim::ReadXMLFile()
 						InstrumentIndex = 0; // (laser) a verifier
 						if(strcmp(instrument,"c1")==0){
 							iSC = 1 ; IndDir = 0 ;
-							cout << "case c1 "<< endl ;
+							//cout << "case c1 "<< endl ;
 						}else{
 							if(strcmp(instrument,"c1s")==0){
 								iSC = 1 ; IndDir = 1 ;
@@ -2230,22 +2500,22 @@ void ConfigSim::ReadXMLFile()
 					// Type of noise
 					const char * noisetype;
 					/*		  for(param = ezxml_child(noisedata,"Param"); param; param = param->next){
-						if(strcmp(ezxml_attr(param,"Name"),"NoiseType")==0)
-						//noisetype = ezxml_txt(param);
-						noisetype = "White"; //bidon
-					}*/
+					 if(strcmp(ezxml_attr(param,"Name"),"NoiseType")==0)
+					 //noisetype = ezxml_txt(param);
+					 noisetype = "White"; //bidon
+					 }*/
 					noisetype = "unknown" ; // pourquoi ?
 					if((strcmp(noisetype,"White")==0)||(strcmp(noisetype,"Filter_f")==0)||(strcmp(noisetype,"Filter_1of")==0)||(strcmp(noisetype,"Filter_fLosP")==0)||(SpectralType == "PinkAcceleration")||(SpectralType == "WhitePhase")||(SpectralType == "WhiteFrequency")){
 						double level(0.0);
 						NoiseSpec tmp_noise;
 						/*for(param = ezxml_child(noisedata,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),noisetype)==0){
-								double Fact(1.0);
-								char * UnitType;
-								UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
-								level = atof(ezxml_txt(param))*Fact;
-							}
-						}*/
+						 if(strcmp(ezxml_attr(param,"Name"),noisetype)==0){
+						 double Fact(1.0);
+						 char * UnitType;
+						 UnitType = gXMLUnit(ezxml_attr(param,"Unit"),Fact);
+						 level = atof(ezxml_txt(param))*Fact;
+						 }
+						 }*/
 						//cout << endl << "noisetype = " << noisetype << endl ;
 						//cout << "SpectralType = " << SpectralType << endl ;
 						if(strcmp(noisetype,"White")==0){
@@ -2286,7 +2556,7 @@ void ConfigSim::ReadXMLFile()
 							tmp_noise.NType = 7;
 							tmp_noise.NVal0=pow(PSD,0.5);
 							tmp_noise.NVal01=1e-4; // frequency of ankle
-												   //tmp_noise.NVal01=1e-8; // frequency of ankle
+							//tmp_noise.NVal01=1e-8; // frequency of ankle
 							cout << "  --> PinkAcceleration : ISC, IndDir, Level = " << iSC << " " << IndDir << "  " <<tmp_noise.NVal0 << endl;
 							NoisePlace(tmp_noise, iSC, IndDir, InstrumentIndex);
 							//throw invalid_argument("ConfigSim::ReadXMLFile : One parameter is missing in xml file for Filter_MLDC_IM !");		
@@ -2333,152 +2603,158 @@ void ConfigSim::ReadXMLFile()
 				cout << endl ;
 			}
 			
-			/*******************/
-			/* Read TDI Data */
-			/*******************/
-			if(strcmp(type,"TDIData")==0){
-				ezxml_t tdidata;
-				for (tdidata = ezxml_child(section, "XSIL"); tdidata; tdidata = tdidata->next) {
-					const char * generatorname;
-					vector<int> tmp_TDIPacks;
-					if(strcmp(ezxml_attr(tdidata,"Type"),"TDI")==0){
-						ezxml_t param;
-						bool UnKnowTDI(true);
-						for(param = ezxml_child(tdidata,"Param"); param; param = param->next){
-							if(strcmp(ezxml_attr(param,"Name"),"GeneratorName")==0){
-								generatorname = ezxml_txt(param);
-								cout << " TDI : Name = " << generatorname << endl;
-							}
-						}
-						// Search if TDI generator is predifined
-						UnKnowTDI = FindTDIName(generatorname, tmp_TDIPacks);
-						
-						// Read unknow TDI generator
-						if(UnKnowTDI){
-							cout << "       Pack = ";
-							for(param = ezxml_child(tdidata,"Param"); param; param = param->next){
-								if(strcmp(ezxml_attr(param,"Name"),"Pack")==0){
-									int tmp_pack;
-									int NbDelays(0);
-									tmp_pack = atoi(ezxml_txt(param));
-									cout << " " << tmp_pack ;
-									tmp_TDIPacks.push_back(tmp_pack);
-									while(!((double)(tmp_pack/pow(10.0,NbDelays))<1.0)){
-										NbDelays++;
-									}
-								}
-							}
-							cout << endl;
-						}
-						TDIsName.push_back(generatorname);
-						TDIsPacks.push_back(tmp_TDIPacks);
-						cout << endl;
-					}
-					if(strcmp(ezxml_attr(tdidata,"Type"),"TDIObservable")==0){
-						ezxml_t param, series;
-						char genname[256];
-						char cfirstptr;
-						int iptr1, iptr2;
-						bool UnKnowTDI(true);
-						const char *genl;
-						//cout <<"TDI 1 encoding = "<<getFileEncodingTDI() << endl ;
-						/*
-						  const char *recordname;
-						int typedata, encoding;
-						const char *genl;
-						char * filename;
-						int length, records;
-						double timeoffset(0.0), cadence(0.0), duration(0.0);
-						*/
-						// Read generator list
-						genl = ezxml_attr(tdidata,"Name");
-						
-						// Extract generator name
-						strcpy(genname," ");
-						iptr2 = 0;
-						cout << "-----------" << endl;
-						cout << "TDI generator :" << endl;
-						cout << "genl :"<<genl<< endl ;
-						do{
-							iptr1 = iptr2;
-							//cout << "# Read junk " << iptr1 ; fflush(stdout);
-							while((genl[iptr1]=='t')||(genl[iptr1]==',')||(genl[iptr1]==' ')){
-								iptr1++;
-							}
-							//cout << " --> " << iptr1 << endl; fflush(stdout);
-							iptr2 = iptr1;
-							//cout << "# Read word " << iptr2 ; fflush(stdout);
-							while((genl[iptr2]!=',')&&(genl[iptr2]!='\0')&&(genl[iptr2]!=' ')){
-								iptr2++;
-							}
-							//cout << " --> " << iptr2 << endl; fflush(stdout);
-							cfirstptr = genl[iptr1];
-							//cout << "# First char " << cfirstptr << endl; fflush(stdout);
-							strncpy(genname,strchr(genl,cfirstptr),(iptr2-iptr1));
-							genname[iptr2-iptr1] = '\0';
-							cout << "  -  " << genname ; fflush(stdout);
-							UnKnowTDI = FindTDIName(genname, tmp_TDIPacks);
-							if(UnKnowTDI){
-								cout << " --> Sorry, it is not known !" << endl;
-							}else{
-							  //cout << "genname ="<<genname<< endl;
-								TDIsName.push_back(genname);
-								TDIsPacks.push_back(tmp_TDIPacks);
-								cout << " --> OK !" << endl;
-							}
-							
-						}while(genl[iptr2]==',');
-						
-						// Read the filename
-						cout << "TDI filename ..." << endl;
-						series = ezxml_child(tdidata,"XSIL");
-						cout << "series:"<<series<<endl ;
-						if(series !=0){
-						  // Normally the following parameters are defined elsewhere
-						int typedata, encoding;
-						char * filename;
-						int length, records;
-						double timeoffset(0.0), cadence(0.0), duration(0.0);
-						  if(strcmp(ezxml_attr(series,"Type"),"TimeSeries")!=0)
-						    throw invalid_argument("ConfigSim::ReadXMLFile : The record type isn't known (only TimeSeries) !");
-						  filename = gXMLTimeSeries(series,typedata,encoding,length,records);
-						  
-						  for(param = ezxml_child(series,"Param"); param; param = param->next){
-						    if(strcmp(ezxml_attr(param,"Name"),"TimeOffset")==0)
-						      timeoffset = gXMLTime(param);
-						    if(strcmp(ezxml_attr(param,"Name"),"Cadence")==0)
-						      cadence = gXMLTime(param); 
-						    if(strcmp(ezxml_attr(param,"Name"),"Duration")==0)
-						      duration = gXMLTime(param);
-						  }
-						
-						
-						cout << "------- Read TDI Record Parameter ----- " << endl;
-						cout << "  - filename   = " << filename << endl;
-						cout << "  - typedata   = " << typedata << endl;
-						cout << "  - encoding   = " << encoding << endl;
-						cout << "  - length     = " << length << endl;
-						cout << "  - records    = " << records << endl;
-						cout << "  - timeoffset = " << timeoffset << endl;
-						cout << "  - cadence    = " << cadence << endl;
-						cout << "  - duration   = " << duration << endl;
-						cout << endl; 
-						strcpy(FileNameTDI,filename);
-						FileEncodingTDI  = encoding;
-						//cout << "test_eric encoding = " << getFileEncodingTDI() << endl ;
-						//tStepPhy = cadence;
-						tStepMes = cadence;
-						tMax = duration;
-						if(duration/1000<10000*cadence)
-							tDisplay = duration/1000;
-						else
-							tDisplay = 10000*cadence;
-						}
-					}
-					
-				}
-			}
-
+			// *******************
+			// *  Read TDI Data  *
+			// *******************
+			/*
+			 if(strcmp(type,"TDIData")==0){
+			 ezxml_t tdidata;
+			 for (tdidata = ezxml_child(section, "XSIL"); tdidata; tdidata = tdidata->next) {
+			 const char * generatorname;
+			 vector<int> tmp_TDIPacks;
+			 vector<double> tmp_TDIPacksFact;
+			 if(strcmp(ezxml_attr(tdidata,"Type"),"TDI")==0){
+			 ezxml_t param;
+			 bool UnKnowTDI(true);
+			 for(param = ezxml_child(tdidata,"Param"); param; param = param->next){
+			 if(strcmp(ezxml_attr(param,"Name"),"GeneratorName")==0){
+			 generatorname = ezxml_txt(param);
+			 cout << " TDI : Name = " << generatorname << endl;
+			 }
+			 }
+			 // Search if TDI generator is predifined
+			 UnKnowTDI = FindTDIName(generatorname, tmp_TDIPacks, tmp_TDIPacksFact);
+			 
+			 // Read unknow TDI generator
+			 if(UnKnowTDI){
+			 cout << "       Pack = ";
+			 for(param = ezxml_child(tdidata,"Param"); param; param = param->next){
+			 if(strcmp(ezxml_attr(param,"Name"),"Pack")==0){
+			 int tmp_pack;
+			 int NbDelays(0);
+			 tmp_pack = atoi(ezxml_txt(param));
+			 cout << " " << tmp_pack ;
+			 tmp_TDIPacks.push_back(tmp_pack);
+			 tmp_TDIPacksFact.push_back(1.0);
+			 while(!((double)(tmp_pack/pow(10.0,NbDelays))<1.0)){
+			 NbDelays++;
+			 }
+			 }
+			 }
+			 cout << endl;
+			 }
+			 TDIsName.push_back(generatorname);
+			 TDIsPacks.push_back(tmp_TDIPacks);
+			 TDIsPacksFact.push_back(tmp_TDIPacksFact);
+			 cout << endl;
+			 }
+			 if(strcmp(ezxml_attr(tdidata,"Type"),"TDIObservable")==0){
+			 ezxml_t param, series;
+			 char genname[256];
+			 char cfirstptr;
+			 int iptr1, iptr2;
+			 bool UnKnowTDI(true);
+			 const char *genl;
+			 //cout <<"TDI 1 encoding = "<<getFileEncodingTDI() << endl ;
+			 
+			 // const char *recordname;
+			 // int typedata, encoding;
+			 // const char *genl;
+			 // char * filename;
+			 // int length, records;
+			 // double timeoffset(0.0), cadence(0.0), duration(0.0);
+			 
+			 // Read generator list
+			 genl = ezxml_attr(tdidata,"Name");
+			 
+			 // Extract generator name
+			 strcpy(genname," ");
+			 iptr2 = 0;
+			 cout << "-----------" << endl;
+			 cout << "TDI generator :" << endl;
+			 cout << "genl :"<<genl<< endl ;
+			 do{
+			 iptr1 = iptr2;
+			 //cout << "# Read junk " << iptr1 ; fflush(stdout);
+			 while((genl[iptr1]=='t')||(genl[iptr1]==',')||(genl[iptr1]==' ')){
+			 iptr1++;
+			 }
+			 //cout << " --> " << iptr1 << endl; fflush(stdout);
+			 iptr2 = iptr1;
+			 //cout << "# Read word " << iptr2 ; fflush(stdout);
+			 while((genl[iptr2]!=',')&&(genl[iptr2]!='\0')&&(genl[iptr2]!=' ')){
+			 iptr2++;
+			 }
+			 //cout << " --> " << iptr2 << endl; fflush(stdout);
+			 cfirstptr = genl[iptr1];
+			 //cout << "# First char " << cfirstptr << endl; fflush(stdout);
+			 strncpy(genname,strchr(genl,cfirstptr),(iptr2-iptr1));
+			 genname[iptr2-iptr1] = '\0';
+			 cout << "  -  " << genname ; fflush(stdout);
+			 UnKnowTDI = FindTDIName(genname, tmp_TDIPacks, tmp_TDIPacksFact);
+			 if(UnKnowTDI){
+			 cout << " --> Sorry, it is not known !" << endl;
+			 }else{
+			 //cout << "genname ="<<genname<< endl;
+			 TDIsName.push_back(genname);
+			 TDIsPacks.push_back(tmp_TDIPacks);
+			 TDIsPacksFact.push_back(tmp_TDIPacksFact);
+			 cout << " --> OK !" << endl;
+			 }
+			 
+			 }while(genl[iptr2]==',');
+			 
+			 // Read the filename
+			 cout << "TDI filename ..." << endl;
+			 series = ezxml_child(tdidata,"XSIL");
+			 //cout << "series:"<<series<<endl ;
+			 if(series !=0){
+			 // Normally the following parameters are defined elsewhere
+			 int typedata, encoding;
+			 char * filename;
+			 int length, records;
+			 double timeoffset(0.0), cadence(0.0), duration(0.0);
+			 if(strcmp(ezxml_attr(series,"Type"),"TimeSeries")!=0)
+			 throw invalid_argument("ConfigSim::ReadXMLFile : The record type isn't known (only TimeSeries) !");
+			 filename = gXMLTimeSeries(series,typedata,encoding,length,records);
+			 
+			 for(param = ezxml_child(series,"Param"); param; param = param->next){
+			 if(strcmp(ezxml_attr(param,"Name"),"TimeOffset")==0)
+			 timeoffset = gXMLTime(param);
+			 if(strcmp(ezxml_attr(param,"Name"),"Cadence")==0)
+			 cadence = gXMLTime(param); 
+			 if(strcmp(ezxml_attr(param,"Name"),"Duration")==0)
+			 duration = gXMLTime(param);
+			 }
+			 
+			 
+			 cout << "------- Read TDI Record Parameter ----- " << endl;
+			 cout << "  - filename   = " << filename << endl;
+			 cout << "  - typedata   = " << typedata << endl;
+			 cout << "  - encoding   = " << encoding << endl;
+			 cout << "  - length     = " << length << endl;
+			 cout << "  - records    = " << records << endl;
+			 cout << "  - timeoffset = " << timeoffset << endl;
+			 cout << "  - cadence    = " << cadence << endl;
+			 cout << "  - duration   = " << duration << endl;
+			 cout << endl; 
+			 strcpy(FileNameTDI,filename);
+			 FileEncodingTDI  = encoding;
+			 //cout << "test_eric encoding = " << getFileEncodingTDI() << endl ;
+			 //tStepPhy = cadence;
+			 tStepMes = cadence;
+			 tMax = duration;
+			 if(duration/1000<10000*cadence)
+			 tDisplay = duration/1000;
+			 else
+			 tDisplay = 10000*cadence;
+			 }
+			 }
+			 
+			 }
+			 }
+			 */
+			
 		}
 		cout << endl << "   ==================  Create XML Outputfile here" << endl << endl;
 		if(XmlOutputFile != "None"){
@@ -2497,20 +2773,36 @@ void ConfigSim::ReadXMLFile()
 		
 		// Display of TDI generators
 		
+		
+		
+		// Display of TDI generators
+		cout << "  ----------" << endl;
 		for(int i=0; i<TDIsName.size(); i++){
-			cout << TDIsName[i] << " :";
-			for(int j=0; j<TDIsPacks[i].size(); j++)
+			cout << "  " << TDIsName[i] << " :";
+			for(int j=0; j<TDIsPacks[i].size(); j++){
 				cout << " " << (TDIsPacks[i])[j];
+				if(fabs((TDIsPacksFact[i])[j]-1.0) > PRECISION)
+					cout << "*" << (TDIsPacksFact[i])[j];
+			}
 			cout << endl;
 		}
 		
-		cout << endl << " ----------" << endl;
-		cout << " Sources number = " << NbSrc << endl;
-		cout << " tStepPhy       = " << tStepPhy << " s" << endl;
-		cout << " tStepMes       = " << tStepMes << " s" << endl;
-		cout << " tDeltaTDIDelay = " << tDeltaTDIDelay << " s" << endl;
-		cout << " NbMaxDelays    = " << NbMaxDelays << endl;
-		cout << " InterpUtilVal  = " << TDIInterpUtilVal << endl;
+		// ** Default value for display time step
+		if(tDisplay<0.0)
+			tDisplay = tMax/1000.0;
+		
+		cout << "  ----------" << endl;
+		cout << "  Sources number = " << NbSrc << endl;
+		cout << "  tStepPhy       = " << tStepPhy << " s" << endl;
+		cout << "  tStepMes       = " << tStepMes << " s" << endl;
+		cout << "  tDeltaTDIDelay = " << tDeltaTDIDelay << " s" << endl;
+		cout << "  tStepDisplay   = " << tDisplay << " s" << endl;
+		cout << "  NbMaxDelays    = " << NbMaxDelays << endl;
+		cout << "  InterpUtilVal  = " << TDIInterpUtilVal << endl;
+		cout << "  Orbits type    = " << OrbType << endl;
+		cout << "  Orbits approx  = " << OrbApprox << endl;
+		cout << "  Delay order    = " << OrbOrder << endl; 
+		
 		
 	}
 	
@@ -2526,9 +2818,9 @@ void ConfigSim::ReadXMLFile()
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*!\brief
-* Ceates XML Output file for MLDC.
-*
-*/
+ * Ceates XML Output file for MLDC.
+ *
+ */
 void ConfigSim::CreateXmlOutputFile()
 {
 	char *  OutputFileName;
@@ -2571,9 +2863,9 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
 	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "4"<<endl<<spc_5 <<Dim_end;
 	if(getFileEncodingTDI()==0)
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
 	else{
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
+	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
 	FichXML << spc_9 << getFileNameTDI() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2592,11 +2884,15 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
-	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
+	if(UseInternalPhasemeter())
+		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
+	else
+		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "3"<<endl<<spc_5 <<Dim_end;
+		
 	if(getFileEncodingSig(1)==0)
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
-	else{
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
+		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+	else
+		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
 	FichXML << spc_9 << getFileNameSigSC1() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2615,11 +2911,14 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
-	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
+	if(UseInternalPhasemeter())
+		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
+	else
+		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "3"<<endl<<spc_5 <<Dim_end;
 	if(getFileEncodingSig(2)==0)
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
-	else{
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
+		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+	else
+		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
 	FichXML << spc_9 << getFileNameSigSC2() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2639,11 +2938,14 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
 	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
 	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
-	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
+	if(UseInternalPhasemeter())
+		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
+	else
+		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "3"<<endl<<spc_5 <<Dim_end;
 	if(getFileEncodingSig(3)==0)
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
 	else{
-	  FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
+	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
 	FichXML << spc_9 << getFileNameSigSC3() << endl <<spc_5<<Stream_end;
 	FichXML << spc_5 << Array_end;
 	FichXML << spc_3 << xsil_end;
@@ -2689,7 +2991,7 @@ double ConfigSim::gXMLTime(ezxml_t param)
 	if((strcmp(UnitType,"Second")!=0)&&strcmp(UnitType,"second")!=0)
 		throw invalid_argument("ConfigSim::gXMLTime : The time's unit isn't known (only Second) !");
 	TimeParam *= atof(ezxml_txt(param));
-	cout << " - " << ezxml_attr(param,"Name") << " = " << TimeParam << " Second" << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << TimeParam << " Second" << endl;
 	return (TimeParam);
 }
 
@@ -2709,7 +3011,7 @@ double ConfigSim::gXMLAngle(ezxml_t param)
 	}
 	if((strcmp(UnitType,"Degree")!=0)&&(strcmp(UnitType,"Radian")!=0))
 		throw invalid_argument("ConfigSim::gXMLAngle : The angle's unit isn't known (only Degree or Radian) !");
-	cout << " - " << ezxml_attr(param,"Name") << " = " << AngleParam << " Radian" << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << AngleParam << " Radian" << endl;
 	return (AngleParam);
 }
 /*!\brief
@@ -2728,7 +3030,7 @@ double ConfigSim::gXMLFrequency(ezxml_t param)
 	}
 	if((strcmp(UnitType,"MilliHertz")!=0)&&(strcmp(UnitType,"Hertz")!=0))
 		throw invalid_argument("ConfigSim::gXMLFrequency : The frequency's unit isn't known (only MilliHertz or Hertz) !");
-	cout << " - " << ezxml_attr(param,"Name") << " = " << FrequencyParam << " Hertz" << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << FrequencyParam << " Hertz" << endl;
 	return (FrequencyParam);
 }
 /*!\brief
@@ -2744,7 +3046,7 @@ double ConfigSim::gXMLAstroMass(ezxml_t param)
 	AstroMass *= atof(ezxml_txt(param));
 	if(strcmp(UnitType,"SolarMass")!=0)
 		throw invalid_argument("ConfigSim::gXMLAstroMass : The astronomic mass's unit isn't known (only SolarMass) !");
-	cout << " - " << ezxml_attr(param,"Name") << " = " << AstroMass << " SolarMass" << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << AstroMass << " SolarMass" << endl;
 	return (AstroMass);
 }
 /*!\brief
@@ -2763,7 +3065,7 @@ double ConfigSim::gXMLAstroDistance(ezxml_t param)
 	}
 	if((strcmp(UnitType,"Parsec")!=0)&&(strcmp(UnitType,"KiloParsec")!=0))
 		throw invalid_argument("ConfigSim::gXMLAstroDistance : The astronomic distance's unit isn't known (only Parsec or KiloParsec) !");
-	cout << " - " << ezxml_attr(param,"Name") << " = " << AstroDistance << " KiloParsec" << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << AstroDistance << " KiloParsec" << endl;
 	return (AstroDistance);
 }
 
@@ -2789,8 +3091,8 @@ char * ConfigSim::gXMLWord(ezxml_t param)
 	ptr[iptr2]='\0';
 	cfirstptr = ptr[iptr1];
 	strcpy(theWord,strchr(ptr,cfirstptr));
-
-	cout << " - Word = " << theWord << endl;
+	
+	cout << "   x Word = " << theWord << endl;
 	
 	return(theWord);
 }
@@ -2798,48 +3100,50 @@ char * ConfigSim::gXMLWord(ezxml_t param)
 
 
 /*!\brief
-* Extracts a value (double) parameter from XML sctructure.
-*
-* NO units
-*/
+ * Extracts a value (double) parameter from XML sctructure.
+ *
+ * NO units
+ */
 double ConfigSim::gXMLdouble(ezxml_t param)
 {
 	double result(1.0);
 	result = atof(ezxml_txt(param));
-	cout << " - " << ezxml_attr(param,"Name") << " = " << result << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << result << endl;
 	return (result);
 }
 
 
 /*!\brief
-* Extracts a string from XML structure.
-*
-* NO units
-*/
+ * Extracts a string from XML structure.
+ *
+ * NO units
+ */
 string  ConfigSim::gXMLstring(ezxml_t param)
 {
-	string result,str_find,str_nul,str_end ;
+	string result,str_find,str_nul,str_end,str_space,str_tab;
+	char * tmpW;
 	str_nul = " \n";
 	str_end = "\n";
-	str_find = (*param).txt ;
+	tmpW = stripcopy((*param).txt);
+	str_find = tmpW;
 	str_find = str_find.substr(str_find.find_first_not_of(str_nul)) ;
 	str_find = str_find.substr(0,str_find.find_first_of(str_end)) ;
 	result = str_find;
-	cout << " - " << ezxml_attr(param,"Name") << " = " << result << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << result << endl;
 	return (result);
 }
 
 
 /*!\brief
-* Extracts a value (double) parameter from XML sctructure.
-*
-* NO units
-*/
+ * Extracts a value (double) parameter from XML sctructure.
+ *
+ * NO units
+ */
 int ConfigSim::gXMLint(ezxml_t param)
 {
 	int result(0);
 	result = atoi(ezxml_txt(param));
-	cout << " - " << ezxml_attr(param,"Name") << " = " << result << endl;
+	cout << "   x " << ezxml_attr(param,"Name") << " = " << result << endl;
 	return (result);
 }
 
@@ -2889,29 +3193,25 @@ char * ConfigSim::gXMLTimeSeries(ezxml_t series, int & typedata, int & encoding,
 	ptr[iptr2]='\0';
 	cfirstptr = ptr[iptr1];
 	strcpy(filename,strchr(ptr,cfirstptr));
-	typedata = -1;
-	/*
-	if(strcmp(ezxml_attr(stream,"Type"),"XXXXX")==0)
-		typedata = 0;
-	else{
-		cout << " Unknow type data !" << endl;
-	}
-	encoding = -1;
-	 */
+	
 	if(strcmp(uppercase(ezxml_attr(stream,"Encoding")),"ASCII")==0)
 		encoding = 0;
 	else{
-	  encoding = 1;
+		encoding = 1;
 	}
 	
-	cout << "   - FileName = " << filename << endl;
+	cout << "   x FileName = " << filename << endl;
 	
-	cout << "   - Type     = " << typedata ;
-	switch(typedata){
-		default:
-			cout << " : Unknown" << endl;
+	cout << "   x Type     = " ;
+	typedata = -1;
+	if(strcmp(ezxml_attr(array,"Type"),"double")==0){
+		typedata = 8;
+		cout << "double" << endl;
+	}else{
+		cout << " Unknow type data !" << endl;
 	}
-	cout << "   - Encoding = " << encoding;
+	
+	cout << "   x Encoding = " << encoding;
 	switch(encoding){
 		case 0 :
 			cout << " : ASCII" << endl;
@@ -2922,9 +3222,9 @@ char * ConfigSim::gXMLTimeSeries(ezxml_t series, int & typedata, int & encoding,
 		default:
 			cout << " : Unknown" << endl;
 	}
-		
-	cout << "   - Length   = " << length << endl;
-	cout << "   - Records  = " << records << endl;
+	
+	cout << "   x Length   = " << length << endl;
+	cout << "   x Records  = " << records << endl;
 	
 	return(filename);
 }
@@ -2982,15 +3282,18 @@ void ConfigSim::NoisesCreation()
 				NoiseSpec tmp_n;
 				tmp_n =  (NoisesData[Index])[sNoise];
 				noise_TwoFilter = 0;
-				cout << " Noise " << Index << " (" << (NoisesData[Index]).size() << " spec): ";
+				cout << "  - Noise " << Index << " (" << (NoisesData[Index]).size() << " spec): "; fflush(stdout);
+				// ** White noise
 				if (tmp_n.NType == 1){
 					cout << "White " << tmp_n.NVal0;
 					iNoise = new NoiseWhite(tStepPhy, tStepMes, tMemNoiseFirst, tMemNoiseLast, tmp_n.NVal0);
 				}
+				// ** Noise read in file
 				if (tmp_n.NType == 2){
-					cout << "File " << tmp_n.NStr;
-					iNoise = new NoiseFile(tStepPhy, tStepMes, tMemNoiseFirst, tMemNoiseLast, tmp_n.NStr);
+					cout << "File " << tmp_n.NStr << " :  "; fflush(stdout);
+					iNoise = new NoiseFile(tStepPhy, tStepMes, tMemNoiseFirst, tMemNoiseLast, tmp_n.NStr,  tmp_n.NVal0);
 				}
+				// ** Filter noise with explicit specification of coefficients
 				if (tmp_n.NType == 3){
 					cout << "Filter : ";
 					alpha.push_back(tmp_n.NVal1);
@@ -3007,6 +3310,7 @@ void ConfigSim::NoisesCreation()
 					cout << " , Stabilization = " << tmp_n.NVal0;
 					NbDataStab = int(tmp_n.NVal0+0.1);
 				}
+				// ** Filter noise in f^-1 : NVal0 -> factor
 				if (tmp_n.NType == 4){
 					double tmpVal(0.0);
 					if(alpha.size() == 0){
@@ -3039,6 +3343,7 @@ void ConfigSim::NoisesCreation()
 						cout << " " << (beta[0])[i];
 					}
 				}
+				// ** Filter noise in f : NVal0 -> factor
 				if (tmp_n.NType == 5){
 					double tmpVal(0.0);
 					if(alpha.size() == 0){
@@ -3071,6 +3376,7 @@ void ConfigSim::NoisesCreation()
 						cout << " " << (beta[0])[i];
 					}
 				}
+				// ** Filter noise in f*L/sqrt(P) : NVal0 -> factor
 				if (tmp_n.NType == 6){
 					double tmpVal(0.0);
 					if(alpha.size() == 0){
@@ -3089,26 +3395,27 @@ void ConfigSim::NoisesCreation()
 							throw invalid_argument("ConfigSim::ReadFile : Specification's noises of multi-noises are not the same !");
 						}
 					}
-					cout << "Filter f*L/sqrt(P) : ";
-					cout << "Level = " << tmp_n.NVal0 << " : ";
+					cout << "Filter f*L/sqrt(P) : "; fflush(stdout);
+					cout << "Level = " << tmp_n.NVal0 << " : "; fflush(stdout);
 					tmpVal = tmp_n.NVal0/(M_PI*tStepPhy)*(Armlength/L0_m_default)*sqrt(LaserPower_W_default/LaserPower);
 					(beta[0])[0] = sqrt(((beta[0])[0])*((beta[0])[0]) + tmpVal*tmpVal); 
 					(beta[0])[1] = -1.0*(beta[0])[0];
-					cout << "alpha =";
+					cout << "alpha ="; fflush(stdout);
 					for(int i=0; i<(alpha[0]).size(); i++){
-						cout << " " << (alpha[0])[i];
+						cout << " " << (alpha[0])[i]; fflush(stdout);
 					}
-					cout << " , beta =";
+					cout << " , beta ="; fflush(stdout);
 					for(int i=0; i<(beta[0]).size(); i++){
-						cout << " " << (beta[0])[i];
+						cout << " " << (beta[0])[i]; fflush(stdout);
 					}
 				}
 				// modif e.p. Octobre 2007 (puts the MLDC noise for IM)
+				// ** Filter MLDC_IM
 				if (tmp_n.NType == 7){
 					double tmpVal(0.0);
 					double coef_alpha_ep;
 					coef_alpha_ep=1-1.0e-14; // correction to saturate at low frequencies
-											 //	coef_alpha_ep=1.;
+					//	coef_alpha_ep=1.;
 					if(alpha.size() == 0){
 						alpha.resize(1);
 						beta.resize(1);
@@ -3125,10 +3432,10 @@ void ConfigSim::NoisesCreation()
 						}
 						
 					}
-					// 1/f² Noise
+					// 1/fâ‰¤ Noise
 					tmpVal = tmp_n.NVal0*tmp_n.NVal01*M_PI*M_PI*tStepPhy*tStepPhy;
-					cout << endl << "Filter MLDC_IM (f¯2) : ";
-					cout << "Level = " <<tmp_n.NVal01  << " : ";
+					cout << endl << "     Filter MLDC_IM (f2) : "; fflush(stdout);
+					cout << "Level = " <<tmp_n.NVal01  << " : "; fflush(stdout);
 					(beta[0])[0] = tmpVal;
 					(beta[0])[1] = 2*(beta[0])[0];
 					(beta[0])[2] = (beta[0])[0]; 
@@ -3136,31 +3443,31 @@ void ConfigSim::NoisesCreation()
 					for(int i=0; i<(alpha[0]).size(); i++){
 						cout << " " << (alpha[0])[i];
 					}
-					cout << " , beta =";
+					cout << " ,   beta ="; fflush(stdout);
 					for(int i=0; i<(beta[0]).size(); i++){
 						cout << " " << (beta[0])[i];
 					}
 					NbDataStab = 100000;
-					cout << "  ; NbDataStab   "<< NbDataStab;
+					cout << "  ; NbDataStab   "<< NbDataStab; fflush(stdout);
 					Filter NF_MLDC_IM_f2(alpha, beta, NbDataStab);
 					
 					// 1/f Noise
-					cout << endl << "Filter MLDC_IM (f¯1) : ";
+					cout << endl << "     Filter MLDC_IM (f1) : ";
 					cout << "Level = " << tmp_n.NVal0 << " : ";
 					(alpha[0]).resize(1);
 					(beta[0]).resize(2);
 					(alpha[0])[0] = 1.0*coef_alpha_ep;
 					(beta[0])[0] = tmp_n.NVal0*M_PI*tStepPhy;
 					(beta[0])[1] = (beta[0])[0];
-					cout << "alpha ="; 
+					cout << "alpha ="; fflush(stdout);
 					for(int i=0; i<(alpha[0]).size(); i++){
 						cout << " " << (alpha[0])[i];
 					}
-					cout << " , beta =";
+					cout << " ,  beta ="; fflush(stdout);
 					for(int i=0; i<(beta[0]).size(); i++){
 						cout << " " << (beta[0])[i];
 					}
-					cout << "  ; NbDataStab   "<< NbDataStab;
+					cout << "  ; NbDataStab   "<< NbDataStab; fflush(stdout);
 					Filter NF_MLDC_IM_f1(alpha, beta, NbDataStab);
 					iNoise = new NoiseTwoFilter(tStepPhy, tStepMes, tMemNoiseFirst, tMemNoiseLast, NF_MLDC_IM_f1, NF_MLDC_IM_f2);
 					noise_TwoFilter = 1;
@@ -3169,7 +3476,7 @@ void ConfigSim::NoisesCreation()
 				// end of modif e.p.
 				cout << endl;
 			}
-			//For all filtred noises
+			// ** For all filtred noises
 			if((alpha.size()!=0)&&(beta.size()!=0)&&(noise_TwoFilter != 1)){
 				Filter NF_tmp(alpha, beta, NbDataStab);
 				iNoise = new NoiseFilter(tStepPhy, tStepMes, tMemNoiseFirst, tMemNoiseLast, NF_tmp);
@@ -3205,7 +3512,7 @@ double ConfigSim::tMinDelay()
  *
  * Memory time during which data must be saved for apply TDI interpolation is :
  * \f[ tMemNecInterpTDI =  \left\{ \begin{array}{ll}
-\big(2 + ceil(\frac{TDIInterpUtilVal}{2}) \big) \cdot tStepMes & \textrm{ if (TDIInterp = LAG)} \\
+ \big(2 + ceil(\frac{TDIInterpUtilVal}{2}) \big) \cdot tStepMes & \textrm{ if (TDIInterp = LAG)} \\
  2 \cdot tStepMes & else  \end{array} \right. \f]
  *
  */
@@ -3228,40 +3535,112 @@ bool ConfigSim::getNoNoise()
 		if(Noises[i] != NULL)
 			NNoise = false;
 	}
-	NNoise = false ; // always calculate the tau (internal) phasemeters
+	//NNoise = false ; // always calculate the tau (internal) phasemeters
 	return(NNoise);
+}
+
+
+bool ConfigSim::UseInternalPhasemeter()
+{
+	if(InternalPhasemeters){
+		return(true);
+	}else{
+		if(getNoNoise())
+			return(false);
+		else
+			return(true);
+	}
 }
 
 
 int ConfigSim::testbyteorder()
 {
-  short int word = 0x0001;
-  char *byte = (char *) &word;
-  int  BIGENDIAN = 0;
-  int  LITTLEENDIAN = 1;
-  return(byte[0] ? LITTLEENDIAN : BIGENDIAN);
+	short int word = 0x0001;
+	char *byte = (char *) &word;
+	int  BIGENDIAN = 0;
+	int  LITTLEENDIAN = 1;
+	return(byte[0] ? LITTLEENDIAN : BIGENDIAN);
 }
 
 
 char * ConfigSim::uppercase(const char * mot)
 {
-  int longueur,i ;
-  longueur = strlen(mot) ;
-  static char MOT1[256] ;
-  strcpy(MOT1,mot) ; 
-  for (i=0 ; i<longueur ; i++){
-    majuscule(MOT1[i]);
-  }
-  return(MOT1);
+	int longueur,i ;
+	longueur = strlen(mot) ;
+	static char MOT1[256] ;
+	strcpy(MOT1,mot) ; 
+	for (i=0 ; i<longueur ; i++){
+		majuscule(MOT1[i]);
+	}
+	return(MOT1);
 }
+
 void ConfigSim::majuscule(char &lettre)
 {
 	if ((lettre>='a')&&(lettre<='z')) lettre=lettre-32;
 }
 
-bool ConfigSim::FindTDIName(const char * generatorname, vector<int> & tmp_TDIPacks)
+string ConfigSim::upS(string Str)
+{
+	int longueur,i;
+	string rStr(Str);
+	char cS;
+	longueur = Str.length();
+	for (i=0 ; i<longueur ; i++){
+		cS = rStr.c_str()[i];
+		majuscule(cS);
+		rStr[i] = cS;
+	}
+	//cout << Str << " ==>> " << rStr << endl;
+	return(rStr);
+}
+
+// ** Compare lowercase word : Return true if the two words are identical
+bool ConfigSim::scmp(const string str1, const string str2)
+{
+	if(upS(str1) == upS(str2))
+		return(true);
+	else
+		return(false);
+}
+
+
+/*! Makes a copy of the string "orig", stripping all whitespace-type characters;
+ * the returned string is a private copy that must be deallocated with free().
+ */
+char * ConfigSim::stripcopy(const char *orig) 
+{
+    int pos = 0, len = 0;
+    char *ret;
+    
+    // Strip space-like characters at the beginning
+    while(orig[pos] == ' ' || orig[pos] == '\n' || orig[pos] == '\r'|| orig[pos] == '\t')
+        pos++;
+	
+    // Walk until the end of the string  
+    while(orig[pos+len] != 0)
+        len++;
+	
+    // Strip space-like characters at the end
+    len--;
+    while(orig[pos+len] == ' ' || orig[pos+len] == '\n' || orig[pos+len] == '\r' || orig[pos+len] == '\t')
+		len--;
+    len++;
+	
+    // Copy the string
+    ret = (char*)malloc( (len+1) * sizeof(char) );
+    for(int i=0;i<len;i++) 
+		ret[i] = orig[pos+i];
+    ret[len] = '\0';
+    
+    return ret;
+}
+
+
+bool ConfigSim::FindTDIName(const char * generatorname, vector<int> & tmp_TDIPacks, vector<double> & tmp_TDIPacksFact)
 {
 	bool UnKnowTDI(true);
+	// **** TDI generator without factor applied on packs
 	if((strcmp(generatorname,"Alpha")==0)||(strcmp(generatorname,"alpha")==0)){
 		UnKnowTDI = false;
 		tmp_TDIPacks.push_back(-1);
@@ -3579,6 +3958,203 @@ bool ConfigSim::FindTDIName(const char * generatorname, vector<int> & tmp_TDIPac
 		if(3>NbMaxDelays)
 			NbMaxDelays = 3;
 	}
+	
+	if(!UnKnowTDI){
+		tmp_TDIPacksFact.resize(tmp_TDIPacks.size(),1.0);
+	}
+	
+	// **** TDI generator with factor applied on packs
+	if((strcmp(generatorname,"A")==0)||(strcmp(generatorname,"Aa")==0)||(strcmp(generatorname,"AX")==0)){
+		UnKnowTDI = false;
+		// Packs of X * -1/sqrt(2)
+		tmp_TDIPacks.push_back(1);
+		tmp_TDIPacks.push_back(35);
+		tmp_TDIPacks.push_back(364);
+		tmp_TDIPacks.push_back(3653);
+		tmp_TDIPacks.push_back(-4);
+		tmp_TDIPacks.push_back(-53);
+		tmp_TDIPacks.push_back(-521);
+		tmp_TDIPacks.push_back(-5235);
+		tmp_TDIPacksFact.resize(8,-1.0/sqrt(2.0));
+		// Pack of Z * -1/3
+		tmp_TDIPacks.push_back(3);
+		tmp_TDIPacks.push_back(24);
+		tmp_TDIPacks.push_back(256);
+		tmp_TDIPacks.push_back(2542);
+		tmp_TDIPacks.push_back(-6);
+		tmp_TDIPacks.push_back(-42);
+		tmp_TDIPacks.push_back(-413);
+		tmp_TDIPacks.push_back(-4124);
+		tmp_TDIPacksFact.resize(16,-1.0/sqrt(2.0));
+		if(3>NbMaxDelays)
+			NbMaxDelays = 3;
+	}
+	if((strcmp(generatorname,"E")==0)||(strcmp(generatorname,"Ea")==0)||(strcmp(generatorname,"EX")==0)){
+		UnKnowTDI = false;
+		// Packs of X * 1.0/sqrt(6.0)
+		tmp_TDIPacks.push_back(1);
+		tmp_TDIPacks.push_back(35);
+		tmp_TDIPacks.push_back(364);
+		tmp_TDIPacks.push_back(3653);
+		tmp_TDIPacks.push_back(-4);
+		tmp_TDIPacks.push_back(-53);
+		tmp_TDIPacks.push_back(-521);
+		tmp_TDIPacks.push_back(-5235);
+		tmp_TDIPacksFact.resize(8,1.0/sqrt(6.0));
+		// Packs of Y * -2.0/sqrt(6.0)
+		tmp_TDIPacks.push_back(2);
+		tmp_TDIPacks.push_back(16);
+		tmp_TDIPacks.push_back(145);
+		tmp_TDIPacks.push_back(1461);
+		tmp_TDIPacks.push_back(-5);
+		tmp_TDIPacks.push_back(-61);
+		tmp_TDIPacks.push_back(-632);
+		tmp_TDIPacks.push_back(-6316);
+		tmp_TDIPacksFact.resize(16,-2.0/sqrt(6.0));
+		// Pack of Z * 1.0/sqrt(6.0)
+		tmp_TDIPacks.push_back(3);
+		tmp_TDIPacks.push_back(24);
+		tmp_TDIPacks.push_back(256);
+		tmp_TDIPacks.push_back(2542);
+		tmp_TDIPacks.push_back(-6);
+		tmp_TDIPacks.push_back(-42);
+		tmp_TDIPacks.push_back(-413);
+		tmp_TDIPacks.push_back(-4124);
+		tmp_TDIPacksFact.resize(24,1.0/sqrt(6.0));
+		if(3>NbMaxDelays)
+			NbMaxDelays = 3;
+	}
+	if((strcmp(generatorname,"T")==0)||(strcmp(generatorname,"Ta")==0)||(strcmp(generatorname,"TX")==0)){
+		UnKnowTDI = false;
+		// Packs of X * 1.0/sqrt(3.0)
+		tmp_TDIPacks.push_back(1);
+		tmp_TDIPacks.push_back(35);
+		tmp_TDIPacks.push_back(364);
+		tmp_TDIPacks.push_back(3653);
+		tmp_TDIPacks.push_back(-4);
+		tmp_TDIPacks.push_back(-53);
+		tmp_TDIPacks.push_back(-521);
+		tmp_TDIPacks.push_back(-5235);
+		tmp_TDIPacksFact.resize(8,1.0/sqrt(3.0));
+		// Packs of Y * 1.0/sqrt(3.0)
+		tmp_TDIPacks.push_back(2);
+		tmp_TDIPacks.push_back(16);
+		tmp_TDIPacks.push_back(145);
+		tmp_TDIPacks.push_back(1461);
+		tmp_TDIPacks.push_back(-5);
+		tmp_TDIPacks.push_back(-61);
+		tmp_TDIPacks.push_back(-632);
+		tmp_TDIPacks.push_back(-6316);
+		tmp_TDIPacksFact.resize(16,1.0/sqrt(3.0));
+		// Pack of Z * 1.0/sqrt(3.0)
+		tmp_TDIPacks.push_back(3);
+		tmp_TDIPacks.push_back(24);
+		tmp_TDIPacks.push_back(256);
+		tmp_TDIPacks.push_back(2542);
+		tmp_TDIPacks.push_back(-6);
+		tmp_TDIPacks.push_back(-42);
+		tmp_TDIPacks.push_back(-413);
+		tmp_TDIPacks.push_back(-4124);
+		tmp_TDIPacksFact.resize(24,1.0/sqrt(3.0));
+		if(3>NbMaxDelays)
+			NbMaxDelays = 3;
+	}
+	if((strcmp(generatorname,"Ab")==0)||strcmp(generatorname,"AMLDC")==0){
+		UnKnowTDI = false;
+		// Packs of X * 2/3
+		tmp_TDIPacks.push_back(1);
+		tmp_TDIPacks.push_back(35);
+		tmp_TDIPacks.push_back(364);
+		tmp_TDIPacks.push_back(3653);
+		tmp_TDIPacks.push_back(-4);
+		tmp_TDIPacks.push_back(-53);
+		tmp_TDIPacks.push_back(-521);
+		tmp_TDIPacks.push_back(-5235);
+		tmp_TDIPacksFact.resize(8,2.0/3.0);
+		// Packs of Y * -1/3
+		tmp_TDIPacks.push_back(2);
+		tmp_TDIPacks.push_back(16);
+		tmp_TDIPacks.push_back(145);
+		tmp_TDIPacks.push_back(1461);
+		tmp_TDIPacks.push_back(-5);
+		tmp_TDIPacks.push_back(-61);
+		tmp_TDIPacks.push_back(-632);
+		tmp_TDIPacks.push_back(-6316);
+		tmp_TDIPacksFact.resize(16,-1.0/3.0);
+		// Pack of Z * -1/3
+		tmp_TDIPacks.push_back(3);
+		tmp_TDIPacks.push_back(24);
+		tmp_TDIPacks.push_back(256);
+		tmp_TDIPacks.push_back(2542);
+		tmp_TDIPacks.push_back(-6);
+		tmp_TDIPacks.push_back(-42);
+		tmp_TDIPacks.push_back(-413);
+		tmp_TDIPacks.push_back(-4124);
+		tmp_TDIPacksFact.resize(24,-1.0/3.0);
+		if(3>NbMaxDelays)
+			NbMaxDelays = 3;
+	}
+	if((strcmp(generatorname,"Eb")==0)||(strcmp(generatorname,"EMLDC")==0)){
+		UnKnowTDI = false;
+		// Packs of Y * -1/sqrt(3)
+		tmp_TDIPacks.push_back(2);
+		tmp_TDIPacks.push_back(16);
+		tmp_TDIPacks.push_back(145);
+		tmp_TDIPacks.push_back(1461);
+		tmp_TDIPacks.push_back(-5);
+		tmp_TDIPacks.push_back(-61);
+		tmp_TDIPacks.push_back(-632);
+		tmp_TDIPacks.push_back(-6316);
+		tmp_TDIPacksFact.resize(8,-1.0/sqrt(3.0));
+		// Pack of Z * 1/sqrt(3)
+		tmp_TDIPacks.push_back(3);
+		tmp_TDIPacks.push_back(24);
+		tmp_TDIPacks.push_back(256);
+		tmp_TDIPacks.push_back(2542);
+		tmp_TDIPacks.push_back(-6);
+		tmp_TDIPacks.push_back(-42);
+		tmp_TDIPacks.push_back(-413);
+		tmp_TDIPacks.push_back(-4124);
+		tmp_TDIPacksFact.resize(16,1.0/sqrt(3.0));
+		if(3>NbMaxDelays)
+			NbMaxDelays = 3;
+	}
+	if((strcmp(generatorname,"Tb")==0)||(strcmp(generatorname,"TMLDC")==0)){
+		UnKnowTDI = false;
+		// Packs of X * sqrt(2)/3
+		tmp_TDIPacks.push_back(1);
+		tmp_TDIPacks.push_back(35);
+		tmp_TDIPacks.push_back(364);
+		tmp_TDIPacks.push_back(3653);
+		tmp_TDIPacks.push_back(-4);
+		tmp_TDIPacks.push_back(-53);
+		tmp_TDIPacks.push_back(-521);
+		tmp_TDIPacks.push_back(-5235);
+		tmp_TDIPacksFact.resize(8,sqrt(2.0)/3.0);
+		// Packs of Y * sqrt(2)/3
+		tmp_TDIPacks.push_back(2);
+		tmp_TDIPacks.push_back(16);
+		tmp_TDIPacks.push_back(145);
+		tmp_TDIPacks.push_back(1461);
+		tmp_TDIPacks.push_back(-5);
+		tmp_TDIPacks.push_back(-61);
+		tmp_TDIPacks.push_back(-632);
+		tmp_TDIPacks.push_back(-6316);
+		tmp_TDIPacksFact.resize(16,sqrt(2.0)/3.0);
+		// Pack of Z * sqrt(2)/3
+		tmp_TDIPacks.push_back(3);
+		tmp_TDIPacks.push_back(24);
+		tmp_TDIPacks.push_back(256);
+		tmp_TDIPacks.push_back(2542);
+		tmp_TDIPacks.push_back(-6);
+		tmp_TDIPacks.push_back(-42);
+		tmp_TDIPacks.push_back(-413);
+		tmp_TDIPacks.push_back(-4124);
+		tmp_TDIPacksFact.resize(24,sqrt(2.0)/3.0);
+		if(3>NbMaxDelays)
+			NbMaxDelays = 3;
+	}
+	
 	
 	return(UnKnowTDI);
 }
