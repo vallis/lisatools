@@ -1,52 +1,63 @@
 *****************************
-*     LISACode v1.4.beta    *
-*     -----------------     *
+*      LISACode v 1.4.4     *
+*      ----------------     *
 * Installation Instructions *
 * ------------------------- *
 *****************************
 
 Created on 20 December 2006 by Antoine Petiteau from APC (petiteau@apc.univ-paris7.fr).
 Modified by Eric Plagnol on March 2008 (eric.plagnol@apc.univ-paris7.fr).
+Modified on 5 January 2009 by Antoine Peiteau from AEI (Antoine.Petiteau@aei.mpg.de).
 
 Summary :
 ---------
 I. Install for Mac OS X and Unix
 II. Test LISACode for Mac OS X and Unix
 III. Example of calcul duration
-IV. Use graphical interface LISA_AutoGUI.jar
+IV. Use graphical interface LISA_AutoGUI.jar (for version before 1.4.4)
 V. For more informations
-VI. Modiying LISACode
+VI. Modifying LISACode
+VII. List of files of LISACode
 
 
 I. Install for Mac OS X and Unix :
 ----------------------------------------
 
+1. Download from website : 
+	http://www.apc.univ-paris7.fr/Downloads/lisa/LISACode/version-1.4/lisacode-1.4.4.tar.gz
 
-1. Copy lisacode-1.4.tar.gz on local directory :
-	cp /...CDpath.../lisacode-1.4.tar.gz /...localdirectory.../.
+1. Copy lisacode-1.4.4tar.gz from the initial location into your local directory (directory which 
+will contain source files) :
+	cp /...InitialPath.../lisacode-1.4.4.tar.gz /...LocalDirectory.../.
+	
 
 2. Go to the local directory :
-	cd /...localdirectory.../
+	cd /... LocalDirectory.../
 
-3. Uncompress lisacode-1.4.tar.gz :
-	gzip -d lisacode-1.4.tar.gz
-	tar xvf lisacode-1.4.tar
+3. Uncompress lisacode-1.4.4.tar.gz :
+	tar xvzf lisacode-1.4.4.tar.gz
 
-4. Go to the directory lisacode-1.4 :
-	cd lisacode-1.4
+4. Go to the directory lisacode-1.4.4 :
+	cd lisacode-1.4.4
 
-5. Launch the confifure script. The prefix parameter will designate the directory/bin where you will find your executable.
-	./configure --prefix="/Your_dir/Applications"
+5. Launch the confifure script. The prefix parameter corresponds to the directory (ex:"$HOME/Applications") 
+which will contain the directory bin executables will be installed.
+	./configure --prefix="$HOME/Applications"
+
+5.a WARNING: If the configuration step failed with the error message "fftw3 is required but it's not find! ...",
+it means fftw3 is not found. This library fftw3 is necessary for LISACode. You must install it. If it's already 
+installed and the configuration of LISACode always failed, you must specify explicitly the location using the command
+line (pathfftw3 corresponds to the location of fftw3) :
+	./configure --prefix="$HOME/Applications" CPPFLAGS=-I/...pathfftw3.../include LDFLAGS=-L/...pathfftw3.../lib
+
+5.b Compilation options can be specify using the instruction CXXFLAGS="...Options..." in the command line ./configure ... 
 
 6. Compile the software with Makefile script :
 	make install
 
-7. Copy the JAVA graphic interface "LISA_AutoGUI.jar" and its configure file "configue.ini", in the same directory (Application directory).
-	cp LISA_AutoGUI.jar /Your_dir/Applications/.
-	cp configue.ini /Your_dir/Applications/.
 
-In fact, the executable file LISACode (and others) will be found in the directory : Your_dir/Applcations/bin
-You can copy this programs where you want ! 
+The executable file LISACode (and others) will be found in the directory : $HOME/Applications/bin
+You can copy this programs everywhere you want ! 
 
 
 
@@ -55,59 +66,69 @@ You can copy this programs where you want !
 II. Test LISACode for Mac OS X and Unix :
 -----------------------------------------
 
-1. Copy ConfigRefBase on local directory where is the program LISACode:
-	cp /...CDpath.../ConfigRefBase Your_dir/Applcations/bin/.
+1. Copy ConfigRefBase from directory /... LocalDirectory.../lisacode-1.4.4/Example_Input/ on your work directory 
+/...YourWorkDir.../ which will contain results :
+	cp /... LocalDirectory.../lisacode-1.4.4/Example_Input/ConfigRefBase /...YourWorkDir.../.
 
 2. Go to the directory Your_dir/Applcations/bin
-	cd Your_dir/Applcations/bin
+	cd /...YourWorkDir.../
 
-3. Launch the simulator with configuration file ConfigRefBase and fixed random seed :
-	./LISACode ConfigRefBase 123456
+3. Launch the simulator with configuration file ConfigRefBase and fixed random seed at 123456 using :
+	$HOME/Applications/bin/LISACode ConfigRefBase 123456
 
 4. The end of the execution will produce, approximately, the following output :
 
 	...
-	10000 s     #0100 % 
-	 Alpha = 1.89384087432967e-20
-	 Beta = 8.60074599903258e-19
-	 Gamma = 8.41785643115969e-19
-	 Zeta = 2.78151318797594e-17
-	 X1s1 = 2.35766472296473e-20
-	 X2s1 = 3.18224294740072e-20
-	 X2s2 = 1.29586866467172e-18
-	 X2s3 = 1.29882616033499e-18
+9787 s    (remaining time : 00:00:00) #0098 % 
+ X = 1.54307511554625e-18
+ Y = 2.23380376286915e-18
+ Z = 2.03070569638376e-18
+ X2s1 = 3.84102728265182e-18
+ X2s2 = 7.30253602341876e-18
+ X2s3 = 6.49295628725497e-18
+ P1 = 1.66863806379042e-18
+ Zeta1 = 9.83725319837678e-19
+ A = 1.13116170136341e-18
+ E = 2.24813370548819e-18
+ T = 8.43890200220657e-19
+ Alpha = 1.33468352729959e-18
+ AlphaId = 1.33468352729959e-18
+ Alphaf2 = 2.66936705459917e-18
 Final time : 10001 s
-End
 
+ Closing ASCII file.
+ Closing BINARY file.
+ Closing BINARY file.
+ Closing ASCII file.
+ Closing ASCII file.
+
+End
 
 
 
 III. Example of calcul duration :
 --------------------------------
-Example for the simulation with test command : ./bin/LISACode ConfigRefBase 123456 :
-	- Mac OS 10.4.6 PowerPC G5 BiPro 2.7 GHz   -->      20 s (with fast compilation option) [estimation]
-	- Mac OS 10.4.8 PowerPC G4 550 MHz         -->  2 m  6 s (with O3 compilation option)
-	- Linux                                    -->      46 s (with O3 compilation option) [estimation]
-	- Windows XP QuaPro Xeon 3GHz              -->      34 s (with O3 compilation option) [estimation]
+Example for the simulation with test command : $HOME/Applications/bin/LISACode ConfigRefBase 123456 :
+	- Mac OS 10.5.6 Intel Core 2 Duo 2.5 GHz   -->       9 s (with fast compilation option)
+	- Mac OS 10.4.11 PowerPC G4 1.25 GHz       -->  1 m 10 s (with O3 compilation option)
+	- Linux (Sun server)                       -->      17 s (with O3 compilation option)
 
 
-IV. Use graphical interface LISA_AutoGUI.jar
---------------------------------------------
-For use LISA_AutoGUI.jar, go to your application directory (cd Your_dir/Applcations) and launch :
-	java -jar LISA_AutoGUI.jar
 
 
 V. For more informations :
 --------------------------
-	- The LISAFrance website : http://www.apc.univ-paris7.fr/LISA-France/analyse.phtml
-	- The Documentation on CD : CD/Documentation/LISACode_Doc.pdf and others associated files.
-	- The User manual in french : CD/Documentation/ManuelFR_v1.1.pdf
+	- LISAFrance website : http://www.apc.univ-paris7.fr/LISA-France/analyse.phtml
+	- User manual in english  : /... LocalDirectory.../lisacode-1.4.4/Documentation/ManuelTex/ManuelEN_v1.4.pdf (in progress)
+	- User manual in french   : /... LocalDirectory.../lisacode-1.4.4/Documentation/ManuelTex/ManuelFR_v1.4.pdf
+	- Developer documentation (HTML) : /... LocalDirectory.../lisacode-1.4.4/Documentation/html/index.html
+				or (PDF) : /... LocalDirectory.../lisacode-1.4.4/Documentation/latex/refman.pdf
 
 VI. Modifying LISACode
 -------------------------
 
   As a rule, we would not recommend modifying LISACode.
-  In the case you are compeled to do it, then, after having modified this files, return to the lisacode-1.4 
+  In the case you are compeled to do it, then, after having modified this files, return to the lisacode-1.4.4
   directory and type:
 
   rm Main/Test/LISACode
@@ -115,8 +136,8 @@ VI. Modifying LISACode
 
   a Make clean is oalso possible but will recompile all LISACode.
 
-VII List of files of LISACode
-------------------------
+VII. List of files of LISACode
+------------------------------
 
 Here is a short explantion of the file structure and related topics :
 
@@ -154,1063 +175,5 @@ Most of these directories will contain Makefile, Makefile.in and Makefile.in  fi
 
 Here is a complete list of the directories and files.
 
-total 2648
-drwxr-xr-x  47 owner  lisa    1598 Mar 16 19:23 ./
-drwxr-xr-x  26 owner  lisa     884 Feb 13 14:09 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:50 .DS_Store
--rw-r--r--   1 owner  lisa       0 Dec 24 17:27 AUTHORS
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 Bruits/
--rw-r--r--   1 owner  lisa   17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa       0 Dec 24 17:27 ChangeLog
--rw-r--r--   1 owner  lisa    4719 Jan 18 17:28 ConfigRefBase
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 Detecteur/
-drwxr-xr-x   6 owner  lisa     204 Feb  9 10:51 Documentation/
--rw-r--r--   1 owner  lisa    1582 Dec 24 17:27 Doxygen.bibliography
-drwxr-xr-x  10 owner  lisa     340 Feb 13 14:11 Fond_Stoch/
-drwxr-xr-x   5 owner  lisa     170 Feb  9 10:51 Generalites/
--rw-r--r--   1 owner  lisa    9498 Dec 24 17:27 INSTALL
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 Input_data/
--rw-r--r--   1 owner  lisa  741604 Dec 24 17:27 LISA_AutoGUI.jar
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 Main/
--rw-r--r--   1 owner  lisa   23751 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    1756 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   21804 Dec 24 17:27 Makefile.in
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 Memoire/
--rw-r--r--   1 owner  lisa       0 Dec 24 17:27 NEWS
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 Ondes_Gravit/
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 Orbitographie/
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 Outils_Math/
--rw-r--r--@  1 owner  lisa    3349 Feb  9 11:58 README
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 TDI/
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 USO_Temps/
--rw-r--r--   1 owner  lisa   38499 Dec 24 17:27 aclocal.m4
-drwxr-xr-x  21 owner  lisa     714 Feb 12 14:33 bin/
--rwxr-xr-x   1 owner  lisa   43420 Dec 24 17:27 config.guess*
--rw-r--r--   1 owner  lisa   27785 Feb 13 14:11 config.log
--rwxr-xr-x   1 owner  lisa   36706 Feb 13 14:11 config.status*
--rwxr-xr-x   1 owner  lisa   31743 Dec 24 17:27 config.sub*
--rw-r--r--   1 owner  lisa   46696 Dec 24 17:27 config_doxygen
--rwxr-xr-x   1 owner  lisa    5008 Dec 24 17:27 configue.ini*
--rwxr-xr-x   1 owner  lisa  191102 Dec 24 17:27 configure*
--rw-r--r--   1 owner  lisa    6272 Dec 24 17:27 configure.ac
--rwxr-xr-x   1 owner  lisa   15936 Dec 24 17:27 depcomp*
--rwxr-xr-x   1 owner  lisa    9233 Dec 24 17:27 install-sh*
-drwxr-xr-x  12 owner  lisa     408 Feb 12 14:33 lib/
--rw-r--r--   1 owner  lisa   10179 Dec 24 17:27 lisa-xml.xsl
--rw-r--r--   1 owner  lisa       0 Mar 16 19:23 lisacode_file_liste.txt
--rwxr-xr-x   1 owner  lisa   11014 Dec 24 17:27 missing*
--rwxr-xr-x   1 owner  lisa    3474 Dec 24 17:27 mkinstalldirs*
 
-
-./Bruits:
-total 160
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:41 .DS_Store
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x  12 owner  lisa    408 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17222 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15267 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  23 owner  lisa    782 Feb 13 14:11 SRC/
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 Test/
-
-
-./Bruits/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  17 owner  lisa  578 Feb 13 14:11 ../
-
-
-./Bruits/Include:
-total 80
-drwxr-xr-x  12 owner  lisa   408 Feb 13 14:09 ./
-drwxr-xr-x  17 owner  lisa   578 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  6148 Dec 24 17:27 .DS_Store
--rw-r--r--   1 owner  lisa  3919 Feb 13 14:09 LISACODE-Noise.h
--rw-r--r--   1 owner  lisa  3866 Dec 24 17:27 LISACODE-Noise.h~
--rw-r--r--   1 owner  lisa  2674 Feb 13 14:09 LISACODE-NoiseFShape.h
--rw-r--r--   1 owner  lisa  2110 Feb 13 14:09 LISACODE-NoiseFile.h
--rw-r--r--   1 owner  lisa  3124 Feb 13 14:09 LISACODE-NoiseFilter.h
--rw-r--r--   1 owner  lisa  2781 Feb 13 14:09 LISACODE-NoiseOof.h
--rw-r--r--   1 owner  lisa  2620 Feb 13 14:09 LISACODE-NoiseTwoFilter.h
--rw-r--r--   1 owner  lisa  2042 Feb 13 14:09 LISACODE-NoiseWhite.h
-
-
-./Bruits/SRC:
-total 4280
-drwxr-xr-x  23 owner  lisa      782 Feb 13 14:11 ./
-drwxr-xr-x  17 owner  lisa      578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa     6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   9 owner  lisa      306 Feb 13 14:11 .deps/
--rw-r--r--   1 owner  lisa    13554 Jan 16 10:38 LISACODE-Noise.cpp
--rw-r--r--   1 owner  lisa   101020 Feb 13 14:11 LISACODE-Noise.o
--rw-r--r--   1 owner  lisa     9161 Feb 12 12:21 LISACODE-NoiseFShape.cpp
--rw-r--r--   1 owner  lisa   245768 Feb 13 14:11 LISACODE-NoiseFShape.o
--rw-r--r--   1 owner  lisa     6407 Dec 24 17:27 LISACODE-NoiseFile.cpp
--rw-r--r--   1 owner  lisa    94844 Feb 13 14:11 LISACODE-NoiseFile.o
--rw-r--r--   1 owner  lisa     9749 Dec 24 17:27 LISACODE-NoiseFilter.cpp
--rw-r--r--   1 owner  lisa   169596 Feb 13 14:11 LISACODE-NoiseFilter.o
--rw-r--r--   1 owner  lisa     8090 Jan 16 10:09 LISACODE-NoiseOof.cpp
--rw-r--r--   1 owner  lisa   168036 Feb 13 14:11 LISACODE-NoiseOof.o
--rw-r--r--   1 owner  lisa     8480 Dec 24 17:27 LISACODE-NoiseTwoFilter.cpp
--rw-r--r--   1 owner  lisa   156532 Feb 13 14:11 LISACODE-NoiseTwoFilter.o
--rw-r--r--   1 owner  lisa     6128 Dec 24 17:27 LISACODE-NoiseWhite.cpp
--rw-r--r--   1 owner  lisa    76488 Feb 13 14:11 LISACODE-NoiseWhite.o
--rw-r--r--   1 owner  lisa    17557 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa      433 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa    16131 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  1030596 Feb 13 14:11 liblisacodenoise.a
-
-./Bruits/SRC/.deps:
-total 200
-drwxr-xr-x   9 owner  lisa    306 Feb 13 14:11 ./
-drwxr-xr-x  23 owner  lisa    782 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  11278 Feb 13 14:11 LISACODE-Noise.Po
--rw-r--r--   1 owner  lisa  12336 Feb 13 14:11 LISACODE-NoiseFShape.Po
--rw-r--r--   1 owner  lisa  11636 Feb 13 14:11 LISACODE-NoiseFile.Po
--rw-r--r--   1 owner  lisa  12336 Feb 13 14:11 LISACODE-NoiseFilter.Po
--rw-r--r--   1 owner  lisa  12321 Feb 13 14:11 LISACODE-NoiseOof.Po
--rw-r--r--   1 owner  lisa  12355 Feb 13 14:11 LISACODE-NoiseTwoFilter.Po
--rw-r--r--   1 owner  lisa  11499 Feb 13 14:11 LISACODE-NoiseWhite.Po
-
-
-./Bruits/Test:
-total 600
-drwxr-xr-x  11 owner  lisa     374 Feb 13 14:11 ./
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:46 .DS_Store
-drwxr-xr-x   3 owner  lisa     102 Feb 13 14:11 .deps/
--rw-r--r--   1 owner  lisa    4974 Feb 13 14:09 LISACODE-TestNoise.cpp
--rw-r--r--   1 owner  lisa  119372 Feb 13 14:11 LISACODE-TestNoise.o
--rw-r--r--   1 owner  lisa   16607 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     357 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   14867 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  125824 Feb 13 14:11 TestNoise*
-
-./Bruits/Test/.deps:
-total 32
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:11 ./
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  13322 Feb 13 14:11 LISACODE-TestNoise.Po
-
-
-./Detecteur:
-total 144
-drwxr-xr-x  16 owner  lisa    544 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x   6 owner  lisa    204 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17234 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15276 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  15 owner  lisa    510 Feb 13 14:12 SRC/
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:12 Test/
-
-
-./Detecteur/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  16 owner  lisa  544 Feb 13 14:11 ../
-
-
-./Detecteur/Include:
-total 40
-drwxr-xr-x   6 owner  lisa   204 Feb 13 14:09 ./
-drwxr-xr-x  16 owner  lisa   544 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  5071 Feb 13 14:09 LISACODE-LISA.h
--rw-r--r--   1 owner  lisa  7654 Feb 13 14:09 LISACODE-PhoDetPhaMet.h
--rw-r--r--   1 owner  lisa  1787 Dec 24 17:27 LISACODE-TrFctGW.h
-
-
-./Detecteur/SRC:
-total 2424
-drwxr-xr-x  15 owner  lisa     510 Feb 13 14:12 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   5 owner  lisa     170 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa   16668 Dec 24 17:27 LISACODE-LISA.cpp
--rw-r--r--   1 owner  lisa  291020 Feb 13 14:12 LISACODE-LISA.o
--rw-r--r--   1 owner  lisa   23564 Dec 24 17:27 LISACODE-PhoDetPhaMet.cpp
--rw-r--r--   1 owner  lisa  167352 Feb 13 14:12 LISACODE-PhoDetPhaMet.o
--rw-r--r--   1 owner  lisa   10018 Feb 13 14:09 LISACODE-TrFctGW.cpp
--rw-r--r--   1 owner  lisa  101600 Feb 13 14:12 LISACODE-TrFctGW.o
--rw-r--r--   1 owner  lisa   17607 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     518 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15807 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  568188 Feb 13 14:12 liblisacodedetector.a
-
-./Detecteur/SRC/.deps:
-total 96
-drwxr-xr-x   5 owner  lisa    170 Feb 13 14:12 ./
-drwxr-xr-x  15 owner  lisa    510 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  18435 Feb 13 14:12 LISACODE-LISA.Po
--rw-r--r--   1 owner  lisa  14255 Feb 13 14:12 LISACODE-PhoDetPhaMet.Po
--rw-r--r--   1 owner  lisa  12166 Feb 13 14:12 LISACODE-TrFctGW.Po
-
-
-./Detecteur/Test:
-total 1280
-drwxr-xr-x  14 owner  lisa     476 Feb 13 14:12 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:46 .DS_Store
-drwxr-xr-x   4 owner  lisa     136 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa    5968 Feb 13 14:09 LISACODE-TestPhasemeter.cpp
--rw-r--r--   1 owner  lisa  106548 Feb 13 14:12 LISACODE-TestPhasemeter.o
--rw-r--r--   1 owner  lisa    6277 Feb 13 14:09 LISACODE-TestTrFctGW.cpp
--rw-r--r--   1 owner  lisa   89988 Feb 13 14:12 LISACODE-TestTrFctGW.o
--rw-r--r--   1 owner  lisa   18517 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    1001 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   16080 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  294472 Feb 13 14:12 TestPhasemeter*
--rwxr-xr-x   1 owner  lisa   94028 Feb 13 14:12 TestTrFctGW*
-
-./Detecteur/Test/.deps:
-total 72
-drwxr-xr-x   4 owner  lisa    136 Feb 13 14:12 ./
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  17843 Feb 13 14:12 LISACODE-TestPhasemeter.Po
--rw-r--r--   1 owner  lisa  13230 Feb 13 14:12 LISACODE-TestTrFctGW.Po
-
-
-./Documentation:
-total 16
-drwxr-xr-x   6 owner  lisa   204 Feb  9 10:51 ./
-drwxr-xr-x  47 owner  lisa  1598 Mar 16 19:23 ../
--rw-r--r--@  1 owner  lisa  6148 Feb  9 10:50 .DS_Store
-drwxr-xr-x   8 owner  lisa   272 Feb  9 10:51 ManuelTex/
-drwxr-xr-x   4 owner  lisa   136 Feb  9 10:51 latex/
-
-
-./Documentation/ManuelTex:
-total 1960
-drwxr-xr-x  8 owner  lisa     272 Feb  9 10:51 ./
-drwxr-xr-x  6 owner  lisa     204 Feb  9 10:51 ../
-drwxr-xr-x  9 owner  lisa     306 Feb  9 10:51 Figures/
--rw-r--r--  1 owner  lisa  429799 Dec 24 17:27 ManuelEN_v1.4.pdf
--rw-r--r--  1 owner  lisa   66390 Dec 24 17:27 ManuelEN_v1.4.tex
--rw-r--r--  1 owner  lisa  433645 Dec 24 17:27 ManuelFR_v1.4.pdf
--rw-r--r--  1 owner  lisa   68635 Dec 24 17:27 ManuelFR_v1.4.tex
-
-
-./Documentation/ManuelTex/Figures:
-total 472
-drwxr-xr-x  9 owner  lisa    306 Feb  9 10:51 ./
-drwxr-xr-x  8 owner  lisa    272 Feb  9 10:51 ../
--rw-r--r--  1 owner  lisa   6148 Dec 24 17:27 .DS_Store
--rw-r--r--  1 owner  lisa  30849 Dec 24 17:27 GWParameters.pdf
--rw-r--r--  1 owner  lisa  39029 Dec 24 17:27 LISAFrancelogo.pdf
--rw-r--r--  1 owner  lisa  50972 Dec 24 17:27 OrgPackage.pdf
--rw-r--r--  1 owner  lisa  77066 Dec 24 17:27 SchBOSC1.pdf
--rw-r--r--  1 owner  lisa  28332 Dec 24 17:27 Structure.pdf
-
-
-./Documentation/latex:
-total 5856
-drwxr-xr-x  4 owner  lisa      136 Feb  9 10:51 ./
-drwxr-xr-x  6 owner  lisa      204 Feb  9 10:51 ../
--rw-r--r--  1 owner  lisa  2995045 Dec 24 17:27 refman.pdf
-
-
-./Fond_Stoch:
-total 80
-drwxr-xr-x  10 owner  lisa    340 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
-drwxr-xr-x   5 owner  lisa    170 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17189 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15230 Dec 24 17:27 Makefile.in
-drwxr-xr-x  13 owner  lisa    442 Feb 13 14:12 SRC/
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:12 Test/
-
-
-./Fond_Stoch/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  10 owner  lisa  340 Feb 13 14:11 ../
-
-
-./Fond_Stoch/Include:
-total 16
-drwxr-xr-x   5 owner  lisa   170 Feb 13 14:09 ./
-drwxr-xr-x  10 owner  lisa   340 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  1275 Feb 13 14:09 LISACODE-Background.h
--rw-r--r--   1 owner  lisa  2068 Feb 13 14:09 LISACODE-BackgroundGalactic.h
-
-
-./Fond_Stoch/SRC:
-total 888
-drwxr-xr-x  13 owner  lisa     442 Feb 13 14:12 ./
-drwxr-xr-x  10 owner  lisa     340 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   4 owner  lisa     136 Feb 13 14:11 .deps/
--rw-r--r--   1 owner  lisa    1195 Dec 24 17:27 LISACODE-Background.cpp
--rw-r--r--   1 owner  lisa   29168 Feb 13 14:11 LISACODE-Background.o
--rw-r--r--   1 owner  lisa    5542 Dec 24 17:27 LISACODE-BackgroundGalactic.cpp
--rw-r--r--   1 owner  lisa  162272 Feb 13 14:11 LISACODE-BackgroundGalactic.o
--rw-r--r--   1 owner  lisa   17256 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     345 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15591 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  195224 Feb 13 14:12 liblisacodebackground.a
-
-
-./Fond_Stoch/Test:
-total 520
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:12 ./
-drwxr-xr-x  10 owner  lisa    340 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:46 .DS_Store
-drwxr-xr-x   4 owner  lisa    136 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa   3114 Feb 13 14:09 LISACODE-TestBackground.cpp
--rw-r--r--   1 owner  lisa  42176 Feb 13 14:12 LISACODE-TestBackground.o
--rwxr-xr-x   1 owner  lisa  23388 Feb 13 14:12 MakeCWDBSignal*
--rw-r--r--   1 owner  lisa   7947 Feb 13 14:09 MakeCWDBSignal.cpp
--rw-r--r--   1 owner  lisa  51200 Feb 13 14:12 MakeCWDBSignal.o
--rw-r--r--   1 owner  lisa  17464 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    527 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15642 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  80600 Feb 13 14:12 TestBackground*
-
-./Fond_Stoch/Test/.deps:
-total 48
-drwxr-xr-x   4 owner  lisa    136 Feb 13 14:12 ./
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  12205 Feb 13 14:12 LISACODE-TestBackground.Po
--rw-r--r--   1 owner  lisa  10662 Feb 13 14:12 MakeCWDBSignal.Po
-
-
-./Generalites:
-total 0
-drwxr-xr-x   5 owner  lisa   170 Feb  9 10:51 ./
-drwxr-xr-x  47 owner  lisa  1598 Mar 16 19:23 ../
-drwxr-xr-x   3 owner  lisa   102 Feb 12 12:21 Doc/
-drwxr-xr-x   6 owner  lisa   204 Feb 12 12:21 Include/
-
-
-./Generalites/Doc:
-total 0
-drwxr-xr-x  3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  5 owner  lisa  170 Feb  9 10:51 ../
-
-
-./Generalites/Include:
-total 40
-drwxr-xr-x  6 owner  lisa   204 Feb 12 12:21 ./
-drwxr-xr-x  5 owner  lisa   170 Feb  9 10:51 ../
--rw-r--r--  1 owner  lisa  6148 Dec 24 17:27 .DS_Store
--rw-r--r--  1 owner  lisa  1817 Dec 24 17:27 LISACODE-LISAConstants.h
--rw-r--r--  1 owner  lisa  4373 Dec 24 17:27 LISACODE-PhysicConstants.h
-
-
-./Input_data:
-total 160
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:44 .DS_Store
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   4 owner  lisa    136 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x   7 owner  lisa    238 Feb 16 11:50 Include/
--rw-r--r--   1 owner  lisa  17238 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15279 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  14 owner  lisa    476 Mar  9 10:31 SRC/
-drwxr-xr-x  12 owner  lisa    408 Feb 13 14:12 Test/
-
-
-./Input_data/Doc:
-total 16
-drwxr-xr-x   4 owner  lisa   136 Feb 12 12:21 ./
-drwxr-xr-x  17 owner  lisa   578 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  6148 Dec 24 17:27 .DS_Store
-
-
-./Input_data/Include:
-total 104
-drwxr-xr-x   7 owner  lisa    238 Feb 16 11:50 ./
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa   6148 Dec 24 17:27 .DS_Store
--rwxr-xr-x   1 owner  lisa  16413 Feb 16 11:50 LISACODE-ConfigSim.h*
--rwxr-xr-x   1 owner  lisa  16020 Dec 24 17:27 LISACODE-ConfigSim.h~*
--rw-r--r--   1 owner  lisa   6895 Dec 24 17:27 ezxml.h
-
-
-./Input_data/SRC:
-total 4408
-drwxr-xr-x  14 owner  lisa     476 Mar  9 10:31 ./
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   4 owner  lisa     136 Feb 13 14:12 .deps/
--rwxr-xr-x   1 owner  lisa  120264 Mar  9 10:31 LISACODE-ConfigSim.cpp*
--rwxr-xr-x   1 owner  lisa  120263 Feb 16 11:50 LISACODE-ConfigSim.cpp~*
--rw-r--r--   1 owner  lisa  894308 Feb 13 14:12 LISACODE-ConfigSim.o
--rw-r--r--   1 owner  lisa   18161 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     427 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   16686 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa   39626 Dec 24 17:27 ezxml.c
--rw-r--r--   1 owner  lisa   55620 Feb 12 14:33 ezxml.o
--rw-r--r--   1 owner  lisa  959936 Feb 13 14:12 liblisacodeinputdata.a
-
-
-./Input_data/Test:
-total 1328
-drwxr-xr-x  12 owner  lisa     408 Feb 13 14:12 ./
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:44 .DS_Store
-drwxr-xr-x   3 owner  lisa     102 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa    4439 Dec 24 17:27 ConfigTest
--rw-r--r--   1 owner  lisa    4370 Feb 13 14:09 LISACODE-TestConfigSim.cpp
--rw-r--r--   1 owner  lisa  128896 Feb 13 14:12 LISACODE-TestConfigSim.o
--rw-r--r--   1 owner  lisa   17641 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     778 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15366 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  479752 Feb 13 14:12 TestConfigSim*
-
-./Input_data/Test/.deps:
-total 40
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:12 ./
-drwxr-xr-x  12 owner  lisa    408 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  17694 Feb 13 14:12 LISACODE-TestConfigSim.Po
-
-
-./Main:
-total 160
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:45 .DS_Store
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Include/
--rw-r--r--   1 owner  lisa  17261 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    119 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15308 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x   6 owner  lisa    204 Feb 13 14:11 SRC/
-drwxr-xr-x  19 owner  lisa    646 Feb 13 14:12 Test/
-
-
-./Main/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  17 owner  lisa  578 Feb 13 14:11 ../
-
-
-./Main/Include:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  17 owner  lisa  578 Feb 13 14:11 ../
-
-
-./Main/SRC:
-total 56
-drwxr-xr-x   6 owner  lisa    204 Feb 13 14:11 ./
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  11848 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     60 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   9888 Dec 24 17:27 Makefile.in
-
-
-./Main/Test:
-total 5080
-drwxr-xr-x  19 owner  lisa     646 Feb 13 14:12 ./
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:44 .DS_Store
-drwxr-xr-x   5 owner  lisa     170 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa    4719 Jan 19 16:50 ConfigRefBase
--rw-r--r--   1 owner  lisa   15047 Jan 19 16:50 ConfigRefBase.xml
--rwxr-xr-x   1 owner  lisa  501072 Feb 13 14:12 DnonGW*
--rw-r--r--   1 owner  lisa    9956 Feb 13 14:09 LISACODE-DnonGW.cpp
--rw-r--r--   1 owner  lisa  150720 Feb 13 14:12 LISACODE-DnonGW.o
--rw-r--r--   1 owner  lisa   26941 Feb 13 14:09 LISACODE-LISACode.cpp
--rw-r--r--   1 owner  lisa  304500 Feb 13 14:12 LISACODE-LISACode.o
--rw-r--r--   1 owner  lisa   10542 Feb 13 14:09 LISACODE-TDIApply.cpp
--rw-r--r--   1 owner  lisa  254864 Feb 13 14:12 LISACODE-TDIApply.o
--rwxr-xr-x   1 owner  lisa  657196 Feb 13 14:12 LISACode*
--rw-r--r--   1 owner  lisa   19060 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    1137 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   16472 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  587792 Feb 13 14:12 TDIApply*
-
-./Main/Test/.deps:
-total 120
-drwxr-xr-x   5 owner  lisa    170 Feb 13 14:12 ./
-drwxr-xr-x  19 owner  lisa    646 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  18177 Feb 13 14:12 LISACODE-DnonGW.Po
--rw-r--r--   1 owner  lisa  20219 Feb 13 14:12 LISACODE-LISACode.Po
--rw-r--r--   1 owner  lisa  19623 Feb 13 14:12 LISACODE-TDIApply.Po
-
-
-./Memoire:
-total 144
-drwxr-xr-x  16 owner  lisa    544 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x   6 owner  lisa    204 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17226 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15270 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  15 owner  lisa    510 Feb 13 14:12 SRC/
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 Test/
-
-
-./Memoire/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  16 owner  lisa  544 Feb 13 14:11 ../
-
-
-./Memoire/Include:
-total 24
-drwxr-xr-x   6 owner  lisa   204 Feb 13 14:09 ./
-drwxr-xr-x  16 owner  lisa   544 Feb 13 14:11 ../
--rwxr-xr-x   1 owner  lisa  2932 Feb 13 14:09 LISACODE-Memory.h*
--rw-r--r--   1 owner  lisa  1902 Feb 13 14:09 LISACODE-MemoryReadDisk.h
--rw-r--r--   1 owner  lisa  2111 Feb 13 14:09 LISACODE-MemoryWriteDisk.h
-
-
-./Memoire/SRC:
-total 2720
-drwxr-xr-x  15 owner  lisa     510 Feb 13 14:12 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   5 owner  lisa     170 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa    6693 Dec 24 17:27 LISACODE-Memory.cpp
--rw-r--r--   1 owner  lisa  131412 Feb 13 14:12 LISACODE-Memory.o
--rw-r--r--   1 owner  lisa    6103 Mar 16 16:01 LISACODE-MemoryReadDisk.cpp
--rw-r--r--   1 owner  lisa  266316 Feb 13 14:12 LISACODE-MemoryReadDisk.o
--rw-r--r--   1 owner  lisa    7107 Mar 16 19:13 LISACODE-MemoryWriteDisk.cpp
--rw-r--r--   1 owner  lisa  251988 Feb 13 14:12 LISACODE-MemoryWriteDisk.o
--rw-r--r--   1 owner  lisa   17197 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     334 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15610 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  658732 Feb 13 14:12 liblisacodememory.a
-
-./Memoire/Test:
-total 392
-drwxr-xr-x  11 owner  lisa     374 Feb 13 14:12 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:46 .DS_Store
-drwxr-xr-x   3 owner  lisa     102 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa    2931 Feb 13 14:09 LISACODE-TestMemory.cpp
--rw-r--r--   1 owner  lisa   27588 Feb 13 14:12 LISACODE-TestMemory.o
--rw-r--r--   1 owner  lisa   16632 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     363 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   14891 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  118080 Feb 13 14:12 TestMemory*
-
-./Ondes_Gravit:
-total 144
-drwxr-xr-x  16 owner  lisa    544 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x  12 owner  lisa    408 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17246 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15285 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  24 owner  lisa    816 Feb 13 14:11 SRC/
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:11 Test/
-
-
-./Ondes_Gravit/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  16 owner  lisa  544 Feb 13 14:11 ../
-
-
-./Ondes_Gravit/Include:
-total 88
-drwxr-xr-x  12 owner  lisa   408 Feb 13 14:09 ./
-drwxr-xr-x  16 owner  lisa   544 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  6148 Dec 24 17:27 .DS_Store
--rwxr-xr-x   1 owner  lisa  2413 Feb 13 14:09 LISACODE-GW.h*
--rw-r--r--   1 owner  lisa  2924 Feb 13 14:09 LISACODE-GWBinary.h
--rw-r--r--   1 owner  lisa  1609 Feb 13 14:09 LISACODE-GWFile.h
--rwxr-xr-x   1 owner  lisa  2933 Feb 13 14:09 LISACODE-GWMono.h*
--rw-r--r--   1 owner  lisa  7401 Feb 13 14:09 LISACODE-GWNewton2.h
--rw-r--r--   1 owner  lisa  2078 Feb 13 14:09 LISACODE-GWPeriGate.h
--rw-r--r--   1 owner  lisa  3116 Feb 13 14:09 LISACODE-GWSto.h
--rw-r--r--   1 owner  lisa  3103 Dec 24 17:27 LISACODE-GWSto.h~
-
-
-./Ondes_Gravit/SRC:
-total 2240
-drwxr-xr-x  24 owner  lisa     816 Feb 13 14:11 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   9 owner  lisa     306 Feb 13 14:11 .deps/
--rwxr-xr-x   1 owner  lisa    5349 Dec 24 17:27 LISACODE-GW.cpp*
--rw-r--r--   1 owner  lisa   95512 Feb 13 14:11 LISACODE-GW.o
--rw-r--r--   1 owner  lisa    6400 Dec 24 17:27 LISACODE-GWBinary.cpp
--rw-r--r--   1 owner  lisa   58560 Feb 13 14:11 LISACODE-GWBinary.o
--rw-r--r--   1 owner  lisa    5325 Dec 24 17:27 LISACODE-GWFile.cpp
--rw-r--r--   1 owner  lisa  131220 Feb 13 14:11 LISACODE-GWFile.o
--rwxr-xr-x   1 owner  lisa    3807 Dec 24 17:27 LISACODE-GWMono.cpp*
--rw-r--r--   1 owner  lisa   46888 Feb 13 14:11 LISACODE-GWMono.o
--rw-r--r--   1 owner  lisa   29660 Dec 24 17:27 LISACODE-GWNewton2.cpp
--rw-r--r--   1 owner  lisa   77308 Feb 13 14:11 LISACODE-GWNewton2.o
--rw-r--r--   1 owner  lisa    3093 Dec 24 17:27 LISACODE-GWPeriGate.cpp
--rw-r--r--   1 owner  lisa   49308 Feb 13 14:11 LISACODE-GWPeriGate.o
--rw-r--r--   1 owner  lisa    5514 Jan 31 17:10 LISACODE-GWSto.cpp
--rw-r--r--   1 owner  lisa    5508 Jan 17 15:47 LISACODE-GWSto.cpp~
--rw-r--r--   1 owner  lisa   35680 Feb 13 14:11 LISACODE-GWSto.o
--rw-r--r--   1 owner  lisa   17644 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     444 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   16183 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  503348 Feb 13 14:11 liblisacodegravwaves.a
-
-./Ondes_Gravit/SRC/.deps:
-total 176
-drwxr-xr-x   9 owner  lisa    306 Feb 13 14:11 ./
-drwxr-xr-x  24 owner  lisa    816 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  10775 Feb 13 14:11 LISACODE-GW.Po
--rw-r--r--   1 owner  lisa  11011 Feb 13 14:11 LISACODE-GWBinary.Po
--rw-r--r--   1 owner  lisa  11277 Feb 13 14:11 LISACODE-GWFile.Po
--rw-r--r--   1 owner  lisa  10851 Feb 13 14:11 LISACODE-GWMono.Po
--rw-r--r--   1 owner  lisa  11016 Feb 13 14:11 LISACODE-GWNewton2.Po
--rw-r--r--   1 owner  lisa  10871 Feb 13 14:11 LISACODE-GWPeriGate.Po
--rw-r--r--   1 owner  lisa  13858 Feb 13 14:11 LISACODE-GWSto.Po
-
-
-./Ondes_Gravit/Test:
-total 720
-drwxr-xr-x  14 owner  lisa     476 Feb 13 14:11 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:46 .DS_Store
-drwxr-xr-x   4 owner  lisa     136 Feb 13 14:11 .deps/
--rw-r--r--   1 owner  lisa    5402 Feb 13 14:09 LISACODE-TestGW.cpp
--rw-r--r--   1 owner  lisa   58960 Feb 13 14:11 LISACODE-TestGW.o
--rw-r--r--   1 owner  lisa    4421 Feb 13 14:09 LISACODE-TestGWNewton2.cpp
--rw-r--r--   1 owner  lisa   41608 Feb 13 14:11 LISACODE-TestGWNewton2.o
--rw-r--r--   1 owner  lisa   17282 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     485 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15477 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  139564 Feb 13 14:11 TestGW*
--rwxr-xr-x   1 owner  lisa   51504 Feb 13 14:11 TestGWNewton2*
-
-./Ondes_Gravit/Test/.deps:
-total 56
-drwxr-xr-x   4 owner  lisa    136 Feb 13 14:11 ./
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  14483 Feb 13 14:11 LISACODE-TestGW.Po
--rw-r--r--   1 owner  lisa  12268 Feb 13 14:11 LISACODE-TestGWNewton2.Po
-
-
-./Orbitographie:
-total 144
-drwxr-xr-x  16 owner  lisa    544 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x   5 owner  lisa    170 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17250 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15288 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 SRC/
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 Test/
-
-
-./Orbitographie/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  16 owner  lisa  544 Feb 13 14:11 ../
-
-
-./Orbitographie/Include:
-total 32
-drwxr-xr-x   5 owner  lisa   170 Feb 13 14:09 ./
-drwxr-xr-x  16 owner  lisa   544 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  6148 Dec 24 17:27 .DS_Store
--rwxr-xr-x   1 owner  lisa  4445 Feb 13 14:09 LISACODE-Geometry.h*
-
-
-./Orbitographie/SRC:
-total 728
-drwxr-xr-x  11 owner  lisa     374 Feb 13 14:11 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   3 owner  lisa     102 Feb 13 14:11 .deps/
--rwxr-xr-x   1 owner  lisa   21253 Feb 24 19:44 LISACODE-Geometry.cpp*
--rw-r--r--   1 owner  lisa  146000 Feb 13 14:11 LISACODE-Geometry.o
--rw-r--r--   1 owner  lisa   16995 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     273 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15322 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  147944 Feb 13 14:11 liblisacodeorbits.a
-
-./Orbitographie/SRC/.deps:
-total 24
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:11 ./
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  11433 Feb 13 14:11 LISACODE-Geometry.Po
-
-
-./Orbitographie/Test:
-total 376
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 ./
-drwxr-xr-x  16 owner  lisa    544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:46 .DS_Store
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:11 .deps/
--rw-r--r--   1 owner  lisa   7153 Feb 13 14:09 LISACODE-TestGeometry.cpp
--rw-r--r--   1 owner  lisa  65228 Feb 13 14:11 LISACODE-TestGeometry.o
--rw-r--r--   1 owner  lisa  16693 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    367 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  14946 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  67220 Feb 13 14:11 TestGeometry*
-
-./Orbitographie/Test/.deps:
-total 24
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:11 ./
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  11721 Feb 13 14:11 LISACODE-TestGeometry.Po
-
-
-./Outils_Math:
-total 144
-drwxr-xr-x  16 owner  lisa    544 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   4 owner  lisa    136 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x  13 owner  lisa    442 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17244 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    102 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15284 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  27 owner  lisa    918 Feb 13 14:11 SRC/
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:11 Test/
-
-
-./Outils_Math/Doc:
-total 0
-drwxr-xr-x   4 owner  lisa  136 Feb 12 12:21 ./
-drwxr-xr-x  16 owner  lisa  544 Feb 13 14:11 ../
-drwxr-xr-x   7 owner  lisa  238 Feb  9 10:51 randlib_doc/
-
-
-./Outils_Math/Doc/randlib_doc:
-total 112
-drwxr-xr-x  7 owner  lisa    238 Feb  9 10:51 ./
-drwxr-xr-x  4 owner  lisa    136 Feb 12 12:21 ../
--rw-r--r--  1 owner  lisa  13852 Dec 24 17:27 Basegen.c.doc
-drwxr-xr-x  6 owner  lisa    204 Feb  9 10:51 CVS/
--rw-r--r--  1 owner  lisa  13018 Dec 24 17:27 randlib.c.chs
--rw-r--r--  1 owner  lisa  23427 Dec 24 17:27 randlib.c.fdoc
-
-
-./Outils_Math/Include:
-total 96
-drwxr-xr-x  13 owner  lisa   442 Feb 13 14:09 ./
-drwxr-xr-x  16 owner  lisa   544 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  6148 Dec 24 17:27 .DS_Store
--rw-r--r--   1 owner  lisa  1157 Feb 13 14:09 LISACODE-Couple.h
--rwxr-xr-x   1 owner  lisa  3040 Feb 13 14:09 LISACODE-EllipticFilter.h*
--rw-r--r--   1 owner  lisa  2044 Feb 13 14:09 LISACODE-Filter.h
--rw-r--r--   1 owner  lisa  1002 Feb 13 14:09 LISACODE-Mat.h
--rwxr-xr-x   1 owner  lisa  1010 Feb 13 14:09 LISACODE-MathUtils.h*
--rw-r--r--   1 owner  lisa  1609 Feb 13 14:09 LISACODE-Random.h
--rw-r--r--   1 owner  lisa  4480 Feb 13 14:09 LISACODE-Serie.h
--rw-r--r--   1 owner  lisa  1154 Feb 13 14:09 LISACODE-Vect.h
--rw-r--r--   1 owner  lisa  1353 Dec 24 17:27 randlib.h
-
-
-./Outils_Math/SRC:
-total 2920
-drwxr-xr-x  27 owner  lisa     918 Feb 13 14:11 ./
-drwxr-xr-x  16 owner  lisa     544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x  11 owner  lisa     374 Feb 13 14:11 .deps/
--rw-r--r--   1 owner  lisa    1686 Dec 24 17:27 LISACODE-Couple.cpp
--rw-r--r--   1 owner  lisa   20948 Feb 13 14:11 LISACODE-Couple.o
--rwxr-xr-x   1 owner  lisa   27033 Dec 24 17:27 LISACODE-EllipticFilter.cpp*
--rw-r--r--   1 owner  lisa   56032 Feb 13 14:11 LISACODE-EllipticFilter.o
--rw-r--r--   1 owner  lisa    8195 Dec 24 17:27 LISACODE-Filter.cpp
--rw-r--r--   1 owner  lisa  178024 Feb 13 14:11 LISACODE-Filter.o
--rw-r--r--   1 owner  lisa    2143 Dec 24 17:27 LISACODE-Mat.cpp
--rw-r--r--   1 owner  lisa   21896 Feb 13 14:11 LISACODE-Mat.o
--rw-r--r--   1 owner  lisa   17784 Dec 24 17:27 LISACODE-Serie.cpp
--rw-r--r--   1 owner  lisa  221916 Feb 13 14:11 LISACODE-Serie.o
--rw-r--r--   1 owner  lisa    3123 Dec 24 17:27 LISACODE-Vect.cpp
--rw-r--r--   1 owner  lisa   23168 Feb 13 14:11 LISACODE-Vect.o
--rw-r--r--   1 owner  lisa   18380 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     400 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   17367 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa   12128 Dec 24 17:27 com.c
--rw-r--r--   1 owner  lisa   14960 Feb 12 14:32 com.o
--rw-r--r--   1 owner  lisa  635156 Feb 13 14:11 liblisacodemathtools.a
--rw-r--r--   1 owner  lisa    2678 Dec 24 17:27 linpack.c
--rw-r--r--   1 owner  lisa    5864 Feb 12 14:32 linpack.o
--rw-r--r--   1 owner  lisa   66621 Dec 24 17:27 randlib.c
--rw-r--r--   1 owner  lisa   79604 Feb 12 14:32 randlib.o
-
-./Outils_Math/SRC/.deps:
-total 168
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:11 ./
-drwxr-xr-x  27 owner  lisa    918 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  10189 Feb 13 14:11 LISACODE-Couple.Po
--rw-r--r--   1 owner  lisa  10525 Feb 13 14:11 LISACODE-EllipticFilter.Po
--rw-r--r--   1 owner  lisa  11633 Feb 13 14:11 LISACODE-Filter.Po
--rw-r--r--   1 owner  lisa  10230 Feb 13 14:11 LISACODE-Mat.Po
--rw-r--r--   1 owner  lisa  11496 Feb 13 14:11 LISACODE-Serie.Po
--rw-r--r--   1 owner  lisa  10179 Feb 13 14:11 LISACODE-Vect.Po
--rw-r--r--   1 owner  lisa   1619 Feb 12 14:32 com.Po
--rw-r--r--   1 owner  lisa    207 Feb 12 14:32 linpack.Po
--rw-r--r--   1 owner  lisa   1755 Feb 12 14:32 randlib.Po
-
-
-./Outils_Math/Test:
-total 632
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:11 ./
-drwxr-xr-x  16 owner  lisa    544 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:46 .DS_Store
-drwxr-xr-x   4 owner  lisa    136 Feb 13 14:11 .deps/
--rw-r--r--   1 owner  lisa   2154 Feb 13 14:09 LISACODE-TestFilter.cpp
--rw-r--r--   1 owner  lisa  53552 Feb 13 14:11 LISACODE-TestFilter.o
--rw-r--r--   1 owner  lisa   2997 Feb 13 14:09 LISACODE-TestOutilsMath.cpp
--rw-r--r--   1 owner  lisa  38028 Feb 13 14:11 LISACODE-TestOutilsMath.o
--rw-r--r--   1 owner  lisa  17030 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    351 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15431 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  98668 Feb 13 14:11 TestFilter*
--rwxr-xr-x   1 owner  lisa  62148 Feb 13 14:11 TestOutilsMath*
-
-./Outils_Math/Test/.deps:
-total 56
-drwxr-xr-x   4 owner  lisa    136 Feb 13 14:11 ./
-drwxr-xr-x  14 owner  lisa    476 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  11969 Feb 13 14:11 LISACODE-TestFilter.Po
--rw-r--r--   1 owner  lisa  12353 Feb 13 14:11 LISACODE-TestOutilsMath.Po
-
-
-./TDI:
-total 160
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:49 .DS_Store
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x   7 owner  lisa    238 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17210 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    100 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15258 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  15 owner  lisa    510 Feb 13 14:12 SRC/
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 Test/
-
-
-./TDI/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  17 owner  lisa  578 Feb 13 14:11 ../
-
-
-./TDI/Include:
-total 40
-drwxr-xr-x   7 owner  lisa   238 Feb 13 14:09 ./
-drwxr-xr-x  17 owner  lisa   578 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  6148 Dec 24 17:27 .DS_Store
--rwxr-xr-x   1 owner  lisa  3701 Feb 13 14:09 LISACODE-TDI.h*
--rw-r--r--   1 owner  lisa  1458 Feb 13 14:09 LISACODE-TDITools.h
--rwxr-xr-x   1 owner  lisa  2710 Feb 13 14:09 LISACODE-TDI_InterData.h*
-
-
-./TDI/SRC:
-total 1488
-drwxr-xr-x  15 owner  lisa     510 Feb 13 14:12 ./
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   5 owner  lisa     170 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa   10590 Dec 24 17:27 LISACODE-TDI.cpp
--rw-r--r--   1 owner  lisa  196388 Feb 13 14:12 LISACODE-TDI.o
--rw-r--r--   1 owner  lisa    1928 Dec 24 17:27 LISACODE-TDITools.cpp
--rw-r--r--   1 owner  lisa   22860 Feb 13 14:12 LISACODE-TDITools.o
--rw-r--r--   1 owner  lisa    8654 Dec 24 17:27 LISACODE-TDI_InterData.cpp
--rw-r--r--   1 owner  lisa  116264 Feb 13 14:12 LISACODE-TDI_InterData.o
--rw-r--r--   1 owner  lisa   17430 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     483 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15671 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  341844 Feb 13 14:12 liblisacodetdi.a
-
-./TDI/SRC/.deps:
-total 88
-drwxr-xr-x   5 owner  lisa    170 Feb 13 14:12 ./
-drwxr-xr-x  15 owner  lisa    510 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  12630 Feb 13 14:12 LISACODE-TDI.Po
--rw-r--r--   1 owner  lisa  12513 Feb 13 14:12 LISACODE-TDITools.Po
--rw-r--r--   1 owner  lisa  12218 Feb 13 14:12 LISACODE-TDI_InterData.Po
-
-
-./TDI/Test:
-total 1752
-drwxr-xr-x  11 owner  lisa     374 Feb 13 14:12 ./
-drwxr-xr-x  17 owner  lisa     578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:50 .DS_Store
-drwxr-xr-x   3 owner  lisa     102 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa    8279 Feb 13 14:09 LISACODE-TestTDI.cpp
--rw-r--r--   1 owner  lisa  244632 Feb 13 14:12 LISACODE-TestTDI.o
--rw-r--r--   1 owner  lisa   17851 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     908 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa   15380 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  587968 Feb 13 14:12 TestTDI*
-
-./TDI/Test/.deps:
-total 40
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:12 ./
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  19194 Feb 13 14:12 LISACODE-TestTDI.Po
-
-
-./USO_Temps:
-total 160
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ./
-drwxr-xr-x  47 owner  lisa   1598 Mar 16 19:23 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:45 .DS_Store
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 AUTHORS
--rw-r--r--   1 owner  lisa  17992 Dec 24 17:27 COPYING
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 ChangeLog
-drwxr-xr-x   3 owner  lisa    102 Feb 12 12:21 Doc/
--rw-r--r--   1 owner  lisa   9273 Dec 24 17:27 INSTALL
-drwxr-xr-x   4 owner  lisa    136 Feb 13 14:09 Include/
--rw-r--r--   1 owner  lisa  17173 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa     40 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15215 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 NEWS
--rw-r--r--   1 owner  lisa      0 Dec 24 17:27 README
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 SRC/
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 Test/
-
-
-./USO_Temps/Doc:
-total 0
-drwxr-xr-x   3 owner  lisa  102 Feb 12 12:21 ./
-drwxr-xr-x  17 owner  lisa  578 Feb 13 14:11 ../
-
-
-./USO_Temps/Include:
-total 8
-drwxr-xr-x   4 owner  lisa   136 Feb 13 14:09 ./
-drwxr-xr-x  17 owner  lisa   578 Feb 13 14:11 ../
--rw-r--r--   1 owner  lisa  2103 Feb 13 14:09 LISACODE-USOClock.h
-
-
-./USO_Temps/SRC:
-total 200
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 ./
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:43 .DS_Store
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa   3139 Dec 24 17:27 LISACODE-USOClock.cpp
--rw-r--r--   1 owner  lisa  22636 Feb 13 14:12 LISACODE-USOClock.o
--rw-r--r--   1 owner  lisa  16938 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    216 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  15269 Dec 24 17:27 Makefile.in
--rw-r--r--   1 owner  lisa  23400 Feb 13 14:12 liblisacodeusotime.a
-
-./USO_Temps/SRC/.deps:
-total 24
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:12 ./
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  11095 Feb 13 14:12 LISACODE-USOClock.Po
-
-
-./USO_Temps/Test:
-total 296
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 ./
-drwxr-xr-x  17 owner  lisa    578 Feb 13 14:11 ../
--rw-r--r--@  1 owner  lisa   6148 Feb  9 10:45 .DS_Store
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:12 .deps/
--rw-r--r--   1 owner  lisa   1742 Feb 13 14:09 LISACODE-TestUSOTime.cpp
--rw-r--r--   1 owner  lisa  30048 Feb 13 14:12 LISACODE-TestUSOTime.o
--rw-r--r--   1 owner  lisa  16600 Feb 13 14:11 Makefile
--rw-r--r--   1 owner  lisa    307 Dec 24 17:27 Makefile.am
--rw-r--r--   1 owner  lisa  14857 Dec 24 17:27 Makefile.in
--rwxr-xr-x   1 owner  lisa  61520 Feb 13 14:12 TestUSOTime*
-
-./USO_Temps/Test/.deps:
-total 32
-drwxr-xr-x   3 owner  lisa    102 Feb 13 14:12 ./
-drwxr-xr-x  11 owner  lisa    374 Feb 13 14:12 ../
--rw-r--r--   1 owner  lisa  13292 Feb 13 14:12 LISACODE-TestUSOTime.Po
-
-
-./bin:
-total 7960
-drwxr-xr-x  21 owner  lisa     714 Feb 12 14:33 ./
-drwxr-xr-x  47 owner  lisa    1598 Mar 16 19:23 ../
--rw-r--r--@  1 owner  lisa    6148 Feb  9 10:41 .DS_Store
--rwxr-xr-x   1 owner  lisa  501072 Feb 12 14:33 DnonGW*
--rwxr-xr-x   1 owner  lisa  657196 Feb 12 14:33 LISACode*
--rwxr-xr-x   1 owner  lisa   23388 Feb 12 14:32 MakeCWDBSignal*
--rwxr-xr-x   1 owner  lisa  587792 Feb 12 14:33 TDIApply*
--rwxr-xr-x   1 owner  lisa   80600 Feb 12 14:32 TestBackground*
--rwxr-xr-x   1 owner  lisa  479752 Feb 12 14:33 TestConfigSim*
--rwxr-xr-x   1 owner  lisa   98668 Feb 12 14:32 TestFilter*
--rwxr-xr-x   1 owner  lisa  139564 Feb 12 14:32 TestGW*
--rwxr-xr-x   1 owner  lisa   51504 Feb 12 14:32 TestGWNewton2*
--rwxr-xr-x   1 owner  lisa   67220 Feb 12 14:32 TestGeometry*
--rwxr-xr-x   1 owner  lisa  118080 Feb 12 14:33 TestMemory*
--rwxr-xr-x   1 owner  lisa  125824 Feb 12 14:32 TestNoise*
--rwxr-xr-x   1 owner  lisa   62148 Feb 12 14:32 TestOutilsMath*
--rwxr-xr-x   1 owner  lisa  294472 Feb 12 14:33 TestPhasemeter*
--rwxr-xr-x   1 owner  lisa  587968 Feb 12 14:33 TestTDI*
--rwxr-xr-x   1 owner  lisa   94028 Feb 12 14:33 TestTrFctGW*
--rwxr-xr-x   1 owner  lisa   61520 Feb 12 14:32 TestUSOTime*
-
-
-./lib:
-total 10112
-drwxr-xr-x  12 owner  lisa      408 Feb 12 14:33 ./
-drwxr-xr-x  47 owner  lisa     1598 Mar 16 19:23 ../
--rw-r--r--   1 owner  lisa   199176 Feb 12 14:32 liblisacodebackground.a
--rw-r--r--   1 owner  lisa   583180 Feb 12 14:33 liblisacodedetector.a
--rw-r--r--   1 owner  lisa   520084 Feb 12 14:32 liblisacodegravwaves.a
--rw-r--r--   1 owner  lisa   965792 Feb 12 14:33 liblisacodeinputdata.a
--rw-r--r--   1 owner  lisa   643636 Feb 12 14:32 liblisacodemathtools.a
--rw-r--r--   1 owner  lisa   669084 Feb 12 14:33 liblisacodememory.a
--rw-r--r--   1 owner  lisa  1047348 Feb 12 14:32 liblisacodenoise.a
--rw-r--r--   1 owner  lisa   149848 Feb 12 14:32 liblisacodeorbits.a
--rw-r--r--   1 owner  lisa   355860 Feb 12 14:33 liblisacodetdi.a
--rw-r--r--   1 owner  lisa    25624 Feb 12 14:32 liblisacodeusotime.a
 

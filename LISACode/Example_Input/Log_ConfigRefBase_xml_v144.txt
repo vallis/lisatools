@@ -1,0 +1,725 @@
+
+   ************************* 
+   *                       * 
+   *       LISACode        * 
+   *   -----------------   * 
+   *   Simulator of LISA   * 
+   *   -----------------   * 
+   *  (LISACode v 1.4.4)   * 
+   *                       * 
+   ************************* 
+
+
+Read configuration (ConfigRefBase.xml)...
+
+System Encoding for Binary files is  LittleEndian
+
+  Read XML configuration file : ConfigRefBase.xml
+   x Author = Antoine Petiteau
+   x GenerationDate = 2008-07-24T10:30:31CEST
+ - Type = ISO-8601
+Section : Simulate
+   x TimeOffset = 0 Second
+   x Cadence = 1 Second
+   x Duration = 10000 Second
+   x Observables = t,X,Y,Z,X2s1,X2s2,X2s3,P1,Zeta1,A,E,T,Alpha
+   o TDI X --> OK 
+   o TDI Y --> OK 
+   o TDI Z --> OK 
+   o TDI X2s1 --> OK 
+   o TDI X2s2 --> OK 
+   o TDI X2s3 --> OK 
+   o TDI P1 --> OK 
+   o TDI Zeta1 --> OK 
+   o TDI A --> OK 
+   o TDI E --> OK 
+   o TDI T --> OK 
+   o TDI Alpha --> OK 
+   x Word = ConfigRefBase.out.xml
+Section : LISACode 
+   x GlobalRandomSeed = 123456
+   x StepPhysic = 0.5 Second
+   x DeltaTDIDelay = 0 Second
+   x StepDisplay = 500 Second
+  Subsection : Detector
+   x LaserPower = 1 W
+   x PhaMetFilter = On
+   x Phasemeter filter = 1
+   x PMFilter : Attenuation = 180 dB
+   x PMFilter : Oscillation = 0.1 dB
+   x PMFilter : Low Frequency factor of sample frequency = 0.1
+   x PMFilter : High Frequency factor of sample frequency = 0.3
+   x InternalPhasemeters = IfNoises
+   x InternalPhasemeters = IfNoises
+   x Phasemeter filter = 0
+  Subsection : OutputFiles
+   x Word = SC1_xml.txt
+   x filename = SC1_xml.txt   --> Encoding = 0
+   x Word = SC2_xml.bin
+   x filename = SC2_xml.bin   --> Encoding = 1
+   x Word = SC3_xml.bin
+   x filename = SC3_xml.bin   --> Encoding = 1
+   x Word = Delay_xml.txt
+   x filename = Delay_xml.txt   --> Encoding = 0
+   x Word = Pos_xml.txt
+   x filename = Pos_xml.txt   --> Encoding = 0
+   x Word = TDI_xml.txt
+   x filename = TDI_xml.txt   --> Encoding = 0
+  Subsection : PrecisionTDI
+   x InterpType = LAG
+   x InterpType = 3
+   x InterpValue = 20
+   x DelayApprox = Off
+   x DelayApprox = Off
+   x Approximation of TDI Delay = 0
+  Subsection : TDISpecificGenerator
+   x Name = AlphaId
+     x Pack =  -1 -32 -133 4 455 56
+  Subsection : TDISpecificGenerator
+   x Name = Alphaf2
+     x Pack =  -1 -32 -133 4 455 56
+Section : LISAData 
+  Subsection : LISACode_Orbits
+   x InitialPosition = 0 Radian
+   x InitialRotation = 0 Radian
+   x Armlength = 16.6782 Second
+   x Armlength = 5e+09 m
+   x OrbitApproximation = Eccentric
+   x Order = 2
+Section : SourceData
+
+Source : Name = MonoGW
+   x EclipticLatitude = 0.471239 Radian
+   x EclipticLongitude = 5.18363 Radian
+   x Polarization = 3.9968 Radian
+ Source : type = PlaneWave
+   x SourceType = Monochromatic
+   x Frequency = 0.0001 Hertz
+   x hp = 1e-19
+   x hc = 0
+   x InitialPhasePlus = 0 Radian
+   x InitialPhaseCross = 0 Radian
+  + GWMono   : Beta=0.471238898038469 Lambda=5.18362787842316 Psi=3.99680398706701 f=0.0001 hp=1e-19 hc=0 Phi0hp=0 Phi0hc=0
+
+Source : Name = BinaryGW
+   x EclipticLatitude = 1.18682389135614 Radian
+   x EclipticLongitude = 2.35619449019234 Radian
+   x Polarization = 0.20943951023932 Radian
+ Source : type = PlaneWave
+   x SourceType = GalacticBinary
+   x OrbitalFrequency = 0.001 Hertz
+   x Inclination = 0.733038285837618 Radian
+   x InitialPhase = 0 Radian
+   x Mass1 = 100000 SolarMass
+   x Mass2 = 1000000 SolarMass
+   x Distance = 100000 KiloParsec
+  + GWBinary : Beta=1.18682389135614 Lambda=2.35619449019234 Psi=0.20943951023932 M1=100000 M2=1000000 forb=0.001 inc=0.733038285837618 phi0=0 r=100000
+
+Source : Name = PostNewtonBinaryGW
+   x EclipticLatitude = -0.977384381116825 Radian
+   x EclipticLongitude = 2.68780704807127 Radian
+   x Polarization = 0.558505360638185 Radian
+ Source : type = PlaneWave
+   x SourceType = BlackHoleBinary
+   x Mass1 = 1000000 SolarMass
+   x Mass2 = 1000000 SolarMass
+   x CoalescenceTime = 9676800 Second
+   x Inclination = 1.5707963267949 Radian
+   x Distance = 100000 KiloParsec
+   x CoalescencePhase = 1.2 Radian
+   x TruncationTime = 0 Second
+  + GWPostNewtonBinary : Beta=-0.977384381116825 Lambda=2.68780704807127 Psi=0.558505360638185 M1=1000000 M2=1000000 tcoal=9676800 inc=1.5707963267949 phase=1.2 dist=100000 type=2 omega0=1 taud0=10 gw=1
+
+Source : Name = SpinSMBH
+   x EclipticLatitude = 0.657644432309 Radian
+   x EclipticLongitude = 4.98921990792 Radian
+   x Polarization = 0 Radian
+ Source : type = PlaneWave
+   x SourceType = FastSpinBlackHoleBinary
+   x PolarAngleOfSpin1 = 2.79680864369 Radian
+   x PolarAngleOfSpin2 = 2.27928544629 Radian
+   x AzimuthalAngleOfSpin1 = 0.0140107251252 Radian
+   x AzimuthalAngleOfSpin2 = 4.17130033043 Radian
+   x Mass1 = 1465580.75942 SolarMass
+   x Mass2 = 868710.795073 SolarMass
+   x CoalescenceTime = 31525128.7938 Second
+   x PhaseAtCoalescence = 1.16933157672 Radian
+   x InitialPolarAngleL = 2.82873004221 Radian
+   x InitialAzimuthalAngleL = 5.74015227561 Radian
+   x Distance = 1000000 KiloParsec
+  + GWFastSpinBBH : Beta=0.657644432309 Lambda=4.98921990792 Psi=0 M1=1465580.75942 M2=868710.795073 tcoal=31525128.7938 phase=1.16933157672 dist=1000000 AmpPN=0 L0=(theta=2.82873004221,phi=5.74015227561) S1=0.0770493004546(2.79680864369,0.0140107251252) S2=0.268523395273(2.27928544629,4.17130033043)
+   --> Initialisation of FastBBH (compute precession for 12000 s starting at -2000 s ) ... 
+m1 = 1.465580759420e+06   m2 = 8.687107950730e+05    tc = 3.152512879380e+07   DL =  1.000000000000e+06   x1 = 7.704930045460e-02    x2 = 2.685233952730e-01 
+theta = 2.483948221281e+00   thetaL = 2.828730042210e+00  thS1 = 2.796808643690e+00  thS2  = 2.279285446290e+00 
+phi = 4.989219907920e+00   phiL = 5.740152275610e+00  phiS1 = 1.401072512520e-02   phiS2 = 4.171300330430e+00  phic = 1.169331576720e+00 
+ --> OK
+
+Source : Name = GW stochastic background pseudosource #0
+   x EclipticLatitude = 0.204480198969 Radian
+   x EclipticLongitude = 0.785398163397 Radian
+   x Polarization = 0 Radian
+ Source : type = PlaneWave
+   x SourceType = Stochastic
+   x PowerSpectralDensity = 2.6042e-50
+   x SpectralSlope = -3
+   x Flow = 1e-05
+   x Fknee = 0.1
+   x InterpolationOrder = 1
+  + GW Stochastic : 4 : Beta,Lambda,hp,hc,dt,Slope_sto,Fknee_sto,Fmin_sto =    78.28414760508  44.99999999997  0.5  1.613753388842e-25  1.613753388842e-25  -3  0.1  1e-05
+Section : NoiseData
+
+  Noisy Instrument = pm1
+   x SourceType = PseudoRandomNoise
+   x SpectralType = PinkAcceleration
+   x PowerSpectralDensity = 2.5281e-48
+   x Fknee = 0.0001
+  --> PinkAcceleration : ISC, IndDir, Level = 1 0  1.59e-24
+
+  Noisy Instrument = pm1s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = PinkAcceleration
+   x PowerSpectralDensity = 2.5281e-48
+   x Fknee = 0.0001
+  --> PinkAcceleration : ISC, IndDir, Level = 1 1  1.59e-24
+
+  Noisy Instrument = pm2
+   x SourceType = PseudoRandomNoise
+   x SpectralType = PinkAcceleration
+   x PowerSpectralDensity = 2.5281e-48
+   x Fknee = 0.0001
+  --> PinkAcceleration : ISC, IndDir, Level = 2 0  1.59e-24
+
+  Noisy Instrument = pm2s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = PinkAcceleration
+   x PowerSpectralDensity = 2.5281e-48
+   x Fknee = 0.0001
+  --> PinkAcceleration : ISC, IndDir, Level = 2 1  1.59e-24
+
+  Noisy Instrument = pm3
+   x SourceType = PseudoRandomNoise
+   x SpectralType = PinkAcceleration
+   x PowerSpectralDensity = 2.5281e-48
+   x Fknee = 0.0001
+  --> PinkAcceleration : ISC, IndDir, Level = 3 0  1.59e-24
+
+  Noisy Instrument = pm3s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = PinkAcceleration
+   x PowerSpectralDensity = 2.5281e-48
+   x Fknee = 0.0001
+  --> PinkAcceleration : ISC, IndDir, Level = 3 1  1.59e-24
+
+  Noisy Instrument = pd1
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhitePhase
+   x PowerSpectralDensity = 1.75e-37
+  --> WhitePhase : 4.18330013267e-19
+
+  Noisy Instrument = pd1s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhitePhase
+   x PowerSpectralDensity = 1.75e-37
+  --> WhitePhase : 4.18330013267e-19
+
+  Noisy Instrument = pd2
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhitePhase
+   x PowerSpectralDensity = 1.75e-37
+  --> WhitePhase : 4.18330013267e-19
+
+  Noisy Instrument = pd2s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhitePhase
+   x PowerSpectralDensity = 1.75e-37
+  --> WhitePhase : 4.18330013267e-19
+
+  Noisy Instrument = pd3
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhitePhase
+   x PowerSpectralDensity = 1.75e-37
+  --> WhitePhase : 4.18330013267e-19
+
+  Noisy Instrument = pd3s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhitePhase
+   x PowerSpectralDensity = 1.75e-37
+  --> WhitePhase : 4.18330013267e-19
+
+  Noisy Instrument = c1
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhiteFrequency
+   x PowerSpectralDensity = 1e-26
+  --> WhiteFrequency : 1e-13
+
+  Noisy Instrument = c1s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhiteFrequency
+   x PowerSpectralDensity = 1e-26
+  --> WhiteFrequency : 1e-13
+
+  Noisy Instrument = c2
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhiteFrequency
+   x PowerSpectralDensity = 1e-26
+  --> WhiteFrequency : 1e-13
+
+  Noisy Instrument = c2s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhiteFrequency
+   x PowerSpectralDensity = 1e-26
+  --> WhiteFrequency : 1e-13
+
+  Noisy Instrument = c3
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhiteFrequency
+   x PowerSpectralDensity = 1e-26
+  --> WhiteFrequency : 1e-13
+
+  Noisy Instrument = c3s
+   x SourceType = PseudoRandomNoise
+   x SpectralType = WhiteFrequency
+   x PowerSpectralDensity = 1e-26
+  --> WhiteFrequency : 1e-13
+
+
+   ==================  Create XML Outputfile here
+
+Creating XML Output File :ConfigRefBase.out.xml
+  - Noise 0 (1 spec): White 1e-13
+  - Noise 1 (1 spec): White 1e-13
+  - Noise 2 (1 spec): White 1e-13
+  - Noise 3 (1 spec): White 1e-13
+  - Noise 4 (1 spec): White 1e-13
+  - Noise 5 (1 spec): White 1e-13
+  - Noise 6 (1 spec): Filter f : Level = 4.18330013267e-19 : alpha = -1 , beta = 2.663171578206e-19 -2.663171578206e-19
+  - Noise 7 (1 spec): Filter f : Level = 4.18330013267e-19 : alpha = -1 , beta = 2.663171578206e-19 -2.663171578206e-19
+  - Noise 8 (1 spec): Filter f : Level = 4.18330013267e-19 : alpha = -1 , beta = 2.663171578206e-19 -2.663171578206e-19
+  - Noise 9 (1 spec): Filter f : Level = 4.18330013267e-19 : alpha = -1 , beta = 2.663171578206e-19 -2.663171578206e-19
+  - Noise 10 (1 spec): Filter f : Level = 4.18330013267e-19 : alpha = -1 , beta = 2.663171578206e-19 -2.663171578206e-19
+  - Noise 11 (1 spec): Filter f : Level = 4.18330013267e-19 : alpha = -1 , beta = 2.663171578206e-19 -2.663171578206e-19
+  - Noise 12 (1 spec): 
+     Filter MLDC_IM (f2) : Level = 0.0001 : alpha = 2 -1 ,   beta = 3.923167749433e-28 7.846335498866e-28 3.923167749433e-28  ; NbDataStab   100000
+     Filter MLDC_IM (f1) : Level = 1.59e-24 : alpha = 1 ,  beta = 2.497566159604e-24 2.497566159604e-24  ; NbDataStab   100000
+  - Noise 13 (1 spec): 
+     Filter MLDC_IM (f2) : Level = 0.0001 : alpha = 2 -1 ,   beta = 3.923167749433e-28 7.846335498866e-28 3.923167749433e-28  ; NbDataStab   100000
+     Filter MLDC_IM (f1) : Level = 1.59e-24 : alpha = 1 ,  beta = 2.497566159604e-24 2.497566159604e-24  ; NbDataStab   100000
+  - Noise 14 (1 spec): 
+     Filter MLDC_IM (f2) : Level = 0.0001 : alpha = 2 -1 ,   beta = 3.923167749433e-28 7.846335498866e-28 3.923167749433e-28  ; NbDataStab   100000
+     Filter MLDC_IM (f1) : Level = 1.59e-24 : alpha = 1 ,  beta = 2.497566159604e-24 2.497566159604e-24  ; NbDataStab   100000
+  - Noise 15 (1 spec): 
+     Filter MLDC_IM (f2) : Level = 0.0001 : alpha = 2 -1 ,   beta = 3.923167749433e-28 7.846335498866e-28 3.923167749433e-28  ; NbDataStab   100000
+     Filter MLDC_IM (f1) : Level = 1.59e-24 : alpha = 1 ,  beta = 2.497566159604e-24 2.497566159604e-24  ; NbDataStab   100000
+  - Noise 16 (1 spec): 
+     Filter MLDC_IM (f2) : Level = 0.0001 : alpha = 2 -1 ,   beta = 3.923167749433e-28 7.846335498866e-28 3.923167749433e-28  ; NbDataStab   100000
+     Filter MLDC_IM (f1) : Level = 1.59e-24 : alpha = 1 ,  beta = 2.497566159604e-24 2.497566159604e-24  ; NbDataStab   100000
+  - Noise 17 (1 spec): 
+     Filter MLDC_IM (f2) : Level = 0.0001 : alpha = 2 -1 ,   beta = 3.923167749433e-28 7.846335498866e-28 3.923167749433e-28  ; NbDataStab   100000
+     Filter MLDC_IM (f1) : Level = 1.59e-24 : alpha = 1 ,  beta = 2.497566159604e-24 2.497566159604e-24  ; NbDataStab   100000
+  ----------
+  X : 1 35 364 3653 -4 -53 -521 -5235
+  Y : 2 16 145 1461 -5 -61 -632 -6316
+  Z : 3 24 256 2542 -6 -42 -413 -4124
+  X2s1 : 1 35 364 3653 36524 365253 3652521 36525235 -4 -53 -521 -5235 -52361 -523635 -5236364 -52363653
+  X2s2 : 2 16 145 1461 14635 146361 1463632 14636316 -5 -61 -632 -6316 -63142 -631416 -6314145 -63141461
+  X2s3 : 3 24 256 2542 25416 254142 2541413 25414124 -6 -42 -413 -4124 -41253 -412524 -4125256 -41252542
+  P1 : 25 -63 -22 66 642 -216 1463 -1425
+  Zeta1 : 3214 -414 -3252 452 3255 -455 -5633 133 5636 -136 -5641 141
+  A : 1*-0.7071067811865 35*-0.7071067811865 364*-0.7071067811865 3653*-0.7071067811865 -4*-0.7071067811865 -53*-0.7071067811865 -521*-0.7071067811865 -5235*-0.7071067811865 3*-0.7071067811865 24*-0.7071067811865 256*-0.7071067811865 2542*-0.7071067811865 -6*-0.7071067811865 -42*-0.7071067811865 -413*-0.7071067811865 -4124*-0.7071067811865
+  E : 1*0.4082482904639 35*0.4082482904639 364*0.4082482904639 3653*0.4082482904639 -4*0.4082482904639 -53*0.4082482904639 -521*0.4082482904639 -5235*0.4082482904639 2*-0.8164965809277 16*-0.8164965809277 145*-0.8164965809277 1461*-0.8164965809277 -5*-0.8164965809277 -61*-0.8164965809277 -632*-0.8164965809277 -6316*-0.8164965809277 3*0.4082482904639 24*0.4082482904639 256*0.4082482904639 2542*0.4082482904639 -6*0.4082482904639 -42*0.4082482904639 -413*0.4082482904639 -4124*0.4082482904639
+  T : 1*0.5773502691896 35*0.5773502691896 364*0.5773502691896 3653*0.5773502691896 -4*0.5773502691896 -53*0.5773502691896 -521*0.5773502691896 -5235*0.5773502691896 2*0.5773502691896 16*0.5773502691896 145*0.5773502691896 1461*0.5773502691896 -5*0.5773502691896 -61*0.5773502691896 -632*0.5773502691896 -6316*0.5773502691896 3*0.5773502691896 24*0.5773502691896 256*0.5773502691896 2542*0.5773502691896 -6*0.5773502691896 -42*0.5773502691896 -413*0.5773502691896 -4124*0.5773502691896
+  Alpha : -1 -32 -133 4 455 56
+  AlphaId : -1 -32 -133 4 455 56
+  Alphaf2 : -1*2 -32*2 -133*2 4*2 455*2 56*2
+  ----------
+  Sources number = 5
+  tStepPhy       = 0.5 s
+  tStepMes       = 1 s
+  tDeltaTDIDelay = 0 s
+  tStepDisplay   = 500 s
+  NbMaxDelays    = 7
+  InterpUtilVal  = 20
+  Orbits type    = 0
+  Orbits approx  = 2
+  Delay order    = 2
+Read configuration (ConfigRefBase.xml) --> OK !
+
+Configuration file random seed : 123456
+
+Creation ...
+  - Parameters...    Parameters --> OK !
+
+  - Memorys...
+     Record Signal SC1 : RAM & DISK (SC1_xml.txt)
+     Opening an ASCII file SC1_xml.txt    Encoding = 0
+     Record Signal SC2 : RAM & DISK (SC2_xml.bin)
+     Opening a BINARY file SC2_xml.bin    Encoding = 1
+     Record Signal SC3 : RAM & DISK (SC3_xml.bin)
+     Opening a BINARY file SC3_xml.bin    Encoding = 1
+     Record TDI        : DISK (TDI_xml.txt) --> ASCII
+     Record Delays     : RAM & DISK (Delay_xml.txt)
+     Opening an ASCII file Delay_xml.txt    Encoding = 0
+     Record Positions  : RAM & DISK(Pos_xml.txt)
+     Opening an ASCII file Pos_xml.txt    Encoding = 0
+ --> OK !
+
+  - LISA...
+Create orbits : Analytic ...
+ --> OK
+--------------------
+ Orbits : 
+    - Initial time     = 0 s
+    - Initial rotation = 0 s
+    - Armlength        = 5000000000 s
+    - Motion           = 1
+    - Delay order      = 2
+    - tRangeStorePos   = 10 s
+    - tRangeStoreDelay = 0.5 s
+    - Type             = LISACode analytic orbit
+--------------------
+      Creation Noises --> OK !
+      Creation of photodetector-phasemeters which make a S interference's type
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+ --> OK !
+      Creation of photodetector-phasemeters which make a TAU interference's type
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+        Make Elliptic filter : fe=2Hz att=180dB osc=0.1dB fb=0.1Hz fa=0.3Hz 5Cells 
+        Creation of filter (Stabilization time = 25s) --> OK !
+ --> OK !
+      Stabilization of phasemeters (25 s)...
+      Stabilization of phasemeters --> OK !
+    LISA --> OK !
+
+  - TDI... 
+    Creation of X ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 1 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 3 
+       Pack 2 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 3 6 
+       Pack 3 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 3 6 5 
+       Pack 4 :  Sign = -1 , Eta = 4 , Fact = 1 , Delays = 
+       Pack 5 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 5 
+       Pack 6 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 5 2 
+       Pack 7 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 5 2 3 
+     Read TDI combinaisons --> OK 
+    Creation of X --> OK
+    Creation of Y ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 1 
+       Pack 2 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 1 4 
+       Pack 3 :  Sign = 1 , Eta = 1 , Fact = 1 , Delays = 1 4 6 
+       Pack 4 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 
+       Pack 5 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 6 
+       Pack 6 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 6 3 
+       Pack 7 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 6 3 1 
+     Read TDI combinaisons --> OK 
+    Creation of Y --> OK
+    Creation of Z ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 2 
+       Pack 2 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 2 5 
+       Pack 3 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 2 5 4 
+       Pack 4 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 
+       Pack 5 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 4 
+       Pack 6 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 4 1 
+       Pack 7 :  Sign = -1 , Eta = 4 , Fact = 1 , Delays = 4 1 2 
+     Read TDI combinaisons --> OK 
+    Creation of Z --> OK
+    Creation of X2s1 ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 1 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 3 
+       Pack 2 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 3 6 
+       Pack 3 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 3 6 5 
+       Pack 4 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 3 6 5 2 
+       Pack 5 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 3 6 5 2 5 
+       Pack 6 :  Sign = 1 , Eta = 1 , Fact = 1 , Delays = 3 6 5 2 5 2 
+       Pack 7 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 3 6 5 2 5 2 3 
+       Pack 8 :  Sign = -1 , Eta = 4 , Fact = 1 , Delays = 
+       Pack 9 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 5 
+       Pack 10 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 5 2 
+       Pack 11 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 5 2 3 
+       Pack 12 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 5 2 3 6 
+       Pack 13 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 5 2 3 6 3 
+       Pack 14 :  Sign = -1 , Eta = 4 , Fact = 1 , Delays = 5 2 3 6 3 6 
+       Pack 15 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 5 2 3 6 3 6 5 
+     Read TDI combinaisons --> OK 
+    Creation of X2s1 --> OK
+    Creation of X2s2 ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 1 
+       Pack 2 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 1 4 
+       Pack 3 :  Sign = 1 , Eta = 1 , Fact = 1 , Delays = 1 4 6 
+       Pack 4 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 1 4 6 3 
+       Pack 5 :  Sign = 1 , Eta = 1 , Fact = 1 , Delays = 1 4 6 3 6 
+       Pack 6 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 1 4 6 3 6 3 
+       Pack 7 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 1 4 6 3 6 3 1 
+       Pack 8 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 
+       Pack 9 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 6 
+       Pack 10 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 6 3 
+       Pack 11 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 6 3 1 
+       Pack 12 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 6 3 1 4 
+       Pack 13 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 6 3 1 4 1 
+       Pack 14 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 6 3 1 4 1 4 
+       Pack 15 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 6 3 1 4 1 4 6 
+     Read TDI combinaisons --> OK 
+    Creation of X2s2 --> OK
+    Creation of X2s3 ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 2 
+       Pack 2 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 2 5 
+       Pack 3 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 2 5 4 
+       Pack 4 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 2 5 4 1 
+       Pack 5 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 2 5 4 1 4 
+       Pack 6 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 2 5 4 1 4 1 
+       Pack 7 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 2 5 4 1 4 1 2 
+       Pack 8 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 
+       Pack 9 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 4 
+       Pack 10 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 4 1 
+       Pack 11 :  Sign = -1 , Eta = 4 , Fact = 1 , Delays = 4 1 2 
+       Pack 12 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 4 1 2 5 
+       Pack 13 :  Sign = -1 , Eta = 4 , Fact = 1 , Delays = 4 1 2 5 2 
+       Pack 14 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 4 1 2 5 2 5 
+       Pack 15 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 4 1 2 5 2 5 4 
+     Read TDI combinaisons --> OK 
+    Creation of X2s3 --> OK
+    Creation of P1 ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 2 
+       Pack 1 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 6 
+       Pack 2 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 2 
+       Pack 3 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 6 
+       Pack 4 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 6 4 
+       Pack 5 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 2 1 
+       Pack 6 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 1 4 6 
+       Pack 7 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 1 4 2 
+     Read TDI combinaisons --> OK 
+    Creation of P1 --> OK
+    Creation of Zeta1 ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 3 2 1 
+       Pack 1 :  Sign = -1 , Eta = 4 , Fact = 1 , Delays = 4 1 
+       Pack 2 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 3 2 5 
+       Pack 3 :  Sign = 1 , Eta = 2 , Fact = 1 , Delays = 4 5 
+       Pack 4 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 3 2 5 
+       Pack 5 :  Sign = -1 , Eta = 5 , Fact = 1 , Delays = 4 5 
+       Pack 6 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 5 6 3 
+       Pack 7 :  Sign = 1 , Eta = 3 , Fact = 1 , Delays = 1 3 
+       Pack 8 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 5 6 3 
+       Pack 9 :  Sign = -1 , Eta = 6 , Fact = 1 , Delays = 1 3 
+       Pack 10 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 5 6 4 
+       Pack 11 :  Sign = 1 , Eta = 1 , Fact = 1 , Delays = 1 4 
+     Read TDI combinaisons --> OK 
+    Creation of Zeta1 --> OK
+    Creation of A ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 1 , Fact = -0.707106781186547 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 5 , Fact = -0.707106781186547 , Delays = 3 
+       Pack 2 :  Sign = 1 , Eta = 4 , Fact = -0.707106781186547 , Delays = 3 6 
+       Pack 3 :  Sign = 1 , Eta = 3 , Fact = -0.707106781186547 , Delays = 3 6 5 
+       Pack 4 :  Sign = -1 , Eta = 4 , Fact = -0.707106781186547 , Delays = 
+       Pack 5 :  Sign = -1 , Eta = 3 , Fact = -0.707106781186547 , Delays = 5 
+       Pack 6 :  Sign = -1 , Eta = 1 , Fact = -0.707106781186547 , Delays = 5 2 
+       Pack 7 :  Sign = -1 , Eta = 5 , Fact = -0.707106781186547 , Delays = 5 2 3 
+       Pack 8 :  Sign = 1 , Eta = 3 , Fact = -0.707106781186547 , Delays = 
+       Pack 9 :  Sign = 1 , Eta = 4 , Fact = -0.707106781186547 , Delays = 2 
+       Pack 10 :  Sign = 1 , Eta = 6 , Fact = -0.707106781186547 , Delays = 2 5 
+       Pack 11 :  Sign = 1 , Eta = 2 , Fact = -0.707106781186547 , Delays = 2 5 4 
+       Pack 12 :  Sign = -1 , Eta = 6 , Fact = -0.707106781186547 , Delays = 
+       Pack 13 :  Sign = -1 , Eta = 2 , Fact = -0.707106781186547 , Delays = 4 
+       Pack 14 :  Sign = -1 , Eta = 3 , Fact = -0.707106781186547 , Delays = 4 1 
+       Pack 15 :  Sign = -1 , Eta = 4 , Fact = -0.707106781186547 , Delays = 4 1 2 
+     Read TDI combinaisons --> OK 
+    Creation of A --> OK
+    Creation of E ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 1 , Fact = 0.408248290463863 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 5 , Fact = 0.408248290463863 , Delays = 3 
+       Pack 2 :  Sign = 1 , Eta = 4 , Fact = 0.408248290463863 , Delays = 3 6 
+       Pack 3 :  Sign = 1 , Eta = 3 , Fact = 0.408248290463863 , Delays = 3 6 5 
+       Pack 4 :  Sign = -1 , Eta = 4 , Fact = 0.408248290463863 , Delays = 
+       Pack 5 :  Sign = -1 , Eta = 3 , Fact = 0.408248290463863 , Delays = 5 
+       Pack 6 :  Sign = -1 , Eta = 1 , Fact = 0.408248290463863 , Delays = 5 2 
+       Pack 7 :  Sign = -1 , Eta = 5 , Fact = 0.408248290463863 , Delays = 5 2 3 
+       Pack 8 :  Sign = 1 , Eta = 2 , Fact = -0.816496580927726 , Delays = 
+       Pack 9 :  Sign = 1 , Eta = 6 , Fact = -0.816496580927726 , Delays = 1 
+       Pack 10 :  Sign = 1 , Eta = 5 , Fact = -0.816496580927726 , Delays = 1 4 
+       Pack 11 :  Sign = 1 , Eta = 1 , Fact = -0.816496580927726 , Delays = 1 4 6 
+       Pack 12 :  Sign = -1 , Eta = 5 , Fact = -0.816496580927726 , Delays = 
+       Pack 13 :  Sign = -1 , Eta = 1 , Fact = -0.816496580927726 , Delays = 6 
+       Pack 14 :  Sign = -1 , Eta = 2 , Fact = -0.816496580927726 , Delays = 6 3 
+       Pack 15 :  Sign = -1 , Eta = 6 , Fact = -0.816496580927726 , Delays = 6 3 1 
+       Pack 16 :  Sign = 1 , Eta = 3 , Fact = 0.408248290463863 , Delays = 
+       Pack 17 :  Sign = 1 , Eta = 4 , Fact = 0.408248290463863 , Delays = 2 
+       Pack 18 :  Sign = 1 , Eta = 6 , Fact = 0.408248290463863 , Delays = 2 5 
+       Pack 19 :  Sign = 1 , Eta = 2 , Fact = 0.408248290463863 , Delays = 2 5 4 
+       Pack 20 :  Sign = -1 , Eta = 6 , Fact = 0.408248290463863 , Delays = 
+       Pack 21 :  Sign = -1 , Eta = 2 , Fact = 0.408248290463863 , Delays = 4 
+       Pack 22 :  Sign = -1 , Eta = 3 , Fact = 0.408248290463863 , Delays = 4 1 
+       Pack 23 :  Sign = -1 , Eta = 4 , Fact = 0.408248290463863 , Delays = 4 1 2 
+     Read TDI combinaisons --> OK 
+    Creation of E --> OK
+    Creation of T ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = 1 , Eta = 1 , Fact = 0.577350269189626 , Delays = 
+       Pack 1 :  Sign = 1 , Eta = 5 , Fact = 0.577350269189626 , Delays = 3 
+       Pack 2 :  Sign = 1 , Eta = 4 , Fact = 0.577350269189626 , Delays = 3 6 
+       Pack 3 :  Sign = 1 , Eta = 3 , Fact = 0.577350269189626 , Delays = 3 6 5 
+       Pack 4 :  Sign = -1 , Eta = 4 , Fact = 0.577350269189626 , Delays = 
+       Pack 5 :  Sign = -1 , Eta = 3 , Fact = 0.577350269189626 , Delays = 5 
+       Pack 6 :  Sign = -1 , Eta = 1 , Fact = 0.577350269189626 , Delays = 5 2 
+       Pack 7 :  Sign = -1 , Eta = 5 , Fact = 0.577350269189626 , Delays = 5 2 3 
+       Pack 8 :  Sign = 1 , Eta = 2 , Fact = 0.577350269189626 , Delays = 
+       Pack 9 :  Sign = 1 , Eta = 6 , Fact = 0.577350269189626 , Delays = 1 
+       Pack 10 :  Sign = 1 , Eta = 5 , Fact = 0.577350269189626 , Delays = 1 4 
+       Pack 11 :  Sign = 1 , Eta = 1 , Fact = 0.577350269189626 , Delays = 1 4 6 
+       Pack 12 :  Sign = -1 , Eta = 5 , Fact = 0.577350269189626 , Delays = 
+       Pack 13 :  Sign = -1 , Eta = 1 , Fact = 0.577350269189626 , Delays = 6 
+       Pack 14 :  Sign = -1 , Eta = 2 , Fact = 0.577350269189626 , Delays = 6 3 
+       Pack 15 :  Sign = -1 , Eta = 6 , Fact = 0.577350269189626 , Delays = 6 3 1 
+       Pack 16 :  Sign = 1 , Eta = 3 , Fact = 0.577350269189626 , Delays = 
+       Pack 17 :  Sign = 1 , Eta = 4 , Fact = 0.577350269189626 , Delays = 2 
+       Pack 18 :  Sign = 1 , Eta = 6 , Fact = 0.577350269189626 , Delays = 2 5 
+       Pack 19 :  Sign = 1 , Eta = 2 , Fact = 0.577350269189626 , Delays = 2 5 4 
+       Pack 20 :  Sign = -1 , Eta = 6 , Fact = 0.577350269189626 , Delays = 
+       Pack 21 :  Sign = -1 , Eta = 2 , Fact = 0.577350269189626 , Delays = 4 
+       Pack 22 :  Sign = -1 , Eta = 3 , Fact = 0.577350269189626 , Delays = 4 1 
+       Pack 23 :  Sign = -1 , Eta = 4 , Fact = 0.577350269189626 , Delays = 4 1 2 
+     Read TDI combinaisons --> OK 
+    Creation of T --> OK
+    Creation of Alpha ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 3 
+       Pack 2 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 1 3 
+       Pack 3 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 
+       Pack 4 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 4 5 
+       Pack 5 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 5 
+     Read TDI combinaisons --> OK 
+    Creation of Alpha --> OK
+    Creation of AlphaId ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = -1 , Eta = 1 , Fact = 1 , Delays = 
+       Pack 1 :  Sign = -1 , Eta = 2 , Fact = 1 , Delays = 3 
+       Pack 2 :  Sign = -1 , Eta = 3 , Fact = 1 , Delays = 1 3 
+       Pack 3 :  Sign = 1 , Eta = 4 , Fact = 1 , Delays = 
+       Pack 4 :  Sign = 1 , Eta = 5 , Fact = 1 , Delays = 4 5 
+       Pack 5 :  Sign = 1 , Eta = 6 , Fact = 1 , Delays = 5 
+     Read TDI combinaisons --> OK 
+    Creation of AlphaId --> OK
+    Creation of Alphaf2 ...
+     Read TDI combinaisons ... 
+       Pack 0 :  Sign = -1 , Eta = 1 , Fact = 2 , Delays = 
+       Pack 1 :  Sign = -1 , Eta = 2 , Fact = 2 , Delays = 3 
+       Pack 2 :  Sign = -1 , Eta = 3 , Fact = 2 , Delays = 1 3 
+       Pack 3 :  Sign = 1 , Eta = 4 , Fact = 2 , Delays = 
+       Pack 4 :  Sign = 1 , Eta = 5 , Fact = 2 , Delays = 4 5 
+       Pack 5 :  Sign = 1 , Eta = 6 , Fact = 2 , Delays = 5 
+     Read TDI combinaisons --> OK 
+    Creation of Alphaf2 --> OK
+    TDI --> OK !
+
+Creation --> OK
+
+Initialisations ...
+  Display all serie :
+   - Title of serie 0 is :  s1
+   - Title of serie 1 is :  sp1
+   - Title of serie 2 is :  tau1
+   - Title of serie 3 is :  taup1
+  Display all serie :
+   - Title of serie 0 is :  D1
+   - Title of serie 1 is :  D2
+   - Title of serie 2 is :  D3
+   - Title of serie 3 is :  Dp1
+   - Title of serie 4 is :  Dp2
+   - Title of serie 5 is :  Dp3
+  Display all serie :
+   - Title of serie 0 is :  px1
+   - Title of serie 1 is :  px2
+   - Title of serie 2 is :  px3
+   - Title of serie 3 is :  py1
+   - Title of serie 4 is :  py2
+   - Title of serie 5 is :  py3
+   - Title of serie 6 is :  pz1
+   - Title of serie 7 is :  pz2
+   - Title of serie 8 is :  pz3
+  Initialisations --> OK
+
+Time of storage for TDI delays and Eta = 180
+Time of storage for raw data = 33
+Shift time for TDI = 0
+
+Runnning in progress : receive datas (-> 33 s)...
+
+Runnning in progress : enoughe data for pre-computing of TDI (-> 180 s)...
+
+Runnning in progress : Enough recorded data ...
+   --> Compute TDI directly (->10000s) ...
+287 s    (remaining time : 00:00:00) #0003 % 
+787 s    (remaining time : 00:00:00) #0008 % 
+1287 s    (remaining time : 00:00:07) #0013 % 
+1787 s    (remaining time : 00:00:05) #0018 % 
+2287 s    (remaining time : 00:00:07) #0023 % 
+2787 s    (remaining time : 00:00:05) #0028 % 
+3287 s    (remaining time : 00:00:06) #0033 % 
+3787 s    (remaining time : 00:00:05) #0038 % 
+4287 s    (remaining time : 00:00:04) #0043 % 
+4787 s    (remaining time : 00:00:04) #0048 % 
+5287 s    (remaining time : 00:00:04) #0053 % 
+5787 s    (remaining time : 00:00:04) #0058 % 
+6287 s    (remaining time : 00:00:03) #0063 % 
+6787 s    (remaining time : 00:00:03) #0068 % 
+7287 s    (remaining time : 00:00:02) #0073 % 
+7787 s    (remaining time : 00:00:02) #0078 % 
+8287 s    (remaining time : 00:00:01) #0083 % 
+8787 s    (remaining time : 00:00:01) #0088 % 
+9287 s    (remaining time : 00:00:01) #0093 % 
+9787 s    (remaining time : 00:00:00) #0098 % 
+ X = 1.54307528074364e-18
+ Y = 2.23380405854711e-18
+ Z = 2.03070603076141e-18
+ X2s1 = 3.84102761495987e-18
+ X2s2 = 7.30253642014613e-18
+ X2s3 = 6.49295694664655e-18
+ P1 = 1.66863851346021e-18
+ Zeta1 = 9.83745008504859e-19
+ A = 1.13116215039798e-18
+ E = 2.24813394943504e-18
+ T = 8.43903157531066e-19
+ Alpha = 1.33468426185853e-18
+ AlphaId = 1.33468426185853e-18
+ Alphaf2 = 2.66936852371707e-18
+Final time : 10001 s
+
+ Closing ASCII file.
+ Closing BINARY file.
+ Closing BINARY file.
+ Closing ASCII file.
+ Closing ASCII file.
+
+End

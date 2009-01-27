@@ -10,7 +10,7 @@
  */
 
 #include "LISACODE-TrFctGW.h"
-#include <fstream>
+#include <fstream.h>
 
 /* Constructor */
 /*! \brief Constructs an instance and initializes it with default values.
@@ -115,9 +115,9 @@ void TrFctGW::init(vector<GW *> * GWSources_n, Geometry * LISAGeo_n)
 		
 		
 		//cout << "In GW constructor :" <<endl;
-		//cout << "  - k = " << k.p[0] << " " << k.p[1] << " " << k.p[2] << " " << endl;
-		//cout << "  - u = " << u.p[0] << " " << u.p[1] << " " << u.p[2] << " " << endl;
-		//cout << "  - v = " << v.p[0] << " " << v.p[1] << " " << v.p[2] << " " << endl;	
+		//cout << "  - k = " << k[iGW].p[0] << " " << k[iGW].p[1] << " " << k[iGW].p[2] << " " << endl;
+		//cout << "  - u = " << u[iGW].p[0] << " " << u[iGW].p[1] << " " << u[iGW].p[2] << " " << endl;
+		//cout << "  - v = " << v[iGW].p[0] << " " << v[iGW].p[1] << " " << v[iGW].p[2] << " " << endl;	
 	}
 }
 
@@ -199,7 +199,7 @@ double TrFctGW::deltanu(int rec, int em, int order, double trec)
 			hpe = (*GWSources)[iGW]->hp(te); 
 			hcr = (*GWSources)[iGW]->hc(tr); 
 			hce = (*GWSources)[iGW]->hc(te);  
-			//cout << "trec,tem,hp_rec,hp_emm = " << tr << "  " << te << "  " << hpr << "  " << hpe << endl ;
+			//cout << "deltanu :: trec,tem,hp_rec,hp_emm = " << tr << "  " << te << "  " << hpr << "  " << hpe << " " << endl;
 			//cout <<trec<< "  " << tr << "  " << hpr << "  " << rec<< "   order " << order <<endl ;
 			//cout << te << "  " << hpe << "  " << em << "   order " << order << endl ;
 
@@ -246,8 +246,8 @@ double TrFctGW::deltanu(int rec, int em, int order, double trec)
 			//hr = hpr*ksip+hcr*ksic;
 			//he = hpe*ksip+hce*ksic;
 			
-			//cout << "hp_rec=" << hpr << " " << "hc_rec=" << hcr  << " " << "h_rec=" << hr << endl;
-			//cout << "hp_em=" << hpe << " " << "hc_em=" << hce << " " << "h_em=" << he << endl;
+			//cout << "deltanu :: hp_rec=" << hpr << " " << "hc_rec=" << hcr  << " " << "h_rec=" << hr << endl;
+			//cout << "deltanu :: hp_em=" << hpe << " " << "hc_em=" << hce << " " << "h_em=" << he << endl;
 			
 			//delta += ((hpe-hpr)*ksip+(hce-hcr)*ksic)/(1.-(krrec-krem)/ndr);
 			/*delta_tmp = ((hpe-hpr)*ksip+(hce-hcr)*ksic)/(1.-(krrec-krem)/ndr);

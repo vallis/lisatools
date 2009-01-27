@@ -15,12 +15,13 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-MathUtils.h"
 #include "LISACODE-Background.h"
 #include "LISACODE-BackgroundGalactic.h"
+#include "LISACODE-GeometryAnalytic.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *          -------------------         *";
 		cout << endl << "   *  Confusion Whites Dwarfs Background  *";
 		cout << endl << "   *  ----------------------------------  *";
+		cout << endl << "   *          ("<<LCVersion<<")           *";
 		cout << endl << "   *                                      *";
 		cout << endl << "   ****************************************" << endl << endl; 
 		
@@ -53,7 +55,7 @@ int main (int argc, char * const argv[])
 		double ttmpAff(0.0), StepdDisplay(24.0*3600.0);
 		
 		// Geometrie
-		Geometry LISAPos(0.0, 0.0, L0_m_default, 2, 1);
+		GeometryAnalytic LISAPos(0.0, 0.0, L0_m_default, 2, 1, tStep);
 		
 		// Phasemeters' File for CWDB
 		char * FileName;

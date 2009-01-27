@@ -139,7 +139,7 @@ LISA::LISA(	double tStepPhy_n,
 		
 		RecordPDPM = RecordPDPM_n;
 		
-		SCPos = new Geometry();
+		SCPos = new GeometryAnalytic();
 		
 		sGW.init(GW_n, SCPos);
 		
@@ -257,7 +257,9 @@ LISA::LISA(ConfigSim * ConfigLISA, vector<Memory *> * RecordPDPM_n)
 		tMemRAM  = ConfigLISA->gettMemSig();
 		RecordPDPM = RecordPDPM_n;
 		
-		SCPos = new Geometry(ConfigLISA->getOrbStartTime(), ConfigLISA->getOrbInitRot(), ConfigLISA->getArmlength(), ConfigLISA->getOrbOrder(), ConfigLISA->getOrbMove(), ConfigLISA->gettStepPhy());
+		//SCPos = new GeometryAnalytic(ConfigLISA->getOrbStartTime(), ConfigLISA->getOrbInitRot(), ConfigLISA->getArmlength(), ConfigLISA->getOrbOrder(), ConfigLISA->getOrbMove(), ConfigLISA->gettStepPhy());
+		ConfigLISA->getGeometry(SCPos);
+		SCPos->DispInfo();
 		
 		sGW.init(ConfigLISA->getGWs(), SCPos);
 		
@@ -301,7 +303,7 @@ LISA::LISA(ConfigSim * ConfigLISA, vector<Memory *> * RecordPDPM_n)
 		cout << " --> OK !" << endl;
 		
 		//Creation of photodetector-phasemeters which make a tau interference's type
-		if(!(ConfigLISA->getNoNoise())){
+		if(ConfigLISA->UseInternalPhasemeter()){
 		cout << "      Creation of photodetector-phasemeters which make a TAU interference's type" << endl;
 			for(int IndDir=0; IndDir<2; IndDir++){
 				for(int iSC=1; iSC<4; iSC++){

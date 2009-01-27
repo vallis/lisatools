@@ -1,0 +1,106 @@
+\begin{thebibliography}{10}
+
+\bibitem{ApostolatosSpin}
+Theocharis~A. Apostolatos, Curt Cutler, Gerald~J. Sussman, and Kip~S. Thorne.
+\newblock Spin-induced orbital precession and its modulation of the
+  gravitational waveforms from merging binaries.
+\newblock {\em Phys. Rev. D}, 49:{6274--6297}, Jun 1994.
+
+\bibitem{MLDC1Res}
+K.~A. Arnaud and \emph{al.}
+\newblock Report on the first round of the {M}ock {LISA} {D}ata {C}hallenges.
+\newblock In {\em Proceedings report from GWDAW 11}, page~13, 2007.
+
+\bibitem{MLDCHowTo}
+Keith~A. Arnaud, Stanislav Babak, John~G. Baker, Matthew~J. Benacquista,
+  Neil~J. Cornish, Curt Cutler, Shane~L. Larson, B.~S. Sathyaprakash, Michele
+  Vallisneri, Alberto Vecchio, and Jean-Yves Vinet.
+\newblock A how-to for the {M}ock {LISA} {D}ata {C}hallenges.
+\newblock In {\em Sixth International LISA Symposium}, 2006.
+
+\bibitem{MLDC2}
+Keith~A. Arnaud, Stanislav Babak, John~G. Baker, Matthew~J. Benacquista,
+  Neil~J. Cornish, Curt Cutler, Shane~L. Larson, B.~S. Sathyaprakash, Michele
+  Vallisneri, Alberto Vecchio, and Jean-Yves Vinet.
+\newblock An overview of the second round of the {M}ock {LISA} {D}ata
+  {C}hallenges.
+\newblock In {\em Proceedings report from GWDAW 11}, 2007.
+
+\bibitem{MLDC3}
+Stanislav Babak, John~G. Baker, Matthew~J. Benacquista, Neil~J. Cornish, Jeff
+  Crowder, Shane~L. Larson, Eric Plagnol, Edward~K. Porter, Michele Vallisneri,
+  Alberto Vecchio, Keith Arnaud, Leor Barack, Arkadiusz Blaut, Curt Cutler,
+  Stephen Fairhurst, Jonathan Gair, Xuefei Gong, Ian Harry, Deepak Khurana,
+  Andrzej Krolak, Ilya Mandel, Reinhard Prix, B.~S. Sathyaprakash, Pavlin
+  Savov, Yu~Shang, Miquel Trias, John Veitch, Yan Wang, Linqing Wen, and
+  John~T. Whelan.
+\newblock The mock lisa data challenges: from challenge 1b to challenge 3.
+\newblock {\em gr-qc}, 08062110, 2008.
+
+\bibitem{LISAPPA}
+P.~Bender and \emph{al.}
+\newblock {\em LISA Pre-Phase A report}.
+\newblock Max-Planck Institut f{\"u}r Quantenoptik, July 1998.
+
+\bibitem{2PN_2}
+Luc Blanchet.
+\newblock Gravitational-wave tails of tails.
+\newblock {\em Classical Quantum Gravity}, 15:113, 1998.
+
+\bibitem{2PN_3}
+Luc Blanchet, Guillaume Faye, Bala~R. Iyer, and Benoit Joguet.
+\newblock Gravitational-wave inspiral of compact binary systems to 7/2
+  post-newtonian order.
+\newblock {\em Phys. Rev. D}, 65(6):061501, Feb 2002.
+
+\bibitem{2PN_4}
+Luc Blanchet, Guillaume Faye, Bala~R. Iyer, and Benoit Joguet.
+\newblock Erratum: Gravitational-wave inspiral of compact binary systems to 7/2
+  post-newtonian order [phys. rev. d 65, 061501(r) (2002)].
+\newblock {\em Physical Revue D}, 71(129902), 2005.
+
+\bibitem{2PN_1}
+Luc Blanchet, Bala~R Iyer, Clifford~M Will, and Alan~G Wiseman.
+\newblock Gravitational waveforms from inspiralling compact binaries to
+  second-post-newtonian order.
+\newblock {\em Classical Quantum Gravity}, 13:575--584, 1994.
+
+\bibitem{OrbitLISA}
+S.~V. Dhurandhar, K.~Rajesh Nayak, S.~Koshti, and Jean-Yves Vinet.
+\newblock Fundamentals of the {LISA} stable flight formation.
+\newblock {\em gr-qc}, 0410093, 2004.
+
+\bibitem{MLDCWeb}
+Task~Force MLDC.
+\newblock Site web du {M}ock {LISA} {D}ata {C}hallenges.
+\newblock http://astrogravs.gsfc.nasa.gov/docs/mldc/, 2007.
+
+\bibitem{TDIVinet2}
+K.~Rajesh Nayak and Jean-Yves Vinet.
+\newblock Algebraic approach to time-delay data analysis for orbiting {LISA}.
+\newblock {\em Physical Revue D}, 70(102003), 2003.
+
+\bibitem{LISACode}
+Antoine Petiteau, Gerard Auger, Hubert Halloin, Olivier Jeannin, Eric Plagnol,
+  Sophie Pireaux, Tania Regimbau, and Jean~Yves Vinet.
+\newblock {LISACode}: A scientific simulator of {LISA}.
+\newblock {\em Phys. Rev. D}, 77(023002):11, Jan 2008.
+
+\bibitem{TDITinto}
+M.~Tinto, F.~B. Estabrook, and J.~W. Armstrong.
+\newblock Time-delay interferometry for {LISA}.
+\newblock {\em Physical Revue D}, 65(082003), 2002.
+
+\bibitem{SyntheticLISA}
+Michele Vallisneri.
+\newblock Synthetic {LISA}: Simulating time delay interferometry in a model
+  {LISA}.
+\newblock {\em Physical Revue D}, 71(022001), 2005.
+
+\bibitem{VallisCsqPerteLiens}
+Michele Vallisneri, Jeff Crowder, and Massimo Tinto.
+\newblock Sensitivity and parameters-estimation for alternate lisa
+  configurations.
+\newblock {\em Classical and Quantum Gravity}, 25:065005, 2008.
+
+\end{thebibliography}

@@ -1,7 +1,7 @@
 # $Id: Makefile.am,v 1.5 2006/06/06 12:55:57 petiteau Exp $
 # Makefile.am
 
-LIBS       = \
+LIBS       = -llisacodemain \
 	@SLISATDI_LIBS@ \
 	@SLISADETECTOR_LIBS@ \
 	@SLISAINPUTDATA_LIBS@ \
@@ -9,7 +9,7 @@ LIBS       = \
 	@SLISAUSOTIME_LIBS@ \
 	@SLISABACKGROUND_LIBS@ \
 	@SLISAORBITS_LIBS@ \
-	@SLISAGRAVWAVES_LIBS@ \
+	@SLISAGRAVWAVES_LIBS@ $(FFTWL) \
 	@SLISANOISE_LIBS@ \
 	@SLISAMATHTOOLS_LIBS@
 

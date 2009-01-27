@@ -5,7 +5,7 @@
  *  LISACode
  *
  *  Created on 30/06/05 by Antoine PETITEAU (APC)
- *  Last modification on 30/06/05 by Antoine PETITEAU (APC)
+ *  Last modification on 23/07/08 by Antoine PETITEAU (APC)
  *
  */
 
@@ -30,9 +30,11 @@ TDI::TDI()
 {
 	TDelay = new Memory;
 	Eta = new TDI_InterData;
+	SCSig = NULL;
 	OutFile->open("DefTDIGen.txt");
 	OutFileEncoding = 0;
 	iSerie = 0;
+	Fact.resize(0);
 	Sign.resize(0);
 	IndexEta.resize(0);
 	IndexDelay.resize(0);
@@ -57,16 +59,18 @@ TDI::TDI()
  * \arg	#TDIQuickMod = empty
  */
 TDI::TDI(   Memory * TDelay_n,
-			TDI_InterData * Eta_n,
-			ofstream * OutFile_n,
-			int OutFileEncoding_n,
-			int iSerie_n)
+		 TDI_InterData * Eta_n,
+		 ofstream * OutFile_n,
+		 int OutFileEncoding_n,
+		 int iSerie_n)
 {
 	TDelay = TDelay_n;
 	Eta = Eta_n;
+	SCSig = NULL;
 	OutFile = OutFile_n;
 	OutFileEncoding = OutFileEncoding_n;
 	iSerie = iSerie_n;
+	Fact.resize(0);
 	Sign.resize(0);
 	IndexEta.resize(0);
 	IndexDelay.resize(0);
@@ -93,23 +97,25 @@ TDI::TDI(   Memory * TDelay_n,
  */
 
 TDI::TDI( Memory * TDelay_n,
-		  TDI_InterData * Eta_n,
-		  ofstream * OutFile_n,
-		  int OutFileEncoding_n,
-		  int iSerie_n,
-		  vector<int> Sign_n,
-		  vector<int> IndexEta_n,
-		  vector< vector<int> > IndexDelay_n,
-		  TDITools * TDIQuickMod_n//,
-		  //INTERP InterpType_n,
-		  //double InterpUtilValue_n
-		  )
+		 TDI_InterData * Eta_n,
+		 ofstream * OutFile_n,
+		 int OutFileEncoding_n,
+		 int iSerie_n,
+		 vector<int> Sign_n,
+		 vector<int> IndexEta_n,
+		 vector< vector<int> > IndexDelay_n,
+		 TDITools * TDIQuickMod_n//,
+		 //INTERP InterpType_n,
+		 //double InterpUtilValue_n
+		 )
 {
 	TDelay = TDelay_n;
 	Eta = Eta_n;
+	SCSig = NULL;
 	OutFile = OutFile_n;
 	OutFileEncoding = OutFileEncoding_n;
 	iSerie = iSerie_n;
+	Fact.resize(Sign.size(),1.0);
 	Sign = Sign_n;
 	IndexEta = IndexEta_n;
 	IndexDelay = IndexDelay_n;
@@ -138,18 +144,19 @@ TDI::TDI( Memory * TDelay_n,
  * \arg #tmpCountInterEta = 0
  */
 TDI::TDI( Memory * TDelay_n,
-		  TDI_InterData * Eta_n,
-		  ofstream * OutFile_n,
-		  int OutFileEncoding_n,
-		  int iSerie_n,
-		  vector<int> SignEtaDelays,
-		  TDITools * TDIQuickMod_n//,
-		  //INTERP InterpType_n,
-		  //double InterpUtilValue_n
-		  )
+		 TDI_InterData * Eta_n,
+		 ofstream * OutFile_n,
+		 int OutFileEncoding_n,
+		 int iSerie_n,
+		 vector<int> SignEtaDelays,
+		 TDITools * TDIQuickMod_n//,
+		 //INTERP InterpType_n,
+		 //double InterpUtilValue_n
+		 )
 {
 	TDelay = TDelay_n;
 	Eta = Eta_n;
+	SCSig = NULL;
 	OutFile = OutFile_n;
 	OutFileEncoding = OutFileEncoding_n;
 	iSerie = iSerie_n;
@@ -159,6 +166,7 @@ TDI::TDI( Memory * TDelay_n,
 	IndexEta.resize(0);
 	IndexDelay.resize(0);
 	//LastUnit.resize(0);
+	Fact.resize(SignEtaDelays.size(),1.0);
 	ReadSignEtaDelays(SignEtaDelays);
 	//CreateAllPack();
 	TDIQuickMod = TDIQuickMod_n;
@@ -166,10 +174,79 @@ TDI::TDI( Memory * TDelay_n,
 	tmpCountInterEta = 0;
 }
 
+/*! \brief Constructs an instance and initializes it using TDelay_n, Eta_n, OutFile_n, iSerie_n, SignEtaDelays , Fact_n and TDIQuickMod_n inputs.
+ *
+ * \arg #TDelay = TDelay_n
+ * \arg #Eta = Eta_n
+ * \arg #OutFile = OutFile_n
+ * \arg #iSerie = iSerie_n
+ * \arg #Sign : set by #ReadSignEtaDelays, using SignEtaDelays input
+ * \arg #IndexEta : set by #ReadSignEtaDelays, using SignEtaDelays input
+ * \arg #IndexDelay : set by #ReadSignEtaDelays, using SignEtaDelays input
+ * \arg #TDIQuickMod = TDIQuickMod_n
+ * \arg #tmpCountInterDelay = 0
+ * \arg #tmpCountInterEta = 0
+ */
+TDI::TDI( Memory * TDelay_n,
+		 TDI_InterData * Eta_n,
+		 ofstream * OutFile_n,
+		 int OutFileEncoding_n,
+		 int iSerie_n,
+		 vector<int> SignEtaDelays,
+		 vector<double> Fact_n,
+		 TDITools * TDIQuickMod_n//,
+		 //INTERP InterpType_n,
+		 //double InterpUtilValue_n
+		 )
+{
+	TDelay = TDelay_n;
+	Eta = Eta_n;
+	SCSig = NULL;
+	OutFile = OutFile_n;
+	OutFileEncoding = OutFileEncoding_n;
+	iSerie = iSerie_n;
+	//InterpType = InterpType_n;
+	//InterpUtilValue = InterpUtilValue_n;
+	Sign.resize(0);
+	IndexEta.resize(0);
+	IndexDelay.resize(0);
+	//LastUnit.resize(0);
+	Fact = Fact_n;
+	ReadSignEtaDelays(SignEtaDelays);
+	//CreateAllPack();
+	TDIQuickMod = TDIQuickMod_n;
+	tmpCountInterDelay = 0;
+	tmpCountInterEta = 0;
+}
+
+
+TDI::TDI(Memory * TDelay_n,
+		 Memory * SCSig_n,
+		 vector<int> SignEtaDelays,
+		 vector<double> Fact_n,
+		 TDITools * TDIQuickMod_n
+		 )
+{
+	TDelay = TDelay_n;
+	Eta = NULL;
+	SCSig = SCSig_n;
+	OutFile = NULL;
+	OutFileEncoding = 0;
+	Sign.resize(0);
+	IndexEta.resize(0);
+	IndexDelay.resize(0);
+	Fact = Fact_n;
+	ReadSignEtaDelays(SignEtaDelays);
+	TDIQuickMod = TDIQuickMod_n;
+	tmpCountInterDelay = 0;
+	tmpCountInterEta = 0;
+}
+
+
 /*! \brief Destructor */
 TDI::~TDI()
 {
-
+	
 }
 
 
@@ -184,9 +261,9 @@ TDI::~TDI()
  * \arg for \f$iPack=0, \dots, size(SignEtaDelays)-1\f$ :\n
  * SignEtaDelays[iPack] is checked :  \f$ SignEtaDelays[iPack] \ne 0 \f$
  * \f[ \left\{ \begin{array}{ll}
-  \textrm{if } (SignEtaDelays[iPack] > 0)   & +1 \textrm{ is pushed back in Sign attribute} \\
-  \textrm{if } (SignEtaDelays[iPack] < 0)   & -1 \textrm{ is pushed back in Sign attribute} 
-  \end{array} \right. \f]
+ \textrm{if } (SignEtaDelays[iPack] > 0)   & +1 \textrm{ is pushed back in Sign attribute} \\
+ \textrm{if } (SignEtaDelays[iPack] < 0)   & -1 \textrm{ is pushed back in Sign attribute} 
+ \end{array} \right. \f]
  * \f[ TmpInfo=abs(SignEtaDelays[iPack]) \f]
  * \f[ TmpIndexEta=ceil(10 \cdot (\frac{TmpInfo}{10}-floor(\frac{TmpInfo}{10})+10^{-}6)) \f]
  * TmpIndexEta is checked : \f$ 1 \le TmpIndexEta \le 6 \f$\n
@@ -242,7 +319,7 @@ void TDI::ReadSignEtaDelays (vector<int> SignEtaDelays)
 	}
 	
 	for(int i=0; i<IndexEta.size(); i++){
-		cout << "       Pack " << i << " :  Sign = " << Sign[i] <<  " , Eta = " << IndexEta[i] << " , Delays = ";
+		cout << "       Pack " << i << " :  Sign = " << Sign[i] <<  " , Eta = " << IndexEta[i] << " , Fact = " << Fact[i] << " , Delays = ";
 		for(int j=0; j<IndexDelay[i].size(); j++)
 			cout << (IndexDelay[i])[j] << " ";
 		cout << endl;
@@ -254,8 +331,7 @@ void TDI::ReadSignEtaDelays (vector<int> SignEtaDelays)
 
 
 
-/*! \brief Computes the result of generator.
- *
+/*! 
  * Computes delay using tComputeDelay input and class attributes.
  *
  * If approximations are done in order to compute delays more quickly
@@ -294,19 +370,22 @@ double TDI::Compute(double tComputeDelay)
 					//tmpCountInterDelay++;
 				}
 			}
-			//cout << "Total Delay = " << TotalDelay << endl;
+			//cout << "Total Delay = " << TotalDelay << " on Eta " << IndexEta[iPack] <<  endl;
 			if(Eta->getUsable()){
-				InterResult = Sign[iPack] * Eta->gData(IndexEta[iPack], TotalDelay);
+				InterResult = Sign[iPack]* Fact[iPack] * Eta->gData(IndexEta[iPack], TotalDelay);
 				//cout << "  Base -> Eta(D" << (IndexDelay[iPack])[0] << ",Eta" << IndexEta[iPack] ;
 				//cout << ") :\n    Retard de " << TotalDelay << " sur " << Eta << endl;
+				//cout << "   - TmpRes = " << Eta->gData(IndexEta[iPack], TotalDelay) << endl;
 				//tmpCountInterEta++;
+				//cout << " " <<  Eta->gData(IndexEta[iPack], TotalDelay) ;
 			}else{
 				usable = false;
 			}
-			//cout << " Result Pack= " << InterResult<< endl;
+			//cout << " Result Pack tmp = " << InterResult<< endl;
 			Result += InterResult;
 			//cout << " Pack " << iPack << " usable = " << usable <<endl;
 		}
+		//cout << " " << Result << endl;
 		//cout << "**  Usable = " << usable <<endl;
 		//cout << "**  Result Pack = " << Result << endl;
 		//cout << endl << endl ;
@@ -316,7 +395,35 @@ double TDI::Compute(double tComputeDelay)
 		cerr << "TDI::Compute : error: " << e.what()<<endl;
 		throw;
 	}		
-		
+	
+}
+
+double TDI::ComputeNoEta(double tComputeDelay)
+{
+	double Result(0.0);
+	double TotalDelay, InterResult(0.0);
+	for(int iPack=0; iPack<(int)(IndexEta.size()); iPack++){
+		TotalDelay = tComputeDelay;
+		////cout << "Pack " << iPack << " (NbDelay = " << IndexDelay[iPack].size() << "):" << endl;
+		// ** Compute delay
+		for(int iDelay=0; iDelay< IndexDelay[iPack].size(); iDelay++){
+			TotalDelay += TDIQuickMod->getDelay((IndexDelay[iPack])[iDelay]);
+		}
+		// ** Compute pack value
+		InterResult = Sign[iPack]* Fact[iPack] * SCSig->gData(IndexEta[iPack]-1, TotalDelay, LIN, 2);
+		//InterResult = Sign[iPack]* Fact[iPack] * SCSig->gData(IndexEta[iPack]-1, TotalDelay, TRU, 1);
+		//cout << " " << SCSig->gData(IndexEta[iPack]-1, TotalDelay) ;
+		//cout << "Total Delay = " << TotalDelay << " on Eta " << IndexEta[iPack] <<  endl;
+		//cout << "   - TmpRes = " << SCSig->gData(IndexEta[iPack], TotalDelay) << endl;
+		//cout << " Result Pack tmp = " << InterResult<< endl;
+		Result += InterResult;
+		//tmpCountInterEta++;
+	}
+	//cout << "**  Usable = " << usable <<endl;
+	//cout << " " << Result << endl;
+	//cout << "**  Result Pack = " << Result << endl;
+	//cout << endl << endl ;
+	return(Result);
 }
 
 
@@ -330,8 +437,7 @@ double TDI::Compute(double tComputeDelay)
 //}
 
 
-/*! \brief Records the result of generator and returns the result.
- *
+/*! 
  * Computes delay using tComputeDelay input, writes result into #OutFile and returns it.
  */
 double TDI::RecordAndReturnResult(double tComputeDelay)

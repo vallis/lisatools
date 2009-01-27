@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-MathUtils.h"

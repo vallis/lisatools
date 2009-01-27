@@ -106,7 +106,7 @@ NoiseFilter::NoiseFilter(	double tStep_n,
 
 
 	NbData = (int)((tFirst-tLast)/tStep+100*PRECISION);
-	NFilter = NFilter_n;
+	NFilter.Copy(NFilter_n);
     loadNoise();
 	strcpy(NoiseType,"Filter");
 }

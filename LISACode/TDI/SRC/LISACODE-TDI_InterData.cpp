@@ -57,7 +57,7 @@ TDI_InterData::TDI_InterData()
  * \arg #NoNoise = false
  */
 TDI_InterData::TDI_InterData( Memory * TDelay_n,
-							  vector<Memory *> * PDPMMem_n)
+							 vector<Memory *> * PDPMMem_n)
 {
 	//double tShift_add(0.0);
 	TDelay = TDelay_n;
@@ -89,12 +89,12 @@ TDI_InterData::TDI_InterData( Memory * TDelay_n,
  * 
  */
 TDI_InterData::TDI_InterData( Memory * TDelay_n,
-							  vector<Memory *> * PDPMMem_n,
-							  double TimeStore_n,
-							  double tShift_n,
-							  bool NoNoise_n,
-							  INTERP InterpType_n,
-							  double InterpUtilValue_n)
+							 vector<Memory *> * PDPMMem_n,
+							 double TimeStore_n,
+							 double tShift_n,
+							 bool NoNoise_n,
+							 INTERP InterpType_n,
+							 double InterpUtilValue_n)
 {
 	//double tShift_add(0.0);
 	TDelay = TDelay_n;
@@ -118,7 +118,7 @@ TDI_InterData::TDI_InterData( Memory * TDelay_n,
  */
 TDI_InterData::~TDI_InterData()
 {
-
+	
 }
 
 
@@ -176,23 +176,23 @@ void TDI_InterData::ComputeEta()
 				Eta[iSC+2].delLastData(TimeStore);
 			}
 		}else{
-		for(int iSC=1; iSC<=3; iSC++){
-			int iSCpe1(iSC+1), iSCpe2(iSC+2);
-			if (iSCpe1>3) iSCpe1 -= 3;
-			if (iSCpe2>3) iSCpe2 -= 3;
- 
-			// ETA1 = S1 - 1/2 (D3 TAU2 - D3 TAUp2)
-			Eta[iSC-1].addData( (*PDPMMem)[iSC-1]->gData( 0, tShift, InterpType, InterpUtilValue ) 
-								- 0.5*( (*PDPMMem)[iSCpe1-1]->gData( 2, tShift + TDelay->gData(iSCpe2-1, tShift), InterpType, InterpUtilValue )
-								- (*PDPMMem)[iSCpe1-1]->gData( 3, tShift + TDelay->gData(iSCpe2-1, tShift), InterpType, InterpUtilValue ) ) );
-			Eta[iSC-1].delLastData(TimeStore);
-		
-			// ETAp1 = Sp1 - 1/2 (TAU1 - TAUp1)
-			Eta[iSC+2].addData( (*PDPMMem)[iSC-1]->gData( 1, tShift, InterpType, InterpUtilValue )  
-								+ 0.5*((*PDPMMem)[iSC-1]->gData( 2, tShift, InterpType, InterpUtilValue )
-								- (*PDPMMem)[iSC-1]->gData( 3, tShift, InterpType, InterpUtilValue ) ) );
-			Eta[iSC+2].delLastData(TimeStore);
-		}
+			for(int iSC=1; iSC<=3; iSC++){
+				int iSCpe1(iSC+1), iSCpe2(iSC+2);
+				if (iSCpe1>3) iSCpe1 -= 3;
+				if (iSCpe2>3) iSCpe2 -= 3;
+				
+				// ETA1 = S1 - 1/2 (D3 TAU2 - D3 TAUp2)
+				Eta[iSC-1].addData( (*PDPMMem)[iSC-1]->gData( 0, tShift, InterpType, InterpUtilValue ) 
+								   - 0.5*( (*PDPMMem)[iSCpe1-1]->gData( 2, tShift + TDelay->gData(iSCpe2-1, tShift), InterpType, InterpUtilValue )
+										  - (*PDPMMem)[iSCpe1-1]->gData( 3, tShift + TDelay->gData(iSCpe2-1, tShift), InterpType, InterpUtilValue ) ) );
+				Eta[iSC-1].delLastData(TimeStore);
+				
+				// ETAp1 = Sp1 - 1/2 (TAU1 - TAUp1)
+				Eta[iSC+2].addData( (*PDPMMem)[iSC-1]->gData( 1, tShift, InterpType, InterpUtilValue )  
+								   + 0.5*((*PDPMMem)[iSC-1]->gData( 2, tShift, InterpType, InterpUtilValue )
+										  - (*PDPMMem)[iSC-1]->gData( 3, tShift, InterpType, InterpUtilValue ) ) );
+				Eta[iSC+2].delLastData(TimeStore);
+			}
 		}
 		if(Usable == false){
 			//cout << "ceil(TimeStore/Eta[0].getRefStep()) = " << ceil(TimeStore/Eta[0].getRefStep()) << endl;
@@ -200,17 +200,17 @@ void TDI_InterData::ComputeEta()
 			if(Eta[0].getNbVal()>=ceil(TimeStore/Eta[0].getRefStep()))
 				Usable = true;
 		}
-		/*	for(int i=0; i<6; i++)
-			cout << "Eta " << i << " : Nb data = " << Eta[i].getNbVal() << endl;
-		cout << " ceil(TimeStore/Eta[0].getRefStep() = " << ceil(TimeStore/Eta[0].getRefStep()) << " ; Utilisable = " << Usable << endl;
-		*/
+		//for(int i=0; i<6; i++)
+		//	cout << "Eta " << i << " : Nb data = " << Eta[i].getNbVal() << endl;
+		//cout << " ceil(TimeStore/Eta[0].getRefStep() = " << ceil(TimeStore/Eta[0].getRefStep()) << " ; Utilisable = " << Usable << endl;
+		
 	}
 	catch(exception & e ) {
 		cerr << "TDI_InterData::ComputeEta : error: " << e.what()<<endl;
 		throw;
 	}
 }
-	
+
 
 /*! \brief Returns value interpolated for the delay (iSC=[1,3] and Indirect=[0,1]
  *

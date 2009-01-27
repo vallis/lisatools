@@ -28,7 +28,7 @@
 
 //Version
 /*!\brief Simulator Version */
-const char LISACodeVersion[] = "LISACode v 1.4"; // Version du simulateur
+const char LCVersion[] = "LISACode v 1.4.4"; // Version du simulateur
 
 //Geometrie
 /*!\brief Arms length (distance between every pair of satellites) in meters.*/

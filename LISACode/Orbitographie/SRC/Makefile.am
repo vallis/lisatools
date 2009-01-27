@@ -9,6 +9,10 @@ INCLUDES = \
 lib_LIBRARIES = liblisacodeorbits.a
 
 liblisacodeorbits_a_SOURCES = \
-	LISACODE-Geometry.cpp
+	LISACODE-Geometry.cpp \
+	LISACODE-GeometryAnalytic.cpp \
+	LISACODE-GeometryMLDC.cpp \
+	LISACODE-GeometryFile.cpp
+	
 
 # end of Makefile.am

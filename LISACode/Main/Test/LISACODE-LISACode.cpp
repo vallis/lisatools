@@ -1,4 +1,3 @@
-// $Id: LISACODE-LISACode.cpp,v 1.6 2007/04/23 08:24:00 ruiloba Exp $
 /*
  *  LISACode.cpp
  *  V 1.4
@@ -26,11 +25,11 @@ This manual is divided in three sections:
 
 /*!\page intro Introduction
 
-LISACode is a LISA mission simulator. It is highly structured and programmed in C++. The simulator has the purpose to bridge the gap between the basic principles of LISA and a sophisticated end-to-end engineering level simulator.  This software package, which runs on most computer platforms, can be downloaded from the Lisa-France web site (http://www.apc.univ-paris7.fr/LISA-France/analyse.phtml).
+LISACode[<a href="Bibliography.html#LISACode">Petiteau &nbsp; 2008</a>] is a LISA mission simulator. It is highly structured and programmed in C++. The simulator has the purpose to bridge the gap between the basic principles of LISA and a sophisticated end-to-end engineering level simulator.  This software package, which runs on most computer platforms, can be downloaded from the Lisa-France web site (http://www.apc.univ-paris7.fr/LISA-France/analyse.phtml).
 
 \section techDesc LISACode technical description
 
-LISACode simulates the LISA gravitational wave (GW) detector (see http://www.esa.int/esaSC/SEMEJRR1VED_index_0.html). It does not aim at simulating the LISA detector in detail but rather it uses the response function of its main components, particularly because they will affect the noise level of the detector response. It also includes an implementation of the TDI (Time Delay Interferometry, [<a href="Bibliography.html#Tinto-2004">Tinto&nbsp;2004</a>]
+LISACode simulates the LISA gravitational wave (GW) detector (see http://www.esa.int/esaSC/SEMEJRR1VED_index_0.html and [<a href="Bibliography.html#LISAPPA">Bender &nbsp; 1998</a>]). It does not aim at simulating the LISA detector in detail but rather it uses the response function of its main components, particularly because they will affect the noise level of the detector response. It also includes an implementation of the TDI (Time Delay Interferometry, [<a href="Bibliography.html#TDIRevue">Tinto &nbsp; 2004</a>] [<a href="Bibliography.html#TDIVinet">Dhurandhar &nbsp; 2002</a>]
 ) technique which allows to suppress the noise introduced by lasers frequency instability. 
 
 The main inputs and outputs of LISACode are time-dependent sequences. Input sequences describe the GW strain and output sequences describe the phasemeters response or their treatment via various TDI combination.
@@ -43,10 +42,10 @@ A number of elementary GW signals can be defined, but the main aim of the code i
 
 /*!\page codeDesc A description of the Code
 \section org Code organisation 
-LISACode is written in C++ and has a very modular structure. The main structure of LISACode is shown in the figure below. This structure maps the main components of the LISA detector as well as its physical inputs (see details in in [<a href="Bibliography.html#LISACode">LISACode</a>]).
+LISACode is written in C++ and has a very modular structure. The main structure of LISACode is shown in the figure below. This structure maps the main components of the LISA detector as well as its physical inputs (see details in [<a href="Bibliography.html#LISACode">Petiteau &nbsp; 2008</a>][<a href="Bibliography.html#LISACodeLISASymp6">Petiteau &nbsp; 2006</a>]).
 Its main components are: 
 \arg a variety of GW inputs, 
-\arg a detailed description of the orbits [<a href="Bibliography.html#Nayak and all.">Nayak&nbsp; and all.&nbsp;</a>] of the three satellites (including the breathing and rotation
+\arg a detailed description of the orbits [<a href="Bibliography.html#OrbitLISA">Dhurandhar &nbsp; 2004</a>] of the three satellites (including the breathing and rotation
 modes of the LISA triangle), 
 \arg the different noise sources (lasers, DFS and the
 interferometric measurements),
@@ -72,9 +71,9 @@ Constants used by the LISA simulator are described in next files:
 
 The first input is the GW itself. It can be defined internally through some simplified models which produce signals of constant frequency. The GW may also be input via a time sequence as well as produced by more sophisticated simulator codes. An example of this is given below. \n
 
-The orbits of LISA are generated internally by the simulator. They correspond to realistic orbits that contain both the breathing and rotation modes of Lisa as a function of its rotation around the sun (see [<a href="Bibliography.html#Dhurandhar and all.-2004">Dhurandhar&nbsp; and all.&nbsp;2004</a>]). The parameters of these orbits can be adjusted to modify the average distance between the satellites (nominally \f$5 10^9 m\f$) or be defined in such a way  to keep LISA at a fixed given location. The initial position on the orbits can also be defined in inputs. \n
-An important element of the LISA response and hence of the code are the different nature of noise inputs. This include the optical noise due to shot noise and related factors as described in table 4.1 of [<a href="Bibliography.html#Tinto-2004">Tinto&nbsp;2004</a>].The inertial mass and the laser noises can also be defined at input. Normally, these noises are defined as bandwidth limited white noise but different shapes of noise can be used.\n
-Using the orbits, the response of LISA to the GW will be calculated and a relative frequency fluctuation (see [<a href="Bibliography.html#Dhurandhar-TDelay">Dhurandhar&nbsp;-TDelay&nbsp;2004</a>]) will be input to the Phasemeter Module. These will be combined with the different noise contribution to produce the primary phasemeter output signal which then will be processed through a Butterworth filtering module. In standard operation, the primary signal will be produced at a 10 Hz signal and outputted, after filtering, at a 1 Hz rate.
+The orbits of LISA are generated internally by the simulator. They correspond to realistic orbits that contain both the breathing and rotation modes of Lisa as a function of its rotation around the sun (see [<a href="Bibliography.html#OrbitLISA">Dhurandhar &nbsp; 2004</a>]). The parameters of these orbits can be adjusted to modify the average distance between the satellites (nominally \f$5 10^9 m\f$) or be defined in such a way  to keep LISA at a fixed given location. The initial position on the orbits can also be defined in inputs. \n
+An important element of the LISA response and hence of the code are the different nature of noise inputs. This include the optical noise due to shot noise and related factors as described in table 4.1 of [<a href="Bibliography.html#TDIRevue">Tinto&nbsp;2004</a>].The inertial mass and the laser noises can also be defined at input. Normally, these noises are defined as bandwidth limited white noise but different shapes of noise can be used.\n
+Using the orbits, the response of LISA to the GW will be calculated and a relative frequency fluctuation  will be input to the Phasemeter Module. These will be combined with the different noise contribution to produce the primary phasemeter output signal which then will be processed through a Butterworth filtering module. In standard operation, the primary signal will be produced at a 10 Hz signal and outputted, after filtering, at a 1 Hz rate.
 
 These signals can be saved on disk files and/or processed by a TDI module using a variety of TDI combinations that are defined in input.
 
@@ -92,7 +91,7 @@ In an input file, you may include your own comments. These must be preceded (col
 
 Times are in seconds, lengths in meters, angles in degrees, frequencies in Hz, ...
 
-There is a variety of output files. Some of them are related to the phasemeter outputs. One of them is related to the output of the various TDI combinations. These may be defined in the configuration file and hence the output file will reflect this choice. In the examples given in http://www.apc.univ-paris7.fr/LISA-France/analyse.phtml the output file consists of 9 columns. The first column is the time, the second, third, fourth and fifth columns give the alpha, beta, gamma and zeta TDI combination [<a href="Bibliography.html#Tinto-2004">Tinto&nbsp;2004</a>]. The sixth column gives the first generation Michelson combination (X1s1) related to satellite s1 (that is to say using the arms between s1 and s2 and s1 and s3). The seventh, eighth and ninth columns give the 2nd generation Michelson combination for satellite 1,2 and 3.
+There is a variety of output files. Some of them are related to the phasemeter outputs. One of them is related to the output of the various TDI combinations. These may be defined in the configuration file and hence the output file will reflect this choice. In the examples given in http://www.apc.univ-paris7.fr/LISA-France/analyse.phtml the output file consists of 9 columns. The first column is the time, the second, third, fourth and fifth columns give the alpha, beta, gamma and zeta TDI combination [<a href="Bibliography.html#TDIRevue">Tinto&nbsp;2004</a>]. The sixth column gives the first generation Michelson combination (X1s1) related to satellite s1 (that is to say using the arms between s1 and s2 and s1 and s3). The seventh, eighth and ninth columns give the 2nd generation Michelson combination for satellite 1,2 and 3.
 
 
 
@@ -101,7 +100,7 @@ There is a variety of output files. Some of them are related to the phasemeter o
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include <stdlib.h>
 #include "randlib.h"
 #include "LISACODE-PhysicConstants.h"
@@ -153,11 +152,9 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *   -----------------   * ";
 		cout << endl << "   *   Simulator of LISA   * ";
 		cout << endl << "   *   -----------------   * ";
-		cout << endl << "   *  (" << LISACodeVersion << ")   * ";
+		cout << endl << "   *  ("<< LCVersion<<")   * ";
 		cout << endl << "   *                       * ";
 		cout << endl << "   ************************* " << endl << endl; 
-		
-		
 		
 		// ************************************
 		// * Read configuration file and help *
@@ -168,21 +165,21 @@ int main (int argc, char * const argv[])
 		//char * ConfigFileName("QuickConfig_LAG4_AfterAppDelay.xml");
 		//char * ConfigFileName("ConfigTraining-111a_NN_Nov3");
 		//char * ConfigFileName("challenge2.2-frequency-training.xml");
-		
-		if(argc>1)
-			ConfigFileName = argv[1];
+		int nOption(0);
+		bool BinHeader(false);
 		
 		
 		// *********** HELP *************
-		if(strcmp(ConfigFileName,"--help")==0){
+		if((argc>1)&&(strcmp(argv[1],"--help")==0)){
 			cout << " ----- HELP -----" << endl;
 			cout << endl << "\tExecution :" << endl;
-			cout << "\t\t(./)LISACode ConfigFileName RandomSeed" << endl;
+			cout << "\t\t(./)LISACode [Options] ConfigFileName RandomSeed" << endl;
 			cout << endl << "\tArguments :" << endl;
 			cout << endl << "\t\t * ConfigFileName (required) : Configuration file name. " << endl;
-			cout << "\t\t\t  not specified the random seed is the time machine." << endl;
 			cout << endl << "\t\t * RandomSeed (not required) : Seed of random generator. If it's" << endl;
 			cout << "\t\t\t  not specified the random seed is the time machine." << endl;
+			cout << endl << "\tOptions :" << endl;
+			cout << "\t\t * -h : Write header in binary files."  << endl ;
 			cout << endl << "\tNOTE :" << endl;
 			cout <<  "\t\t There are more details in the user's manual." << endl;
 			cout << endl << " ----------------" << endl;
@@ -191,12 +188,24 @@ int main (int argc, char * const argv[])
 		}
 		
 		// *********** Version *************
-		if(strcmp(ConfigFileName,"--version")==0){
-			cout << " ----- VERSION -----" << endl;
-			cout << " LISACode : main executable of LISACode package - version " << LISACodeVersion << endl;
-			cout << " ----------------" << endl;
-			return 0;
+		if((argc>1)&&(strcmp(argv[1],"--version")==0)){
+		   cout << " ----- VERSION -----" << endl;
+		   cout << " LISACode : main executable of LISACode package - version " << LCVersion << endl;
+		   cout << " ----------------" << endl;
+		   return 0;
+		   }
+		
+		// *********** Options *************
+		for(int iarg=1; iarg<argc; iarg++){
+			if((argc>1)&&(strcmp(argv[iarg],"-h")==0)){
+				BinHeader = true;
+				cout << "Options : Header in biary files" << endl;
+				nOption++;
+			}
 		}
+		
+		if(argc>1+nOption)
+			ConfigFileName = argv[1+nOption];
 		
 		// *********** Configuration file *************
 		cout << endl << "Read configuration (" << ConfigFileName << ")..." << endl;
@@ -205,22 +214,25 @@ int main (int argc, char * const argv[])
 		cout << endl;
 		
 		
+		
 		// *********** Initialisation du generateur aleatoire *************
 		time_t tc;
 		long is1, is2;
 		// Define tc
-		if(argc>2){
-			tc = atoi(argv[2]);
+		if(argc>2+nOption){
+			tc = atoi(argv[2+nOption]);
 			cout << "Fixed random seed : " << tc << endl; 
 		}else{
-			//srand((unsigned)time(NULL));
-			tc = time(NULL); // Temps : mot de 32 bits
-			cout << "Free random seed : " << tc << endl; 
+			if(Config.getGlobalRandomSeed() != -1){
+				tc = Config.getGlobalRandomSeed();
+				cout << "Configuration file random seed : " << tc << endl;
+			}else{
+				//srand((unsigned)time(NULL));
+				tc = time(NULL); // Temps : mot de 32 bits
+				cout << "Free random seed : " << tc << endl;
+			}
 		}
-		if(Config.getGlobalRandomSeed() != -1){
-			tc = Config.getGlobalRandomSeed();
-			cout << "Configuration file random seed : " << tc << endl;
-		}
+		
 		
 		is1 = is2 = 0; // Tous les bits a 0
 		/* On fait :
@@ -281,13 +293,13 @@ int main (int argc, char * const argv[])
 				cout << "     Record Signal SC" << iSC << " : RAM" << endl;
 				RecordPDPM.push_back(new Memory(tMemPDPM, tStepMes));
 				// TO BE CONTROL : Voir si le TimeStore (premier parametre est correct car ici on a
-				// tTDIShift+Config.tMaxDelay()+Config.tMemNecInterpTDI() qui correspond ˆ une valeur tres
+				// tTDIShift+Config.tMaxDelay()+Config.tMemNecInterpTDI() qui correspond Ã  une valeur tres
 				// grande (plusieurs retards TDI) ; or la mise en memoire pour les generateurs TDI est faite 
 				// dans TDI_InterData Eta qui lui va aller chercher dans la memoire RecordPDPM des valeurs retardees
 				// au maximum d'une longueur de bras
 			}else{
 				cout << "     Record Signal SC" << iSC << " : RAM & DISK (" << Config.getFileNameSig(iSC) << ")" << endl;
-				RecordPDPM.push_back(new MemoryWriteDisk(tMemPDPM, tStepMes, Config.getFileNameSig(iSC), Config.getFileEncodingSig(iSC)));
+				RecordPDPM.push_back(new MemoryWriteDisk(tMemPDPM, tStepMes, Config.getFileNameSig(iSC), Config.getFileEncodingSig(iSC), BinHeader,-1.0*(tMemTDI+tTDIShift),tMax+tTDIShift));
 			}
 		}
 		ofstream RecordTDI;
@@ -301,7 +313,7 @@ int main (int argc, char * const argv[])
 		}
 			
 		//ofstream RecordNoise, RecordEta; // Enregistrement intermediqire des Bruit et Eta 
-		vector<double> ListNoises; // Liste qui stocke les bruits pour leur enregistrement
+		//vector<double> ListNoises; // Liste qui stocke les bruits pour leur enregistrement
 								   //Declaration des retards
 		Memory * DelayTDI;
 		if(strcmp(Config.getFileNameDelays(),"None")==0){
@@ -309,7 +321,7 @@ int main (int argc, char * const argv[])
 			DelayTDI = new Memory(tMemTDI, tStepMes);
 		}else{
 			cout << "     Record Delays     : RAM & DISK (" << Config.getFileNameDelays() << ")" << endl;
-			DelayTDI = new MemoryWriteDisk(tMemTDI, tStepMes, Config.getFileNameDelays(), Config.getFileEncodingDelays());
+			DelayTDI = new MemoryWriteDisk(tMemTDI, tStepMes, Config.getFileNameDelays(), Config.getFileEncodingDelays(), BinHeader,-1.0*(tMemTDI+tTDIShift),tMax+tTDIShift);
 		}
 		for (int IndirectDir=0 ; IndirectDir<2; IndirectDir++){
 			for(int iSC=1; iSC<4; iSC++){
@@ -323,7 +335,7 @@ int main (int argc, char * const argv[])
 			SCPos = new Memory(tMemTDI, tStepMes);
 		}else{
 			cout << "     Record Positions  : RAM & DISK(" << Config.getFileNamePositions() << ")" << endl;
-			SCPos = new MemoryWriteDisk(tMemTDI, tStepMes, Config.getFileNamePositions(), Config.getFileEncodingPositions());
+			SCPos = new MemoryWriteDisk(tMemTDI, tStepMes, Config.getFileNamePositions(), Config.getFileEncodingPositions(), BinHeader,-1.0*(tMemTDI+tTDIShift),tMax+tTDIShift);
 		}
 		for(int iSC=1; iSC<4; iSC++){
 			SCPos->AddSerieData(iSC-1, "px" , 0, iSC);
@@ -348,7 +360,7 @@ int main (int argc, char * const argv[])
 		int NbGenTDI (Config.NbGenTDI());
 		for(int iGen=0; iGen<NbGenTDI; iGen++){
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " ...";
-			TDIGens.push_back(TDI(DelayTDI, & Eta, & RecordTDI, Config.getFileEncodingTDI(), iGen, Config.getGenTDIPacks(iGen), & TDIQuickMod));
+			TDIGens.push_back(TDI(DelayTDI, & Eta, & RecordTDI, Config.getFileEncodingTDI(), iGen, Config.getGenTDIPacks(iGen), Config.getGenTDIPacksFact(iGen), & TDIQuickMod));
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " --> OK" << endl;
 		}
 		// Ecart entre l'instant de lecture des donnees et l'instant d'application de TDI
@@ -373,7 +385,7 @@ int main (int argc, char * const argv[])
 			if (!FileHead){
 				throw invalid_argument("Main : Can not open the configuration file ! ");
 			}
-			RecordTDI << "############## " << LISACodeVersion <<  " ##############" << endl;
+			RecordTDI << "############## " << LCVersion <<  " ##############" << endl;
 			RecordTDI << "############## Configuration : " << ConfigFileName <<  " ##############" << endl;
 			while(!FileHead.eof()) {
 				FileHead.getline(Buf, 1064);
@@ -386,6 +398,15 @@ int main (int argc, char * const argv[])
 				RecordTDI << " " << Config.getNameGenTDI(iGen);
 			}
 			RecordTDI << endl;
+		}else{
+			if(BinHeader){
+				RecordTDI << "#TITLE t";
+				for(int i=0; i<NbGenTDI; i++)
+					RecordTDI << "," << Config.getNameGenTDI(i);
+					RecordTDI << endl; 
+				RecordTDI << "#RECORD " << NbGenTDI+1<< " " << (int)ceil((tMax)/tStepMes+1) <<  endl;
+				RecordTDI << "#TIME 0.0 " << tStepMes << " " << tMax+tTDIShift << endl;
+			}
 		}
 		
 		DelayTDI->MakeTitles(ConfigFileName);
@@ -417,8 +438,9 @@ int main (int argc, char * const argv[])
 		//  continu. Les donnees recus sur les photodiodes sont temporairement stockes en vue 
 		//  d'une utilisation dans TDI. Le nombre de donnees qu'il est necessaire d'enregistrer
 		//  avant de lancer TDI est choisi par rapport au retard maximal present dans les generateurs.
-		cout << endl << "Runnning in progress : receive datas (-> " << tMemTDI+tTDIShift << " s)..." << endl;
-		t = -1.0*(tMemTDI+tTDIShift);
+		cout << endl << "Runnning in progress : receive datas (-> " << tMemPDPM << " s)..." << endl;
+		t = -1.0*(tMemPDPM+tMemTDI+tTDIShift);
+		//cout << t << " " << tMemTDI << " " << tTDIShift << endl;
 		do{
 			//Display time
 			//cout << "* t = " << t << endl;
@@ -465,9 +487,63 @@ int main (int argc, char * const argv[])
 			NDatPh1++;
 			
 		//}while(t<=tMemTDI+tTDIShift);
-		}while(t<tTDIShift);
+		}while(t<tTDIShift-tMemTDI);
 		
 		// Phase 2 : 
+		// ---------
+		// Il y a assez de donnees pour calculer les Eta mais pas encore pour appliquer TDI.
+		cout << endl << "Runnning in progress : enoughe data for pre-computing of TDI (-> " << tMemTDI << " s)..." << endl;
+		do{
+			//Display time
+			//cout << "* t = " << t << endl;
+			if(ttmpAff >= DisplayStep){
+				//cout << t << " s" << endl;
+				printf("%.0lf s     #0%03.0f %% \n", t, 100*t/tMax);
+				fflush(stdout);
+				ttmpAff = 0.0;
+			}
+			
+			// Run LISA
+			LISACode.MakeOneStepOfTime(t);
+			
+			/*		
+			 ListNoises = LISACode.PresentMeanNoise(t);
+			 RecordNoise << t;
+			 for (int i=0; i<int(ListNoises.size()); i++)
+			 RecordNoise << " " << ListNoises[i];		
+			 RecordNoise << endl; 
+			 */		 
+			
+			//Record delays
+			for(int s=0; s<2; s++){
+				for (int i=1; i<4; i++){
+					DelayTDI->ReceiveData(i+3*s-1, LISACode.gDelayT(i, s, t)+DeltaTDIDelay);
+					//DelayTDI->ReceiveData(i+3*s-1, LISACode.gDelayT(i, s, t)+((double)genunf(0.0, 1.0)-0.5)*DeltaTDIDelay);
+				}
+			}
+			DelayTDI->RecordAccData(tStepMes, t);
+			//Record positions
+			for (int i=1; i<4; i++){
+				tmp = LISACode.gPosSC(i, t);
+				SCPos->ReceiveData(i-1, tmp.p[0]);
+				SCPos->ReceiveData(i+3-1, tmp.p[1]);
+				SCPos->ReceiveData(i+6-1, tmp.p[2]);
+			}
+			SCPos->RecordAccData(tStepMes, t);
+			
+			Eta.ComputeEta();
+			
+			t += tStepMes;
+			tSinceFirstReception += tStepMes;
+			
+			
+			ttmpAff += tStepMes;
+			
+			NDatPh1++;
+			
+		}while(t<tTDIShift);
+		
+		// Phase 3 : 
 		// ---------
 		//  On a maintenant assez de donnees pour appliquer TDI. On calcule donc les resultats
 		//  des generateurs et on les enregistre dans un fichier.
@@ -480,19 +556,9 @@ int main (int argc, char * const argv[])
 		int NbTDIApp(0);
 		time(&tstart);
 		//cout << t << " s" << endl;
-		clock_t t1,t2,t0;
-		double tt;
-		ResultTDI.resize(Config.NbGenTDI());
-		AbsMeanTDI.resize(Config.NbGenTDI());	 
-		int i_ep0,i_ep1,nb_ep,nb_ep1;
-		t0=clock();t1=t0;
-		i_ep0=-1;
-		tt=0.;
-		nb_ep1 = 0 ;
-		nb_ep = 0 ;
 		do{
 			//cout << "** t = " << t << endl;
-			/*if(ttmpAff >= DisplayStep){
+			if(ttmpAff >= DisplayStep){
 				time(&tcur);
 				//cout << t << " s" << endl;
 				EstimTStop = (tcur-tstart)*(tMax-t)/t;
@@ -504,24 +570,7 @@ int main (int argc, char * const argv[])
 				fflush(stdout);
 				ttmpAff = 0.0;
 			}		 
-			*/
-			if(ttmpAff > 0.){
-			  //			  cout << "LISACode : Main : t = "<< t << " s" << endl;
-			  t2=clock();
-			  i_ep1=int(100*t/tMax) ;
-			  nb_ep = nb_ep + 1 ;
-			  if(i_ep1 != i_ep0){
-			    printf("sec_LISA   %.0lf   %%_of_work %3.0f %%  Delta_CPU_time (sec) ", t, 100*t/tMax);
-			    cout << (t2-t1)/(double)CLOCKS_PER_SEC << "  Delta_sec_LISA " << (t-tt) ;
-			    cout << " : Time per calc (msec) = " <<1000.*((t2-t1)/(double)CLOCKS_PER_SEC)/(nb_ep-nb_ep1+1e-9) <<endl;
-			    fflush(stdout);
-			    ttmpAff = 0.0;
-			    t1=t2;
-			    i_ep0=i_ep1;
-			    nb_ep1=nb_ep ;
-			    tt=t;
-			  }
-			}		 
+			
 			// Run LISA
 			LISACode.MakeOneStepOfTime(t);   
 			
@@ -558,14 +607,17 @@ int main (int argc, char * const argv[])
 			NbTDIApp++;
 			
 			Eta.ComputeEta();
-			/*//Record Eta signal
+			/*// ** Record Eta signal
+			if(Eta.getUsable()){
 				RecordEta.precision(15);
-			RecordEta << t ;
-			for(int i=1; i<7; i++)
-				RecordEta << " " << Eta.gData(i, 0.0);
-			RecordEta << " " << Eta.gData(3, 0.0)-Eta.gData(5, 0.0);
-			RecordEta << endl;
-			*/
+				RecordEta << t-tTDIShift ;
+				for(int i=1; i<7; i++)
+					RecordEta << " " << Eta.gData(i, tTDIShift);
+				RecordEta << " " << Eta.gData(3, tTDIShift)-Eta.gData(5, tTDIShift);
+				RecordEta << endl;
+			}
+			 */
+			
 			
 			//if(t>179.0)
 			//	cout << "stop" << endl;
@@ -585,7 +637,7 @@ int main (int argc, char * const argv[])
 				AbsMeanTDI[iGen] += fabs(ResultTDI[iGen]); 
 			}
 			if(Config.getFileEncodingTDI() == 0) // If TDIFile is an ASCII file
-			RecordTDI << endl;
+				RecordTDI << endl;
 			
 			t += tStepMes;
 			//cout << "**************" << endl;
@@ -601,6 +653,7 @@ int main (int argc, char * const argv[])
 		
 		
 		// Read TDI result
+		cout.precision(15);
 		for(int iGen=0; iGen<NbGenTDI; iGen++){
 			AbsMeanTDI[iGen] /= NbTDIApp*1.0;
 			cout << " " << Config.getNameGenTDI(iGen) << " = " << AbsMeanTDI[iGen];
@@ -620,15 +673,15 @@ int main (int argc, char * const argv[])
 		
 		cout << "Final time : " << t << " s" << endl << endl;
 		
-		cout << "Header for binary file SCi(NRec=5), Pos(NRec=10) or Delay(NRec=7) :" << endl;
-		cout << "#TITLE SimDataTitle" << endl; 
-		cout << "#RECORD NRec " << NDatPh1+NDatPh2 << endl;
-		cout << "#TIME " <<  -1.0*(tMemTDI+tTDIShift) << " " << tStepMes << " " << t-tStepMes << endl;
-		cout << endl;
-		cout << "Header for binary file TDI :" << endl;
-		cout << "#TITLE TDIDataTitle" << endl; 
-		cout << "#RECORD " << NbGenTDI+1<< " " << NDatPh2 << endl;
-		cout << "#TIME 0.0 " << tStepMes << " " << t-tStepMes << endl;
+		//cout << "Header for binary file SCi(NRec=5), Pos(NRec=10) or Delay(NRec=7) :" << endl;
+		//cout << "#TITLE SimDataTitle" << endl; 
+		//cout << "#RECORD NRec " << NDatPh1+NDatPh2 << " " << (int)ceil((tMax+tMemTDI+tTDIShift)/tStepMes+1) << endl;
+		//cout << "#TIME " <<  -1.0*(tMemTDI+tTDIShift) << " " << tStepMes << " " << t-tStepMes << " " << tMax+tTDIShift << endl;
+		//cout << endl;
+		//cout << "Header for binary file TDI :" << endl;
+		//cout << "#TITLE TDIDataTitle" << endl; 
+		//cout << "#RECORD " << NbGenTDI+1<< " " << NDatPh2 << " " << (int)ceil((tMax)/tStepMes+1) <<  endl;
+		//cout << "#TIME 0.0 " << tStepMes << " " << t-tStepMes << " " << tMax+tTDIShift << endl;
 		
 		for(int iSC=1; iSC<=3; iSC++)
 			delete RecordPDPM[iSC-1];

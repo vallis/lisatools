@@ -23,8 +23,7 @@
 
 
 #include <stdexcept>
-#include <fstream>
-#include <iostream>
+#include <fstream.h>
 #include <math.h>
 #include <complex>
 #include "LISACODE-PhysicConstants.h"

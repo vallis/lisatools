@@ -21,7 +21,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <vector>
+#include <vector.h>
 #include <stdlib.h>
 #include <math.h>
 #include "randlib.h"

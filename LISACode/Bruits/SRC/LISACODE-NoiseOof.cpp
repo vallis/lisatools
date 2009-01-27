@@ -106,7 +106,7 @@ NoiseOof::NoiseOof(	double tStep_n,		// IN : Time step
 	wmax = log10(w1);
 	wmin = log10(w0);
 
-//	printf(" w0 = %f , w1 = %f ,  wmax = %f, wmin = %f, tStep = %f  \n", w0,w1, wmax,wmin,tStep);	
+	//printf(" w0 = %f , w1 = %f ,  wmax = %f, wmin = %f, tStep = %f  \n", w0,w1, wmax,wmin,tStep);	
 
 	tStep_inv = 1./tStep;
 
@@ -140,7 +140,7 @@ NoiseOof::NoiseOof(	double tStep_n,		// IN : Time step
 		beta_tmp[i][1]=-(1-w1)/den;
 
 
-//		printf(" filtre %d : alpha0 = %f , beta0 = %f ,  beta1 = %f \n", i, alpha_tmp[i][0], beta_tmp[i][0], beta_tmp[i][1]);
+		//printf(" filtre %d : alpha0 = %f , beta0 = %f ,  beta1 = %f \n", i, alpha_tmp[i][0], beta_tmp[i][0], beta_tmp[i][1]);
 
 		
 	} 

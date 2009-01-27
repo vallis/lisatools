@@ -24,8 +24,8 @@
 #include <stdexcept>
 #include <iostream>
 #include <iomanip>
-#include <vector>
-#include <fstream>
+#include <vector.h>
+#include <fstream.h>
 #include <string>
 #include <sstream>
 #include "LISACODE-MathUtils.h"

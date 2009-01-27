@@ -448,6 +448,7 @@ double Serie::InterLagrange(double x, int order) const
 	double res(0.0), Pk(0.0);
 	int ordermin((int)(floor(double(order+1)/2.0)));
 	int bin((int)(floor((x-x0)/dx)));
+	//cout << int(ys.size())-1 << endl;
 	if((bin<0)||(bin+1 > int(ys.size())-1))
 		throw invalid_argument("Serie::InterLagrange : The required bin does not exist !");   
 	int kmin(bin-ordermin+1), kmax(bin+(order+1-ordermin));

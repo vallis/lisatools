@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-MathUtils.h"
@@ -41,6 +41,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *   ----------------------    *";
 		cout << endl << "   *   to a gravitational wave   *";
 		cout << endl << "   *   -----------------------   *";
+		cout << endl << "   *      ("<<LCVersion<<")      *";
 		cout << endl << "   *                             *";
 		cout << endl << "   *******************************" << endl << endl; 
 		
@@ -70,9 +71,9 @@ int main (int argc, char * const argv[])
 			//m_GWs.push_back(new GWBinary); //AMCVn
 			
 			// Creation of the geometry
-			Geometry LISAGeo;
+			Geometry *LISAGeo;
 			// Creation of the transfer fonction
-			TrFctGW SigGW(&m_GWs, &LISAGeo);
+			TrFctGW SigGW(&m_GWs, LISAGeo);
 			
 			// Declaration of used memorys
 			ofstream Record_position, Record_tdelay, Record_Sig, Record_GW ; 
@@ -138,19 +139,19 @@ int main (int argc, char * const argv[])
 					//Record positions
 					Record_position << t;
 					for(int iSC=1; iSC<4; iSC++) {
-						tmp_pos = LISAGeo.gposition(iSC, t);
+						tmp_pos = LISAGeo->gposition(iSC, t);
 						Record_position << " " << tmp_pos.p[0] << " " << tmp_pos.p[1] << " " << tmp_pos.p[2];
 					}
 					Record_position << endl;
 					
 					//Record Delay
 					Record_tdelay << t ;
-					Record_tdelay << " " << LISAGeo.tdelay(1, 2, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(2, 3, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(3, 1, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(1, 3, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(2, 1, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(3, 2, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(1, 2, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(2, 3, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(3, 1, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(1, 3, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(2, 1, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(3, 2, order, t);
 					Record_tdelay << endl;
 				}
 				Record_GW << t;

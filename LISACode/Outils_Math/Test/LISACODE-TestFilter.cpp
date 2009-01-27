@@ -16,7 +16,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-Filter.h"
 #include "randlib.h"
 
@@ -27,12 +27,13 @@ int main (int argc, char * const argv[])
 {
 	try {
 		
-		cout << endl << "   ******************";
-		cout << endl << "   *                *";
-		cout << endl << "   *   Test Filter  *"; 
-		cout << endl << "   *   -----------  *";
-		cout << endl << "   *                *";
-		cout << endl << "   ******************" << endl << endl; 
+		cout << endl << "   *********************";
+		cout << endl << "   *                   *";
+		cout << endl << "   *    Test Filter    *"; 
+		cout << endl << "   *    -----------    *";
+		cout << endl << "   * ("<<LCVersion<<") *";
+		cout << endl << "   *                   *";
+		cout << endl << "   *********************" << endl << endl; 
 		
 		
 		double tStepPhy(0.1);

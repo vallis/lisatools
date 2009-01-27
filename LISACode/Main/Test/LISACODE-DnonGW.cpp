@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-MathUtils.h"
@@ -43,7 +43,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *   --------------------   * ";
 		cout << endl << "   *   Gravitational Strain   * ";
 		cout << endl << "   *   --------------------   * ";
-		cout << endl << "   *    (" << LISACodeVersion << ")    * ";
+		cout << endl << "   *    ("<<LCVersion<<")     * ";
 		cout << endl << "   *                          * ";
 		cout << endl << "   **************************** " << endl << endl; 
 		
@@ -88,7 +88,7 @@ int main (int argc, char * const argv[])
 		// *********** Version *************
 		if(strcmp(ConfigFileName,"--version")==0){
 			cout << " ----- VERSION -----" << endl;
-			cout << " DnonGW : executable of LISACode package - version " << LISACodeVersion << endl;
+			cout << " DnonGW : executable of LISACode package - version " << LCVersion << endl;
 			cout << " ----------------" << endl;
 			return 0;
 		}
@@ -154,18 +154,25 @@ int main (int argc, char * const argv[])
 		//m_GWs.push_back(new GWMono(BetaGW, LambdaGW, AnglPolGW, FreqGW, AmplGWhp, AmplGWhc)); 
 		//m_GWs.push_back(new GWFile(BetaGW, LambdaGW, AnglPolGW, "SinGW.txt"));
 		//m_GWs.push_back(new GWBinary); //AMCVn
-		for(int i=0; i<1; i++)
-			m_GWs->push_back(new GWSto(genunf(-0.5*M_PI,0.5*M_PI), genunf(0.0,M_PI), tStep, 1.0*tStep, 10.0*tStep, -100.0*tStep,  -1000.0,  tStep, -3.0,  1.0/(2.0*tStep), 1.0/tmax, 100000, 1.0, 1.0));
+		//for(int i=0; i<1; i++)
+		//	m_GWs->push_back(new GWSto(genunf(-0.5*M_PI,0.5*M_PI), genunf(0.0,M_PI), tStep, 1.0*tStep, 10.0*tStep, -100.0*tStep,  -1000.0,  tStep, -3.0,  1.0/(2.0*tStep), 1.0/tmax, 100000, 1.0, 1.0));
 		
 		// Creation of the geometry
-		Geometry LISAGeo(Config.getOrbStartTime(), Config.getOrbInitRot(), Config.getArmlength(), Config.getOrbOrder(), Config.getOrbMove());
+		Geometry * LISAGeo;
+		Config.getGeometry(LISAGeo);
+		
 		// Creation of the transfer fonction
-		TrFctGW SigGW(m_GWs, &LISAGeo);
+		TrFctGW SigGW(m_GWs, LISAGeo);
 		
 		// Declaration of used memorys
 		ofstream Record_position, Record_tdelay, Record_Sig, Record_GW ;
 		FILE * Record_Sig_bin;
 		
+		// For time display 
+		time_t tstart, tcur;
+		float EstimTStop;
+		int hh, mm;
+		float ss;
 		
 		cout << "  Creation --> OK" << endl << endl;
 		
@@ -231,34 +238,43 @@ int main (int argc, char * const argv[])
 			Record_position.precision(15);
 		if(RecDelay)
 			Record_tdelay.precision(15);
-
+		
+		
+		
+		time(&tstart);
 		do{
 			if(ttmpAff >= StepdDisplay){
 				//cout << t/(24.0*3600.0) << " days" << endl;
-				printf("%.0lf s     #0%03.0f %% \n", t, 100*t/tmax);
+				time(&tcur);
+				//cout << t << " s" << endl;
+				EstimTStop = (tcur-tstart)*(tmax-t)/t;
+				hh = (int)(floor(EstimTStop/3600.0));
+				mm = (int)((EstimTStop - 3600.0*hh)/60);
+				ss = EstimTStop - 60*(mm+60*hh);
+				//cout << t << " s" << endl;
+				printf("%.0lf s    (remaining time : %02d:%02d:%02.0f) #0%03.0f %% \n", t, hh, mm, ss, 100*t/tmax);
 				fflush(stdout);
-
 				ttmpAff = 0.0;
 				//Record positions
 				if(RecPos){
 					Record_position << t;
 					for(int iSC=1; iSC<4; iSC++) {
-						tmp_pos = LISAGeo.gposition(iSC, t);
+						tmp_pos = LISAGeo->gposition(iSC, t);
 						Record_position << " " << tmp_pos.p[0] << " " << tmp_pos.p[1] << " " << tmp_pos.p[2];
 					}
-					tmp_n = LISAGeo.VectNormal(t);
+					tmp_n = LISAGeo->VectNormal(t);
 					Record_position << " " << tmp_n.p[0] << " " << tmp_n.p[1] << " " <<tmp_n.p[2] << endl;
 				}
 				
 				//Record Delay
 				if(RecDelay){
 					Record_tdelay << t ;
-					Record_tdelay << " " << LISAGeo.tdelay(1, 2, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(2, 3, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(3, 1, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(1, 3, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(2, 1, order, t);
-					Record_tdelay << " " << LISAGeo.tdelay(3, 2, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(1, 2, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(2, 3, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(3, 1, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(1, 3, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(2, 1, order, t);
+					Record_tdelay << " " << LISAGeo->tdelay(3, 2, order, t);
 					Record_tdelay << endl;
 				}
 			}

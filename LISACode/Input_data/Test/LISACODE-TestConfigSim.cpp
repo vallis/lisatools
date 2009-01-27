@@ -17,8 +17,8 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
-#include <vector>
+#include <fstream.h>
+#include <vector.h>
 #include "LISACODE-ConfigSim.h"
 
 
@@ -36,6 +36,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *       ---------------       *";
 		cout << endl << "   *  Simulator's Configuration  *";
 		cout << endl << "   *  -------------------------  *";
+		cout << endl << "   *      ("<<LCVersion<<")      *";
 		cout << endl << "   *                             *";
 		cout << endl << "   *******************************" << endl << endl; 
 		
@@ -74,7 +75,8 @@ int main (int argc, char * const argv[])
 		cout << " OrbStartTime     = " << m_Conf.getOrbStartTime() << " s" << endl;
 		cout << " OrbInitRot       = " << m_Conf.getOrbInitRot()<< " rad" << endl;
 		cout << " OrbOrder         = " << m_Conf.getOrbOrder() << endl;
-		cout << " OrbMove          = " << m_Conf.getOrbMove() << endl;
+		cout << " OrbType          = " << m_Conf.getOrbType() << endl;
+		cout << " OrbApprox        = " << m_Conf.getOrbApprox() << endl;
 		cout << " LaserPower       = " << m_Conf.getLaserPower() << " W" << endl;
 		cout << " PhaMetFilter     = " << m_Conf.getPhaMetFilter() << endl;
 		cout << " FileNameSig 1    = " << m_Conf.getFileNameSig(1) << endl;

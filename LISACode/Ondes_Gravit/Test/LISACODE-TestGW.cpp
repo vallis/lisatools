@@ -12,7 +12,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-MathUtils.h"
@@ -33,6 +33,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *                                   *";
 		cout << endl << "   *   Test une onde gravitationnelle  *";
 		cout << endl << "   *   ------------------------------  *";
+		cout << endl << "   *         ("<<LCVersion<<")         *";
 		cout << endl << "   *                                   *";
 		cout << endl << "   **************************************" << endl << endl; 
 		

@@ -10,16 +10,28 @@
 \usepackage{color} 
 \usepackage{amsmath}
 \usepackage{epstopdf} 
+\usepackage{hyperref}
 \pagestyle{headings} 
 
-%\usepackage{pstopdf}
-\pagestyle{headings}
 
+\definecolor{pink}{rgb}{0.55,0,0.52}
+\definecolor{mygreen}{rgb}{0.19,0.55,0.11}
 
 \begin{document}
 \title{
-\Huge \bf LISACode \\ \Large version 1.4\\ \huge A scientific simulator of LISA \\ User's guide}
-\author{\Large \bf LISA France}
+\Huge \bf LISACode \\ 
+\vspace{0.5cm}
+\Large version 1.4.4\\
+\vspace{2cm}
+\huge A scientific simulator of LISA \\
+\vspace{1cm}
+ User's guide
+ }
+\author{
+Antoine Petiteau\\
+\vspace{1cm}
+(LISA France)}
+
 \date{\today}
 \maketitle
 
@@ -27,20 +39,12 @@
 
 \newpage
 
-$ $
-%Redefinition de la hauteur de la page et du haut%
-\textheight 23.cm
-\topmargin 0.2cm
+\hphantom{a}
 
-
-\setcounter{page}{1}
-
-\tableofcontents
 \newpage
 
 
-
-\definecolor{pink}{rgb}{0.55,0,0.52}
+\tableofcontents
 
 
 \newpage
@@ -51,7 +55,7 @@ $ $
 
 \section{Introduction}
 \label{SIntro}
-This document provides a description of the LISACode software. LISACode simulates the LISA  gravitational wave (GW) detector (ref) . It does not aim to simulate in detail the detector itself but rather it makes use of the response function of its main components, particularly in the way they will affect the noise level of the detector response. It also includes an implementation of the TDI (Time Delay Interferometry) technique which allows to suppress the noise level of the lasers. \\
+This document provides a description of the LISACode software. LISACode simulates the LISA  gravitational wave (GW) detector. It does not aim to simulate in detail the detector itself but rather it makes use of the response function of its main components, particularly in the way they will affect the noise level of the detector response. It also includes an implementation of the TDI (Time Delay Interferometry) technique which allows to suppress the noise level of the lasers. \\
 
 The main inputs and outputs of LISACode are time-dependent sequences that will describe, for input and as a function of time, the GW strain  and for output, and also as a function of time, the phasemeters response or their treatment via various TDI combination, in order to remove the laser noise level. \\
 
@@ -59,7 +63,7 @@ A number of  elementary GW signals can be defined , but also it's possible to us
 
 The main outputs of the code will be a number of time dependent data signals which will be produced either directly from the phasemeters or from a TDI treatment of these. \\
 
-This document describes, in section II, the structure of the code. Section III will explain how the code can be installed on a variety of platforms. Section IV describes the use of LISACode The section V describes the configuration file, a list of the main parameters that controls its operations and output.  \\
+This document describes, in section~\ref{SCode}, the structure of the code. Section~\ref{SInstall}  will explain how the code can be installed on a variety of platforms. Section~\ref{SUse} describes the use of LISACode The section~\ref{SConfigFile} describes the configuration file, a list of the main parameters that controls its operations and output.  \\
 
 More scientific information on LISACode are available in article of A.Petiteau \cite{LISACode}.
 
@@ -68,7 +72,7 @@ More scientific information on LISACode are available in article of A.Petiteau \
 This software is written in C++ for use the modularity of the object programming. The main structure of LISACode is shown in the figure \ref{Struct_LISACode}. This structure maps the main components of the LISA detector as well as its physical inputs.
 
 \begin{figure}[!h]
-\centering \includegraphics[width=14cm]{Figures/Structure.pdf}
+\centering \includegraphics[width=14cm]{Figures/Structure.eps}
 \caption{\small Structure of simulator LISACode. The \textcolor{red}{red} boxes represent the main modules and the \textcolor{green}{green} boxes the interface modules. The module's generic name is in \textcolor{blue}{blue}.\small} 
 \label{Struct_LISACode}
 \end{figure}
@@ -89,7 +93,7 @@ There are 9 libraries :
 The figure \ref{Org_LISACode} shows the organisation of the libraries used by LISACode. \\
 
 \begin{figure}[!h]
-\centering \includegraphics[width=15cm]{Figures/OrgPackage.pdf}
+\centering \includegraphics[width=15cm]{Figures/OrgPackage.eps}
 \caption{\small Organisation and dependency  for simulator's libraries. The  \textcolor{green}{green} boxes represent objects, the \textcolor{red}{red} boxes the libraries and the \textcolor{pink}{pink} boxes the executables.\small} 
 \label{Org_LISACode}
 \end{figure}
@@ -101,7 +105,7 @@ The orbits of LISA are generated internally via the code. They correspond to rea
 An important ingredient of the LISA response and hence of the codes are the noise inputs of different nature. These include the optical noise due to shot noise and related factors as described in table \ref{table_error}. The inertial mass and the laser noises can also be defined at input. Normally, these noise are defined as bandwidth limited white noise but different shapes of noise can be used.
 
 \begin{table}[htdp] 
-\caption{Error allocation budget based on Table 4.1 of  \cite{PrePhaseAReport}.  
+\caption{Error allocation budget based on Table 4.1 of  \cite{LISAPPA}.  
 The fourth column gives the default error included in LISACode. These values can be  
 modified by the user. The frequency dependence of these noises is discussed in \ref{SSSConfigGW}} 
 \begin{center} 
@@ -151,7 +155,7 @@ The above description of the code provides only a brief summary of its capabilit
 %%%%%%%%%%%
 %  INSTALLATION  %
 %%%%%%%%%%%
-\section{Installation}
+\section{Install}
 \label{SInstall}
 \subsection{System requirements}
 \label{SSSystReq}
@@ -167,11 +171,11 @@ There is also a Windows executable (tested only for Windows XP).\\
 \label{SSSInstallUNIX}
 The installation is the same as a standard UNIX software. The following procedure describes the installation steps : 
 \begin{enumerate}
-\item Download the package lisacode-1.3.tar.gz\\ (on the web : http://www.apc.univ-paris7.fr/Downloads/lisa/LISACode/ )\\ and move the package in the directory ({\it MyDirectory} in the example) where you want to install LISACode.
+\item Download the package lisacode-1.4.4.tar.gz\\ (on the web : http://www.apc.univ-paris7.fr/Downloads/lisa/LISACode/ )\\ and move the package in the directory ({\it MyDirectory} in the example) where you want to install LISACode.
 \item Uncompress the package : \\
-\hphantom{aaaaa}\texttt{tar xvzf lisacode-1.3.tar.gz }\\
+\hphantom{aaaaa}\texttt{tar xvzf lisacode-1.4.4.tar.gz }\\
 \item Go in the {\it LISA\_Sim\_Tdi} directory :\\
-\hphantom{aaaaa}\texttt{cd MyDirectory/lisacode-1.3 }\\
+\hphantom{aaaaa}\texttt{cd MyDirectory/lisacode-1.4.4 }\\
 \item Execute configuration scipt, {\it configure}, for make the {\it makefile} : \\
 \hphantom{aaaaa}\texttt{./configure}\\
 It's possible to add  compilation options and the directory where the executable will be installed (see the part \ref{SSSInstallConfig} or the file {\it INSTALL} for more technicalities on this two points).
@@ -181,7 +185,7 @@ It's possible to add  compilation options and the directory where the executable
 \hphantom{aaaaa}\texttt{make install}
 \end{enumerate}
 
-If the software has been installed correctly, there are 3 main executables in the directory {\it MyDirectory/lisacode-1.3/Main/Test}. The 3 main executables are :
+If the software has been installed correctly, there are 3 main executables in the directory {\it MyDirectory/lisacode-1.4.4/Main/Test}. The 3 main executables are :
 \begin{itemize}
 \item {\em LISACode} : The main simulator executable which models gravitational wave, processes them in LISA detector and apply TDI on the output data.
 \item {\em DnonGW} : Executable which gives relative frequency fluctuations on the beams made by gravitational waves.
@@ -192,9 +196,14 @@ If you use {\it make install} for compile, the 3 executables are also in the dir
 For more useful, copy the executables in your work directory (the directory where you want to make LISA simulation).
 
 
-\subsubsection{Installation configuration}
+\subsubsection{Install configuration}
 \label{SSSInstallConfig}
-Many installation options are detailed in the file {\it INSTALL} located in {\it MyDirectory/lisacode-1.3}.\\
+Many installation options are detailed in the file {\it INSTALL} located in {\it MyDirectory/lisacode-1.4.4}.\\
+
+IMPORTANT : If the configuration phase failed with the follozing message : \\
+{\tt configure: error: fftw3 is required but it's not find! Install or link it first!} \\
+you must include explicitly the directory which contains the {\bf fftw3} as : \\
+ {\tt ./configure CPPFLAGS=-I/pathfftw3/include LDFLAGS=-L/pathfftw3/lib} \\
 
 The compilation options should be specified with the configuration. After \texttt{./configure}, enter \texttt{CXXFLAGS=} followed by compilation options. For example, to optimise the compilation on PowerPCG5, the option is {\it -O3 -fast} therefore the configuration command is : \\
 \hphantom{aaaaa}\texttt{./configure CXXFLAGS="-O3 -fast -Wno-deprecated"} \\ 
@@ -206,8 +215,8 @@ It also possible to specify the path of the directory where the executables will
 \label{SSSTestFonctUNIX}
 For test the running of LISACode, use configuration file ({\it ConfigRefBase}) with the followed instructions : \\
 \begin{enumerate}
-%\item Copy the file {\it ConfigRefBase} located in {\it MyDirectory/lisacode-1.3}, in any worked directory.
-\item Go in LISACode directory {\it MyDirectory/lisacode-1.3}.
+%\item Copy the file {\it ConfigRefBase} located in {\it MyDirectory/lisacode-1.4}, in any worked directory.
+\item Go in LISACode directory {\it MyDirectory/lisacode-1.4}.
 \item Launch the simulator : Execute {\it LISACode} followed by the name of the configuration file  {\it ConfigRefBase} then  "123456" (seed of random generator). \\
 If you use {\it make} for configuration, enter : \\
 \hphantom{aaaaa}\texttt{Main/bin/LISACode ConfigRefBase 123456} \\
@@ -216,25 +225,45 @@ Else, if you use {\it make install} for configuration, enter : \\
 \end{enumerate}
 The software run during about 10 secondes or 3 minutes , for make 10 000 s of simulation. The final display is : \\
 \texttt{...}\\
-\texttt{10000 s     \#0100 \%} \\
-\hphantom{aaaaa}\texttt{ X = 9.41546278836602e-19}\\
-\hphantom{aaaaa}\texttt{ Y = 9.73859038667986e-19}\\
-\hphantom{aaaaa}\texttt{ Z = 9.28457478808582e-19}\\
-\hphantom{aaaaa}\texttt{ AlphaMan = 6.41358600758029e-19}\\
-\hphantom{aaaaa}\texttt{ Beta = 6.48014274920517e-19}\\
-\hphantom{aaaaa}\texttt{  X2s1 = 8.97752170019294e-19}\\
-\hphantom{aaaaa}\texttt{ X2s2 = 9.41500592699302e-19}\\
-\hphantom{aaaaa}\texttt{ X2s3 = 8.16992767767782e-19}\\
-\hphantom{aaaaa}\texttt{ P1 = 4.98540196959974e-19}\\
-\hphantom{aaaaa}\texttt{ Zeta1 = 7.07135169910109e-20}\\
-\texttt{Final time : 10001 s}\\
-\texttt{End}\\
+\texttt{9787 s    (remaining time : 00:00:00) \#0098 \%} \\
+\hphantom{a}\texttt{X = 1.54307511554625e-18} \\
+\hphantom{a}\texttt{Y = 2.23380376286915e-18} \\
+\hphantom{a}\texttt{Z = 2.03070569638376e-18} \\
+\hphantom{a}\texttt{X2s1 = 3.84102728265182e-18} \\
+\hphantom{a}\texttt{X2s2 = 7.30253602341876e-18} \\
+\hphantom{a}\texttt{X2s3 = 6.49295628725497e-18} \\
+\hphantom{a}\texttt{P1 = 1.66863806379042e-18} \\
+\hphantom{a}\texttt{Zeta1 = 9.83725319837678e-19} \\
+\hphantom{a}\texttt{A = 1.13116170136341e-18} \\
+\hphantom{a}\texttt{E = 2.24813370548819e-18} \\
+\hphantom{a}\texttt{T = 8.43890200220657e-19}\\
+\hphantom{a}\texttt{Alpha = 1.33468352729959e-18} \\
+\hphantom{a}\texttt{AlphaId = 1.33468352729959e-18} \\
+\hphantom{a}\texttt{Alphaf2 = 2.66936705459917e-18} \\
+\texttt{Final time : 10001 s} \\
+\hphantom{a}\\
+\texttt{Header for binary file SCi(NRec=5), Pos(NRec=10) or Delay(NRec=7) :} \\
+\texttt{\#TITLE SimDataTitle} \\
+\texttt{\#RECORD NRec 10181} \\
+\texttt{\#TIME -180 1 10000} \\
+\hphantom{a} \\
+\texttt{Header for binary file TDI :} \\
+\texttt{\#TITLE TDIDataTitle} \\
+\texttt{\#RECORD 11 10001} \\
+\texttt{\#TIME 0.0 1 10000} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a} \\
+\texttt{End} \\
 
 
 %
 %   Windows
 %
-\subsection{Sous Windows}
+\subsection{For Windows}
 \label{SWindows}
 There is a LISACode executable for Windows which is tested on Windows XP.
 \subsubsection{Install}
@@ -296,7 +325,7 @@ The time parameters are specified in configuration file.\\
 \label{SSConfGen}
 This file contains all the information for simulator configuration. There two types of possible file : ASCII or XML.  The XML file can be made with a graphical interface software : {\it LISA\_AutoGUI.jar}. The tables \ref{table_paramTime} , \ref{table_paramPrecisionTDI}, \ref{table_paramOrbits}, \ref{table_paramDetector}, \ref{table_paramRecord}, \ref{table_paramGW}, \ref{table_paramNoise} , \ref{table_paramUSO} and \ref{table_paramTDI}    lists the parameters.
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is \textbf{Time}. }
 \begin{center} 
 \begin{tabular}{|p{3.cm}|p{8.cm}|c|p{1.in}|} 
@@ -318,7 +347,7 @@ Name & Explanation & Unit & Standard Value  \\
 \label{table_paramTime} 
 \end{table}
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is \textbf{PrecisionTDI}. }
 \begin{center} 
 \begin{tabular}{|c|p{8.cm}|c|c|} 
@@ -334,7 +363,7 @@ Name & Explanation & Unit & Standard Value  \\
 \label{table_paramPrecisionTDI} 
 \end{table}
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is \textbf{Orbits}. }
 \begin{center} 
 \begin{tabular}{|c|p{8.cm}|p{3.cm}|p{2.cm}|} 
@@ -356,7 +385,7 @@ Name & Explanation & Unit & Standard Value  \\
 \label{table_paramOrbits} 
 \end{table}
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is \textbf{Detector}. }
 \begin{center} 
 \begin{tabular}{|p{3.cm}|p{1.in}|p{6.cm}|p{2.cm}|p{2.cm}|} 
@@ -380,7 +409,7 @@ Name & Explanation & Unit & Standard Value  \\
 \label{table_paramDetector} 
 \end{table}
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is  \textbf{Records}. }
 \begin{center} 
 \begin{tabular}{|c|p{8.cm}|c|} 
@@ -404,7 +433,7 @@ TDI & Defines output file name which contains data of specified TDI generators. 
 \label{table_paramRecord} 
 \end{table}
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is  \textbf{GW} (see figure \ref{GWParameters} ) \textbf{Mono} defines a monochromatic wave, \textbf{Binary} defines a binary system with fixed frequency and \textbf{PostNewtonBinary} defines a binary system which is computed in Post-Newtonian approximation. }
 \begin{center} 
 \begin{tabular}{|p{33.mm}|p{15.mm}|p{65mm}|p{2.cm}|p{18.mm}|} 
@@ -467,8 +496,8 @@ PostNewtonBinary & gw & Post-Newtonian factor. &  & 1 \\
 \label{table_paramGW} 
 \end{table}
 
-\begin{figure}[p] 
-\centering \includegraphics[width=10cm]{Figures/GWParameters.pdf} 
+\begin{figure}[!htb]
+\centering \includegraphics[width=10cm]{Figures/GWParameters2.eps} 
 \caption{\small Schematic description of GW parameters and reference frames.  
 The direction fo the source is located by the declination $\beta$ and the ecliptic  
 longitude $\lambda$. ($ \widehat{\theta}$, $ \widehat{\phi}$, $\widehat{n}$)  is the  
@@ -480,7 +509,7 @@ and the observational reference frame.}
 \label{GWParameters} 
 \end{figure} 
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is  \textbf{Noise} (see figure \ref{SchBOSC1} for localization). }
 \begin{center} 
 \begin{tabular}{|p{22.mm}|p{20.mm}|p{65mm}|p{3.cm}|p{18.mm}|} 
@@ -513,8 +542,8 @@ Type & FilterCoef  & Filter noise where the filter coefficient are specified exp
 \label{table_paramNoise} 
 \end{table}
 
-\begin{figure}[p] 
-\centering \includegraphics[width=10cm]{Figures/SchBOSC1.pdf} 
+\begin{figure}[!htb]
+\centering \includegraphics[width=10cm]{Figures/SchBOSC1.eps} 
 \caption{\small Schematic representation of the two optical benches of spacecraft 1.  
 $s_{i}$ and $s'_{i}$ are the phasemeters which measure the interference between the  
 beam from the distant spacecraft and the beam of  the local optical bench, i.e.  
@@ -525,7 +554,7 @@ $\delta$ is the inertial mass(form \cite{TDITinto}).}
 \label{SchBOSC1} 
 \end{figure}
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is  \textbf{USO}. There is one USO by spacecraft specified by \textbf{SC} followed by the spacecraft number}
 \begin{center} 
 \begin{tabular}{|c|p{8.cm}|p{3.cm}|p{2.cm}|} 
@@ -543,7 +572,7 @@ Name & Explanation & Unit & Standard Value  \\
 \label{table_paramUSO} 
 \end{table}
 
-\begin{table}[p] 
+\begin{table}[p]
 \caption{List of parameters used to configure a simulation whose type is  \textbf{TDI}. (\textbf{SC} mean spacecraft)}
 \begin{center} 
 \begin{tabular}{|p{35.mm}|p{60.mm}|p{65.mm}|} 
@@ -601,6 +630,7 @@ W1 & Relay generator with no beams from SC2 to SC3 and  from SC3 to SC1 & 364 , 
 %%%%%%%%%%%%%%%%%
 \subsection{Configuration par fichier ASCII}
 \label{SSConfACII}
+\textcolor{red}{The english version si not finished !} 
 
 LISACode can read information of simulation in ASCII configuration file. The syntax of this file obeys certain very strict rules :
 \begin{itemize}
@@ -802,7 +832,7 @@ A &=& {2 G^2 \over c^4} {m_1 m_2 \over R r} \label{ABinFixF}
 Ligne de configuration pour d\'efinir une onde gravitationnelle issue d'une binaire de direction $\beta = 37.34^{o}$, $\lambda= 350^{o}$, l’angle de polarisation $\psi = 141.06^{o}$, de masses $M1 = 0.5 M_S$ et $M2 = 0.033 M_S$ , de fr\'equence f$ = 9.72044 \times 10^{-4}$, d'inclinaison $i = 88^{o}$, de phase initiale $\psi_0 = 0^{o}$ et de s\'eparation $r = 0.1$ kpc : \\
 \hphantom{aaaaa}\texttt{GW : Bet 37.34 , Lam 350 , Psi 141.06 : Binary : M1 0.5 , M2 0.033 , forb 9.72044e-4 , inc 88 , phi0 0 , r 0.1 ;}  \\
 
-\item { \it Onde gravitationnelle d'une binaire de fréquence fixée } \texttt{\{PostNewtonBinary\}} : Onde gravitationnelle issue d'une source binaire calculee dans l'approximation Post- Newtonienne a 1 PN ou 2.5 PN  pour laquelle on d\'efinit les masses des deux astres $m_{1}$ \texttt{\{M1\}} et $m_{2}$ \texttt{\{M2\}} en masse solaire, le temps de coalescence  $t_{coal}$ \texttt{\{tcoal\}} en seconds, l'angle d'inclinaison $i$ \texttt{\{inc\}} en degrees, la phase initiale $\phi_{0}$ \texttt{\{Phi0\}} entre $0$ et $2\pi$ et la distance entre la source et le d\'etecteur $r$ \texttt{\{r\}} en kpc. L'ordre Post-Newtonien du calcul est de 1 PN lorsque le parametre \texttt{\{type\}} est a 1 ou de 2.5 PN lorsque le parametre \texttt{\{type\}} est a 2. Pour le calcul a 2.5 PN, il faut preciser 3 parametres qui sont : une phase initial arbitraire \texttt{\{omega0\}}, la phase a l'entree du detecteur \texttt{\{taud0\}} et un parametre Post-Newtonien\texttt{\{gw\}}  egal a 1 dans la plupart des cas. Le calcul de l'evolution temporelle des contraintes gravitationnelles de l'onde dans le referentiel propre de l'onde (CFR : Canonical Reference Frame) ${h}_{CFR+} (t)$ et ${h}_{CFR\times} (t)$ est base sur l'article \cite{2PN}. \\
+\item { \it Onde gravitationnelle d'une binaire de fréquence fixée } \texttt{\{PostNewtonBinary\}} : Onde gravitationnelle issue d'une source binaire calculee dans l'approximation Post- Newtonienne a 1 PN ou 2.5 PN  pour laquelle on d\'efinit les masses des deux astres $m_{1}$ \texttt{\{M1\}} et $m_{2}$ \texttt{\{M2\}} en masse solaire, le temps de coalescence  $t_{coal}$ \texttt{\{tcoal\}} en seconds, l'angle d'inclinaison $i$ \texttt{\{inc\}} en degrees, la phase initiale $\phi_{0}$ \texttt{\{Phi0\}} entre $0$ et $2\pi$ et la distance entre la source et le d\'etecteur $r$ \texttt{\{r\}} en kpc. L'ordre Post-Newtonien du calcul est de 1 PN lorsque le parametre \texttt{\{type\}} est a 1 ou de 2.5 PN lorsque le parametre \texttt{\{type\}} est a 2. Pour le calcul a 2.5 PN, il faut preciser 3 parametres qui sont : une phase initial arbitraire \texttt{\{omega0\}}, la phase a l'entree du detecteur \texttt{\{taud0\}} et un parametre Post-Newtonien\texttt{\{gw\}}  egal a 1 dans la plupart des cas. Le calcul de l'evolution temporelle des contraintes gravitationnelles de l'onde dans le referentiel propre de l'onde (CFR : Canonical Reference Frame) ${h}_{CFR+} (t)$ et ${h}_{CFR\times} (t)$ est base sur l'article \cite{2PN_1,2PN_2,2PN_3,2PN_4}. \\
 Ligne de configuration pour d\'efinir une onde gravitationnelle issue d'une binaire de direction $\beta = 37.34^{o}$, $\lambda= 350^{o}$, l’angle de polarisation $\psi = 141.06^{o}$, de masses $M1 = 0.5 M_S$ et $M2 = 0.033 M_S$ , de fr\'equence f$ = 9.72044 \times 10^{-4}$, d'inclinaison $i = 88^{o}$, de phase initiale $\psi_0 = 0^{o}$ et de s\'eparation $r = 0.1$ kpc : \\
 \hphantom{aaaaa}\texttt{GW : Bet 37.34 , Lam 352.0 , Psi 141.06  : PostNewtonBinary : M1 1.0e6 , M2 1.0e6 , tcoal 9676800.0 , inc 90 , phase 1.2 , r 1e5 , type 2 , omega0 1.0 , taud0 10.0 , gw 1.0 ;}  \\
 
@@ -927,7 +957,9 @@ Il existe egalement un certain nombre de generateur dont le pack est predefini d
 
 \subsection{Configuration par fichier XML}
 \label{SSConfXML}
-LISACode peut \'egalement ce configurer \`a partir d'un fichier xml construit avec l'interface graphique \textbf{LISA\_AutoGUI.jar}
+LISACode can also be configured by an XML file. 
+The structure of this XML file is the same than its of the Mock LISA Data Challenge (cf. articles~\cite{MLDCHowTo,MLDC1Res,MLDC2} and web site~\cite{MLDCWeb}.
+
 
 \newpage
 
@@ -949,22 +981,24 @@ LISACode peut \'egalement ce configurer \`a partir d'un fichier xml construit av
 \item V\'erifier qu'il y ait bien un point virgule \`a la fin de chaque  ligne de commande et de commentaire.
 \item V\'erifier qu'il n'y ait pas  de ligne vide \`a la fin de votre fichier de configuration. La derni\`ere ligne doit comporter une commande ou un commentaire. Elle peut \'egalement comporter l'instruction \texttt{END}.
 \end{itemize}
+
 \section{Support - Contact}
 \label{SSupport}
-\subsection{A l'APC}
+\subsection{At APC (AstroParticule et Cosmologie)}
 \label{SSSupAPC}
-Antoine PETITEAU : petiteau@apc.univ-paris7.fr - 01 44 27 15 11 \\
+Antoine PETITEAU 
+%: petiteau@apc.univ-paris7.fr \\
+
+\subsection{At AEI (Albert Einstein Institute)}
+\label{SSSupAEI}
+Antoine PETITEAU : Antoine.Petiteau@aei.mpg.de  - +49 (331) 567-7134 \\
 
 
-\begin{thebibliography}{99}
-\bibitem{LISACode}A. Petiteau and al. ''LISACode: A scientific simulator of LISA'', 
-Publication in progress ...  (2007).
-\bibitem{PrePhaseAReport}LISA Pre-Phase A Report, 2nd Ed. (1998): \\ http://www.srl.caltech.edu/lisa/documents/PrePhaseA.pdf 
-\bibitem{TDIVinet}S. V. Dhurandhar, K. Rajesh Nayak, and J.-Y. Vinet, 
-"Algebraic Approach to Time-Delay Data Analysis for LISA", Phys. Rev. D. 65, 102002 (2002).
-\bibitem{TDITinto}M. Tinto, F. B. Estabrook, and J. W. Armstrong, "Time-Delay Interferometry for LISA", Phys. Rev. D 65, 082003 (2002). 
-\bibitem{2PN}  L. Blanchet et al. Class. Quantum Grav. 13(1996) 575-584; L. Blanchet. Class. Quantum Grav. 15(1998) 113; L.Blanchet et al. Phys. Rev. D 65 061501; L. Blanchet et al. Phys. Rev. D 71, 129902(E) (2005)
-\end{thebibliography}
+\bibliographystyle{plain}
+
+\bibliography{ManuelEN_v1.4}
+%\bibliography{/Users/petiteau/Documents/Articles/BiblioLISA}
+
 
 \end{document}
 

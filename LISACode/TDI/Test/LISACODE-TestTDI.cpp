@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"
 #include "LISACODE-LISAConstants.h"
@@ -35,12 +35,13 @@ using namespace std;
 int main (int argc, char * const argv[])
 {
 	try {
-		cout << endl << "   **************** ";
-		cout << endl << "   *              * ";
-		cout << endl << "   *   Test TDI   * ";
-		cout << endl << "   *   --------   * ";
-		cout << endl << "   *              * ";
-		cout << endl << "   **************** " << endl << endl; 
+		cout << endl << "   *********************";
+		cout << endl << "   *                   *";
+		cout << endl << "   *     Test TDI      *";
+		cout << endl << "   *     --------      *";
+		cout << endl << "   * ("<<LCVersion<<") *";
+		cout << endl << "   *                   *";
+		cout << endl << "   *********************" << endl << endl; 
 		
 		
 		

@@ -76,8 +76,8 @@ NoiseTwoFilter::NoiseTwoFilter(	double tStep_n,
 	
 	
 	NbData = (int)((tFirst-tLast)/tStep+100*PRECISION);
-	NFilter = NFilter_n;
-	NFilter_2 = NFilter_n2; // ?????
+	NFilter.Copy(NFilter_n);
+	NFilter_2.Copy(NFilter_n2);
 	loadNoise();
 	strcpy(NoiseType,"NoiseTwoFilter"); // ?????
 }
@@ -104,7 +104,7 @@ NoiseTwoFilter::NoiseTwoFilter(	double tStep_n,
 void NoiseTwoFilter::loadNoise()
 {
 	int NbDataStab(2*NbData + NFilter.getNbDataStab() + NFilter.getDepth()); //More bin that necessary for stabilization of the filter
-    int StartBin(NbDataStab-NFilter.getDepth());
+    int StartBin(NbDataStab-MAX(NFilter.getDepth(),NFilter_2.getDepth()));
     int order_ep=3;//=0,1,2,ou 3 (3=1+2) 
 	//cout << "  - NbDataStab = " << NbDataStab << endl;
 	WhiteData.resize(NbDataStab, 0.0);
@@ -127,7 +127,7 @@ void NoiseTwoFilter::loadNoise()
     }
     
     // Generation of all noise data by filtering
-    cout << endl << "loadNoide : The noise is filtered with Filter_MLDC (in LISACode_NoiseTwoFilter.cpp)" << endl ;
+    //cout << endl << "loadNoise : The noise is filtered with Filter_MLDC (in LISACode_NoiseTwoFilter.cpp)" << endl ;
     NFilter.App(StartBin, WhiteData, NoiseData_tmp1);
     NFilter_2.App(StartBin, WhiteData2, NoiseData_tmp2);
     /*    for(int i=0; i<10; i++){
@@ -209,10 +209,10 @@ void NoiseTwoFilter::generNoise(int StartBin)
 	}
       }
     }
-    if(order_ep >= 2){ // 1/f²
-      NFilter_2.App(StartBin, WhiteData2, NoiseData_tmp2);  // should generate 1/f² noise
+    if(order_ep >= 2){ // 1/fâ‰¤
+      NFilter_2.App(StartBin, WhiteData2, NoiseData_tmp2);  // should generate 1/fâ‰¤ noise
       if(print_ep != 0){
-	cout << " Apres 1er filtrage 1/f², order_ep :" << order_ep  << endl;
+	cout << " Apres 1er filtrage 1/fâ‰¤, order_ep :" << order_ep  << endl;
 	for(int i=0; i<10; i++){
 	  cout << "   i = " << i << " :   " << WhiteData2[i] << "     " << NoiseData_tmp2[i]  << endl;
 	}
@@ -233,7 +233,7 @@ void NoiseTwoFilter::generNoise(int StartBin)
 	NoiseData[i] = NoiseData_tmp1[i] + NoiseData_tmp2[i] ;
       }
       if(print_ep != 0){
-	cout << " On ajoute 1/f + 1/f², order_ep :" << order_ep  << endl;
+	cout << " On ajoute 1/f + 1/fâ‰¤, order_ep :" << order_ep  << endl;
 	for(int i=0; i<10; i++){
 	  cout << "   i = " << i << " :   " << NoiseData[i] << endl;
 	}

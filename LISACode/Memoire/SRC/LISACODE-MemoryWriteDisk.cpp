@@ -38,6 +38,7 @@ Memory(tStoreData_n, tStepRecord_n)
 	FichMem.open(NomFichMem);
 	SCSerie.resize(0);
 	TitleSerie.resize(0);
+	BinHeader = false;
 }
 
 
@@ -65,6 +66,38 @@ Memory(tStoreData_n, tStepRecord_n)
 	}
 	SCSerie.resize(0);
 	TitleSerie.resize(0);
+	BinHeader = false;
+}
+
+
+/*!\brief Constructs an instance and initializes it with default values and tStoreData_n, tStepRecord_n and NomFichMem_n inputs.
+ *
+ * #Memory constructor is called with tStoreData_n and tStepRecord_n inputs.
+ *
+ * Others attributes are set using data read in NomFichMem_n file :
+ * \arg	#NomFichMem =  NomFichMem_n
+ * \arg	#FichMem = manages data of \a NomFichMem file
+ * \arg #SCSerie = empty
+ * \arg #TitleSerie = empty
+ * \arg #BinHeader = BinHeader_n
+ */
+MemoryWriteDisk::MemoryWriteDisk(double tStoreData_n, double tStepRecord_n, char * NomFichMem_n, int Encoding_n, bool BinHeader_n, double TimeOffset_n, double TimeEnd_n) :
+Memory(tStoreData_n, tStepRecord_n)
+{
+	NomFichMem =  NomFichMem_n;
+	FEncoding = Encoding_n;
+	if(FEncoding > 0){
+		cout << "     Opening a BINARY file " << NomFichMem << "    Encoding = " << FEncoding <<endl ;
+		FichMem.open(NomFichMem,ios::binary);
+	}else{
+		cout << "     Opening an ASCII file " <<NomFichMem << "    Encoding = " << FEncoding <<endl ;
+		FichMem.open(NomFichMem);
+	}
+	SCSerie.resize(0);
+	TitleSerie.resize(0);
+	BinHeader = BinHeader_n;
+	TimeOffset = TimeOffset_n;
+	TimeEnd = TimeEnd_n;
 }
 
 
@@ -139,7 +172,7 @@ void MemoryWriteDisk::MakeTitles(char * FileNameHead)
 		if (!FileHead){
 			throw invalid_argument("MemoryWriteDisk::MakeTitles : Can not open the configuration file ! ");
 		}
-		FichMem << "############## " << LISACodeVersion <<  " ##############" << endl;
+		FichMem << "############## " << LCVersion <<  " ##############" << endl;
 		FichMem << "############## Configuration : " << FileNameHead <<  " ##############" << endl;
 		while(!FileHead.eof()) {
 			FileHead.getline(Buf, 256);
@@ -158,11 +191,21 @@ void MemoryWriteDisk::MakeTitles(char * FileNameHead)
 		cout << "  Display all serie :" << endl ;
 		for(int i=0; i< int(TitleSerie.size()); i++)
 			cout << "   - Title of serie " << i << " is : " << TitleSerie[i] << SCSerie[i] << endl;
+	}else{
+		if(BinHeader){
+			FichMem << "#TITLE t";
+			for(int i=0; i<(int)(TitleSerie.size()); i++)
+				FichMem << "," << TitleSerie[i] << SCSerie[i];
+			FichMem << endl; 
+			FichMem << "#RECORD " << (int)(ListTmpData.size())+1<< " " << (int)ceil((TimeEnd-TimeOffset)/tStepRecord+1) <<  endl;
+			FichMem << "#TIME " << TimeOffset << " " << tStepRecord << " " << TimeEnd << endl;
+		}
 	}
+		
 }
 
 
- /*! \brief Records received data in file #FichMem (make it between each step of time)
+/*! \brief Records received data in file #FichMem (make it between each step of time)
  *
  * #AlreadyRecDat attributes are checked : it must be TRUE (for all series). \n
  * #ListTmpData data are written into #FichMem (for all series) and last ones are removed by Serie::delLastData.\n
@@ -172,7 +215,7 @@ void MemoryWriteDisk::MakeTitles(char * FileNameHead)
  */
 void MemoryWriteDisk::RecordAccData(double tStep, double t)
 {
-  double tmpdata,zero;
+	double tmpdata;
 	
 	// Control that all the series are filled before recording
 	for(int i=0; i< int(AlreadyRecDat.size()); i++){
@@ -180,27 +223,19 @@ void MemoryWriteDisk::RecordAccData(double tStep, double t)
 			throw invalid_argument("MemoryWriteDisk: There is no data for one serie !");
 		AlreadyRecDat[i] = false;
 	}
-	if(t >= 0){ // modif eric
-	  //cout << "time, number of data = " << t << "  " <<int(ListTmpData.size()) << endl ;
-	  if(FEncoding){ // Write the datas in BINARY file
-	    FichMem.write((char*) &t, sizeof(double));
-	    for(int i=0; i< int(ListTmpData.size()); i++){
-	      tmpdata =  ListTmpData[i].getBinValue(0);
-	      FichMem.write((char*) &tmpdata, sizeof(double));
-	    }
-	  }else{ // Write the datas in ASCII file
-	    FichMem.precision(15);
-	    FichMem << t;
-	    for(int i=0; i< int(ListTmpData.size()); i++)
-	      FichMem << " " << ListTmpData[i].getBinValue(0) ;
-	    FichMem << endl;
-	    /*cout.precision(15);
-	      cout << "MemoryWriteDisk : t,s,sp = "  << t;
-	      for(int i=0; i< int(ListTmpData.size()); i++)
-	      cout << " " << ListTmpData[i].getBinValue(0) ;
-	      cout << endl;
-	    */
-	  }
+	
+	if(FEncoding){ // Write the datas in BINARY file
+		FichMem.write((char*) &t, sizeof(double));
+		for(int i=0; i< int(ListTmpData.size()); i++){
+			tmpdata =  ListTmpData[i].getBinValue(0);
+			FichMem.write((char*) &tmpdata, sizeof(double));
+		}
+	}else{ // Write the datas in ASCII file
+		FichMem.precision(15);
+		FichMem << t;
+		for(int i=0; i< int(ListTmpData.size()); i++)
+			FichMem << " " << ListTmpData[i].getBinValue(0) ;
+		FichMem << endl;
 	}
 	// Delete last data
 	for(int i=0; i< int(ListTmpData.size()); i++){

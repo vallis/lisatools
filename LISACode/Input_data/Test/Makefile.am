@@ -1,11 +1,11 @@
 # $Id: Makefile.am,v 1.3 2006/06/06 12:55:57 petiteau Exp $
 # Makefile.am
 
-LIBS       = -llisacodeinputdata  \
+LIBS       = -llisacodeinputdata \
 	@SLISAUSOTIME_LIBS@ \
 	@SLISABACKGROUND_LIBS@ \
 	@SLISAORBITS_LIBS@ \
-	@SLISAGRAVWAVES_LIBS@ \
+	@SLISAGRAVWAVES_LIBS@ $(FFTWL) \
 	@SLISANOISE_LIBS@ \
 	@SLISAMATHTOOLS_LIBS@
 

@@ -381,8 +381,8 @@ double PhoDetPhaMet::gN(NOISEORIG OrigN, int iSC, int IndirectDir, double tDelay
 		if ((*NPs)[indexNPs] == NULL){
 			return(0.0);
 		}else{
-			/*if (indexNPs > 11)
-			cout << " gN for Noise " << indexNPs << " at " << tDelay << " : " << (*NPs)[indexNPs]->getNoise(tDelay) << endl;*/
+			//if (indexNPs > 11)
+			//cout << " gN for Noise " << indexNPs << " at " << tDelay << " : " << (*NPs)[indexNPs]->getNoise(tDelay) << endl;
 			return((*NPs)[indexNPs]->getNoise(tDelay));
 		}
 	}

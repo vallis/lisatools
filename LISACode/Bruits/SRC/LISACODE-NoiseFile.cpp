@@ -36,7 +36,6 @@ NoiseFile::NoiseFile()
     FileName = "DefaultNoise";
     /* Set size of vector to store read data to 0. 
        It deletes all eventual elements*/
-    StoredData.resize(0);
     loadNoise();
 	strcpy(NoiseType,"File");
 }
@@ -61,7 +60,7 @@ NoiseFile::NoiseFile(double tStep_n, double tDurAdd_n, double tFirst_n, double t
     /*! \todo Make a function to compute a int from a double. Is there a reason to no call rint ?*/
 	NbData = (int)((tFirst-tLast)/tStep+100*PRECISION);
     FileName = FileName_n;
-    StoredData.resize(0);
+	FactMult = 1.0;
     loadNoise();
     //cout << "  - NoiseData size = " << NoiseData.size() << endl;
     //for(int i=0; i<10; i++)
@@ -69,7 +68,22 @@ NoiseFile::NoiseFile(double tStep_n, double tDurAdd_n, double tFirst_n, double t
 	strcpy(NoiseType,"File");
 }
 
-
+NoiseFile::NoiseFile(double tStep_n, double tDurAdd_n, double tFirst_n, double tLast_n, char * FileName_n, double FactMult_n)
+{
+    settStep(tStep_n);
+    settDurAdd(tDurAdd_n);
+    settFirst(tFirst_n);
+    settLast(tLast_n);
+    /*! \todo Make a function to compute a int from a double. Is there a reason to no call rint ?*/
+	NbData = (int)((tFirst-tLast)/tStep+100*PRECISION);
+    FileName = FileName_n;
+	FactMult = FactMult_n;
+    loadNoise();
+    //cout << "  - NoiseData size = " << NoiseData.size() << endl;
+    //for(int i=0; i<10; i++)
+    //    cout << "    NoiseData[i] = " << NoiseData[i] << endl;
+	strcpy(NoiseType,"File");
+}
 
 /* Access methods */
 /*! \brief It returns the name of the file where the noise is read, #FileName.
@@ -101,80 +115,183 @@ int NoiseFile::getNbDataStored()
  */
 void NoiseFile::loadNoise()
 {
-    // Read the header of file
     ifstream ReadFile;
-    //Open file
+	char junk[256];
+	double t0(0.0), t1(0.0), tMax(0.0);
+	double ** ReadData;
+	int NbColumns, NbReadData;
+	int ReadCol(2); // Index of read column
+    
+	cout << "Read noise in file " << FileName << " ... " << endl; fflush(stdout);
+	
+	// **** Count the number of columns
     ReadFile.open(FileName);
 	if (!ReadFile){
 		throw invalid_argument("NoiseFile::loadNoise : Can not open the noise file ! ");
 	}
-    string junk;
-    //Initialise values to read from the file
-    double NewtStep(0.0), tMax(0.0);
-    // Junk the five first words 
-    ReadFile >> junk >> junk >> junk >> junk >> junk; // Read( # Time  : Step = )
-    // Read new time step from the file 
-    ReadFile >> NewtStep;
-    //Verify if read step and step attribute of the class are the same and
-    //show a message if they are different
-    if(NewtStep-tStep > PRECISION)
-        throw invalid_argument("NoiseFile::loadNoise : The time step in readed noise file is different than physical time step !");
-
-    // Junk the three next words in the file
-    ReadFile >> junk >> junk >> junk; // Read( , Duration = )
-    // Read new time step from the file 
-    ReadFile >> tMax;
-    // Junk the next word in the file
-    ReadFile >> junk; // Read( ; )
-    // Junk the words in the file to the next ";"
-    do{
-        ReadFile >> junk;
-    }while(junk != ";");
+	while(ReadFile.peek() == '#'){
+		ReadFile.ignore(16384,'\n');
+	};
+	NbColumns = 0;
+	while((ReadFile.peek() != '\n')&&(!ReadFile.eof())){
+		ReadFile >> junk;
+		NbColumns++;
+	}
+	ReadFile.close();
+	ReadFile.clear();
 	
-    // Read and store the noise which are in file
-    // Read NbDataStored (attribute of the class) data
-    // if the end of file is not reached before
-    /*! \todo Make a function to compute a int from a double. Is there a reason to no call rint ?*/
-    {
-    NbDataStored = (int)(tMax/tStep+100*PRECISION);
-    double Data_tmp(0.0);
-    do{
-        ReadFile >> Data_tmp;
-        StoredData.push_back(Data_tmp);
-    }while(((int)StoredData.size()<NbDataStored)&&(!ReadFile.eof()));
-    }
-    
-    //Close file
-    ReadFile.close();
-    //Update varible NbDataStored if the number of data read is smaller than expected
-    if((int)StoredData.size()<NbDataStored){
-        cout << " WARNING : NoiseFile::loadNoise : There are not enough data in readed noise file !" << endl;
-        NbDataStored = StoredData.size();
-    }
+	// **** Count the number of rows
+	ReadFile.open(FileName);
+	while(ReadFile.peek() == '#'){
+		ReadFile.ignore(16384,'\n');
+	};
+	NbReadData = 0;
+	while(!ReadFile.eof()){
+		//Reading time
+		switch (NbReadData){
+			case 0 :
+				ReadFile >> t0;
+				break;
+			case 1 :
+				ReadFile >> t1;
+				break;
+			default :
+				ReadFile >> tMax;
+		}
+		// Reading end of row
+		ReadFile.ignore(16384,'\n');
+		if(!ReadFile.eof()){	
+			NbReadData++;
+		}
+	};
+	ReadFile.close();
+	ReadFile.clear();
 	
-    // Choice of the first bin which is readed
+	cout << "   --> Number of readed data = " << NbReadData << endl;
+	
+	ReadData = (double**)malloc(2*sizeof(double*));
+	ReadData[0] = (double*)malloc(NbReadData*sizeof(double)); // Alloc for time
+	ReadData[1] = (double*)malloc(NbReadData*sizeof(double)); // Alloc for noise data 
+	
+	// **** Read and store data
+	ReadFile.open(FileName);
+	if (!ReadFile){
+		throw invalid_argument("NoiseFile::loadNoise : Can not open the noise file ! ");
+	}
+	while(ReadFile.peek() == '#'){
+		ReadFile.ignore(16384,'\n');
+	};
+	for(int nl=0;nl<NbReadData;nl++){
+		for(int col=1; col<=NbColumns; col++){
+			if(col ==  1){   
+				ReadFile >> ReadData[0][nl]; // Read time
+			}else{
+				if(col == ReadCol ){  
+					ReadFile >> ReadData[1][nl]; // Read noise data
+				}else{
+					ReadFile >> junk;
+				}
+			}
+		}
+	}
+	ReadFile.close();
+	ReadFile.clear();
+	
+	// **** Start time to 0
+	for(int nl=0;nl<NbReadData;nl++){
+		ReadData[0][nl] -= t0;
+		//cout << ReadData[0][nl] << " " << ReadData[1][nl] << endl;
+	}
+	tMax -= t0;
+	
+	// **** Resample read data in noise data
+	int order(7);
+	int LastUsedBin(0);
+	double tcur(0.0);
+	
+	NbDataStored = (int)(tMax/tStep+100*PRECISION);
+	StoredData = (double*)malloc(NbDataStored*sizeof(double));
+	
+	cout << "   --> Number of stored data = " << NbDataStored << endl;
+	
+	
+	for(int id=0; id < NbDataStored; id++){
+		tcur = id*tStep;
+		StoredData[id] = 0.0;
+		//cout << id << " = " << tcur; 
+		// Find the good bin
+		if((tcur<ReadData[0][0])||(tcur>ReadData[0][NbReadData-1])){
+			 throw invalid_argument("NoiseFile::loadNoise : The value for this time cannot be evaluated !");
+		}else {
+			while(tcur<ReadData[0][LastUsedBin]){
+				LastUsedBin--;
+			};
+			while(tcur>=ReadData[0][LastUsedBin+1]){
+				LastUsedBin++;
+			};
+			
+			// Make Lagrange interpolation
+			double Pk(0.0);
+			int ordermin((int)(floor(double(order+1)/2.0)));
+			int kmin(LastUsedBin-ordermin+1), kmax(LastUsedBin+(order+1-ordermin));
+			if(kmin < 0)
+				kmin = 0;
+			if(kmax > NbReadData-1)
+				kmax = NbReadData-1;
+			//cout << "min=" << kmin << " max=" << kmax << endl;
+			for(int k=kmin; k<=kmax; k++){
+				Pk = 1.0;
+				for(int j=kmin; j<=kmax; j++){
+					if(j!=k){
+						//cout << " - ReadData[0][" << j << "] = " << ReadData[0][j] << "  ReadData[0][" << k << "] = " <<  ReadData[0][k];
+						//cout << "   --> (ReadData[0][k]-ReadData[0][j]) = " << (ReadData[0][k]-ReadData[0][j]) << endl;
+						Pk *= (tcur-ReadData[0][j])/(ReadData[0][k]-ReadData[0][j]);
+					}
+				}
+				StoredData[id] += ReadData[1][k]*Pk;
+				//cout << k << ":" << StoredData[id] << " , ";
+			}	
+			//cout << endl;
+		}
+	}
+	
+	ofstream ControlFile("NoiseControl.txt");
+	ControlFile.precision(15);
+	for(int id=0; id < NbDataStored; id++){
+		StoredData[id] *= FactMult; 
+		ControlFile << id*tStep << " " << StoredData[id] << endl;
+	}
+	ControlFile.close();
+	
+    // **** Choice of the first bin which is readed
     ReadBin = 0;
-    //ReadBin = (int)(((double)rand()*NbDataStored)/RAND_MAX);
+    ReadBin = (int)(((double)genunf(0.0, 1.0) * NbDataStored));
+	cout << "   --> Start bin : " << ReadBin; fflush(stdout);
     
     // Generation of all data noise
     //cout << "  - NbData       = " << NbData << endl;
     //cout << "  - NbDataStored = " << NbDataStored << endl;
 
     NoiseData.resize(NbData);
-	/*for (int i=0; i<NbData; i++)
-		cout << "StoredData[" << i << "] = " << StoredData[i] << endl; 
-	*/
-	for(int i=NbData-1; i<=0; i++){
-        //cout << ReadBin << endl;
+	//for (int i=0; i<NbDataStored; i++)
+	//	cout << "StoredData[" << i << "] = " << StoredData[i] << endl; 
+	
+	for(int i=NbData-1; i>=0; i--){
         ReadBin++;
         if(ReadBin>=NbDataStored){
             //cout << " Bin a 0" << endl;
             ReadBin = 0;
         }
         NoiseData[i] = StoredData[ReadBin];
+		//cout << " + + NoiseData["  << i << "] = " << NoiseData[i] << " StoredData[" << ReadBin << "] = " << StoredData[ReadBin] << endl;
     }
-    //cout << "  - NbData = " << NbData << endl;
-	//cout << endl << endl;
+	
+	//for (int i=0; i<NbData; i++)
+	//	cout << "NoiseData[" << i << "] = " << NoiseData[i] << endl; 
+	
+   // cout << "  - NbData = " << NbData << endl;
+	cout << " --> OK" << endl;
+	 
 }
 
 /*! \brief Noise generation (for one measurement), using Startbin input as beginning index.

@@ -4,7 +4,7 @@
 # Step in time (second) for measurement the phasemeters (Numeric) ;
  Time : StepMeasure 1 ;
 # Duration ;
- Time : Max 10000 ;
+ TIME : Max 10000 ;
 # Precision in delays used by TDI ;
 # Time : DeltaTDIDelay 1e-6 ;
 # Display step ;
@@ -20,7 +20,8 @@ Orbits : Armlength 5e9 ;
 # Start time for the orbits ;
 Orbits : StartTime 0.0 ;
 Orbits : InitialRotation 0.0 ;
-Orbits : Move On ;
+Orbits : Type LISACode ;
+Orbits : Approx Eccentric ;
 Orbits : Order 2 ;
 
 # Detector parameters ; 
@@ -29,19 +30,20 @@ Detector : LaserPower 1 ;
 # Apply the filter in the phasemeter  ;
 Detector : PhaMetFilter On ;
 Detector : PhaMetFilterParameters : attenuation 180 oscillation 0.1 FactFmesForHighFreq 0.1 FactFmesForLowFreq 0.3 ;
+Detector : InternalPhasemeters IfNoises ;
 
 # Record ASCII ;
  Record : SignalSC 1 SC1.txt ASCII ;
- Record : SignalSC 2 SC2.txt ASCII ;
- Record : SignalSC 3 SC3.txt ASCII ;
+# Record : SignalSC 2 SC2.txt ASCII ;
+# Record : SignalSC 3 SC3.txt ASCII ;
  Record : Delay Delay.txt ASCII ;
  Record : Position Pos.txt ASCII ;
  Record : TDI TDI.txt ASCII ;
 
 # Record BINARY ;
 # Record : SignalSC 1 SC1.bin BINARY ;
-# Record : SignalSC 2 SC2.bin BINARY ;
-# Record : SignalSC 3 SC3.bin BINARY ;
+ Record : SignalSC 2 SC2.bin BINARY ;
+ Record : SignalSC 3 SC3.bin BINARY ;
 # Record : Delay Delay.bin BINARY ;
 # Record : Position Pos.bin BINARY ;
 # Record : TDI TDI.bin BINARY ;
@@ -49,13 +51,21 @@ Detector : PhaMetFilterParameters : attenuation 180 oscillation 0.1 FactFmesForH
 
 # Gravitationals waves ( Direction & Angle of polarisation : Beta  Lambda & Psi in degrees ) ;
 # Monochromatic GW ;
-GW : Bet 27.0 , Lam 297.0 , Psi 229.0 : Mono : f 1e-4 , hp 1.0e-19 , hc 0.0 , Phi0hp 0.0 , Phi0hc 0.0 ;
+ GW : Bet 27.0 , Lam 297.0 , Psi 229.0 : Mono : f 1e-4 , hp 1.0e-19 , hc 0.0 , Phi0hp 0.0 , Phi0hc 0.0 ;
 
 # Binary source ( M1 & M2 in solar mass, orbital frequency in Hz, inclination in degrees, initial phase [0 , 2PI], distance in kpc) ;
-GW : Bet 68.0 , Lam 135.0 , Psi 12.0  : Binary : M1 1.0e5 , M2 1.0e6 , forb 1.0e-3 , inc 42.0 , phi0 0 , r 1.0e5 ;
+ GW : Bet 68.0 , Lam 135.0 , Psi 12.0  : Binary : M1 1.0e5 , M2 1.0e6 , forb 1.0e-3 , inc 42.0 , phi0 0 , r 1.0e5 ;
 
 # Binary source compute in PN approximation ( M1 & M2 in solar mass, orbital frequency in Hz, inclination in degrees, initial phase [0 , 2PI], distance in kpc, type 1 for 1PN or 2 for PN, if type 2 omegao taud0 gw) ;
-GW : Bet -56.0 , Lam 154.0 , Psi 32.0  : PostNewtonBinary : M1 1.0e6 , M2 1.0e6 , tcoal 9676800.0 , inc 90 , phase 1.2 , r 1e5 , type 2 , omega0 1.0 , taud0 10.0 , gw 1.0 ;
+ GW : Bet -56.0 , Lam 154.0 , Psi 32.0  : PostNewtonBinary : M1 1.0e6 , M2 1.0e6 , tcoal 9676800.0 , inc 90 , phase 1.2 , r 1e5 , type 2 , omega0 1.0 , taud0 10.0 , gw 1.0 ;
+
+# Spinning black hole binary ;
+GW : Bet 37.68025039158266 , Lam 285.8612437864652 , Psi 0.0  : FastSpinBBH : M1 1465580.75942 , M2 868710.795073 , tcoal 31525128.7938 , phase 1.16933157672 , r 1000000.0 ,
+ S1 0.0770493004546 , S2 0.268523395273 , polS1 160.24533138914506 , polS2 130.59343637800927 , azS1 0.8027554175918619 , azS2 238.99790401516472 , polL 162.0742928004962 , azL 328.8864991548683 , PN 0.0 ;
+
+# Stochastic source ;
+GW : Bet 11.715852394919027 , Lam 45.0 , Psi 0.0 : Stochastic : Slope -3 , Fmin 1.0e-5 , Fknee 0.1 , hp 1.6137533888e-25 ,  hc 1.6137533888e-25 ;
+
 
 # GW read in file ( file name) ;
 # GW : Bet 0.0 , Lam 0.0 , Psi 0.0 : File : GWAMCVn.txt ;
@@ -102,11 +112,9 @@ GW : Bet -56.0 , Lam 154.0 , Psi 32.0  : PostNewtonBinary : M1 1.0e6 , M2 1.0e6 
 # TDI (Name) ;
 # Combinations ( sign delay1 delay2 ... measurement) for example : -5235 ;
 # For delay and measurement the number is [1,2,3] for counterclockwise and [4,5,6] for clockwise ;
- TDI : X  1 , 35 , 364 , 3653 , -4 , -53 , -521 , -5235 ;
+ TDI : X  ;
  TDI : Y  ;
- TDI : Z  3 , 24 , 256 , 2542 , -6 , -42 , -413 , -4124 ;
- TDI : AlphaMan -1 , -32 ,  -133 , 4 , 455 , 56 ;
- TDI : Beta -121 , -2 , -13 , 64 , 5 , 566 ;
+ TDI : Z  ;
  TDI : X2s1  1 , 35 , 364 , 3653 , 36524 , 365253 , 3652521 , 36525235 , 
  -4 , -53 , -521 , -5235 , -52361 , -523635 , -5236364 , -52363653 ;
  TDI : X2s2  ;
@@ -114,6 +122,13 @@ GW : Bet -56.0 , Lam 154.0 , Psi 32.0  : PostNewtonBinary : M1 1.0e6 , M2 1.0e6 
  -6 , -42 , -413 , -4124 , -41253 , -412524 , -4125256 , -41252542 ;
  TDI : P1  25 , -63 , -22 , 66 , 642 , -216 , 1463 , -1425 ;
  TDI : Zeta1 ;
+ TDI : A ;
+ TDI : E ;
+ TDI : T ;
+ TDI : Alpha ; 
+ TDI : AlphaId -1 , -32 , -133 , 4 , 455 , 56 ;
+ TDI : Alphaf2 -1 x 2 , -32 x 2 , -133 x 2 , 4 x 2 , 455 x 2 , 56 x 2 ;
+
  
  END
  

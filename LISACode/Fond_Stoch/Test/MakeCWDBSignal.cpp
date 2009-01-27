@@ -13,14 +13,14 @@
 // Execution  : ./MakeCWDBSignal SC1File SC2File SC3File OutputFile
 
 
-#include <iostream>
-#include <fstream>
+#include <iostream.h>
+#include <fstream.h>
 #include <string>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
-#include <vector>
+#include <string.h>
+#include <vector.h>
 
 using namespace std;
 

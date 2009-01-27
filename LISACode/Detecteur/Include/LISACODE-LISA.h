@@ -29,7 +29,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <vector>
+#include <vector.h>
 #include <stdlib.h>
 #include <math.h>
 #include "LISACODE-PhysicConstants.h"
@@ -43,6 +43,7 @@
 #include "LISACODE-NoiseTwoFilter.h"
 #include "LISACODE-TrFctGW.h"
 #include "LISACODE-Geometry.h"
+#include "LISACODE-GeometryAnalytic.h"
 #include "LISACODE-Background.h"
 #include "LISACODE-USOClock.h"
 #include "LISACODE-PhoDetPhaMet.h"

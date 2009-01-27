@@ -21,10 +21,8 @@
 #define __VECT_H
 
 #include <stdexcept>
-#include <iostream>
+#include <iostream.h>
 #include <math.h>
-
-using namespace std;
 
 /*!\brief 3 components vector management class.
  */

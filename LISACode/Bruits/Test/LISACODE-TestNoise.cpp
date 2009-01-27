@@ -12,7 +12,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include <math.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"
@@ -38,12 +38,13 @@ int main(int argc, char *argv[])
 		cout << endl << "   *       LISACode        * ";
 		cout << endl << "   *   -----------------   * ";
 		cout << endl << "   *      Test Noise       * ";
+		cout << endl << "   *   ("<<LCVersion<<")   * ";
 		cout << endl << "   *                       * ";
 		cout << endl << "   ************************* " << endl << endl;
 		
 		
-		double tStepPhy(5.0), tStepMes(5.0), tFirst(10.0), tLast(-30.0);
-		double t(0.0), t_inter(0.0), tMax(1000000.0); //tMax(tStepPhy*pow(2,17));
+		double tStepPhy(0.5), tStepMes(1.0), tFirst(5.0), tLast(-30.0);
+		double t(0.0), t_inter(0.0), tMax(3600.0); //tMax(tStepPhy*pow(2,17));
 		Noise * p;
 		
 		double SqPSD(30);
@@ -115,9 +116,9 @@ int main(int argc, char *argv[])
 		//p = new Noise(tStepPhy, tStepMes, tFirst, tLast);
 		//p = new NoiseWhite(tStepPhy, tStepMes, tFirst, tLast, SqPSD);
 		//p = new NoiseFilter(tStepPhy, tStepMes, tFirst, tLast, alpha, beta, NbDataStab);
-		//p = new NoiseFile(tStepPhy, tStepMes, tFirst, tLast, "Noise1.txt");
+		p = new NoiseFile(tStepPhy, tStepMes, tFirst, tLast, "Noise1.txt");
 		//p = new NoiseFShape(tStepPhy, tStepMes, tFirst, tLast, NFPowP, NFPowN, FactF);
-		p = new NoiseOof(tStepPhy, tStepMes, tFirst, tLast, 1.0/tMax, 1.0/(2.0*tStepPhy), -3.0, 10000);
+		//p = new NoiseOof(tStepPhy, tStepMes, tFirst, tLast, 1.0/tMax, 1.0/(2.0*tStepPhy), -3.0, 10000);
 		cout << "Creation of noise --> OK !" << endl;
 		
 		//RecordNoise << "#Time t Noise(t) t-D Noise(t-D)" << endl;
@@ -127,7 +128,7 @@ int main(int argc, char *argv[])
 		cout << "Execution ..." << endl;
 		RecordNoise.precision(15);
 		do{
-			t += tStepPhy;
+			t += tStepMes;
 			p->addNoise();
 			//cout << "***********************************************************************************" << endl;
 			//cout << t << " " << p.getNoise(0.0) << " " << endl;

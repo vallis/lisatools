@@ -423,7 +423,7 @@ INPUT                  = Bruits/SRC \
 			 Main/Test \
 			 Memoire/SRC \
 			 Memoire/Include \
-			 Doxygen.bibliography
+			 Documentation/Doxygen.bibliography
 
 
 # If the value of the INPUT tag contains directories, you can use the 

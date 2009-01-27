@@ -660,7 +660,7 @@ double CalcScalingFact(int NCells, QuadCell Cell[]) {
 
   for (i=0;i<NCells-1;i++) {
     ac = 1.0 / (((Cell[i]).a1 - (Cell[i]).b1*(1+(Cell[i]).b2)/(2*(Cell[i]).b2))*Hm[i+1]);
-    n = (int)(logl(ac)/logl(2.0)+0.5);
+    n = (int)(log(ac)/log(2.0)+0.5);
     //(Cell[i]).a0 = (double)(1<<n); //pow(2,n);
 	(Cell[i]).a0 = pow(2.0,(double)(n));
     norm *= (Cell[i]).a0*(2+(Cell[i]).a1)/(1+(Cell[i]).b1+(Cell[i]).b2);

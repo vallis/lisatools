@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream>
+#include <fstream.h>
 #include "LISACODE-Memory.h"
 #include "LISACODE-MemoryReadDisk.h"
 #include "LISACODE-MemoryWriteDisk.h"
@@ -31,12 +31,13 @@ int main (int argc, char * const argv[])
 {
 	try {
 		
-		cout << endl << "   *******************";
-		cout << endl << "   *                 *";
-		cout << endl << "   *   Test Memory   *"; 
-		cout << endl << "   *   -----------   *";
-		cout << endl << "   *                 *";
-		cout << endl << "   *******************" << endl << endl; 
+		cout << endl << "   *********************";
+		cout << endl << "   *                   *";
+		cout << endl << "   *    Test Memory    *"; 
+		cout << endl << "   *    -----------    *";
+		cout << endl << "   * ("<<LCVersion<<") *";
+		cout << endl << "   *                   *";
+		cout << endl << "   *********************" << endl << endl; 
 		
 		
 		double t(0.0), dt(1.0), tStored(30.0), tmax(100.0), tdelay(16.6);

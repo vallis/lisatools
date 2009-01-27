@@ -1,0 +1,691 @@
+%  $Id: ManuelFR_v1.1.tex,v 1.3 2006/06/13 10:22:59 petiteau Exp $
+\documentclass[a4paper,french,12pt]{article} 
+\textwidth 16cm 
+\textheight 21.cm 
+\topmargin 1.5cm 
+\oddsidemargin 0pt 
+\evensidemargin 0pt 
+\usepackage{graphicx} 
+\usepackage{natbib} 
+\usepackage{color} 
+\usepackage{amsmath} 
+\usepackage{epstopdf} 
+\usepackage{hyperref}
+\pagestyle{headings} 
+
+% Caractere francais
+\catcode`\ç=\active\defç{\c c}       
+\catcode`\ä=\active\defä{\"a}       
+\catcode`\ë=\active\defë{\"e}        
+\catcode`\ï=\active\defï{\"{\i}}     
+\catcode`\ö=\active\defö{\"o}        
+\catcode`\ü=\active\defü{\"u}        
+\catcode`\ÿ=\active\defÿ{\"y}        
+\catcode`\é=\active\defé{\'e}        
+\catcode`\É=\active\defÉ{\'E}        
+\catcode`\à=\active\defà{\`a}        
+\catcode`\è=\active\defè{\`e}        
+\catcode`\ù=\active\defù{\`u}        
+\catcode`\À=\active\defÀ{\`A}        
+\catcode`\â=\active\defâ{\^a}        
+\catcode`\ê=\active\defê{\^e}        
+\catcode`\î=\active\defî{\^{\i}}     
+\catcode`\ô=\active\defô{\^o}        
+\catcode`\û=\active\defû{\^u}        
+\catcode`\œ=\active\defœ{\oe } 
+
+\definecolor{pink}{rgb}{0.55,0,0.52}
+\definecolor{mygreen}{rgb}{0.19,0.55,0.11}
+
+
+
+\begin{document}
+\title{
+\Huge \bf LISACode \\ 
+\vspace{0.5cm}
+\Large version 1.4\\
+\vspace{2cm}
+\huge Un simulateur scientifique de LISA \\
+\vspace{1cm}
+Guide développeur
+(description du fonctionnement de LISACode)
+ }
+\author{
+\Large \bf LISA France \\ 
+\vspace{1cm}
+Antoine Petiteau}
+\date{\today}
+\maketitle
+
+\setcounter{page}{1}
+
+\newpage
+
+
+
+
+\setcounter{page}{1}
+
+\tableofcontents
+\newpage
+
+
+
+
+
+
+\newpage
+
+
+%%%%%%%%%
+%                          %
+%   Introduction  %
+%                          %
+%%%%%%%%%
+\section{Introduction}
+\label{S:Intro}
+Ce document a pour objectif de décrire le fonctionnement du simulateur scientifique LISACode de façon à guider les utilisateurs et les développeur de LISACode.
+
+
+%%%%%%%%%
+%                          %
+%   Généralités  %
+%                          %
+%%%%%%%%%
+\section{Généralités}
+\label{S:Gen}
+
+LISACode est un simulateur scientifique du détecteur d'ondes gravitationnelles LISA. Ses objectifs s'étendent de la simulation rapide pour l'analyse de données réaliste à la simulation technologique allégée. Cette partie présente de manière générale LISACode en exposant ses principes de base puis sa structure et enfin son implémentation.  
+
+%
+%  Principe de base
+% 
+%%%%%%%%%%%
+\subsection{Principe de base}
+\label{SS:Gen_Base}
+
+Le concept principal qui a guidé le développement de LISACode est un subtil compromis entre la modélisation réaliste de LISA et l'efficacité de la génération de signaux réalistes pour l'analyse de données. 
+
+% Un simulateur réaliste du détecteur LISA ...
+% ----------------------------------------------------------
+\subsubsection{Un simulateur réaliste du détecteur LISA ...}
+\label{SSS:Gen_Base_Real}
+
+Ce simulateur doit être suffisamment proche de l'instrument pour prendre en compte le maximum d'effets intervenants dans les signaux de mesures. Mais LISACode n'est pas un simulateur technologique car il ne simule pas le détecteur dans le détail. Il utilise seulement les fonctions de réponse des principaux composants. D'autre part, la définition de la mission n'est pas finalisée et le design technologique du détecteur est en constante évolution. La modélisation utilisée dans LISACode est donc basée sur une description de LISA intègrant tous les principes de base de l'instrument. L'implémentation de cette modélisation est faite de telle sorte qu'il est facile de la modifier pour permettre au simulateur d'évoluer conformément au design technologique de la mission, comme on le verra par la suite. 
+
+LISACode simule LISA en suivant une évolution temporelle comme lors du déroulement de la mission. Dans une simulation cette évolution est discrète, c'est-à-dire que le temps est échantillonné selon un pas de temps fixe $\Delta t$ et les valeurs associées à chaque processus sont calculées pour un temps $t_{i}$ puis pour un temps $t_{i+i} = t_{i} + \Delta t$ et ainsi de suite.
+
+Dans LISA, il existe deux types de processus. D'une part il y a les processus continus qui sont les ondes gravitationnelles, la circulation des faisceaux laser et par conséquent tous les bruits induits sur ces faisceaux : bruit laser, bruit de masse inertielle, bruit de chemin optique et \emph{shot noise}.  D'autre part il y a les processus échantillonnés qui sont associés aux mesures du phasemètre et à l'application de \emph{TDI}. C'est en s'appuyant sur cette constatation que la gestion de l'évolution temporelle dans LISACode a été mise en place. En effet, il y a deux pas de temps dans LISACode : un pas de temps physique $\Delta t_{physique}$ qui permet de modéliser au mieux les processus continus et un pas de temps de mesure $\Delta t_{mesure}$ pour les processus échantillonnés. Il faut bien voir que ce second pas de temps a une existence réelle dans LISA puisqu'il correspond au pas de temps avec lequel les phasemètres échantillonnent les signaux de mesures et c'est donc celui avec lequel les données scientifiques reçues sur Terre sont échantillonnées. Dans LISACode, le fonctionnement est similaire à celui de LISA : pour chaque pas de temps de mesure, les signaux du phasemètre sont calculés à partir d'une modélisation des processus physiques réalisée au pas de temps physique, et  sont ensuite enregistrés dans des fichiers de sorties. Ainsi la méthode \emph{TDI} s'applique de la même manière sur les signaux des phasemètres de LISA que sur ceux de LISACode. Le pas de temps principal qui régit l'évolution temporelle dans LISACode est donc le pas de temps de mesure $\Delta t_{mesure}$. Pour modéliser au mieux les processus physiques, le pas de temps physique doit être très petit de manière à rapprocher la description discrète du cas continu.  
+
+Il faut bien voir que l'ensemble photodiode-phasemètre est l'élément central de LISACode, puisque c'est lui qui effectue la transition entre les deux types de processus. En effet, la photodiode réalise une mesure en continue de l'interférence entre les faisceaux laser que le phasemètre analyse pour fournir un signal de mesure échantillonné. Cet ensemble clé dans LISA est donc l'élément central de LISACode. Il constitue, avec la distinction des pas de temps et l'utilisation d'un pas de temps physique, les bases  d'une simulation réaliste.  
+
+
+% Un simulateur réaliste du détecteur LISA ...
+% ----------------------------------------------------------
+\subsubsection{... efficace dans la génération de données grâce à sa flexibilté}
+\label{SSS:Gen_Base_GenData}
+
+En plus de décrire le détecteur de manière réaliste, LISACode doit pouvoir générer rapidement des flux de données notamment pour l'analyse de données. Le problème est que ces deux objectifs ne sont pas compatibles. En effet, pour qu'une simulation soit réaliste et modélise finement l'instrument, le pas de temps physique doit être très petit, mais plus ce pas de temps est petit, plus le temps de calcul nécessaire à la simulation est important. La solution de ce problème réside en partie dans le compromis à faire sur le choix des pas de temps mais surtout dans la grande flexibilité du simulateur. 
+
+En effet, LISACode est basé sur une structure modulaire qui s'adapte au type de simulation que l'utilisateur souhaite faire. Cela lui donne la potentialité de faire un certain nombre d'approximations et de ne construire que les éléments nécessaires à la simulation. Pour une simulation précise et réaliste, dont l'objectif serait, par exemple, l'étude de l'élimination du bruit laser par \emph{TDI} et l'impact de cette méthode sur les bruits et les ondes gravitationnelles, l'ensemble des éléments de LISACode est créé et le pas de temps est petit. A l'opposé, pour une simulation rapide des réponses \emph{TDI} à quelques ondes gravitationnelles, seuls les éléments nécessaires aux calculs des ondes et à l'application sont utilisés. Cette flexibilité, dont on détaillera l'implémentation dans la prochaine partie (cf. sous-section~\ref{SS:Gen_Structure}), donne à LISACode la possibilité de réaliser des simulations très variées, en des temps de calculs tout à fait raisonnables et avec un réalisme adapté au besoin de l'étude à mener. 
+
+
+
+
+ 
+% 
+% Structure
+%
+%%%%%%
+\subsection{Structure}
+\label{SS:Gen_Structure}
+
+LISACode est basé sur une structure flexible organisée autour du phasemètre. Cette organisation est exposée dans cette partie et on montrera comment elle permet de reproduire le fonctionnement de LISA. 
+
+La structure de LISACode présentée sur la figure \ref{F:Structure}, est organisée en modules de différents types : les modules principaux (blocs en trait plein rouge) et les modules d'interface (blocs en tirets verts). Ces modules interagissent entre eux, pour créer, en sortie du simulateur, des séquences temporelles qui correspondent aux flux de données, c'est-à-dire les signaux de mesure des phasemètres et les signaux obtenus après un pré-traitement par la méthode \emph{TDI}, que fournira LISA. 
+\begin{figure}[!htb]
+\centering \includegraphics[width=14cm]{Figures/Structure.eps}
+\caption{\small Structure du simulateur LISACode. Les boites en trait plein \textcolor{red}{rouge} représentent les modules principaux et les boites en tirets \textcolor{mygreen}{verts} les modules d'interface. Le nom générique des modules sont écrits en \textcolor{blue}{bleu} italique .} 
+\label{F:Structure}
+\end{figure}
+
+Les 7 modules principaux qui modélisent les différents types de phénomènes participants aux signaux de mesures, sont  : 
+\begin{itemize}
+\item \emph{\textsf{GW}} : Modélisation des ondes gravitationnelles,
+\item \emph{\textsf{Background}} : Modélisation des fonds d'ondes gravitationnelles,
+\item \emph{\textsf{TrFctGW}} : Fonction de réponse des bras aux ondes gravitationnelles, 
+\item \emph{\textsf{Geometry}} : Modélisation des orbites des satellites et des temps de parcours,
+\item \emph{\textsf{Noise}} : Modélisation des bruits,
+\item \emph{\textsf{USOClock}} : Modélisation des horloges ultra-stables (\emph{USO}),
+\item \emph{\textsf{PhoDetPhaMet}} : Gestion des mémoires pour les sorties de chaque satellite,
+\item \emph{\textsf{TDI}} : Application des g\'en\'erateurs TDI.
+\end{itemize}
+Ces modules principaux sont gérer par 2 modules d'interface qui sont :
+\begin{itemize}
+\item \emph{\textsf{LISA}}  : Organisation des éléments composant le détecteur que sont les bruits, les orbites, le calcul des fonctions de réponse des bras, les \emph{USO} et les phasemètres ,
+\item \emph{\textsf{Memory}} : gestion des signaux de mesures en sortie des phasemètres, pour les enregistrer dans des fichiers et les mémoriser pour permettre l'application de \emph{TDI}. 
+\end{itemize}
+Le module \emph{\textsf{LISA}} gère les modules principaux qui modélisent le détecteur LISA et plus particulièrement le module phasemètre (\emph{\textsf{PhoDetPhaMet}}), qui est l'élément central de l'organisation de LISACode comme on le constate sur la figure~\ref{F:Structure}. Ce module utilise les autres modules de LISA, \emph{\textsf{Noise}}, \emph{\textsf{Geometry}}, \emph{\textsf{TrFctGW}} et \emph{\textsf{USOClock}} pour calculer son signal de mesure. Le module \emph{\textsf{Noise}} ne décrit pas des bruits en particulier, comme un bruit laser ou un bruit de masse inertielle, mais il décrit un type de bruit comme par exemple un bruit blanc, un bruit filtré passe-bas, un bruit obtenu à partir d'un filtre polynomial, un bruit lu dans un fichier, etc. C'est le module phasemètre  (\emph{\textsf{PhoDetPhaMet}}) qui utilise le module bruit  (\emph{\textsf{Noise}}) pour générer les bruits intervenant dans la mesure.
+
+Il y a trois modules principaux en-dehors des modules du détecteur LISA : le module onde gravitationnelle (\emph{\textsf{GW}}), le module fond gravitationnel \emph{\textsf{Background}} et le module \emph{\textsf{TDI}}. Le module onde gravitationnelle (\emph{\textsf{GW}}) est utilisé par le module de LISA \emph{\textsf{TrFctGW}} pour calculer le signal sur  un bras induit par les ondes gravitationnelles. Ce module fonctionne de la même manière que le module bruit (\emph{\textsf{Noise}}). Il ne contient pas la description d'une onde gravitationnelle associée à une source en particulier mais la description de différents types d'ondes telles qu'une onde monochromatique, une onde émise par un système binaire calculée dans l'approximation Post-Newtonienne, etc. LISACode utilise ce module lors de sa phase d'initialisation pour créer les ondes gravitationnelles utilisées dans la simulation. Le deuxième module est le module fond gravitationnel \emph{\textsf{Background}} qui est utilisé pour modéliser un fond gravitationnel diffus dans certaine situation. Le troisième module principal externe à LISA est le module \emph{\textsf{TDI}} qui applique la méthode \emph{TDI} sur les signaux de mesures mémorisés dans le module mémoire \emph{\textsf{Memory}}. Comme pour les autres modules, il n'applique pas un générateur \emph{TDI} en particulier mais est un support général à cette application. Il est utilisé par LISACode pour appliquer les générateurs requis par l'utilisateur.
+
+LISACode utilise donc une structure possédant toutes les bases nécessaires à la simulation pour construire un modèle de LISA, des ondes gravitationnelles ainsi que les générateurs \emph{TDI} correspondants aux exigences de l'utilisateur.
+
+
+% 
+% Implémentation
+%
+%%%%%%%%%
+\subsection{Implémentation}
+\label{SS:Gen_Implem}
+
+Afin de modéliser LISA au plus près de la réalité, j'ai eu besoin d'utiliser un langage de programmation qui permet de former des objets représentant les différents éléments de LISACode en les organisant dans la structure modulaire décrite précédemment. J'ai donc choisi d'écrire ce logiciel en C++. Cette partie détaillera comment la modularité de la programmation objet en C++ a permis de construire LISACode.
+
+La programmation objet est basée sur des classes à partir desquelles sont créés des objets. Une classe est une structure composée d'un ensemble de variables et de méthodes. Chaque objet construit à partir d'une classe possède cet ensemble de variables et de méthodes qui lui sont propres. Ainsi, à partir d'une seule classe, une multitude d'objets peuvent être créés. Pour reprendre des notions de programmation classique telle que le FORTRAN ou le C, la classe serait en quelque sorte un type ou une structure, l'objet serait alors la variable créée à partir de ce type ou de cette structure. Dans LISACode, il y a au moins une classe par module. Par exemple le module onde gravitationnelle, (\emph{\textsf{GW}}), (cf. partie précédente~\ref{SS:Gen_Structure} et figure~\ref{F:Structure}) est décrit par une classe contenant trois variables, qui sont les deux angles de position et l'angle de polarisation, et deux méthodes, qui décrivent les évolutions temporelles des deux composantes de polarisation $h_{+} (t)$ et $h_{\times} (t)$. A partir de cette seule classe, il est possible de créer autant d'ondes gravitationnelles que nécessaire.
+
+L'autre notion importante du C++ qui est utilisé dans LISACode est l'héritage. A partir d'une classe que l'on appellera classe mère, il est possible de dériver plusieurs autres classes qui possèdent obligatoirement les variables et les fonctions de la classe mère, plus d'autres variables et d'autres fonctions spécifiques à la classe dérivée. Ainsi cette classe dérivée, ou classe fille, peut être vue depuis l'extérieur comme étant de la même nature que la classe mère puisqu'elle possèdent les mêmes attributs. Autrement dit, un pointeur de type classe mère peut également pointer sur un objet construit à partir de la classe mère ou de la classe fille. Dans l'exemple du module onde gravitationnelle, (\emph{\textsf{GW}}), la classe mère correspond à la classe décrite dans le paragraphe précédent. Une classe fille décrit un type d'onde gravitationnelle plus spécifique, comme par exemple le type d'une onde émise par une binaire en calcul post-newtonien (cf. partie~\ref{SS:OG_Form_PN}). Cette classe fille possède les 3 variables de la classe mère, mais elle possède en plus les masses des corps composant la source, le temps de coalescence, l'inclinaison et la distance. Elle possède également les deux fonctions qui décrivent  $h_{+} (t)$ et $h_{\times} (t)$ et le calcul qu'elles effectuent correspondant au calcul post-newtonien. Il est possible de créer d'autres classes fille de la même manière comme une onde monochromatique, une binaire de fréquence fixe, etc. Le module de LISA qui calcule la réponse aux bras en fonction des ondes gravitationnelles, (\emph{\textsf{TrFctGW}}),  pointe\footnote{Il pointe c'est-à-dire qu'il sait quelles ondes  gravitationnelles utiliser, qu'ils connaît l'adresse en machine des objets correspondant à ces ondes} sur le type onde gravitationnelle en générale c'est-à-dire sur le type de la classe mère. Mais l'objet sur lequel il pointe peut très bien être une des classes filles puisque les seules choses dont ce module a besoin, ce sont les trois variables et les deux fonctions que possèdent aussi bien la classe mère que la classe fille.
+
+Chaque classe ou groupe de classes (classe mère et classes filles dérivées) forme un module. Ces modules sont regroupés dans une bibliothèque et constituent alors des briques élémentaires qui peuvent être utilisées par LISACode comme par d'autres programmes. Au sein même de LISACode, il existe d'ailleurs trois exécutables qui correspondent à des agencements différents des modules un exécutable principal \emph{\textsf{LISACode}} et deux exécutables annexes, \emph{\textsf{DnonGW}} et  
+\emph{\textsf{TDIApply}} sur lesquelles on reviendra par la suite.
+
+Il est important de voir que chaque classe, constituant les ondes gravitationnelles ou le détecteur LISA, modélise un élément physique. C'est donc une réflexion sur la physique mise en jeu dans l'élément qui détermine quelle sont ses variables et quelles sont ses fonctions. Cet effort fait sur la compréhension et la modélisation des processus physiques et le rôle de chaque élément, assure à LISACode un maximum de réalisme.
+
+En utilisant la programmation objet, il est donc possible de programmer la structure modulaire de LISACode décrite dans la partie précédente~\ref{SS:Gen_Structure}. L'organisation des classes constituant LISACode est présentée sur la figure~\ref{F:OrgPackage}. Les modules présentés reprennent ceux de la figure~\ref{F:Structure} à quelques différences près. Les modules précédents, réponse d'un bras \emph{\textsf{TrFctGW}}, phasemètre \emph{\textsf{PhoDetPhaMet}} et \emph{\textsf{LISA}}, correspondent chacun à une classe mais ces trois classes ont été regroupées dans un nouveau module appelé \emph{\textsf{Detecteur}}. Trois autres modules ont été ajoutés : le module \emph{\textsf{InputData}} pour la configuration du simulateur, le module \emph{\textsf{Generalites}} pour les constantes globales et le module \emph{\textsf{Outils\_Maths}} pour les différents outils mathématiques. Ce schéma présente également les connexions entre classes mères (flèches à pointeur plein) qui ordonnent les échanges de données. On distingue le pas de temps avec lequel ces échanges s'effectuent par le style de flèche. Ces connexions forment la structure de base où les échanges sont réduits aux seules données physiques nécessaires. Les classes filles ne font qu'ajouter des détails supplémentaires dans la définition de certains modules. On constate que le phasemètre, modélisé par la classe  \emph{\textsf{PhoDetPhaMet}}, est toujours au centre de cette structure et sépare les processus selon le pas de temps utilisé, comme on l'a déjà vu. 
+\begin{figure}[!htb]
+\centering \includegraphics[width=15cm]{Figures/OrgPackage.eps}
+\caption{\small Organisation des classes constituant LISACode. Les classes mères sont représentées par les blocs en trait plein vert et les classes filles par des blocs en tirets bleus. Ces classes sont regroupées par module (bloc rouge et nom en gras souligné). Les trois exécutables correspondent aux trois blocs en trait plein épais violet en bas du schéma. Les connexions entre classes ou entre modules sont représentées par des flèches. Elles se traduisent par le fait que le bloc pointé par la flèche interroge des fonctions du bloc de départ de la flèche qui lui transmet ainsi des données. On distingue les échanges qui se font au pas de temps physique par des flèches en trait plein, ceux qui se font au pas de temps de mesure par des flèches en tirets et ceux qui permettent l'initialisation par des flèches en pointillés. Les modules \emph{\textsf{Generalites}} et \emph{\textsf{Outils\_Maths}} sont connectés à tous les autres blocs mais ces connexions n'ont pas été représentées, pour alléger la figure. Les blocs en points-tirets orange correspondent à des fichiers de constantes. Ce schéma correspond à celui de LISACode version 1.4 .} 
+\label{F:OrgPackage}
+\end{figure}
+
+Sans modifier les modules de LISACode, il est possible de former deux exécutables autres que l'exécutable principal \emph{\textsf{LISACode}}. Le premier exécutable,\emph{\textsf{DnonGW}}, utilise le module dédié aux ondes gravitationnelles \emph{\textsf{GW}} et celui dédié à la réponse d'un bras \emph{\textsf{TrFctGW}} pour calculer uniquement le signal gravitationnel induit sur chaque bras. Le deuxième exécutable, \emph{\textsf{TDIApply}}, utilise les modules de gestion de mémoires, \emph{\textsf{Memoire}}, et d'application de \emph{TDI}, \emph{\textsf{TDI}}, pour appliquer la méthode \emph{TDI} sur des fichiers contenant les signaux de mesure.
+
+
+LISACode est donc un logiciel écrit en C++ qui utilise la modularité de la programmation objet pour créer une structure au plus proche de la réalité du détecteur LISA puisqu'elle est issue d'une réflexion sur la physique et le rôle de chaque élément. La flexibilité de cette structure permet à LISACode de s'adapter à l'usage que l'on souhaite en faire. 
+
+
+%, ce qui représente bien les différents modules de LISA.
+%Le module principal de LISA est l'ensemble des cinq paramètres définissant une onde gravitationnelle :       ...... , ce module est donc représenté dans LISA par la classe mère de LISACode, qui est la base de la suite du programme. 
+%La programmation objet permet un dialogue entre la classe mère et les autres classes, tout en laissant celles-ci indépendantes les unes par rapport aux autres.
+%Modelisation du détecteur LISA : Réponse des bras aux ondes gravitationnelles, fonction de r\'eponse du phasemètre, interface et  avancement temporel.
+
+
+%%%%%%%%%%%%%%%%
+%                                                    %
+%  Détails du fonctionnement   %
+%                                                    %
+%%%%%%%%%%%%%%%%
+\section{Détails du fonctionnement }
+\label{S:Details}
+
+LISACode est un logiciel écrit en C++ dont la structure flexible est formée de différents modules. Dans la partie précédente, les réflexions sur les processus physiques mis en jeu et le rôle de chaque élément, qui sont à l'origine de cette structure, ont été exposées. Dans cette partie, chaque module sera décrit et l'accent sera mis sur quelques points de détails importants.
+
+On décrira d'abord le module modélisant les ondes gravitationnelles et celui modélisant les bruits. Puis on présentera rapidement le module modélisant un fond gravitationnel,  le module modélisant les orbites et celui modélisant les horloges ultra-stable (\emph{USO}). Ensuite on s'attardera sur le module central modélisant le détecteur et plus particulièrement le phasemètre. Enfin le module de gestion des mémoires et le module d'application de \emph{TDI} seront exposés. On terminera par une présentation des autres modules que sont les constantes, les outils et les exécutables.
+
+Les descriptions qui suivent concernent la version actuelle de LISACode, c'est-à-dire la version 1.4. Ce simulateur évoluant constamment, certains détails auront peut-être changer dans les versions à venir mais les grandes lignes seront inchangées. Les changements concernent généralement des ajouts de classes filles. 
+
+
+% 
+% Module onde gravitationnelle
+%
+%%%%%%%%%%%%%%%%
+\subsection{Module onde gravitationnelle \emph{\textsf{GW}}}
+\label{SS:Details_OG}
+
+Le module onde gravitationnelle a déjà été en partie présenté, puisqu'il a servi d'exemple pour illustrer les principes de base de LISACode et leur implémentation, mais nous allons ici reprendre sa description dans le détail. 
+
+Ce module, \emph{\textsf{Ondes\_Gravit}} sur la figure~\ref{F:OrgPackage}, est formé par une classe mère de laquelle dérivent cinq classes filles. La classe mère possède les variables et les fonctions communes à tous les types d'onde gravitationnelle localisée. Le point commun de toutes ces description d'ondes est en premier lieu la description de la position. La classe mère possède donc trois variables qui sont les deux angles écliptiques qui définissent la position, soient la déclinaison $\beta$ et l'ascension droite $\lambda$, et l'angle de polarisation $\psi$. Elle dispose également des fonctions associées à cette position, comme par exemple le calcul des composantes du vecteur normal à la direction de la source dans le référentiel barycentrique.  Le second point commun concerne le fait que toutes les ondes gravitationnelles sont décrites par deux états de polarisation qui évoluent dans le temps, $h_{+} (t)$ et $h_{\times} (t)$. La description de ces deux fonctions ne peut pas être faite dans la classe mère car celle-ci ne dispose pas d'informations suffisantes sur la source. La classe mère impose donc que ces fonctions existent dans les classes filles mais ne les décrit pas. Elles sont définies comme des fonctions virtuelles. Une fonction virtuelle est un type de fonction en  C++  qui correspond à une fonction exigée par la classe mère et décrite par les classes filles. Cette classe décrit des ondes dont la position est bien définie. Le cas des ondes gravitationnelles diffuses sera traité soit en utilisant le module \emph{\textsf{Fond}} (cf. partie~\ref{SS:Details_Fond}) soit, dans certains cas, en utilisant ce même module \emph{\textsf{GW}} d'une manière bien particulière que l'on présentera dans la partie~\ref{} \textcolor{red}{(mettre la ref quand fait dans la partie resultat)}. 
+
+Les cinq classes filles définissent les fonctions d'évolution des états de polarisation $h_{+} (t)$ et $h_{\times} (t)$ en fonction du type de source qu'elles représentent. Ces classes possèdent des paramètres propres au type d'onde qu'elles décrivent. 
+
+Parmi ces cinq classes, trois décrivent des sources dont les fonctions $h_{+} (t)$ et $h_{\times} (t)$ ont des expressions analytiques :
+\begin{itemize}
+\item \emph{\textsf{GWMono}} : Cette classe modélise une onde monochromatique quelconque définie par la fréquence $f$, l'amplitude des composantes $h_{0 +}$ et $h_{0 \times}$ et les phases initiales $\phi_{0 +}$ et $\phi_{0 \times}$. Les évolutions temporelles des deux composantes de polarisation sont alors décrites par : 
+\begin{eqnarray} 
+{h}_{S+} (t) & = & h_{0+}  \sin \left( 2 \pi f t + \phi_{0+}\right) \label{E:LC_Details_OG_Monohp}\\
+{h}_{S\times} (t) & = & h_{0\times}  \sin \left( 2 \pi f t + \phi_{0\times}\right) \label{E:LC_Details_OG_Monohc}
+\end{eqnarray}
+\item \emph{\textsf{GWBinary}} : Cette classe modélise une onde monochromatique issue d'une source binaire présentée dans la partie~\ref{SS:OG_Form_BinMono}. La binaire évolue si lentement  que la fréquence de l'onde est considérée fixe. Les évolutions temporelles des deux composantes de polarisation sont alors décrites par les équations \eqref{E:OG_Form_BinMono_hp}, \eqref{E:OG_Form_BinMono_hc} et \eqref{E:OG_Form_BinMono_hphcA} qui dépendent de la masse totale de la binaire $m_{tot}$, de son rapport de masse $\nu$, de son inclinaison $i$, de sa fréquence orbitale $f_{orb}$ qui est la moitié de la fréquence de l'onde $f_{OG}$, de sa phase initiale $\phi_{0}$ et de la distance $r$ entre la source et le Soleil .
+\item \emph{\textsf{GWNewton2}} : Cette classe modélise une onde issue d'une binaire spiralante décrite par l'approximation post-newtonienne (cf. partie~\ref{SS:OG_Form_PN}). Les fonctions décrivant les deux composantes de polarisation utilisent au choix les formulations 1 PN  \eqref{E:OG_Form_1PN_hp} et \eqref{E:OG_Form_1PN_hc} (cf. partie~\ref{SSS:OG_Form_1PN}) ou les formulations \eqref{E:OG_Form_2PN_hp} et \eqref{E:OG_Form_2PN_hc} plus précises à 2.5 PN (cf. partie~\ref{SSS:OG_Form_2PN}). Ces formulations dépendent du temps de coalescence\footnote{Temps entre le début de l'observation de la binaire et sa coalescence.} $t_{coal}$, de la masse totale de la binaire $m_{tot}$, de son rapport de masse $\nu$, de son inclinaison $i$, de sa phase initiale $\phi_{0}$ et de la distance $r$ entre la source et le Soleil.
+\end{itemize}
+Les différents paramètres dont dépendent les fonctions $h_{+} (t)$ et $h_{\times} (t)$ sont des paramètres propres à chacune des classes qui possèdent également les fonctions permettant de les gérer. On rappelle que tout ce qui concerne la position est géré par la classe mère et n'a donc pas besoin d'être redéfini dans les classes filles puisque par définition elles possèdent tout ce que possède la classe mère.
+
+Les deux autres classes filles ont des types un peu particuliers. Tout d'abord la classe \emph{\textsf{GWFile}} récupère les évolutions temporelles des composantes de polarisation dans un fichier dont les trois colonnes sont le temps $t$, $h_{+} (t)$ et $h_{\times} (t)$. Le pas de temps des données dans le fichier n'a pas de réel importance car une interpolation lagrangienne permet de les adapter au pas de temps de la simulation. La potentialité de la lecture dans un fichier est très importante car elle permet de modéliser des ondes gravitationnelles complexes résultant de calcul fait avec d'autres simulateurs. Cette potentialité est utilisée pour la modélisation des EMRIs dans LISACode. En effet, les ondes issues de ces sources sont calculées à partir d'un programme qui réalise l'intégration numérique des équations du modèle de Barack et Cutler~ \cite{BarackCutler} . Ce programme du nom de CodeEMRI, écrit par Philippe GrandClément puis modifié par Guillaume Trap et moi-même, sera dans l'avenir intégré à LISACode, mais le passage par fichier permet d'étudier la détection des EMRIs par LISA en attendant que cette intégration soit réalisée.
+
+Enfin la dernière classe fille de ce module onde gravitationnelle est la classe \emph{\textsf{GWSto}}. Elle modélise une onde gravitationnelle comme un bruit. Ce bruit gravitationnel est caractérisé par sa distribution spectrale. Il est modélisé en créant dans les variables de la classe deux objets de type bruit, un pour chaque composante de polarisation. Ainsi, on utilise le module bruit dans le module onde gravitationnelle, ce qui illustre bien la flexibilité de l'architecture de LISACode. Cette classe est notamment utilisée pour la génération du fond stochastique défini dans les parties~\ref{SSS:OG_Src_Fonds_ExtraGaL} et \ref{SSS:OG_Src_Fonds_Cosmo}. On reviendra sur cette génération dans la partie~\ref{} \textcolor{red}{(Mettre la ref quand la partie sur la generation du fond sto sera ecrite)}. Plus de détails sur la façon de générer ces bruits seront évidemment fournis dans la partie suivante qui concerne le module bruit.
+
+
+% 
+% Module bruit
+%
+%%%%%%%%
+\subsection{Module bruit \emph{\textsf{Bruits}}}
+\label{SS:Details_Bruit}
+
+Le module bruit permet de générer les bruits instrumentaux du détecteur LISA mais aussi des bruits gravitationnels comme on vient de le voir. Il génère un bruit de manière générale, qui peut ensuite être utilisé n'importe où, aussi bien pour un bruit laser, que pour un bruit de masse inertielle, ou que pour n'importe quel autre bruit. Dans cette partie, on détaillera ce module bruit en s'intéressant plus particulièrement aux particularités imposées par LISA, puis en présentant les méthodes utilisées pour modéliser les différents types de bruits.  
+
+
+% Aspect général d'un bruit dans LISA (classe mère)
+% --------------------------------------------------------------------
+\subsubsection{Aspect général d'un bruit dans LISA (classe mère)}
+\label{SSS:Details_Bruit_General}
+
+Le schéma de ce module bruit,  \emph{\textsf{Bruits}} sur la figure~\ref{F:OrgPackage}, est similaire à celui du module onde gravitationnelle. Il y a une classe mère et six classes filles. La classe mère contient les variables et les fonctions communes à tous les types de bruits. La manière dont un élément extérieur interroge un bruit doit être la même, quelque soit le type de ce bruit. La méthode qui fournit un bruit appartient donc à la classe mère. Cette méthode est assez complexe du fait de l'utilisation particulière des bruits dans LISA, à savoir qu'un même bruit peut intervenir sur plusieurs signaux à des instants différents. En effet, comme on l'a vu dans la partie~\ref{SS:PL_Mes_Signaux} sur la formulation des signaux, une partie d'un faisceau laser est détectée quasi instantanément par des photodiodes du satellite contenant le laser et l'autre partie de ce même faisceau est envoyée vers un autre satellite et est détectée par une photodiode de celui-ci plus de 16 secondes après l'émission et la détection dans le satellite émetteur. Les bruits transportés par ce faisceau, et notamment le bruit laser, interviendront donc sur les signaux de mesure des deux satellites à deux instants décalés du temps de parcours du faisceau le long du bras. Une modélisation précise et réaliste de cet effet est nécessaire pour que la méthode \emph{TDI} puisse réduire le bruit laser dans des conditions aussi proches que possible de celles de la future mission et pour que l'efficacité des différents générateurs puisse être étudiée. Cette modélisation est effectuée au niveau de la construction des signaux par le phasemètre  et sera détaillée dans la partie~\ref{SS:Details_Detecteur}. La conséquence sur les bruits de cet effet de non-instantanéité est le fait qu'ils peuvent être interrogés à différents instants et non pas uniquement au moment de leur génération. Pour répondre à cette exigence, chaque bruit est mis en mémoire sur une certaine période. L'utilisation de cette mémoire se décompose en deux fonctions qui sont d'une part la génération et le stockage du bruit et d'autre part le renvoie de la valeur du bruit pour un temps compris entre $t - L/c$ et $t$ où $t$ est le temps courant et $L/c$ la durée de propagation le long d'un bras.    
+
+Pour la mise en mémoire du bruit, la classe mère possède un tableau dans lequel les dernières valeurs de bruit générées sont stockées. Ce tableau de taille fixe est glissant, c'est-à-dire qu'à chaque pas de temps physique, les valeurs sont décalées d'une case,  la dernière valeur est éliminée et le bruit nouvellement généré est stocké comme première valeur\footnote{En fait, on utilise un vecteur en C++ (classe vector) qui permet d'ajouter une case au début du vecteur et d'éliminer la dernière case, ce qui revient au principe d'un tableau glissant.}. Ainsi la première valeur du tableau correspond toujours au temps courant $t$ et la dernière au temps $t - T_{Mem. \ Bruit}$ où  $T_{Mem. \ Bruit}$ est la durée sur laquelle le bruit est mémorisée. Toute cette gestion étant réalisée par la classe mère, celle-ci doit posséder une fonction qui permet d'ajouter une valeur de bruit à chaque pas de temps physique.  Cette fonction est exécutée par la classe \emph{\textsf{LISA}} qui gère l'avancement temporelle . Elle fait glisser le tableau et appelle une fonction de génération du bruit pour obtenir la nouvelle valeur à stocker. La fonction de génération du bruit dépend du type de bruit et est définie dans les classes filles mais la classe mère impose son existence par une fonction virtuelle (type de fonction du C++ définie dans la partie précédente~\ref{SS:Details_OG}).  
+
+Une autre fonction de la classe mère permet de renvoyer la valeur du bruit pour un temps compris entre $t - T_{Mem. \ Bruit}$ et $t$ ou plus exactement pour un retard par rapport au temps courant $T_{L}$ compris entre $0$ et $T_{Mem. \ Bruit}$. Le problème est que ce retard $T_{L}$ n'a aucune raison d'être un multiple du pas de temps physique. La valeur de bruit est alors interpolée à partir des valeurs mémorisées. Typiquement, l'interpolation utilisée est une interpolation de Lagrange d'ordre 7 et la durée de mémorisation $T_{Mem. \ Bruit}$  est d'environ 20 secondes ,ce qui permet sans problème d'interpoler pour des valeurs de retards entre 16 à 17 secondes. Cette interpolation est une limite au réalisme de la simulation qui est imposée par les contraintes d'une modélisation numérique.
+
+
+% Différents types de bruit (classes filles)
+% ----------------------------------------------------
+\subsubsection{Différents types de bruit (classes filles)}
+\label{SSS:Details_Bruit_Types}
+
+Les six classes filles du module bruit définissent les différents types de bruit que LISACode peut générer.  
+
+La plus simple est certainement la classe \emph{\textsf{NoiseWhite}} qui génère un bruit blanc défini par le niveau de la densité spectrale de puissance (DSP) \footnote{La DSP d'un bruit blanc est plate et n'est donc définie que par une seule valeur.}.  Ce bruit blanc est créé par un tirage dans une fonction gaussienne dont l'écart-type est :
+\begin{equation}
+\sigma = \sqrt{PSD \over 2 \; \Delta t_{physique} }  
+\label{E:LC_Details_Bruit_Blanc}
+\end{equation}
+
+Une autre classe de bruit assez simple est la classe \emph{\textsf{NoiseFile}} qui récupère les valeurs de bruit dans un fichier à deux colonnes : $t \; bruit(t)$. De la même manière que dans la classe \emph{\textsf{GWFile}}, les données sont adaptées au pas de temps physique de la simulation par une interpolation. La potentialité offerte par cette classe est très importante dans le cadre d'une utilisation de LISACode en interaction avec des développements expérimentaux car elle permet d'utiliser de vraies mesures de bruit dans une simulation. Cela permet, d'une part, d'ajouter au réalisme de la simulation, et d'autre part, de tester l'impact de ces bruits dans un modèle global de LISA. 
+
+
+Les quatre autres classes filles génèrent des bruits à partir d'une description plus ou moins élaborée de leur DSP. Elles sont basées sur le filtrage d'un bruit blanc et utilisent un ou plusieurs filtres selon le type de description de la DSP : 
+\begin{itemize}
+\item \emph{\textsf{NoiseFilter}} : Cette classe modélise un bruit à partir d'un bruit blanc qui est ensuite filtré. Ce bruit est directement défini par les coefficients du filtre. Il est typiquement utilisé pour décrire des bruits dont la racine carrée de la DSP est proportionnelle à une puissance entière de la fréquence. 
+\begin{equation}
+\sqrt{DSP} = A \; f^{\alpha}
+\label{E:LC_Details_Bruit_Filter}
+\end{equation}
+\item \emph{\textsf{NoiseTwoFilter}} : Cette classe modélise un bruit de la même manière que la précédente mais en générant deux bruits blancs qui sont ensuite filtrés par deux filtres et sommés. Elle permet typiquement de décrire des bruits dont la racine carrée de la DSP est une somme de deux puissances entières de la fréquence :
+\begin{equation}
+\sqrt{DSP} = A \; f^{\alpha} + B \; f^{\beta}
+\label{E:LC_Details_Bruit_TwoFilter}
+\end{equation}
+\item \emph{\textsf{NoiseFShape}} : Cette classe modélise un bruit dont la racine carrée de la DSP est une somme de  puissances entières de la fréquence, soit :
+\begin{equation}
+\sqrt{DSP} = \sum_{i = 1}^{M} A_{-i} f^{-i} + \sum_{j = 0}^{N} A_{j} f^{j} =  A_{-M}  f^{-M} + ... + A_{-1}  f^{-1} + A_{0} + A_{1}  f^{1} + ... + A_{-N}  f^{-N}
+\label{E:LC_Details_Bruit_TwoFilter}
+\end{equation}
+Ce bruit est généré à partir d'un bruit blanc qui est filtré simultanément par autant de filtre qu'il y a de puissances de la fréquence dans la DSP, puis les résultats de tous ces filtrages sont sommés.
+\item \emph{\textsf{NoiseOof}} : Cette classe modélise un bruit dont la racine carrée de la DSP est une puissance non entière de la fréquence. Ce bruit est généré à partir d'un bruit blanc filtré par un filtre dont les coefficients sont calculés en fonction de la valeur de la puissance de la fréquence. Cette technique de génération de bruit est présentée dans l'article de S. Plaszczynski \cite{GenNoiseOof}.
+\end{itemize}
+Le ou les filtres utilisés dans toutes ces classes filles sont des objets construits à partir de la classe \emph{\textsf{Filter}} du module \emph{\textsf{Outils\_Maths}} qui applique un filtre récursif décrit par des  coefficients récursifs $\alpha_{i}$ et directs $\beta_{i}$. L'application de ce filtre sur des données temporelles échantillonnées $x_{n}$ donnent les données filtrées $y_{n}$ par : 
+\begin{equation}
+y_{n} = \sum_{k=1}^{N_{\alpha} } \alpha_{k} \;y_{n-k} +  \sum_{k=0}^{N_{\beta} } \; \beta_{k} x_{n-k} 
+\label{E:LC_Details_Bruit_Filtre}
+\end{equation}
+Le calcul d'une nouvelle valeur de bruit filtré dans le tableau de bruits de la classe mère se fait en utilisant les données d'entrée $x_{n}$ qui correspondent ici aux valeurs du bruit blanc et les valeurs de bruit déjà calculés $y_{n}$. Les classes doivent donc posséder plusieurs tableaux de données intermédiaires pour l'application du ou des filtres, qui contiennent par exemple les valeurs de bruit blanc. Un filtre peut être décomposé en de multiples sous-filtres (ou cellules), chacun défini par un jeu de coefficients. Cette décomposition permet de réaliser des filtrages brutaux en évitant des problèmes d'imprécision numérique.
+
+Le calcul des coefficients récursifs $\alpha_{i}$ et des coefficients directs $\beta_{i}$ d'un filtre en fonction de la forme de la racine carrée de la DSP peut se faire en utilisant la transformation bilinéaire. Prenons l'exemple d'un bruit standard de masse inertielle défini dans la partie~\ref{SS:PL_Bruit_Mass_MI}. La racine carrée de la DSP de ce bruit est de la forme suivante :
+\begin{equation}
+\sqrt{S_{{\delta \nu \over \nu} , MI } } = \mathcal{A} \ f^{-1}
+\label{E:LC_Details_Bruit_TrBilineaire_DSP_MI}
+\end{equation}
+La fonction de transfert s'écrit alors : \textcolor{red}{expliquer un peu pourquoi $2 \pi \mathcal{A} {(i \omega)}^{-1}$}
+\begin{equation}
+H(\omega) = { \mathcal{A} \over f} = 2 \pi \mathcal{A} {(i \omega)}^{-1}
+\label{E:LC_Details_Bruit_TrBilineaire_Hf}
+\end{equation}
+où $\omega$ est \textcolor{red}{la pulsation ?}. La transformation bilinéaire est définie comme :
+\begin{equation}
+s = i \omega = {2 \over \Delta t} {1 - Z^{-1} \over 1 + Z^{-1}}
+\label{E:LC_Details_Bruit_TrBilineaire_Def}
+\end{equation}
+où $\Delta t$ est le pas de temps et $Z$ la variable complexe de la transformation en Z qui est l'équivalent discret en traitement du signal de la transformée de Laplace. La fonction de transfert s'écrit alors :
+\begin{equation}
+H(Z) =  \pi \  \mathcal{A} \ \Delta t  \ {1 + Z^{-1} \over 1 - Z^{-1}} 
+\label{E:LC_Details_Bruit_TrBilineaire_HZ}
+\end{equation}
+Si $Y$ représente les données filtrées et $X$ les données brutes, la transformation s'écrit $Y=HX$, soit :
+\begin{equation}
+y_{n} = y_{n-1} + \pi \ \mathcal{A} \  \Delta t \  \left( x_{n} + x_{n-1}\right)
+\end{equation}
+Les coefficients $\alpha_{i}$ et $\beta_{i}$  du filtre, définis par la formulation~\eqref{E:LC_Details_Bruit_Filtre} sont donc pour le filtre qui permet de générer le bruit de masse inertielle : \begin{equation}
+\alpha_{1, MI} = 1 \quad \textrm{et} \quad  \beta_{0, MI} = \beta_{1, MI} = \pi \  \mathcal{A} \ \Delta t 
+\label{E:LC_Details_Bruit_TrBilineaire_Coef_MI}
+\end{equation}
+
+ \textcolor{red}{ Verifier et etayer tout ca de quelques justifications en utilisant notamment comme référence le livre de traitement du signal }
+ 
+Un calcul similaire permet d'obtenir les coefficients du filtre permettant de générer un bruit de \emph{shot noise} défini dans la partie~\ref{SS:PL_Bruit_SN} et dont la racine carrée de la DSP est de la forme :
+\begin{equation}
+\sqrt{S_{{\delta \nu \over \nu} , SN} } = \mathcal{A} \ f
+\label{E: LC_Details_Bruit_TrBilineaire_DSP_SN}
+\end{equation}
+Ces coefficients sont alors :
+\begin{equation}
+ \alpha_{1, SN} = -1 \quad \textrm{et} \quad  \beta_{0, SN} = - \beta_{1, SN} =   {\mathcal{A} \over  \pi \ \Delta t}
+\label{E:LC_Details_Bruit_TrBilineaire_Coef_SN}
+\end{equation}
+
+
+% 
+% Module fond gravitationnel
+%
+%%%%%%%%%%%%%%%%
+\subsection{Module fond gravitationnel \emph{\textsf{Fond}}}
+\label{SS:Details_Fond}
+
+Ce module est prévu pour modéliser un fond d'onde gravitationnelle diffus à partir d'une modélisation éventuelle de la réponse de chaque bras à ce fond. Un fond d'ondes gravitationnelles est différent d'une onde gravitationnelle classique car il n'a pas de direction de propagation précise. La modélisation des fonds gravitationnels est un problème complexe dans LISA qui n'a pas encore de solution précise car il faut à la fois tenir compte de la dispersion de la source et du mouvement de LISA. La solution exposée ici propose d'injecter directement dans le phasemètre le signal gravitationnel induit sur chaque bras par un fond. Mais cela suppose de disposer d'une modélisation analytique ou numérique de ce signal ce qui est loin d'être évident.
+ 
+Le module \emph{\textsf{Fond}} est constitué d'une classe mère, la classe \emph{\textsf{Background}},  qui possède seulement un pointeur sur les orbites et une fonction virtuelle qui impose aux classes filles de renvoyer une réponse pour chaque bras à chaque instant. Les classes filles décrivent les différentes modélisations de cette réponse. Etant donné qu'aujourd'hui il n'existe pas de solution réellement propre et efficace pour décrire la réponse de LISA à un fond gravitationnel, il n'y a actuellement qu'une classe fille qui récupère cette réponse dans un fichier. Ainsi le calcul de la réponse à ce fond est déporté sur une modélisation extérieure à LISACode ou qui utilise LISACode d'une manière spécifique comme on le verra dans la partie~\ref{} \textcolor{red}{(Mettre quand ecrit)} qui expose les résultats que j'ai obtenus pour le fond galactique. La seule classe fille est la classe \emph{\textsf{BackgroundGalactic}}. Son nom vient du fait qu'elle a été initialement utilisée pour introduire la réponse de LISA au fond Galactique. Elle récupère les signaux de réponse des six liens induits sur les six signaux externe-interne dans un fichier à sept colonnes : $temps$ $s_{1}^{FOB}$ $s_{2}^{FOB}$ $s_{3}^{FOB}$ ${s'}_{1}^{FOB}$ ${s'}_{2}^{FOB}$ ${s'}_{3}^{FOB}$ où FOG signifie Fond d'Onde Gravitationnelle. La limite de cette méthode est que les signaux de réponse au fond gravitationnel dépendent des orbites des satellites. Il faut donc que les orbites utilisés pour la génération du fichier soient similaires à ceux de la simulation .
+
+
+
+% 
+% Module orbitographie
+%
+%%%%%%%%%%%%%%%%%
+\subsection{Module orbitographie \emph{\textsf{Orbitographie}}}
+\label{SS:Details_Orbites}
+
+Avant d'aborder la question de la modélisation du détecteur, et plus particulièrement du phasemètre, dans la partie \ref{SS:Details_Detecteur}, il est nécessaire de dire quelques mots sur les modules \emph{\textsf{Orbitographie}} et \emph{\textsf{USO\_Temps}} inclus dans la modélisation de LISA et utilisés par le module détecteur pour construire les signaux de mesure. Dans cette partie, les grandes lignes du module \emph{\textsf{Orbitographie}} seront présentées.
+
+Ce module est formé d'une seule classe\footnote{Une classe mère mais pas de classe fille pour reprendre le schéma des modules déjà exposés.}, la classe \emph{\textsf{Geometry}}. Les orbites qu'elle modélise sont celles de Dhurandhar, Nayak et Vinet détaillées dans la partie~\ref{S:PL_Orbites}. Ces orbites étant analytiques, il n'y a pas de complexité particulière. Elles sont définies par les trois paramètres suivants qui sont donc des variables de la classe :
+\begin{itemize}
+\item $t_{0, \ orb}$ : temps compris entre 0 et un an qui repère la position initiale du barycentre de LISA par rapport à la position initiale standard correspondant au point vernal soit le centre sur l'axe $x$ du référentiel barycentrique. 
+\item $\phi_{rot, \ orb}$ : angle de rotation entre la configuration initiale du triangle et la configuration initiale standard défini dans la partie~\ref{SS:PL_Orb_Pos} \footnote{La configuration initiale standard est la configuration où, à $t = 0$, le triangle est pointe en bas, avec le satellite \textsf{1} sur cette pointe, le satellite \textsf{2} du coté $y<0$ et le satellite \textsf{3} sur la troisi\`eme pointe.}.
+\item $L_{0}$ : longueur nominale des bras.
+\end{itemize}
+La classe possède des fonctions qui renvoient la position d'un satellite, sa vitesse, le temps de parcours le long d'un bras, la vitesse relative entre deux satellites d'un même bras, etc. Il existe plusieurs options possibles décrites par deux paramètres. Le premier définit si on considère que les satellites bougent, c'est-à-dire le cas réaliste, ou, au contraire, si on considère une configuration fixe du détecteur, ce qui s'avère utile, notamment pour des tests sur la méthode \emph{TDI} ou pour des calculs de sensibilité, comme on le verra par la suite. Le deuxième paramètre définit l'ordre d'approximation utilisé dans le calcul des temps de parcours présenté dans la partie~\ref{SSS:PL_Orb_Bras} : 
+\begin{itemize}
+\item ordre 0 : \emph{flexing}
+\item ordre 1 : \emph{flexing} + effet Sagnac
+\item ordre 2 : \emph{flexing} + effet Sagnac + corrections relativistes
+\end{itemize}
+La classe contient aussi d'autres variables et fonctions qui permettent d'optimiser la gestion des orbites. Dans l'avenir, ce module sera certainement décomposé en une classe mère et plusieurs classes filles qui offriront la potentialité d'utiliser d'autres types d'orbites tels que des orbites intégrant des éphémérides pour prendre en compte les différents  objets du système solaire par exemple.  
+
+% 
+% Module USO
+%
+%%%%%%%%%%%%%%%%%
+\subsection{Module horloges : \emph{\textsf{USO}}}
+\label{SS:Details_USO}
+Pour compléter la description des modules nécessaires au détecteur, il reste à décrire le module \emph{\textsf{USO\_Temps}} qui modélise les horloges ultra-stables de chaque satellite. Ce module très simple ne comporte qu'une seule classe, la classe \emph{\textsf{USOClock}}. 
+
+Chaque satellite dispose d'une horloge utilisée par le phasemètre comme référence pour la mesure de phase, comme on l'a évoqué dans les parties~\ref{SSS:PL_DetSpa_Satellite} et~\ref{SS:PL_Mes_Phasemetre}. La grande précision requise sur ces mesures nécessite une extrême stabilité de l'horloge d'où son appellation \emph{USO}, ce qui veut dire \emph{Ultra-Stable Oscillator}. Cette horloge sert également au phasemètre pour étiqueter temporellement les mesures c'est-à-dire pour fournir le temps auquel chaque mesure a été effectuée. Cette étiquette temporelle doit être très précise pour que la réduction des bruits lasers dans \emph{TDI} se fasse efficacement.
+
+Aujourd'hui, les caractéristiques techniques des \emph{USO} sont mal connues puisque les principes technologiques employés pour l'USO ne sont pas encore clairement définis. Mais on peut tout de même estimer qu'il y a trois types de bruit possibles : un offset, un bruit gaussien stationnaire et une dérive.
+
+La classe  \emph{\textsf{USOClock}} possède une fonction qui, à chaque pas de temps, renvoie un temps dans lequel les différents types de bruit ont été pris en compte. La prise en compte de cet effet dans LISACode permet de tester par exemple les conséquences d'un décalage entre les horloges des satellites.
+
+
+
+% 
+% Module détecteur et phasemètre
+%
+%%%%%%%%%%%%%%%%%
+\subsection{Module détecteur dont phasemètre}
+\label{SS:Details_Detecteur}
+Dans les parties précédentes, le module modélisant les ondes gravitationnelles ainsi que les modules modélisant les bruits, les orbites et les \emph{USOs} ont été décrits. Tous ces modules décrivent des éléments qui interviennent dans les signaux de mesures que fournit le détecteur LISA par l'intermédiaire du phasemètre. Dans cette partie, le module détecteur sera décrit et plus particulièrement l'élément central de LISACode qu'est le phasemètre. 
+
+Ce module \emph{\textsf{Detecteur}} (sur la figure~\ref{F:OrgPackage}) est composé de trois classes qui permettent de construire les signaux de mesures. Ces classes sont  \emph{\textsf{LISA}} qui gère l'ensemble des éléments composants LISA, \emph{\textsf{TrFctGW}} qui calcule le signal gravitationnel et \emph{\textsf{PhoDetPhaMet}} qui compose le signal de mesure et modélise un phasemètre.
+
+
+
+% Gestion du détecteur (classe \emph{\textsf{LISA}} )
+% --------------------------------------------------------------------
+\subsubsection{Gestion du détecteur (classe \emph{\textsf{LISA}}) }
+\label{SSS:Details_Detecteur_LISA}
+La classe  \emph{\textsf{LISA}} ne modélise aucun élément particulier mais gère l'ensemble du détecteur. 
+Elle possède différents objets construits à partir des classes des modules de bruits (\emph{\textsf{Bruits}}), d'orbitographie (\emph{\textsf{Orbitographie}}) et d'horloge (\emph{\textsf{USO\_Temps}}) qui ont été exposés précédemment et des classes de réponse gravitationnelle (\emph{\textsf{TrFctGW}}) et de phasemètre (\emph{\textsf{PhoDetPhaMet}}) qui le seront dans les prochaines sous-parties. Ces objets sont créés en fonction de la configuration de la simulation (classe \emph{\textsf{Input\_Data}}) et modélisent l'ensemble des trois satellites du détecteur. 
+
+Deux objets concernent des éléments d'ensemble de LISA : un objet, de type \emph{\textsf{Geometry}}, qui décrit les orbites des trois satellites (cf. partie~\ref{SS:Details_Orbites}) et un objet, de type \emph{\textsf{TrFctGW}}, qui calcule le signal gravitationnel à partir de la liste des ondes gravitationnelles (cf. sous-partie~\ref{SSS:Details_Detecteur_TrFctGW} suivante).
+
+La classe possède également des objets qui représentent les éléments des satellites agissant sur les signaux de mesures. La plupart de ces éléments interviennent au niveau de la circulation des faisceaux sous la forme de bruits qui ont été détaillés dans la partie~\ref{S:PL_Bruits} du chapitre~\ref{C:ProjetLISA}. Il y a, par banc optique, un élément de chaque type qui influe sur le faisceau : le laser, la masse inertielle, la photodiode et le banc optique lui-même. Les bruits associés sont le bruit laser (cf. \ref{SS:PL_Bruit_laser}), le bruit d'accélération de la masse inertielle (cf.~\ref{}), le \emph{shot noise} pour l'interférence avec le faisceau externe (cf.~\ref{SS:PL_Bruit_SN}), des bruits de chemin optique sur le faisceau externe (cf.~\ref{SS:PL_Bruit_ABCO}) et le bruit d'accélération du banc optique (c  f.~\ref{SS:PL_Bruit_Mass_BO}). Les bruits concernant le faisceau externe sont regroupés dans un même terme dit bruit de chemin optique.  Il y a donc 4 bruits par banc optique et 6 bancs optiques soit un total de 24  bruits. Ces bruits sont listés et groupés par 6 dans un tableau de pointeurs sur le type \emph{\textsf{Noise}}.  Les objets pointés sont construits à partir des classes filles dérivées de la classe \emph{\textsf{Noise}} en fonction de la configuration de la simulation (classe \emph{\textsf{Input\_Data}}) \footnote{\label{N:LC_Details_Detecteur_PtrNoise}Plus précisément, c'est un pointeur sur une liste de pointeurs sur le type \emph{\textsf{Noise}}. La classe \emph{\textsf{Input\_Data}} crée les objets représentant les bruits et transmet l'adresse mémoire aux autres modules par le pointeur.}. La participation de ces objets au signal se fait au niveau du phasemètre.
+
+La classe \emph{\textsf{LISA}} possède également trois objets de type \emph{\textsf{USOClock}} qui modélise les horloges des trois satellites
+
+C'est également dans cette classe que sont les objets modélisant les phasemètres construits à partir de la classe \emph{\textsf{PhoDetPhaMet}} qui sera détaillée dans une prochaine partie. Il y a deux phasemètres par banc optique (cf. partie~\ref{SS:PL_Mes_Principe}), un phasemètre externe-interne dit $s$ et un phasemètre interne-interne dit $\tau$, soit 12 phasemètres qui sont listés dans un tableau. Chacun de ces phasemètres connaît, grâce à des pointeurs, les orbites, l'objet calculant le signal gravitationnel, le signal de réponse à d'éventuels fonds gravitationnels, la liste des bruits, la liste des \emph{USOs} et la liste des mémoires vers lesquelles il doit envoyer son signal de mesure. 
+
+Enfin la classe \emph{\textsf{LISA}} possède une fonction qui, à chaque pas de temps, fait évoluer le détecteur. Cette fonction demande à chaque objet bruit de générer du bruit (cf. partie~\ref{SSS:Details_Bruit_General}) et aux phasemètres d'effectuer une mesure.
+
+% Calcul du signal gravitationnel (classe \emph{\textsf{TrFctGW}} )
+% --------------------------------------------------------------------------------------
+\subsubsection{Calcul du signal gravitationnel (classe \emph{\textsf{TrFctGW}} )}
+\label{SSS:Details_Detecteur_TrFctGW}
+
+La classe \emph{\textsf{TrFctGW}} calcule le signal gravitationnel induit sur un faisceau laser à la suite de sa propagation le long d'un bras. Ce signal est du à la déformation de l'espace au niveau du bras par les ondes gravitationnelles. La réponse d'un bras  à une onde gravitationnelle a été étudiée dans la partie~\ref{SS:OG_Det_ReponseBras} à la fin du chapitre~\ref{C:OG}. Cette réponse correspond à une variation relative de fréquence formulée par l'expression~\eqref{E:OG_Det_RepBras}. Pour calculer cette réponse, il est nécessaire de connaître la direction de propagation de l'onde, son angle de polarisation et les évolutions des deux composantes de polarisation. Il faut également connaître les positions des satellites qui forment le bras et le temps de propagation du faisceau le long du bras. La classe obtient ses informations en utilisant un pointeur sur l'onde gravitationnelle et un pointeur les orbites\footnote{\label{N:LC_Details_Detecteur_PtrOrb} C'est-à-dire un pointeur sur l'objet représentant les orbites de la classe \emph{\textsf{LISA}}}. Une des particularités de LISA est qu'il y a plusieurs ondes gravitationnelles simultanément. Le signal gravitationnel global est alors la somme des variations relatives de fréquence induites par chaque onde (cf. équations~\eqref{E:OG_Det_RepBras_MultiOG} et~\eqref{E:OG_Det_RepBras_MultiOG_Det}). Pour obtenir les informations sur toutes les ondes gravitationnelles, la classe utilise un pointeur sur la liste des ondes\footnote{\label{N:LC_Details_Detecteur_PtrGW} Plus précisément, c'est un pointeurs sur une liste de pointeur sur le type \emph{\textsf{GW}}. Les objets pointés sont construits à partir des classes filles dérivées de la classe \emph{\textsf{GW}} en fonction de la configuration de la simulation c'est-à-dire de la classe \emph{\textsf{Input\_Data}}. C'est cette classe qui créé les objets représentant les ondes gravitationnelles et transmet ensuite l'adresse mémoire aux autres modules par le pointeur de la même manière que pour les bruits (cf. note~\ref{N:LC_Details_Detecteur_PtrNoise}). }.
+
+
+
+
+% Calcul du signal de mesure (classe \emph{\textsf{PhoDetPhaMet}} )
+% --------------------------------------------------------------------------------------
+\subsubsection{ Calcul du signal de mesure (classe \emph{\textsf{PhoDetPhaMet}} )}
+\label{SSS:Details_Detecteur_PhoDetPhaMet}
+
+Comme on l'a déjà indiqué à plusieurs reprises, cette classe \emph{\textsf{PhoDetPhaMet}}, qui modélise le phasemètre, est l'élément central de LISACode. Son rôle principal est de construire un signal de mesure à partir des différents éléments du détecteur que sont les bruits, les réponses des bras aux ondes gravitationnelles, les orbites des satellites et les horloges ultra-stables. Il effectue alors le passage entre le domaine des processus continus fonctionnant au pas de temps physique et le domaine des mesures échantillonnées au pas de temps de mesure qui comprend l'application de \emph{TDI}. 
+
+La classe construit le signal d'un phasemètre en combinant les différents éléments contributifs auxquels il peut accéder par l'intermédiaire de pointeurs.  Ce signal est une mesure de phase effectuée à partir du signal de battement hétérodyne de la photodiode. Celle-ci mesure l'interférence entre deux faisceaux laser qui ont circulé entre les différents éléments du détecteur par l'intermédiaire des bancs optiques. Chacun de ces éléments a ajouté du bruit sur les faisceaux et par conséquent du bruit sur le signal. La classe \emph{\textsf{PhoDetPhaMet}} combine les bruits selon les formulations données dans la partie~\ref{SS:PL_Mes_Signaux} du chapitre~\ref{C:ProjetLISA}. Selon le phasemètre qu'elle représente, elle applique la formulation  \eqref{E:PL_Mes_s1}, \eqref{E:PL_Mes_tau1}, \eqref{E:PL_Mes_sp1} ou \eqref{E:PL_Mes_taup1}. La valeur de chacun des bruits est obtenue soit pour le temps donné par l'horloge du satellite $x(t_{USO})$, soit pour ce même temps retardé $D_{i} x(t_{USO}) = x(t_{USO} - L_{i}/c)$, par la fonction de renvoie de valeur pour un temps quelconque que possède chaque bruit pointé par la liste des bruits (cf. partie~\ref{SSS:Details_Bruit_General}). Pour les phasemètres externe-interne $s$, la valeur du signal gravitationnel $s_1^{\ OG}$ correspond à la somme entre la valeur renvoyée par l'objet de type \emph{\textsf{TrFctGW}}, et  la valeur de la réponse du bras à d'éventuels fonds gravitationnels (cf. partie~\ref{SS:Details_Fond}). On rappelle que l'objet de type \emph{\textsf{TrFctGW}} calcule la réponse du bras aux ondes gravitationnelles.
+
+Le signal qui a été décrit est le signal que devrait mesurer le phasemètre dans le cas d'une mesure parfaite. 
+Mais, comme on l'a vu dans la partie~\ref{SS:PL_Mes_Phasemetre}, c'est un appareil complexe dont la mesure ne peut être parfaite notamment parce qu'il doit fournir un signal échantillonné au pas de temps de mesure à partir du signal continu de la photodiode. Cette imperfection se modélise au niveau de LISACode par une fonction de transfert associée au phasemètre. Du fait qu'il est actuellement en cours de développement, sa fonction de transfert réelle n'est pas connue. Pour le moment, celle utilisée dans LISACode est très simple mais influe tout de même sur le signal.
+
+Dans LISACode, tous les processus physiques sont modélisés avec un pas de temps physique qui est inférieur au pas de temps de mesure en sortie des phasemètres. La fonction de transfert du phasemètre doit donc sous-échantillonner le signal physique pour obtenir le signal de mesure. Le pas de temps physique est choisi comme un sous-multiple entier du pas de temps de mesure. Ainsi on prélève une valeur tous les pas de temps de mesure sur les signaux physiques pour obtenir les signaux de mesure. Mais avec un tel  sous-échantillonnage les hautes fréquences sont repliées dans les basses fréquences et perturbent complètement le signal de mesure ; c'est le problème bien connu de l'\emph{aliasing}, ou repliement de spectre. Pour éviter ce problème, il est nécessaire de filtrer brutalement les signaux physiques avant le sous-échantillonnage pour éliminer les fréquences supérieures à la moitié de la fréquence de mesure, d'après le théorème de Nyquist-Shannon.  Ce filtre passe-bas est modélisé dans la fonction de transfert du phasemètre de LISACode par un filtre passe-bas écliptique. Ce filtre numérique est appliqué par la classe \emph{\textsf{Filter}} qui a été présentée dans la partie~\ref{SSS:Details_Bruit_Types} sur la génération des bruits. Ces coefficients dépendent de 5 paramètres qui sont : le pas de temps physique $\Delta t_{physique}$, la fréquence de coupure haute $f_{c, h}$ ($\sim 0.1 \times  \Delta t_{mesure}$), la fréquence de coupure basse $f_{c, b}$ ($\sim 0.3 \times  \Delta t_{mesure}$), l'oscillation en bande passante $P_{dB}$ ($\sim 0.1 \ dB$) et l'atténuation $A_{dB}$ ($\sim 180 \ dB $). Mais les pas de temps étant définis par la configuration de la simulation, les coefficients du filtre doivent être calculés dans LISACode : c'est le rôle de la classe \emph{\textsf{EllipticFilter}} écrit par Hubert Halloin à partir de \textcolor{red}{Demande a Hubert}. La figure~\ref{F:Phasemetre_Filtre}  donne la forme du filtre elliptique du phasemètre en illustrant la signification des paramètres dont il dépend. Elle donne également le résultat de son application sur un bruit blanc avant et après le sous-échantillonnage au pas de temps de mesure. On constate que le repliement de spectre est très faible, il provoque juste une très légère remontée en bande atténuée. Il faut bien voir que ce filtre n'est pas une nécessité imposée par la modélisation numérique mais qu'il existera dans le phasemètre de LISA, le problème d'\emph{aliasing} étant le même. Ce filtre est une spécificité importante de LISACode qui lui permet de fournir des données réalistes.
+\begin{figure}[!htb]
+\centering \includegraphics[width=12cm]{Figures/PhasemeterFilter.eps}
+\caption{\small Réponses spectrales du filtre elliptique utilisé dans la fonction de transfert du phasemètre  pour permettre un sous-échantillonnage à $\Delta t_{mesure} = 1 s$ à partir de données à $\Delta t_{physique} = 0.2 s$. Ses paramètres, illustrés sur la figure, sont :  fréquence de coupure haute $f_{c, h} = 0.1 \ Hz$ , fréquence de coupure basse $f_{c, b} = 0.3 \ Hz$, oscillation en bande passante $P_{dB} = 0.1 \ dB$ et atténuation $A_{dB} = 180 \ dB $. La réponse théorique présentant les oscillations caractéristiques d'un filtre elliptique est représentée en trait plein rouge. La DSP d'un bruit blanc échantillonné à  $\Delta t_{physique}$ filtré est en tirets verts et suit la réponse théorique. La DSP du même bruit filtré après sous-échantillonnage est en pointillés bleus. \small} 
+\label{F:Phasemetre_Filtre}
+\end{figure}
+ 
+Chaque mesure du phasemètre est faite à un temps donné par l'horloge du satellite (\emph{USO}). Si l'\emph{USO} est bruité, son temps est décalé par rapport au temps courant. L'envoi des mesures vers la mémoire du satellite, puis vers la Terre, étant repéré par le temps courant, l'erreur des \emph{USO} est prise en compte dans les mesures et influe sur l'efficacité de TDI, comme dans lors de la mission. Mais cette erreur est considérée uniquement comme un décalage temporel et non comme une imprécision dans la mesure du phasemètre, puisque la relation entre le bruit de l'USO et la mesure de phase n'est pas encore connue. Pour l'instant, l'imprécision due à ce bruit de l'\emph{USO} est juste ajoutée comme un bruit dans les bruits de chemin optique (cf. partie~\ref{SS:PL_Bruit_ABCO} et équation~\eqref{E:PL_Bruit_ABCO_USO}) sans tenir compte de la modélisation de l'\emph{USO}. Mais quand les développements du phasemètre auront suffisament progressé pour que la relation entre le bruit de l'\emph{USO} et l'erreur du phasemètre soit connue, il sera très facile de l'inclure dans LISACode.
+
+La classe \emph{\textsf{PhoDetPhaMet}} modélise donc à la fois la \textbf{circulation dans les bancs optiques} des deux faisceaux qui interférent, la \textbf{photodiode} et le \textbf{phasemètre}, c'est-à-dire l'ensemble du système de mesures de LISA. C'est pourquoi cet élément est central dans LISACode, en effet, il construit le signal de mesure, le filtre et l'envoi vers la mémoire associée aux satellites au pas de temps de mesure.
+
+% 
+% Module mémoire
+%
+%%%%%%%%%%
+\subsection{Module mémoire \emph{\textsf{Memoire}}}
+\label{SS:Details_Memoire}
+La description du phasemètre précédente a exposé la construction des signaux de mesures. Le rôle du module mémoire est de faire le lien entre la modélisation du détecteur et l'application de la méthode \emph{TDI}. Il récupère les signaux envoyés par les quatre phasemètres du satellite, les enregistre dans un fichier de sortie et les mémorise pour l'application de \emph{TDI}.
+
+Le module \emph{\textsf{Memoire}} est composé d'une classe mère \emph{\textsf{Memory}} et de deux classes filles. Le rôle principal d'un objet de type \emph{\textsf{Memory}} est de mémoriser les quatre signaux de mesures pendant une certaine durée pour qu'ils puissent ensuite être utilisés par la méthode \emph{TDI}. En effet, cette méthode, présentée dans la partie~\ref{S:PL_TDI}, élimine le bruit laser en retardant les signaux de mesures puis en les combinant, d'où la nécessité de mémoriser les signaux, un peu comme le module \emph{\textsf{Bruit}} mémorise les bruits pour permettre aux phasemètres de construire les signaux (cf. partie~\ref{SSS:Details_Bruit_General}). La classe mère \emph{\textsf{Memory}} gère cette mémoire par une méthode d'ajout de données, qui peut être redéfinie par les classes filles, et par une méthode d'envoi de données. A la différence des classes mères précédemment exposées, celle-ci ne définie pas seulement des bases communes mais peut être utilisée pour créer un objet à part entière ; les deux classes filles ne sont alors que des options supplémentaires sur la manière de récupérer les signaux de mesure. Cette classe gère plusieurs signaux et possède pour chacun une série de données glissante qui est un objet construit à partir de la classe \emph{\textsf{Serie}} du module \emph{\textsf{Outils\_Math}}. Cette classe \emph{\textsf{Serie}} gère un tableau glissant de la même manière que celui du module \emph{\textsf{Bruit}} (cf. partie~\ref{SSS:Details_Bruit_General}) et offre de nombreuses potentialités pour l'interpolation des valeurs. La méthode d'envoi, qui est appelée par le module \emph{\textsf{TDI}}, interpole les signaux mémorisés pour retourner la valeur correspondant au retard \footnote{Le retard par rapport au temps courant de la simulation, comme toujours !}, spécifié par \emph{TDI}. Le choix de l'interpolation utilisée est très importante pour garantir une bonne élimination du bruit laser, mais, par ailleurs, une interpolation trop poussée augmente le temps de simulation, c'est pourquoi ce choix est présent dans les options de configuration de la simulation.
+
+La méthode de récupération de données de la classe mère est tout simplement de stocker les signaux de mesures des phasemètres dans le tableau. Les deux classes filles offrent des versions différentes de cette méthode. La classe \emph{\textsf{MemoryWriteDisk}} stocke les signaux et les enregistre dans un fichier en ASCII ou en binaire. Etant donné qu'il y a un objet mémoire associé à chaque satellite, il y a trois fichiers de sortie possibles qui possèdent chacuns cinq colonnes : $temps \; {s}_{i} \; {s'}_{i} \; {\tau}_{i} \; {\tau'}_{i} $ où $i$ est l'indice du satellite.
+
+La deuxième classe fille, la classe \emph{\textsf{MemoryReadDisk}}, ne récupère pas les signaux des phasemètres mais les lit dans un fichier. Cette classe est uniquement utilisée pour former l'exécutable \emph{\textsf{TDIApply}}, qui permet d'appliquer \emph{TDI} sur des signaux lus dans  trois fichiers en utilisant les retards lus dans un quatrième fichier.
+
+La mémorisation par le module \emph{\textsf{Memory}} n'est pas spécialisée pour les signaux des phasemètres. En effet, le nombre de signaux stockés s'adapte aux besoins de l'objet construit à partir de la classe. Ce module peut donc être utilisé à des fins de mémorisation ou d'enregistrement de données. Il sert notamment à stocker les six valeurs de temps de parcours le long des bras. 
+
+
+% 
+% Module TDI
+%
+%%%%%%%%%%
+\subsection{Module \emph{TDI}}
+\label{SS:Details_TDI}
+Le module \emph{\textsf{TDI}} applique la méthode \emph{TDI} détaillée dans la partie~\ref{S:PL_TDI} sur les signaux de mesures mémorisés, pour obtenir de nouveaux flux de données dans lesquels les bruits laser sont éliminés. Il retarde les signaux grâce aux retards mémorisés puis les combine. Ce module applique \emph{TDI} d'une manière très générique et peut ainsi fournir le flux de données correspondant à n'importe quel générateur. Il faut bien voir que l'application de \emph{TDI} ne relève plus du domaine de la modélisation mais de celui de la pré-analyse. La méthode  présentée ici fonctionne donc de la même manière sur les signaux modélisés que sur les signaux réels !   
+
+Le module \emph{\textsf{TDI}}  comporte deux classes principales, \emph{\textsf{TDI\_InterData}} et \emph{\textsf{TDI}}, ainsi qu'une classe outils, \emph{\textsf{TDITools}},  qui permet d'accélérer l'application de \emph{TDI} dans certaines conditions.
+
+La première étape de l'application de \emph{TDI} consiste à créer les six flux de données intermédiaires $\eta_{i}$ et ${\eta'}_{i}$ correspondant aux formulations~\eqref{E:PL_TDI_Def_etai} et~\eqref{E:PL_TDI_Def_etapi}, présentées dans la partie~\ref{SS:PL_TDI_DeuxLaser}. Elles ramènent le problème de la réduction du bruit laser de deux bruits laser par satellite, ${p}_{i}$ et ${p'}_{i}$, à un seul bruit laser par satellite, ${p}_{i}$.  Le rôle de la classe \emph{\textsf{TDI\_InterData}} est de calculer ces flux intermédiaires. Elle  possède six séries de données glissantes (tableau glissant de type \emph{\textsf{Serie}}), c'est à dire une pour chaque flux de données. A chaque pas de temps de mesure, les nouvelles valeurs sont calculées en utilisant les mémoires des signaux des trois satellites \footnote{\label{N:LC_Details_TDI_PtrPhasemetre} Plus précisément, la classe \emph{\textsf{TDI\_InterData}} possède un pointeur sur une liste de trois pointeurs sur des objets de type \emph{\textsf{Memory}}, un pour chaque satellite, contenant chacun quatre signaux de mesures.} et la mémoire des temps de parcours \footnote{\label{N:LC_Details_TDI_PtrDelay} Là aussi, la classe \emph{\textsf{TDI\_InterData}} possède un pointeur sur un objet de type \emph{\textsf{Memory}} contenant les six valeurs de temps de parcours}, autrement dit des retards. Ce calcul doit être très précis pour réduire au mieux les bruits ${p'}_{i}$ des deuxièmes lasers de chaque satellite et notamment lors de l'application de l'opérateur retard $D_{i+2}$ sur les signaux de mesures $\tau_{i+1}$ et ${\tau'}_{i+1}$ qui utilise la méthode d'interpolation de la classe \emph{\textsf{Memory}}. Cette classe possède également une méthode qui permet de renvoyer une valeur en interpolant dans la série de données des flux intermédiaire\footnote{L'interpolation est du même type que celle de la classe \emph{\textsf{Memory}} puisqu'en fait c'est celle de l'objet construit à partir de la classe \emph{\textsf{Serie}}}. Il n'y a qu'un seul objet de type \emph{\textsf{TDI\_InterData}} qui est utilisé par l'ensemble des générateurs \emph{TDI}.
+
+La deuxième étape est effectuée par la classe \emph{\textsf{TDI}}. Elle consiste en l'application des générateurs sur les flux de données intermédiaires. Cette classe applique un seul générateur à la fois : il y a donc un objet de type \emph{\textsf{TDI}} par générateur. Un générateur \emph{TDI} peut être  développé en une somme de packs. Un pack est un ensemble d'opérateurs retards appliqués à un flux de données. Par exemple, le générateur $X_{1.5st}$ donné par le 6-uples de la formulation~\eqref{E:PL_TDI_X_15} se développe en une somme de huit packs qui est :
+\begin{equation}
+X_{1.5st} =  \eta_1 + D_3 \ {\eta'}_2 + D_3 D_{3'} \ {\eta'}_1 + D_3 D_{3'} D_{2'} \ \eta_3 - {\eta'}_1 - D_{2'} \ \eta_3 - D_{2'} D_2 \ \eta_1 - D_{2'} D_2 D_3 \ \eta_{2'}
+\label{E:LC_Details_TDI_X15Dev}
+\end{equation}
+On remarque que dans ce développement, l'interprétation du générateur en deux boucles de faisceaux est nettement visible (cf. partie~\ref{SS:PL_TDI_Geometric}). Afin de faciliter l'utilisation des packs dans LISACode, on exprime chaque pack par un nombre entier à partir des conventions suivantes : 
+\begin{itemize}
+\item le signe du nombre correspond au signe du pack dans la sommation,
+\item le dernier chiffre est un nombre entre 1 et 6 qui indique le signal sur lequel s'applique les retards avec la correspondance suivante :
+\begin{equation}
+\eta_{1} \rightarrow 1 \; , \quad \eta_{2} \rightarrow 2 \; , \quad \eta_{3} \rightarrow 3 \; , \quad {\eta'}_{1} \rightarrow 4 \; , \quad {\eta'}_{2} \rightarrow 5 \; , \quad {\eta'}_{3} \rightarrow 6 
+\label{E:LC_Details_TDI_CorrespEta}
+\end{equation}
+\item les autres chiffres indiquent les opérateurs de retard à appliquer dans l'ordre : le chiffre des dizaines indique l'indice du bras du premier opérateur à appliquer, le chiffre des centaines, l'indice du deuxième, etc. La correspondance entre le chiffre et le bras concerné par l'opérateur de retard est donnée par le tableau~\ref{T:LC_TDICodeBras}.
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Opérateur & Bras & Emetteur $\rightarrow$ R\'ecepteur & Chiffre du pack \\
+\hline
+${D}_{1}$ & 1 & 3 $\rightarrow$ 2 & 1\\
+\hline
+${D}_{2}$ & 2 & 1 $\rightarrow$ 3 & 2\\
+\hline 
+${D}_{3}$ & 3 & 2 $\rightarrow$ 1 & 3\\
+\hline 
+${D'}_{1}$ & 1' & 2 $\rightarrow$ 3 & 4\\
+\hline 
+${D'}_{2}$ & 2' & 3 $\rightarrow$ 1 & 5\\
+\hline 
+${D'}_{3}$ & 3' & 1 $\rightarrow$ 2 & 6\\
+\hline 
+\end{tabular}
+\end{center}
+\caption{ \small Tableau donnant la correspondance entre les chiffres du pack et le bras concerné par l'opérateur de retard.}
+\label{T:LC_TDICodeBras}
+\end{table} 
+\end{itemize}
+En suivant ces conventions, le pack $-5235$ correspond à :
+\begin{eqnarray}
+- 5235 & \equiv & - D_{2'} D_2 D_3 \ \eta_{2'} \label{E:LC_Details_TDI_ExemplePack} \\
+& \equiv & - {\eta'}_{2} \left[ t - {{L}_{3} \over c} \left(t - {{L}_{2} \over c} \left(t - {{L'}_{2} \over c} (t) \right) \right) - {{L}_{2} \over c} \left(t - {{L'}_{2} \over c} (t) \right) - {{L'}_{2} \over c} (t)  \right] \nonumber
+\end{eqnarray}
+Les chiffres de la suite de pack du générateur $X_{1.5st}$ sont alors :
+\begin{equation}
+X_{1.5st} \equiv 1 , \;  35 , \;  364 , \;  3653 , \; -4 , \; -53 ,\;  -521 , \;  -5235
+\label{E:LC_Details_TDI_X_15Pack}
+\end{equation}
+De la même manière, les packs des autres générateurs couramment utilisés sont :
+\begin{eqnarray}
+Y_{1.5th}  & \equiv & 2 , \;  16 , \;  145 , \;  1461 , \;  -5 , \;  -61 , \;  -632 , \;  -6316 \label{E:PL_TDI_Y_15Pack} \\
+Z_{1.5th}  & \equiv & 3 , \;  24 , \;  256 , \;  2542 , \;  -6 , \;  -42 , \;  -413 , \;  -4124 \label{E:PL_TDI_Z_15Pack} \\
+P_{1.5th}  & \equiv & 25 , \;  -63 , \;  -22 , \;  66 , \;  642 , \;  -216 , \;  1463 , \;  -1425 \label{E:PL_TDI_P_15Pack} \\
+E_{1.5th}  & \equiv & 542 , \;  56 , \;  -316 , \;  -32 , \;  -144 , \;  141 , \;  4 , \;  -1 \label{E:PL_TDI_E_15Pack} \\
+U_{1.5th}  & \equiv & 145 , \;  1464 , \;  -5 , \;  -64 , \;  16 , \;  2 , \;  -6542 , \;  -656 \label{E:PL_TDI_U_15Pack} \\
+X_{2nd}  & \equiv &   1 , \;  35 , \;  364 , \;  3653 , \;  36524 , \;  365253 , \;  3652521 , \;  36525235 , \nonumber \\  
+& &  -4 , \;  -53 , \;  -521 , \;  -5235 , \;  -52361 , \;  -523635 , \;  -5236364 , \;  -52363653 \quad \label{E:PL_TDI_U_2Pack} 
+\end{eqnarray}
+
+La classe \emph{\textsf{TDI}} décompose chaque chiffre de pack en une variable de signe, une liste d'indices de retard et un indice de signal intermédiaire, $\eta_{i}$ ou ${\eta'}_{i}$, qui est identique à l'indice du signal de mesure dans les développements de \emph{TDI}, $s_{i}$ ou ${s'}_{i}$ (cf. partie~\ref{SS:PL_TDI_DeuxLaser}). A chaque pas de temps de mesure, il calcule la valeur de chaque pack puis somme l'ensemble de ces valeurs. Le calcul de la valeur d'un pack, qui est l'application des opérateurs de retard sur le flux de données intermédiaires, doit se faire en respectant l'ordre des retards. Pour cela, le retard total est calculé par l'algorithme itératif suivant : après avoir initialisé à 0 la variable retard total, on effectue une boucle sur les retards où, à chaque itération, on ajoute au retard total le temps de parcours le long du bras pris au temps retardé du retard total, soit pour chaque itération $i$ l'opération :
+\begin{equation}
+\Delta t_{total} = \Delta t_{total} + {L_{i} \over c} \left( t -  \Delta t_{total} \right)
+\label{E:LC_Details_TDI_AppRetard}
+\end{equation}
+L'application de cet algorithme sur le pack de l'exemple~\eqref{E:LC_Details_TDI_ExemplePack} donne : 
+\begin{enumerate}
+\item Initialisation : Retard total à 0 : $\Delta t_{total} = 0$
+\item Itération 1 : Ajout du retard du bras ${L'}_{2}$ pris au temps $t$ :
+\begin{equation*}
+\Delta t_{total} = {{L'}_{2} \over c}(t)
+\end{equation*}
+\item Itération 2 : Ajout du retard du bras $L_{2}$ pris au temps $t - {{L'}_{2} \over c}(t)$ : 
+\begin{equation*}
+\Delta t_{total} = {{L'}_{2} \over c}(t) + {L_{2} \over c} \left( t - {{L'}_{2} \over c}(t) \right)
+\end{equation*}
+\item Itération 3 : Ajout du retard du bras $L_{3}$ pris au temps $t - {{L'}_{2} \over c}(t) + {L_{2} \over c} \left( t - {{L'}_{2} \over c}(t) \right) $ : 
+\begin{equation*}
+\Delta t_{total} = {{L'}_{2} \over c}(t) + {L_{2} \over c} \left( t - {{L'}_{2} \over c}(t) \right) + {L_{3} \over c}\left(  t - {{L'}_{2} \over c}(t) + {L_{2} \over c} \left( t - {{L'}_{2} \over c}(t) \right) \right) 
+\end{equation*}
+\end{enumerate}
+Ce retard total est utilisé pour retarder le flux de données intermédiaires $\eta_{i}$ (ou ${\eta'}_{i}$),  et ainsi obtenir la valeur du pack. A chaque itération de l'algorithme, le temps de propagation $L_{i} / c$ retardé de $\Delta t_{total}$ s'obtient en utilisant l'interpolation de la méthode de renvoi de valeur de l'objet de type \emph{\textsf{Memory}} qui stocke les retards. La même méthode, mais utilisée à propos de l'objet construit à partir de \emph{\textsf{TDI\_InterData}}, est utilisée pour obtenir la valeur du pack.  L'interpolation sur les retards est lagrangienne d'ordre 6 et celle sur les signaux \emph{TDI} intermédiaires est spécifiée par la configuration mais, typiquement, on obtient une bonne élimination des bruits laser avec une interpolation lagrangienne d'ordre 20, comme on le verra dans la partie~\ref{SS:ResTech_ApplicationTDI}. 
+
+Il y a donc par pack, à chaque pas de temps, une interpolation très précise et autant d'interpolation moins précise que d'opérateur de retard. Au total, cela représente un grand nombre d'interpolation et par conséquent un temps de calcul très important. Par exemple, pour le générateur $X_{1.5st}$, il y a 12 interpolations de retard et 6 interpolations de mesure par pas de temps, soit l'équivalent en temps de calcul d'environ 96 interpolations linéaires\footnote{On considère que le temps de calcul est proportionnel à l'ordre de l'interpolation et que l'interpolation lagrangienne d'ordre 2 est équivalente en temps de calcul à une interpolation linéaire.} et 264 pour le générateur $X_{2nd}$. Ce nombre d'interpolations est indispensable à l'élimination du bruit laser dans un cas réaliste. Mais dans le cas d'une simulation sans bruits laser ou avec sans \emph{flexing},  il n'y a pas lieu d'avoir autant de précision dans l'application de \emph{TDI}. Une option dans LISACode permet alors de supprimer l'interpolation sur les retards en prenant la valeur de chaque retard au temps courant. L'application de \emph{TDI} pour le pack de l'exemple~\eqref{E:LC_Details_TDI_ExemplePack} est alors approximée par :
+\begin{equation}
+- D_{2'} D_2 D_3 \ \eta_{2'} \approx - {\eta'}_{2} \left[ t - {{L}_{3} \over c} (t) - {{L}_{2} \over c} (t) - {{L'}_{2} \over c} (t)  \right]
+\label{E:LC_Details_TDI_X_15Pack_Approx}
+\end{equation}
+
+Les temps de parcours utilisés pour les retards, sont mémorisés dans un objet de type \emph{\textsf{Memory}} géré par le programme principal (cf. partie~\ref{SS:Details_Execute}). L'exactitude de ces temps de parcours conditionne fortement l'efficacité de \emph{TDI} (cf. partie~\ref{SS:PL_TDI_Efficacite}). Ils sont donc directement obtenus à partir du module d'orbitographie. Mais dans la réalité les orbites exactes ne seront pas connu avec une infinie précision et par conséquent il y aura des imprécisions sur la valeur exacte des temps de parcours. Pour simuler cette méconnaissance, on verra qu'une erreur peut être introduite (cf. partie~\ref{SS:Details_Execute}).   
+
+Les résultats de l'ensemble des générateurs \emph{TDI} sont enregistrés dans un même fichier à chaque pas de temps, chaque objet de type \emph{TDI} ayant un pointeur vers ce fichier. 
+
+
+% 
+% Configuration (module et classe \emph{\textsf{Input\_Data}})
+%
+%%%%%%%%%%
+\subsection{Configuration (module et classe \emph{\textsf{Input\_Data}})}
+\label{SS:Details_Config}
+LISACode est un simulateur flexible qui se construit à partir des modules qui viennent d'être décrits en fonction des exigences de la simulation. Cette construction est réalisée par le module \emph{\textsf{Input\_Data}} qui ne contient qu'une seule classe, qui a le même nom. C'est cette classe qui fait l'interface avec les exigences de l'utilisateur par l'intermédiaire d'un fichier de configuration. 
+
+Ce fichier de configuration est détaillé dans le manuel utilisateur de LISACode~\cite{LISACodeManuel}. Il comporte des instructions qui décrivent les différents éléments de la simulation : 
+\begin{itemize}
+\item éléments temporels : pas de temps physique, pas de temps de mesure, temps de simulation,
+\item paramètres de \emph{TDI} : type d'interpolation, imprécision sur la connaissance des retards, approximation ou non dans le calcul du retard total (cf. partie~\ref{SS:Details_TDI}),
+\item orbitographie : temps de la position initiale, phase initiale de rotation, longueur nominale des bras, ordre d'approximation dans le calcul des temps de parcours (cf. partie~\ref{S:PL_Orbites} et~\ref{SS:Details_Orbites}),
+\item description du détecteur : puissance laser, activation et paramètres du filtre du phasemètre (cf. partie~\ref{SSS:Details_Detecteur_PhoDetPhaMet}),
+\item enregistrement : un fichier d'enregistrement ASCII ou binaire différents pour chacun des éléments de mesures : un fichier pour les signaux de mesures pour chaque satellite, un pour les temps de parcours, un pour les signaux \emph{TDI} et un pour les positions des satellites,
+\item horloges (\emph{USO}) : offset, bruit et dérive (cf. partie~\ref{SS:Details_USO}),  
+\item ondes gravitationnelles  :  localisation de la source [$\beta$,$\lambda$,$\psi$] et description (savoir si elle est monochromatique, binaire à fréquence fixe, binaire en calcul PN, lu dans un fichier, etc) (cf. partie~\ref{SS:OG_Src_Fonds} et~\ref{SS:Details_OG}),
+\item fond gravitationnel : fichier des réponses des bras (cf. partie~\ref{S:OG_Form} et~\ref{SS:Details_Fond}),
+\item bruits : localisation du bruit (que ce soit bruit laser, bruit de masse inertielle, shot noise ou autres bruits de chemin optique) avec le repérage du banc optique et description (savoir s'il est blanc, lu dans un fichier, filtré en f, filtré en 1/f, filtré avec une dépendance en puissance et en longueur des bras, etc )  (cf. partie~\ref{S:PL_Bruits} et~\ref{SS:Details_Bruit}),
+\item générateur \emph{TDI} : nom et description des packs par chiffre, s'il n'est pas prédéfini\footnote{Les générateurs les plus courants sont prédéfinis dans LISACode. Seul leur nom est alors nécessaire.}(cf. partie~\ref{S:PL_TDI} et~\ref{SS:Details_TDI}).
+\end{itemize}
+
+La classe \emph{\textsf{Input\_Data}} lit le fichier de configuration et construit les objets au fur et à mesure. Pour les éléments temporels, les paramètres de \emph{TDI}, l'orbitographie, la description du détecteur et les horloges, si aucune instruction n'est lue à leur sujet, une valeur par défaut leur est attribuée. Pour les autres, c'est-à-dire les ondes gravitationnelles, les bruits et les générateurs \emph{TDI}, si aucune instruction ne les concerne, les objets ne sont pas créés. Ainsi, il est par exemple possible de faire une simulation sans bruit tout simplement en ne spécifiant aucune instruction de bruit. De la même manière, les données sont écrites dans les fichiers de sortie seulement s'il y a une instruction concernant ce fichier.
+
+Quelques précisions sont à apporter au sujet des bruits définis par leur DSP qui sont modélisés en utilisant un ou plusieurs filtres. La DSP est définie de façon très simple par un mot clé et quelques valeurs qui sont mémorisées au moment de leur lecture. C'est une fois le fichier de configuration entièrement lu que les coefficients des filtres sont calculés à partir des valeurs mémorisés, du pas de temps physique et d'éventuels autres paramètres. Par exemple, le \emph{shot noise} peut être décrit par un bruit qui dépend de la longueur des bras et de la puissance laser, comme le spécifie la formulation~\eqref{E:PL_Bruit_SN_DL}, et donc ces deux paramètres sont inclus dans le calcul des coefficients du filtre. Ensuite les objets représentant les bruits sont construits. C'est également à ce moment que les bruits de \emph{shot noise} autres bruits de chemin optique (ABCO) sont regroupés dans un seul et même bruit dit bruit de chemin optique.    
+
+Le fichier de configuration est écrit au format ASCII simple ou au format XML. Le format ASCII simple se compose des instructions détaillées dans le manuel utilisateur~\cite{LISACodeManuel} qui sont propres à LISACode. Son langage se veut aussi clair que possible pour permettre à l'utilisateur de rapidement prendre en main le simulateur. Le format XML est celui utilisé par le \emph{Mock LISA Data Challenge} (\emph{MLDC}) qui est la structure visant à coordonner l'analyse des données de LISA. Ce format, assez complexe, est utilisé par les deux autres simulateurs, SyntheticLISA et LISASimulator. LISACode peut se configurer à partir de fichier des mêmes fichiers  XML, et fournir le fichier XML correspondant à une simulation, ce qui lui permet d'être pleinement intégré à la simulation de données dans la communauté LISA. 
+
+
+% 
+% Autres modules
+%
+%%%%%%%%%%
+\subsection{Autres modules}
+\label{SS:Details_Autres}
+
+Les modules précédemment décrits utilisent différents outils définis dans deux modules outils. Le premier est le module \emph{\textsf{Generalites}} qui contient un fichier de constantes physiques, \emph{\textsf{PhysicConstants}}, et un fichier de constantes concernant LISA et LISACode, \emph{\textsf{LISAConstants}}. Le second module outils est le module \emph{\textsf{Outils\_Maths}}, qui a déjà été évoqué à plusieurs reprises. Ce module contient plusieurs classes qui décrivent des outils mathématiques tel que des couples de données (classe \emph{\textsf{Couple}}), des vecteurs (classe \emph{\textsf{Vect}}), des matrices (classe \emph{\textsf{Mat}}), etc. La classe \emph{\textsf{Serie}} décrit un tableau glissant et les méthodes d'interpolation associées. Elle est notamment utilisée par les modules \emph{\textsf{Memoire}} et \emph{\textsf{TDI}}. La classe \emph{\textsf{Filter}} décrit et applique un filtre qui a été présenté dans la partie~\ref{SSS:Details_Bruit_Types} concernant les bruits. La classe \emph{\textsf{EllipticFilter}} calcule automatiquement les coefficients d'un filtre elliptique passe-pas décrit dans la partie~\ref{SSS:Details_Detecteur_PhoDetPhaMet} sur le phasemètre puisque c'est essentiellement pour sa fonction de transfert que ce filtre est utilisé. Enfin un sous-programme en C, \emph{\textsf{randlib}}, écrit par Barry W. Brown et James Lovato, gère la génération de nombre aléatoire \cite{Randlib}. 
+
+
+% 
+% Applications
+%
+%%%%%%%%%%
+\subsection{Applications}
+\label{SS:Details_Execute}
+A partir de l'ensemble des modules qui ont été présentés et qui forment une sorte de bibliothèque, il est possible de construire le simulateur LISACode, bien entendu, mais aussi plusieurs applications, ou exécutables. 
+
+L'application principale est le simulateur LISACode dans son ensemble. Il est créé à partir d'un programme principal qui possède les variables temporelles, un objet de type \emph{\textsf{Input\_Data}} qui configure la simulation, la liste des mémoires des satellites, le fichier d'enregistrement des signaux \emph{TDI}, une mémoire sur les temps de parcours utilisés dans l'application de \emph{TDI},  une mémoire pour les positions des satellites,  un objet de type \emph{\textsf{LISA}} qui représente l'ensemble du détecteur, un objet de type \emph{\textsf{TDI\_InterData}} qui calcule les signaux \emph{TDI} intermédiaires et une liste d'objets de type \emph{\textsf{TDI}} qui représente les générateurs.
+
+Ce programme principal qui effectue l'avancement temporel au pas de temps de mesure, a une progression séquentielle en trois phases :
+\begin{enumerate}
+\item Il configure le simulateur avec l'objet de type \emph{\textsf{Input\_Data}}  qui interprète le fichier de configuration. Puis il initialise toutes les variables et les objets. L'initialisation de certains objets nécessite un fonctionnement à vide sans avancement temporel pour stabiliser les filtres notamment.
+\item La simulation de LISA est en fonction et fournit des données, au pas de temps de mesure, aux mémoires des satellites et des temps de parcours. Mais \emph{TDI} n'est pas encore appliqué car il n'y a pas assez de signaux de mesures mémorisés pour pouvoir appliquer les opérateurs de retard.
+\item La simulation de LISA poursuit son fonctionnement et la méthode \emph{TDI} est appliquée et fournit les flux de données correspondant aux générateurs.
+\end{enumerate}
+
+Dans la mémorisation des temps de parcours, une erreur peut être ajoutée. Elle permet de simuler la méconnaissance des retards dans l'application de \emph{TDI} et d'estimer les limites acceptables de celle-ci comme on le verra dans la partie~\ref{SS:ResTech_DeltaL}.
+
+Il existe deux exécutables secondaires basés sur les mêmes modules. Le premier, \emph{\textsf{DnonGW}}, permet de calculer les signaux gravitationnels, c'est-à-dire les variations relatives de fréquence induites par des ondes gravitationnelles sur les bras de LISA. Il possède une liste des ondes gravitationnelles, un objet de type \emph{\textsf{TrFctGW}} qui calcule le signal gravitationnel et le fichier de sortie des signaux ainsi que différents autres fichiers de sortie. Il possède également un objet de type \emph{\textsf{Input\_Data}} qui crée les ondes gravitationnelles et spécifie les paramètres de simulation à partir d'un fichier identique à celui utilisé pour LISACode mais, cette fois, seules les ondes gravitationnelles sont vraiment utilisées.
+
+Le deuxième exécutable secondaire, \emph{\textsf{TDIApply}}, permet d'appliquer \emph{TDI} sur des signaux de mesures enregistrés dans des fichiers en utilisant un fichier de temps de parcours pour obtenir les retards. Il possède le module mémoire, le module \emph{TDI} et un objet de type \emph{\textsf{Input\_Data}} qui spécifie les générateurs \emph{TDI} ainsi que les fichiers d'entrées et de sorties. Les fichiers d'entrée des signaux de mesures et des temps de parcours sont dans le même format que ceux produits par LISACode. Ainsi on peut appliquer de nouveaux générateurs \emph{TDI} sans refaire de simulation complète. Mais on peut également utiliser ce programme pour appliquer \emph{TDI} sur les signaux de mesures réels que fournira la mission ! 
+
+Il existe aussi un exécutable de test par module qui permet de tester son fonctionnement et de faire des applications rapides.
+
+La gestion de l'ensemble de ces modules et exécutables est basée sur le système \textsf{automake}. Il permet de créer une distribution de LISACode qui peut s'installer sous les systèmes UNIX et Mac comme une application UNIX standard. 
+
+\vspace{1cm}
+
+% Conclusion
+LISACode est un simulateur scientifique de LISA qui tient son réalisme d'une organisation proche de celle du détecteur. Son architecture flexible lui permet d'aborder la simulation aussi bien d'un point technologique que d'un point de vue traitement du signal. De plus sa simplicité d'utilisation et sa compatibilité lui permettent d'être utilisé par toute la communauté scientifique.  
+
+
+
+\bibliography{ManuelFR_v1.4}
+
+%\bibliographystyle{plain}
+%\bibliography{/Users/petiteau/Documents/Rapport/BiblioLISA}
+
+
+%\begin{thebibliography}{99}
+%\bibitem{LISACode}A. Petiteau and al. ''LISACode: A scientific simulator of LISA'', 
+%Publication in progress ...  (2007).
+%\bibitem{PrePhaseAReport}LISA Pre-Phase A Report, 2nd Ed. (1998): \\ http://www.srl.caltech.edu/lisa/documents/PrePhaseA.pdf 
+%\bibitem{TDIVinet}S. V. Dhurandhar, K. Rajesh Nayak, and J.-Y. Vinet, 
+%"Algebraic Approach to Time-Delay Data Analysis for LISA", Phys. Rev. D. 65, 102002 (2002).
+%\bibitem{TDITinto}M. Tinto, F. B. Estabrook, and J. W. Armstrong, "Time-Delay Interferometry for LISA", Phys. Rev. D 65, 082003 (2002). 
+%\bibitem{2PN}  L. Blanchet et al. Class. Quantum Grav. 13(1996) 575-584; L. Blanchet. Class. Quantum Grav. 15(1998) 113; L.Blanchet et al. Phys. Rev. D 65 061501; L. Blanchet et al. Phys. Rev. D 71, 129902(E) (2005)
+%\end{thebibliography}
+
+\end{document}
+

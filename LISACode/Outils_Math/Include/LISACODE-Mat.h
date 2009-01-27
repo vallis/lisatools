@@ -20,7 +20,7 @@
 #define __MAT_H
 
 #include <stdexcept>
-#include <iostream>
+#include <iostream.h>
 #include <math.h>
 #include "LISACODE-Vect.h"
 using namespace std;

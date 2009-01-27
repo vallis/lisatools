@@ -5,7 +5,7 @@
 #ifndef _ELLIPTICFILTER_H_
 #define _ELLIPTICFILTER_H_
 
-#include <iostream>
+#include <iostream.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>

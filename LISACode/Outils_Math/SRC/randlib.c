@@ -1,6 +1,3 @@
-/*!\file randlib.c
-  \brief Randlib functions.
-*/
 #include "randlib.h"
 #include <stdio.h>
 #include <math.h>
@@ -9,18 +6,6 @@
 #define min(a,b) ((a) <= (b) ? (a) : (b))
 #define max(a,b) ((a) >= (b) ? (a) : (b))
 void ftnstop(char*);
-
-/*! \brief Generates beta random deviate.
- *    
- * Returns a single random deviate from the beta distribution with
- * parameters A and B.  The density of the beta is
- *              \f[\frac{x^{a-1} \cdot (1-x)^{b-1} }{B(a,b)}\f]
- * for 0 < \f$ x\f$ < 1
- * \arg aa First parameter of the beta distribution
- *      
- * \arg bb Second parameter of the beta distribution
-*/
-
 float genbet(float aa,float bb)
 /*
 **********************************************************************
@@ -42,7 +27,6 @@ float genbet(float aa,float bb)
      (Algorithms BB and BC)
 **********************************************************************
 */
-
 {
 /* JJV changed expmax (log(1.0E38)==87.49823), and added minlog */
 #define expmax 87.49823
@@ -708,14 +692,6 @@ static long i,itmp,iwhich,D1,D2;
         *(iarray+i-1) = itmp;
     }
 }
-/*!\brief Generates uniform real between LOW and HIGH.
- *
- * Generates a real uniformly distributed between LOW and HIGH.
- * \param low Low bound (exclusive) on real value to be generated
- * \param  high High bound (exclusive) on real value to be generated
- **********************************************************************
-*/
-
 float genunf(float low,float high)
 /*
 **********************************************************************

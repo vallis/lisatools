@@ -9,17 +9,50 @@
 \usepackage{natbib} 
 \usepackage{color} 
 \usepackage{amsmath} 
-\usepackage{epstopdf} 
+\usepackage{epstopdf}
+\usepackage{hyperref} 
 \pagestyle{headings} 
 
-%\usepackage{pstopdf}
-\pagestyle{headings}
+\setcounter{secnumdepth}{3}
 
+% Caractere francais
+\catcode`\ç=\active\defç{\c c}       
+\catcode`\ä=\active\defä{\"a}       
+\catcode`\ë=\active\defë{\"e}        
+\catcode`\ï=\active\defï{\"{\i}}     
+\catcode`\ö=\active\defö{\"o}        
+\catcode`\ü=\active\defü{\"u}        
+\catcode`\ÿ=\active\defÿ{\"y}        
+\catcode`\é=\active\defé{\'e}        
+\catcode`\É=\active\defÉ{\'E}        
+\catcode`\à=\active\defà{\`a}        
+\catcode`\è=\active\defè{\`e}        
+\catcode`\ù=\active\defù{\`u}        
+\catcode`\À=\active\defÀ{\`A}        
+\catcode`\â=\active\defâ{\^a}        
+\catcode`\ê=\active\defê{\^e}        
+\catcode`\î=\active\defî{\^{\i}}     
+\catcode`\ô=\active\defô{\^o}        
+\catcode`\û=\active\defû{\^u}        
+\catcode`\œ=\active\defœ{\oe } 
+
+\definecolor{pink}{rgb}{0.55,0,0.52}
+\definecolor{mygreen}{rgb}{0.19,0.55,0.11}
 
 \begin{document}
 \title{
-\Huge \bf LISACode \\ \Large version 1.4\\ \huge Un simulateur scientifique de LISA \\ Manuel d'utilisateur}
-\author{\Large \bf LISA France}
+\Huge \bf LISACode \\ 
+\vspace{0.5cm}
+\Large version 1.4.4\\
+\vspace{2cm}
+\huge Un simulateur scientifique de LISA \\
+\vspace{1cm}
+ Manuel utilisateur
+ }
+\author{
+\bf Antoine Petiteau \\
+\vspace{1cm}
+(LISA France)  } 
 \date{\today}
 \maketitle
 
@@ -27,20 +60,12 @@
 
 \newpage
 
-$ $
-%Redefinition de la hauteur de la page et du haut%
-\textheight 23.cm
-\topmargin 0.2cm
+\hphantom{a}
 
-
-\setcounter{page}{1}
-
-\tableofcontents
 \newpage
 
 
-
-\definecolor{pink}{rgb}{0.55,0,0.52}
+\tableofcontents
 
 
 \newpage
@@ -57,16 +82,16 @@ Les principales entr\'ees et sorties de LISACode sont des s\'equences temporelle
 
 Un certains nombres de forme d'OG peuvent \^etre d\'efinies mais il est \'egalemt possible d'utiliser le code en conjonction avec des simulateurs d'OG plus sophistiqu\'e via des fichiers de donn\'ees interm\'ediaires.\\
 
-Ce documents d\'ecrit, dans la partie II, la structure du code, dans la partie III, l'installation et dans la partie IV, l'utilisation de LISACode. La partie V d\'ecrit le fichier de configuration ainsi que les diff\'erents param\`etres qui configurent une simulation. \\
+Ce documents d\'ecrit, dans la section~\ref{SCode}, la structure du code, dans la section~\ref{SInstall}, l'installation et dans la section~\ref{SUse}, l'utilisation de LISACode. La section~\ref{SConfigFile} d\'ecrit le fichier de configuration ainsi que les diff\'erents param\`etres qui configurent une simulation. \\
 
 
 \section{Description du Code}
 \label{SCode}
 Ce simulateur est \'ecrit en C++ de fa\c{c}on \`a utiliser la modularit\'e de la programmation objet. La structure principale du code est illustr\'e sur la  figure \ref{Struct_LISACode}. Cette structure comprend les principaux composants du d\'ecteur LISA ainsi que les entr\'ees physiques.
 
-\begin{figure}[!h]
-\centering \includegraphics[width=14cm]{Figures/Structure.pdf}
-\caption{\small Structure du simulateur LISACode. Les boites \textcolor{red}{rouge} repr\'esentent les modules principaux et les boites en \textcolor{green}{vert} les modules d'interface. Le nom g\'en\'erique des modules est en \textcolor{blue}{bleu}.\small} 
+\begin{figure}[!htb]
+\centering \includegraphics[width=14cm]{Figures/Structure.eps}
+\caption{\small Structure du simulateur LISACode. Les boites \textcolor{red}{rouge} repr\'esentent les modules principaux et les boites en \textcolor{mygreen}{vert} les modules d'interface. Le nom g\'en\'erique des modules est en \textcolor{blue}{bleu}.\small} 
 \label{Struct_LISACode}
 \end{figure}
 
@@ -86,8 +111,8 @@ Il y a 9 modules :
 La figure \ref{Org_LISACode} montre l'organisation des biblioth\`eques utilis\'ees par LISACode. \\
 
 \begin{figure}[!h]
-\centering \includegraphics[width=15cm]{Figures/OrgPackage.pdf}
-\caption{\small Organisation et d\'ependance  des biblioth\`eques du simulateur. Les cadres en \textcolor{green}{verts} repr\'esentent les objets, en  \textcolor{red}{rouge}  les biblioth\`eques et  en \textcolor{pink}{violet}, les executables. \small} 
+\centering \includegraphics[width=15cm]{Figures/OrgPackage.eps}
+\caption{\small Organisation et d\'ependance  des biblioth\`eques du simulateur. Les cadres en \textcolor{mygreen}{verts} repr\'esentent les objets, en  \textcolor{red}{rouge}  les biblioth\`eques et  en \textcolor{pink}{violet}, les executables. \small} 
 \label{Org_LISACode}
 \end{figure}
 
@@ -95,9 +120,9 @@ La premi\`ere entr\'ee est les OG. Elles peuvent être d\'efinie en interne gr\^a
 
 Les orbites de LISA sont g\'en\'er\'es en interne par le code. Ils correspondent \`a des orbites r\'ealistes qui prennent en compte tant la respiration et la rotation de LISA que le mouvement autour du Soleil. Les param\`etres de ces orbites peuvent \^etre ajust\'ees pour modifier la distance moyenne entre satellites ($5 \times 10^{9} \; m$ nominalement) ou pour fixer LISA \`a une certaine position. La position initial peut aussi \^etre d\'efinie en entr\'ee.\\
 
-Un ingr\'edient important de la r\'eponse de LISA et par cons\'equent des codes est la sp\'ecification de bruits de diff\'erente nature. Cela inclut le bruit optique du au \emph{shot noise} aux \'el\'ements d\'ecris dans le taleau \ref{table_error}. Le bruit des masses inertielles et le bruit laser peuvent aussi \^etre d\'efinis en entr\'ee. Normalement, ces bruits sont d\'efinis comme des bruits blancs dans une bande fr\'equentielle d\'efinie mais diff\'erentes formes peuvent \^etre utilis\'ees.
+Un ingr\'edient important de la r\'eponse de LISA et par cons\'equent des codes est la sp\'ecification de bruits de diff\'erente nature. Cela inclut le bruit optique du au \emph{shot noise} aux \'el\'ements d\'ecris dans le tableau \ref{table_error}. Le bruit des masses inertielles et le bruit laser peuvent aussi \^etre d\'efinis en entr\'ee. Normalement, ces bruits sont d\'efinis comme des bruits blancs dans une bande fr\'equentielle d\'efinie mais diff\'erentes formes peuvent \^etre utilis\'ees.
 \begin{table}[htdp] 
-\caption{Budget des erreurs bas\'e sur le tableau 4.1 du  \cite{PrePhaseAReport}.  
+\caption{Budget des erreurs bas\'e sur le tableau 4.1 du  \cite{LISAPPA}.  
 La quatri\`eme colonne donne les erreurs par d\'efaut utilis\'ees dans LISACode. Ces valeurs peuvent \^etre modifi\'ees par l'utilisateur. La d\'ependance fr\'equentielle de ces bruits et discut\'es dans \ref{SSSConfigGW}} 
 \begin{center} 
 \small
@@ -139,7 +164,6 @@ Ce signal peut-\^etre sauvegard\'e dans un fichier et/ou trait\'e par le module 
 La description du code ci-dessus est seulement un bref r\'esum\'e de ses capacit\'es.
 
 
-\newpage
 
 %%%%%%%%%%%
 %  INSTALLATION  %
@@ -160,11 +184,11 @@ Il existe \'egalement un ex\'ecutable sous Windows (test\'e uniquement sous Wind
 \label{SSSInstallUNIX}
 L'installation se fait de la m\^eme mani\`ere qu'un progamme "standard" sous UNIX. Les instructions \`a suivre sont les suivantes : 
 \begin{enumerate}
-\item T\'el\'echarer le fichier lisacode-1.3.tar.gz\\ (sur le web : http://www.apc.univ-paris7.fr/Downloads/lisa/LISACode/ )\\ et d\'eplacer le fichier dans le r\'epertoire ({\it MyDirectory} dans l'exemple) o\`u vous souhaitez installer LISACode.
+\item T\'el\'echarer le fichier lisacode-1.4.4.tar.gz\\ (sur le web : http://www.apc.univ-paris7.fr/Downloads/lisa/LISACode/ )\\ et d\'eplacer le fichier dans le r\'epertoire ({\it MyDirectory} dans l'exemple) o\`u vous souhaitez installer LISACode.
 \item D\'ecompresser la fichier : \\
-\hphantom{aaaaa}\texttt{tar xvzf lisacode-1.3.tar.gz }\\
+\hphantom{aaaaa}\texttt{tar xvzf lisacode-1.4.4.tar.gz }\\
 \item Aller dans le r\'epertoire {\it LISA\_Sim\_Tdi} :\\
-\hphantom{aaaaa}\texttt{cd MyDirectory/lisacode-1.3 }\\
+\hphantom{aaaaa}\texttt{cd MyDirectory/lisacode-1.4.4 }\\
 \item Ex\'ecuter le script de configuration, {\it configure}, pour creer les {\it makefile} , en tapant : \\
 \hphantom{aaaaa}\texttt{./configure}\\
 Il est possible d'ajouter des options de compilation et de sp\'ecifier le r\'epertoire o\`u les ex\'ecutable seront install\'es (voir la partie \ref{SSSInstallConfig} ou le fichier {\it INSTALL} pour plus d'informations sur ces deux points techniques).
@@ -174,7 +198,7 @@ Il est possible d'ajouter des options de compilation et de sp\'ecifier le r\'epe
 \hphantom{aaaaa}\texttt{make install}
 \end{enumerate}
 
-Si le programme s'est install\'e normalement, 3 ex\'ecutables se trouvent dans un r\'epertoire {\it MyDirectory/lisacode-1.3/Main/Test}. Les 3 ex\'ecutables sont :
+Si le programme s'est install\'e normalement, 3 ex\'ecutables se trouvent dans un r\'epertoire {\it MyDirectory/lisacode-1.4.4/Main/Test}. Les 3 ex\'ecutables sont :
 \begin{itemize}
 \item {\em LISACode} : Le programme de simulation principal qui mod\'elise les ondes gravitationnelles,
 les “passe” dans l'ensemble du d\'etecteur et applique la pr\'e-analyse TDI sur les donn\'ees de sortie.
@@ -189,12 +213,15 @@ Pour plus de praticit\'e, copiez les ex\'ecutables dans votre r\'epertoire de tr
 
 \subsubsection{Option d'installation}
 \label{SSSInstallConfig}
-Les diff\'erentes options d'installation possibles sont d\'etaill\'ees dans le fichier  {\it INSTALL} situ\'e dans {\it MyDirectory/lisacode-1.3}.\\
+Les diff\'erentes options d'installation possibles sont d\'etaill\'ees dans le fichier  {\it INSTALL} situ\'e dans {\it MyDirectory/lisacode-1.4.4}.\\
+
+IMPORTANT : Si \`a la configuration le chemin du r\'epertoire contenant la {\bf fftw3} n'est pas trouv\'e, il faut le sp\'ecifier explicitement en ajoutant les arguments : \\
+ {\tt CPPFLAGS=-I/cheminfftw3/include LDFLAGS=-L/cheminfftw3/lib} \\
 
 Les options de compilation doivent \^etre sp\'ecifi\'e au moment de la configuration. Apr\`es le \texttt{./configure}, \texttt{CXXFLAGS=} suivi des options de compilation entre guillemets.Par exemple, pour optimiser la compilation sous un PowerPCG5, l'option est {\it -O3 -fast} d'o\`u la commande suivante pour l'installation : \\
 \hphantom{aaaaa}\texttt{./configure CXXFLAGS="-O3 -fast -Wno-deprecated"} \\ 
 
-Il est \'egalement possible de sp\'ecifier le chemin du r\'epertoire dans lequel les ex\'ecutables seront install\'es lors du \texttt{make install}. Pour cela, taper \texttt{--prefix=} suivi du chemin du r\'epertoire entre guillemets. Par exemple, la commande pour la configuration sous PowerPCG5 avec les ex\'ecutables dans le r\'epertoire{\it MyExe} est :
+Il est \'egalement possible de sp\'ecifier le chemin du r\'epertoire dans lequel les ex\'ecutables seront install\'es lors du \texttt{make install}. Pour cela, taper \texttt{--prefix=} suivi du chemin du r\'epertoire entre guillemets. Par exemple, la commande pour la configuration sous PowerPCG5 avec les ex\'ecutables dans le r\'epertoire {\it MyExe} est : \\
 \hphantom{aaaaa}\texttt{./configure CXXFLAGS="-O3 -fast -Wno-deprecated" --prefix="MyExe"} \\
 
 
@@ -205,23 +232,45 @@ Pour tester le fonctionnement du simulateur, utilisez le fichier de configuratio
 %\item Copier le fichier {\it ConfigRefBase} situ\'e dans le r\'epertoire {\it Main/Test} , dans le r\'epertoire d'installation (dans l'exemple : ”\texttt{../chemin/du/repertoire/}”).
 \item Se placer dans ce r\'epertoire d'installation.
 \item Lancer le simulateur : {\it LISACode} suivi du nom du fichier de configuration puis de "123456" (graine du g\'en\'erateur al\'eatoire). \\
-\hphantom{aaaaa}\texttt{./LISACode ConfigRefBase 123456}
+\hphantom{aaaaa}\texttt{./LISACode  MyDirectory/lisacode-1.4.4/Example\_Input/ConfigRefBase 123456}
 \end{enumerate}
 Le programme met entre  10 secondes et  15 minutes pour ex\'ecuter les 10 000 s de la simulation. L'affichage final est  : \\
+
 \texttt{...}\\
-\texttt{10000 s     \#0100 \%} \\
-\hphantom{aaaaa}\texttt{ X = 9.41546278836602e-19}\\
-\hphantom{aaaaa}\texttt{ Y = 9.73859038667986e-19}\\
-\hphantom{aaaaa}\texttt{ Z = 9.28457478808582e-19}\\
-\hphantom{aaaaa}\texttt{ AlphaMan = 6.41358600758029e-19}\\
-\hphantom{aaaaa}\texttt{ Beta = 6.48014274920517e-19}\\
-\hphantom{aaaaa}\texttt{  X2s1 = 8.97752170019294e-19}\\
-\hphantom{aaaaa}\texttt{ X2s2 = 9.41500592699302e-19}\\
-\hphantom{aaaaa}\texttt{ X2s3 = 8.16992767767782e-19}\\
-\hphantom{aaaaa}\texttt{ P1 = 4.98540196959974e-19}\\
-\hphantom{aaaaa}\texttt{ Zeta1 = 7.07135169910109e-20}\\
-\texttt{Final time : 10001 s}\\
-\texttt{End}\\
+\texttt{9787 s    (remaining time : 00:00:00) \#0098 \%} \\
+\hphantom{a}\texttt{X = 1.54307511554625e-18} \\
+\hphantom{a}\texttt{Y = 2.23380376286915e-18} \\
+\hphantom{a}\texttt{Z = 2.03070569638376e-18} \\
+\hphantom{a}\texttt{X2s1 = 3.84102728265182e-18} \\
+\hphantom{a}\texttt{X2s2 = 7.30253602341876e-18} \\
+\hphantom{a}\texttt{X2s3 = 6.49295628725497e-18} \\
+\hphantom{a}\texttt{P1 = 1.66863806379042e-18} \\
+\hphantom{a}\texttt{Zeta1 = 9.83725319837678e-19} \\
+\hphantom{a}\texttt{A = 1.13116170136341e-18} \\
+\hphantom{a}\texttt{E = 2.24813370548819e-18} \\
+\hphantom{a}\texttt{T = 8.43890200220657e-19}\\
+\hphantom{a}\texttt{Alpha = 1.33468352729959e-18} \\
+\hphantom{a}\texttt{AlphaId = 1.33468352729959e-18} \\
+\hphantom{a}\texttt{Alphaf2 = 2.66936705459917e-18} \\
+\texttt{Final time : 10001 s} \\
+\hphantom{a}\\
+%\texttt{Header for binary file SCi(NRec=5), Pos(NRec=10) or Delay(NRec=7) :} \\
+%\texttt{\#TITLE SimDataTitle} \\
+%\texttt{\#RECORD NRec 10181} \\
+%\texttt{\#TIME -180 1 10000} \\
+%\hphantom{a} \\
+%\texttt{Header for binary file TDI :} \\
+%\texttt{\#TITLE TDIDataTitle} \\
+%\texttt{\#RECORD 11 10001} \\
+%\texttt{\#TIME 0.0 1 10000} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a}\texttt{Closing ASCII file.} \\
+\hphantom{a} \\
+\texttt{End} \\
+
 
 
 %
@@ -229,7 +278,10 @@ Le programme met entre  10 secondes et  15 minutes pour ex\'ecuter les 10 000 s 
 %
 \subsection{Sous Windows}
 \label{SWindows}
-Il existe un ex\'ecutable de LISACode sous Windows qui a \'et\'e test\'e sous Windows XP.
+Il faut utiliser Cygwin.
+
+Sinon il existe un ex\'ecutable de LISACode sous Windows qui a \'et\'e test\'e sous Windows XP mais aui n'est pas \`a jour !
+
 \subsubsection{Installation}
 \label{SSInstallWindows}
 Il n'y a pas d'installation \`a proprement parler ; il suffit juste de r\'eccup\'erer le fichier {\it LISACode\_1\_3\_for\_Windows.zip}  \`a l'adresse : \\
@@ -246,9 +298,6 @@ Il est possible de tester le fonctionnement du simulateur en utilisant un fichie
 On doit obtenir les m\^emes r\'esultats que ceux du chapitre~\ref{SSSTestFonctUNIX}.
 
 
-
-\newpage
-
 %%%%%%%%%%%
 %  USE LISACODE  %
 %%%%%%%%%%%
@@ -262,7 +311,16 @@ Le programme principal qui effectue toute la simulation (des ondes gravitationne
 {\it(si l'ex\'ecutable est dans le r\'epertoire de travail)}\\
 \hphantom{aaa}ou\\
 \hphantom{aaa}\texttt{../chemin/du/repertoire/d/installation/LISACode fichier\_de\_configuration}  \\
-{\it(si l'ex\'ecutable n'est pas dans le r\'epertoire de travail)}\\
+{\it(si l'ex\'ecutable n'est pas dans le r\'epertoire de travail)}
+
+Il est \'egalement possible de spécifier la racine du générateur de nombre aléatoire (\texttt{RandomSeed}) et des options par la ligne de commande :\\
+\hphantom{aaa}\texttt{./LISACode [Options] fichier\_de\_configuration RandomSeed}\\
+Les options possibles sont :
+\begin{itemize}
+\item \texttt{-h} : Ajoute une en-tête dans les fichiers binaires.
+\end{itemize}
+
+
 Il existe deux autres ex\'ecutables qui lisent \'egalement les informations du fichier de configuration. Ces deux ex\'ecutables n'effectuent qu’une partie de la simulation : \\
 \begin{itemize}
 \item {\it \bf DnonGW} : Ce programme effectue le calcul de la variation relative de fr\'equence des faisceaux lasers arrivant sur chaque phasem\`etre en tenant uniquement compte des ondes gravitationnelles (sp\'ecifi\'ees dans le fichier de configurations). Il donne en sortie trois fichiers (dont le nom ne peut pas \^etre sp\'ecifi\'e) qui sont : \\
@@ -283,13 +341,15 @@ Les param\`etres temporelles de la simulation sont ceux sp\'ecifi\'es dans le fi
 %%%%%%%%%%%%%%%
 
 \section{Fichier de configuration}
-\label{SSConfigFile}
+\label{SConfigFile}
 
 % Generalites  
 %%%%%%%%
 \subsection{G\'en\'eralit\'es}
 \label{SSConfGen}
-Ce fichier contient toutes les information pour configurer le simulateur. Il y a deux types de fichier possibles : ASCII ou XML. Le fichier XML peut \^etre construit avec le logiciel d'interface graphique {\it LISA\_AutoGUI.jar}. Les tableaux \ref{table_paramTime} , \ref{table_paramPrecisionTDI}, \ref{table_paramOrbits}, \ref{table_paramDetector}, \ref{table_paramRecord}, \ref{table_paramGW}, \ref{table_paramNoise} , \ref{table_paramUSO} and \ref{table_paramTDI}  listent les param\`etres.
+Ce fichier contient toutes les information pour configurer le simulateur. Il y a deux types de fichier possibles : ASCII (cf.~\ref{SSConfACII}) ou XML (cf.~\ref{SSConfXML}). 
+%Le fichier XML peut \^etre construit avec le logiciel d'interface graphique {\it LISA\_AutoGUI.jar}. 
+Les tableaux \ref{table_paramTime} , \ref{table_paramPrecisionTDI}, \ref{table_paramOrbits}, \ref{table_paramDetector}, \ref{table_paramRecord}, \ref{table_paramGW}, \ref{table_paramNoise} , \ref{table_paramUSO} and \ref{table_paramTDI}  listent les param\`etres.
 \begin{table}[p] 
 \caption{Liste des param\`etres utilis\'es pour configurer la simulation dont le type est \textbf{Time}. }
 \begin{center} 
@@ -461,8 +521,8 @@ PostNewtonBinary & gw & Facteur Post-Newtonien. &  & 1 \\
 \label{table_paramGW} 
 \end{table}
 
-\begin{figure}[p] 
-\centering \includegraphics[width=10cm]{Figures/GWParameters.pdf} 
+\begin{figure}[!htb] 
+\centering \includegraphics[width=8cm]{Figures/GWParameters2.eps} 
 \caption{\small Description sch\'ematique des param\`etres de l'OG et des r\'ef\'erentiels.  La direction de la source est rep\'er\'e par la  d\'eclinaison $\beta$ et de la longitude \'ecliptique$\lambda$. ($ \widehat{\theta}$, $ \widehat{\phi}$, $\widehat{n}$) est le r\'ef\'erentiel observationnelle, i.e. le rep\`ere construit sur la direction de la source. Dans ce rep\`ere $ \widehat{\theta}$ est sur un m\'eridien. ($ \widehat{p}$, $ \widehat{q}$, $\widehat{n}$) est le r\'ef\'erentiel canonique .  
 $\psi$ est l'angel de polarisation, i. e. l'angle entre le r\'ef\'erentiel canonique et le r\'efrentiel observationnel.} 
 \label{GWParameters} 
@@ -501,8 +561,8 @@ Type & FilterCoef  & Bruit filtr\'e o\`u les coefficients du filtre sont sp\'eci
 \label{table_paramNoise} 
 \end{table}
 
-\begin{figure}[p] 
-\centering \includegraphics[width=10cm]{Figures/SchBOSC1.pdf} 
+\begin{figure}[!htb] 
+\centering \includegraphics[width=10cm]{Figures/SchBOSC1.eps} 
 \caption{\small Repr\'esentation sch\'ematique des deux bancs optique du satellite 1.  
 $s_{i}$ et$s'_{i}$ sont les phasem\`etres qui mesurent les interf\'erence entre le faisceau provenant du satellite distant et le faisceau du banc optique local, i.e. contenant le phasem\`etre. $\tau_{i}$ and $\tau'_{i}$ sont les phasem\`etres qui mesurentles interf\'erence entre les faisceaux de l'autre banc optique du m\^eme satellite et le faisceau du banc optique qui contient le phasem\`etre. $p$ est le laser et   
 $\delta$ est la masse inertielle(formulation de \cite{TDITinto}).}   
@@ -528,7 +588,7 @@ Nom & D\'etails & Unit\'es & Valeur standard   \\
 \end{table}
 
 \begin{table}[p] 
-\caption{Liste des param\`etres utilis\'es pour configurer la simulation dont le type est  \textbf{TDI}. (\textbf{SC} satellite moyen)}
+\caption{Liste des g\'en\'erateurs pr\'ed\'efinis dans LISACode ; type \textbf{TDI}.}
 \begin{center} 
 \begin{tabular}{|p{35.mm}|p{60.mm}|p{65.mm}|} 
 \hline
@@ -536,11 +596,11 @@ Nom & D\'etails & Pack Value (in LISACode) \\
 \hline
 {\it Any name} & G\'en\'erateur TDI & \`a d\'efinir apr\`es le nom \\ 
 \hline
-X or Xf or X1s1 & Michelson premi\`ere g\'en\'eration centr\'e sur SC1 & 1 , 35 , 364 , 3653 , -4 , -53 , -521 , -5235  \\ 
+X or Xf or X1s1 & Michelson de g\'en\'eration 1.5 centr\'e sur SC1 & 1 , 35 , 364 , 3653 , -4 , -53 , -521 , -5235  \\ 
 \hline
-Y or Yf or X1s2 & Michelson premi\`ere g\'en\'eration centr\'e sur SC2 & 2 , 16 , 145 , 1461 , -5 , -61 , -632 , -6316  \\ 
+Y or Yf or X1s2 & Michelson de g\'en\'eration 1.5 centr\'e sur SC2 & 2 , 16 , 145 , 1461 , -5 , -61 , -632 , -6316  \\ 
 \hline
-Z or Zf or X1s3 & Michelson premi\`ere g\'en\'eration centr\'e sur SC3 & 3 , 24 , 256 , 2542 , -6 , -42 , -413 , -4124  \\ 
+Z or Zf or X1s3 & Michelson de g\'en\'eration 1.5 centr\'e sur SC3 & 3 , 24 , 256 , 2542 , -6 , -42 , -413 , -4124  \\ 
 \hline
 X2 or Xf2 or X2s1 & Michelson seconde g\'en\'eration centr\'e sur SC1 & 1 , 35 , 364 , 3653 , 36524 , 365253 , 3652521 , 36525235 ,  -4 , -53 , -521 , -5235 , -52361 , -523635 , -5236364 , -52363653  \\ 
 \hline
@@ -548,23 +608,35 @@ Y2 or Yf2 or X2s2 & Michelson seconde g\'en\'eration centr\'e sur SC2 & 2 , 16 ,
 \hline
 Z2 or Zf2 or X2s3 & Michelson seconde g\'en\'eration centr\'e sur SC3 & 3 , 24 , 256 , 2542 , 25416 , 254142 , 2541413 , 25414124 , -6 , -42 , -413 , -4124 , -41253 , -412524 , -4125256 , -41252542  \\ 
 \hline
-Alpha or alpha & G\'en\'erateur 1i\`ere g\'en\'eration $\alpha$ & -1 , -32 ,  -133 , 4 , 455 , 56  \\ 
+Alpha or alpha & G\'en\'erateur de  g\'en\'eration 1.5 $\alpha$ & -1 , -32 ,  -133 , 4 , 455 , 56  \\ 
 \hline
-Beta or beta & G\'en\'erateur premi\`ere g\'en\'eration $\beta$ & -121 , -2 , -13 , 64 , 5 , 566  \\ 
+Beta or beta & G\'en\'erateur de g\'en\'eration 1.5 $\beta$ & -121 , -2 , -13 , 64 , 5 , 566  \\ 
 \hline
-Gamma or gamma &G\'en\'erateur premi\`ere g\'en\'eration $\gamma$ & -21 , -232 , -3 , 464 , 45 , 6  \\ 
+Gamma or gamma &G\'en\'erateur de g\'en\'eration 1.5 $\gamma$ & -21 , -232 , -3 , 464 , 45 , 6  \\ 
 \hline
-P1 & G\'en\'erateur Beacon sans faisceau re\'cu sur SC1 & 25 , -63 , -22 , 66 , 642 , -216 , 1463 , -1425  \\ 
+P1 & G\'en\'erateur Beacon sans faisceau re\c cu sur SC1 & 25 , -63 , -22 , 66 , 642 , -216 , 1463 , -1425  \\ 
 \hline
-Q1 & G\'en\'erateur Beacon sans faisceau re\'cu sur SC2 & 36 , -41 , -33 , 44 , 453 , -324 , 2541 , -2536  \\ 
+Q1 & G\'en\'erateur Beacon sans faisceau re\c cu sur SC2 & 36 , -41 , -33 , 44 , 453 , -324 , 2541 , -2536  \\ 
 \hline
-R1 & G\'en\'erateur Beacon sans faisceau re\'cu sur SC3 & 14 , -52 , -11 , 55 , 561 , -135 , 3652 , -3614  \\ 
+R1 & G\'en\'erateur Beacon sans faisceau re\c cu sur SC3 & 14 , -52 , -11 , 55 , 561 , -135 , 3652 , -3614  \\ 
 \hline
 E1 & G\'en\'erateur Moniteur sans faisceau \'emis sur SC1 & 542 , 56 , -316 , -32 , -144 , 141 , 4 , -1  \\ 
 \hline
 F1 & G\'en\'erateur Moniteur sans faisceau \'emis sur SC2 & 653 , 64 , -124 , -13 , -255 , 252 , 5 , -2  \\ 
 \hline
-G1 & G\'en\'erateur Moniteur sans faisceau \'emis sur SC3 & 461 , 45 , -235 , -21 , -366 , 363 , 6 , -3  \\ 
+G1 & G\'en\'erateur Moniteur sans faisceau \'emis sur SC3 & 461 , 45 , -235 , -21 , -366 , 363 , 6 , -3 \\
+\hline
+\end{tabular}
+\end{center} 
+\label{table_paramTDI} 
+\end{table}
+
+\begin{table}[p] 
+\caption{Suite du tableau~\ref{table_paramTDI}; type \textbf{TDI}.}
+\begin{center} 
+\begin{tabular}{|p{35.mm}|p{60.mm}|p{65.mm}|}
+\hline
+Nom & D\'etails & Pack Value (in LISACode) \\
 \hline
 U1 & G\'en\'erateur Relay sans faisceau de SC3 \`a SC1 et de SC1 \`a SC2 & 145 , 1464 , -5 , -64 , 16 , 2 , -6542 , -656  \\ 
 \hline
@@ -572,9 +644,21 @@ V1 & G\'en\'erateur Relay sans faisceau de SC1 \`a SC2 et de SC2 \`a SC3 & 256 ,
 \hline
 W1 & G\'en\'erateur Relay sans faisceau de SC2 \`a SC3 et de SC3 \`a SC1 & 364 , 3656 , -4 , -56 , 35 , 1 , -5461 , -545  \\ 
 \hline
+A ou Aa ou AX & G\'en\'erateur \`a bruit non-corr\'el\'e & [X]  $\times -1/\sqrt{2}$ , [Z] $\times1/\sqrt{2}$\\ 
+\hline
+E ou Ea ou EX & G\'en\'erateur \`a bruit non-corr\'el\'e & [X] $\times 1/\sqrt{6}$ , [Y] $\times -2/\sqrt{6}$ , [Z] $\times 1/\sqrt{6}$\\ 
+\hline
+T ou Ta ou TX & G\'en\'erateur \`a bruit non-corr\'el\'e & [X] $\times 1/\sqrt{3}$ , [Y] $\times 1/\sqrt{3}$ , [Z] $\times 1/\sqrt{3}$ \\
+\hline
+Ab ou AMLDC & G\'en\'erateur \`a bruit non-corr\'el\'e & [X]  $\times 2/3$ , [Y] $\times -1/3$ , [Z] $\times -1/3$\\ 
+\hline
+Eb ou EMLDC & G\'en\'erateur \`a bruit non-corr\'el\'e & [Y] $\times  -1/\sqrt{3}$ , [Z] $\times 1/\sqrt{3}$\\ 
+\hline
+Tb ou TMLDC & G\'en\'erateur \`a bruit non-corr\'el\'e & [X] $\times -\sqrt{2}/3$ , [Y] $\times -\sqrt{2}/3$ , [Z] $\times -\sqrt{2}/3$ \\
+\hline
 \end{tabular} 
 \end{center} 
-\label{table_paramTDI} 
+\label{table_paramTDI2} 
 \end{table}
 
 
@@ -599,6 +683,7 @@ LISACode peut lire les informations de configuration de la simulation dans un fi
 \subsubsection{Configuration des temps}
 \label{SSSConfigTime}
 Le mot cl\'e principal d'une ligne de configuration d'un param\`etre temporel est  \texttt{Time}. Une liste des parametres est donnee dans la tableau \ref{table_paramTime}. Les diff\'erents param\`etres temporels et les lignes les configurant sont :
+
 \begin{itemize}
 \item { \it Pas de temps physique} : C'est le pas de temps le plus petit de la simulation. Il correspond \`a la simulation des ph\'enom\`enes continus.\\
 Ligne de configuration pour un pas de temps physique de 0.5 s : \\
@@ -669,9 +754,23 @@ Ligne de configuration pour d\'efinir un temps de d\'emarrage des orbites de $5 
 Ligne de configuration pour d\'efinir un angle de rotation de $ \pi / 6$ par rapport a la configuration de base : \\
 \hphantom{aaaaa}\texttt{Orbits : InitialRotation 0.523598776 ;}  \\
 
-\item { \it Mouvement des satellites } : Ce param\`etre permet de mettre en mouvement ou non les satellites de LISA ainsi que de choisir le type d'orbites. On met \texttt{0} pour fixer les satellites, \texttt{1} pour les mettre en mouvement selon les orbites d\'efini par le laboratoire ARTEMIS \cite{OrbitLISA} et \texttt{2} pour les mettre en mouvement selon les orbites d\'efini par le Mock LISA Data Challenge \cite{SyntheticLISA}.\\
-Ligne de configuration pour d\'efinir une simulation avec LISA mobile : \\
-\hphantom{aaaaa}\texttt{Orbits : Move On ;}  \\
+\item { \it Type d'orbites } : Ce param\`etre {\tt Type} permet de sp\'ecifier le type d'orbites utilis\'es : 
+\begin{itemize}
+\item{ \tt LISACode} : orbites d\'efinies par le laboratoire ARTEMIS~\cite{OrbitLISA}. 
+\item{ {\tt MLDC} ou {\tt Pseudo\_LISA} } : orbites d\'efinies  par le Mock LISA Data Challenge~\cite{SyntheticLISA}.
+\item{ \tt ESA} : orbites issues d'un calcul de l'ESA prenant en compte des éphémérides pour les autres corps du système solaire (lu dans le fichier 'Orbit\_ESA.input.txt'). 
+\end{itemize}
+Ligne de configuration pour d\'efinir une simulation utilisant les orbites d\'efinies par le laboratoire ARTEMIS~\cite{OrbitLISA} : \\
+\hphantom{aaaaa}\texttt{Orbits : Type LISACode ;}  \\
+
+\item { \it Approximation dans le calcul des orbites } : Ce param\`etre {\tt Approx} permet de sp\'ecifier le type d'orbites utilis\'es : 
+\begin{itemize}
+\item{ \tt Static} : Satellites fixes. 
+\item{ \tt Rigid} : Satellites en mouvement avec une configuration rigide si les orbites du MLDC sont utilis\'es.
+\item{ \tt Eccentric} : Satellites en mouvement avec une configuration rigide si les orbites du MLDC sont utilis\'es (identique \`a {\tt Eccentric} si les orbites sont du type { \tt LISACode} ou { \tt ESA}). 
+\end{itemize}
+Ligne de configuration pour d\'efinir une simulation utilisant les orbites d\'efinies par le laboratoire ARTEMIS~\cite{OrbitLISA} : \\
+\hphantom{aaaaa}\texttt{Orbits : Approx Eccentric ;}  \\
 
 \item { \it Ordre dans le calcul des temps de propagation } : Ce param\`etre sp\'ecifie la precision avec lequel est fait le calcul du temps de parcours des photons entre satellites. Le parametre est a 0 pour un calcul classique considerant uniquement la distance entre satellite. Il est a1 pour un calcul tenant compte de l'effet Sagnac du a la rotation du trianlge c'est-a-dire que le long d'un meme bras les temps parcours different. Il est 2 pour un calcul tenant compte des effets de la relativit\'e g\'en\'erale. Si les satellites sont fixes (\texttt{Move Off}), on ne peut pas sp\'ecifier un autre ordre que 0.\\
 Ligne de configuration pour d\'efinir un calcul relativiste des temps de propagation : \\
@@ -725,7 +824,13 @@ Ligne de configuration pour fitrer les signaux dans le phasem\`etre : \\
 \item { \it Parametrisation du filtre elliptique du phasemetre} : Il y 4 parametres pour definir le filtre du phasemetre : l'attenuation en decibels caracterisee par le mot-cle \texttt{attenuation}, l'oscillation en bande passante  en decibels caracterisee par le mot-cle \texttt{oscillation}, la frequence de coupure haute definie comme un facteur (inferieur a 1) de la frequence de mesure caracterisee par le mot-cle \texttt{FactFmesForHighFreq} et la frequence de coupure basse definie comme un facteur (inferieur a 1) de la frequence de mesure caracterisee par le mot-cle \texttt{FactFmesForLowFreq}.\\
 Ligne de configuration pour un filtre (filtre par defaut) d'attenuation de 180 dB , d'oscillation en bande passante de 0.1 dB, de frequence de coupure haute egal a 0.1 fois la frequence de mesure et de frequence de coupure basse egal a 0.3 fois la frequence de mesure : \\
 \hphantom{aaaaa}\texttt{Detector : PhaMetFilterParameters : attenuation 180 oscillation 0.1 FactFmesForHighFreq 0.1 FactFmesForLowFreq 0.3 ;}  \\
+
+\item { \it Phasem\`etres interne dans les fichiers de sorties} : Sp\'ecifie si les donn\'ees des phasemetres internes sont dans les fichiers de sorties dans le cas sans bruit. Deux valeurs possibles : {\tt Always}, les donn\'ees sont toujours \'ecrites; {\tt IfNoises}, les donn\'ees sont \'ecrites seulement si les bruits sont consid\'er\'e dans la simulation (puisque dans ce cas ils ne sont pas nulles !). Exemple :
+\hphantom{aaaaa}\texttt{Detector : InternalPhasemeters IfNoises ;}  \\
+
 \end{itemize}
+
+
 
 % Output record configuration
 \subsubsection{Configuration des fichiers de sorties}
@@ -786,13 +891,34 @@ A &=& {2 G^2 \over c^4} {m_1 m_2 \over R r} \label{ABinFixF}
 Ligne de configuration pour d\'efinir une onde gravitationnelle issue d'une binaire de direction $\beta = 37.34^{o}$, $\lambda= 350^{o}$, l’angle de polarisation $\psi = 141.06^{o}$, de masses $M1 = 0.5 M_S$ et $M2 = 0.033 M_S$ , de fr\'equence f$ = 9.72044 \times 10^{-4}$, d'inclinaison $i = 88^{o}$, de phase initiale $\psi_0 = 0^{o}$ et de s\'eparation $r = 0.1$ kpc : \\
 \hphantom{aaaaa}\texttt{GW : Bet 37.34 , Lam 350 , Psi 141.06 : Binary : M1 0.5 , M2 0.033 , forb 9.72044e-4 , inc 88 , phi0 0 , r 0.1 ;}  \\
 
-\item { \it Onde gravitationnelle d'une binaire de fréquence fixée } \texttt{\{PostNewtonBinary\}} : Onde gravitationnelle issue d'une source binaire calculee dans l'approximation Post- Newtonienne a 1 PN ou 2.5 PN  pour laquelle on d\'efinit les masses des deux astres $m_{1}$ \texttt{\{M1\}} et $m_{2}$ \texttt{\{M2\}} en masse solaire, le temps de coalescence  $t_{coal}$ \texttt{\{tcoal\}} en seconds, l'angle d'inclinaison $i$ \texttt{\{inc\}} en degrees, la phase initiale $\phi_{0}$ \texttt{\{Phi0\}} entre $0$ et $2\pi$ et la distance entre la source et le d\'etecteur $r$ \texttt{\{r\}} en kpc. L'ordre Post-Newtonien du calcul est de 1 PN lorsque le parametre \texttt{\{type\}} est a 1 ou de 2.5 PN lorsque le parametre \texttt{\{type\}} est a 2. Pour le calcul a 2.5 PN, il faut preciser 3 parametres qui sont : une phase initial arbitraire \texttt{\{omega0\}}, la phase a l'entree du detecteur \texttt{\{taud0\}} et un parametre Post-Newtonien\texttt{\{gw\}}  egal a 1 dans la plupart des cas. Le calcul de l'evolution temporelle des contraintes gravitationnelles de l'onde dans le referentiel propre de l'onde (CFR : Canonical Reference Frame) ${h}_{CFR+} (t)$ et ${h}_{CFR\times} (t)$ est base sur des articles \cite{2PN_1}, \cite{2PN_2}, \cite{2PN_3} et  \cite{2PN_4}\\
+\item { \it Onde gravitationnelle d'une binaire spiralante } \texttt{\{PostNewtonBinary\}} : Onde gravitationnelle issue d'une source binaire calculee dans l'approximation Post- Newtonienne a 1 PN ou 2.5 PN  pour laquelle on d\'efinit les masses des deux astres $m_{1}$ \texttt{\{M1\}} et $m_{2}$ \texttt{\{M2\}} en masse solaire, le temps de coalescence  $t_{coal}$ \texttt{\{tcoal\}} en seconds, l'angle d'inclinaison $i$ \texttt{\{inc\}} en degrees, la phase initiale $\phi_{0}$ \texttt{\{Phi0\}} entre $0$ et $2\pi$ et la distance entre la source et le d\'etecteur $r$ \texttt{\{r\}} en kpc. L'ordre Post-Newtonien du calcul est de 1 PN lorsque le parametre \texttt{\{type\}} est a 1 ou de 2.5 PN lorsque le parametre \texttt{\{type\}} est a 2. Pour le calcul a 2.5 PN, il faut preciser 3 parametres qui sont : une phase initial arbitraire \texttt{\{omega0\}}, la phase a l'entree du detecteur \texttt{\{taud0\}} et un parametre Post-Newtonien\texttt{\{gw\}}  egal a 1 dans la plupart des cas. Le calcul de l'evolution temporelle des contraintes gravitationnelles de l'onde dans le referentiel propre de l'onde (CFR : Canonical Reference Frame) ${h}_{CFR+} (t)$ et ${h}_{CFR\times} (t)$ est base sur des articles \cite{2PN_1}, \cite{2PN_2}, \cite{2PN_3} et  \cite{2PN_4}\\
 Ligne de configuration pour d\'efinir une onde gravitationnelle issue d'une binaire de direction $\beta = 37.34^{o}$, $\lambda= 350^{o}$, l’angle de polarisation $\psi = 141.06^{o}$, de masses $M1 = 0.5 M_S$ et $M2 = 0.033 M_S$ , de fr\'equence f$ = 9.72044 \times 10^{-4}$, d'inclinaison $i = 88^{o}$, de phase initiale $\psi_0 = 0^{o}$ et de s\'eparation $r = 0.1$ kpc : \\
-\hphantom{aaaaa}\texttt{GW : Bet 37.34 , Lam 352.0 , Psi 141.06  : PostNewtonBinary : M1 1.0e6 , M2 1.0e6 , tcoal 9676800.0 , inc 90 , phase 1.2 , r 1e5 , type 2 , omega0 1.0 , taud0 10.0 , gw 1.0 ;}  \\
+\hphantom{aaaaa}\texttt{GW : Bet 37.34 , Lam 352.0 , Psi 141.06  : PostNewtonBinary : M1 1.0e6 , M2 1.0e6 , tcoal 9676800.0 , inc 90 , phase 1.2 , r 1e5 , type 2 , omega0 1.0 , taud0 10.0 , gw 1.0 ;}  
 
-\item { \it Onde gravitationnelle quelconque (lecture d'un fichier)} \texttt{\{File\}} : Onde gravitationnelle quelconque dont l'\'evolution temporelle des composantes de polarisation est lue dans un fichier (3 colonnes : $temps \; \; h_+ \; \; h_{\times} $).\\
-Ligne de configuration pour d\'efinir une onde gravitationnelle lue dans le fichier {\it GWFile.txt} dont la direction de la source est $\beta = 50^{o}$ et $\lambda = 230^{o}$ et l'angle de polarisation $\psi = 15^{o}$. \\
-\hphantom{aaaaa}\texttt{GW : Bet 50 , Lam 230 , Psi 15 : File : GWFile.txt ;}  \\
+\item { \it Onde gravitationnelle d'une binaire spiralante BH-BH avec spin } \texttt{\{FastSpinBBH\}} : Onde gravitationnelle d'une binaire spiralante composée de deux trous noirs avec prise en compte du spin. Le calcul de la précession du plan orbital est réalisée par une intégration avec la méthode Runge-Kutta d'ordre 6. L'amplitude est calculée dans l'approximation Post- Newtonienne avec un ordre pouvant aller jusqu'à 2 PN \texttt{\{PN\}}. On d\'efinit les masses des deux astres $m_{1}$ \texttt{\{M1\}} et $m_{2}$ \texttt{\{M2\}} en masse solaire, le temps de coalescence  $t_{coal}$ \texttt{\{tcoal\}} en secondes, la phase initiale $\phi_{0}$ \texttt{\{phase\}} entre $0$ et $2\pi$ et la distance entre la source et le d\'etecteur $r$ \texttt{\{r\}} en kpc. On spécifie également l'amplitude des spins, \texttt{\{S1, S2\}}, entre 0 et 1, leur angle polaire \texttt{\{polS1, polS2\}} et leur angle azimutal \texttt{\{polS1, polS2\}}. On spécifie également la direction initial du moment orbital par son angle polaire \texttt{\{polL\}} et son angle azimutal \texttt{\{azL\}}. Le calcul de l'évolution temporelle des contraintes gravitationnelles de l'onde dans le référentiel barycentrique (BRF : Barycentric Reference Frame) ${h}_{B+} (t)$ et ${h}_{B\times} (t)$ est basé sur les articles \cite{MLDC3} et \cite{ApostolatosSpin}.  \\
+Ligne de configuration pour d\'efinir une onde gravitationnelle issue d'une binaire de trous
+ noirs  spiralante avec spin de direction $\beta = 37.0 ^{o}$, $\lambda= 285.9 ^{o}$, de masses $M1 = 1465580.0 \ M_S$ et $M2 = 868710.0 \ M_S$ , de temps de coalescence $3.1e7 \; s$,  de phase initiale $ 1.1 \; rd$, de distance $ 1.0e6 \; kpc$, d'angle polaire moment orbital initial $162.0 ^{o}$ et d'azimut $328.9 ^{o}$, de spin de l'objet 1 d'intensité $0.077 $, d'angle polaire $160.0 ^{o}$, d'azimut $130.6 ^{o}$ et de spin de l'objet 2 d'intensité $0.27 $, d'angle polaire $239.0 ^{o}$, d'azimut $162.0 ^{o}$ (amplitude calculée à l'ordre 2 PN): \\
+\hphantom{aaaaa}\texttt{GW : Bet 37.0 , Lam 285.9 , Psi 0.0  : FastSpinBBH : M1 1465580.0 , M2 868710.0 , tcoal 3.1e7 , phase 1.1 , r 1.0e6 , S1 0.077 , S2 0.27 , polS1 160.0 , polS2 130.6 , azS1 0.8 , azS2 239.0 , polL 162.0 , azL 328.9 , PN 2 ;}  
+
+\item { \it Onde gravitationnelle quelconque (lecture d'un fichier)} \texttt{\{File\}} : Onde gravitationnelle quelconque dont les \'evolutions temporelles des composantes de polarisation exprimées dans le référentiel canonique de l'onde ($ h_{S +} \; \; h_{S \times} $) sont lues dans un fichier. Il y a quatre format de fichier possible : \\
+
+\begin{itemize}
+
+\item { \sf Fichier ASCII à 3 colonnes : $ temps, \; h_{S +} \; h_{S \times} $ } :  Ligne de configuration pour lire le fichier ASCII à 3 colonnes {\it GWFile.txt} \footnote{\label{N:GWFileExtension} L'extension du fichier est quelconque excepté {\tt .xml} qui est réservé pour les fichiers XML de données du MLDC} (direction de la source $\{ \beta = 50^{o}$, $\lambda = 230^{o} \} $ et polarisation $\psi = 15^{o}$) : \\
+\texttt{GW : Bet 50 , Lam 230 , Psi 15 : File : GWFile.txt ;}  \\
+
+\item { \sf Fichier ASCII à 2 colonnes : $ h_{S +} \; h_{S \times} $ avec le temps initial $t_0$ et le pas de temps $\Delta t$ spécifiés dans le fichier de configuration } :  Ligne de configuration pour lire le fichier ASCII à 2 colonnes {\it GWFile2.txt} \footnote{cf. note~\ref{N:GWFileExtension}} dont le temps initial $t_0 = -900 s$ et le pas de temps $\Delta t = 15 s$ (direction de la source $\{ \beta = 50^{o}$, $\lambda = 230^{o} \} $ et polarisation $\psi = 15^{o}$). \\
+\texttt{GW : Bet 50 , Lam 230 , Psi 15 : File : GWFile2.txt ASCII -900 15 ;}  \\
+
+\item { \sf Fichier binaire à 2 colonnes : $ h_{S +} \; h_{S \times} $ avec la longueur $N_D$ (nombre d'enregistrement ou lignes) et le nombre de type de données $N_R$ (\emph{records} ou colonnes), le temps initial $t_0$ et le pas de temps $\Delta t$ spécifiés dans le fichier de configuration } :  Ligne de configuration pour lire le fichier binaire à 2 colonnes {\it GWFile3.bin}\footnote{cf. note~\ref{N:GWFileExtension}} dont la longueur $N_D = 4194304 $, le nombre de colonne $N_R = 2$, le temps initial $t_0 = -900 s$ et le pas de temps $\Delta t = 15 s$ (direction de la source $\{ \beta = 50^{o}$, $\lambda = 230^{o} \} $ et polarisation $\psi = 15^{o}$). \\
+\texttt{GW : Bet 50 , Lam 230 , Psi 15 : File : GWFile3.bin BINARY 4194304 2 -900 15 ;}  \\
+
+\item { \sf Fichier binaire à 2 colonnes : $ h_{S +} \; h_{S \times} $ décrit par un fichier XML au format du Mock LISA Data Challenge } :  Ligne de configuration pour lire un fichier binaire à 2 colonnes décrit par le fichier XML {\it GWFile4.xml}\footnote{Pour ce type de fichier l'extention {\tt .xml} est indispensable.}  (direction de la source $\{ \beta = 50^{o}$, $\lambda = 230^{o} \} $ et polarisation $\psi = 15^{o}$). \\
+\texttt{GW : Bet 50 , Lam 230 , Psi 15 : File : GWFile4.xml ;}  \\
+
+\end{itemize}
+
+
 %\item { \it Onde gravitationnelle porte p\'eriodique} \texttt{[PeriGate]} : Onde gravitationnelle dont la forme des deux composantes h+ et hx , est une porte périodique. Cette forme non r\'ealiste d’onde gravitationnelle permet de balayer une large gamme de fr\'equence ($f << fmin$ ) et ainsi d'avoir la r\'eponse du d\'etecteur pour une direction de source donn\'ee. On d\'efinit \'egalement l'amplitude des deux composantes $h_{+0}$ et $h_{\times0}$. \\
 %Ligne de configuration pour d\'efinir une onde porte p\'eriodique dont la direction de la source est $\lambda = 50^{o}$ et $\beta = 230^{o}$, l'angle de polarisation $\psi = 15^{o}$, la fr\'equence $f=10^{-5}$, l'amplitude des composantes $h_{+0}=1$ et $h_{\times0}=0$ :\\
 %\hphantom{aaaaa}\texttt{GW : Lam 50 , Bet 230 , Psi 15 : PeriGate : f 1e-5 , hp 1 , hc 0 ;}  \\
@@ -834,9 +960,9 @@ Ligne de configuration pour d\'efinir un bruit filtr\'e dont les coefficients du
 Ligne de configuration pour définir un bruit filtr\'e dont les coefficients du filtre sont $\alpha = \{3.9939806575 , -5.9819996369 , 3.9820571154 , -0.9940381365\}$ et $\beta = $ $\{ 0.0000510993 ,$ $ -0.0002040002 , $ $ 0.0003058023 , $ $ -0.000204002 ,$ $ 0.0000510993 \} $ sur la masse inertielle du banc optique du banc optique du satellite 3 en vis-\`a-vis avec le satellite 2 (attention ce bruit n'a strictement aucune r\'ealit\'e physique et est juste pr\'esent\'e \`a titre d'exemple de syntaxe): \\
 \hphantom{aaaaa}\texttt{Noise : Bench 3 1 : FilterCoef : alpha 3.9939806575 , -5.9819996369 , 3.9820571154 , -0.9940381365 beta 0.0000510993 , -0.0002040002 , 0.0003058023 , -0.000204002 , 0.0000510993 stablization 10000 ;}  \\
 
-\item { \it Bruit lu dans un fichier }: Mod\'elisation d'un bruit \`a partir des valeurs d'un fichier ( 2 colonnes : temps bruit). Le programme charge l'ensemble des valeurs est commence \`a lire les valeurs à partir d'un point quelconque du fichier.\\
-Ligne de configuration pour d\'efinir un bruit lu dans le fichier {\it NoiseOB.txt} et attribu\'e au banc optique du satellite 1 en vis-\`a-vis avec le satellite 2 : \\
-\hphantom{aaaaa}\texttt{Noise : Laser 1 0 : File NoiseOB.txt ;}  \\
+\item { \it Bruit lu dans un fichier }: Mod\'elisation d'un bruit \`a partir des valeurs d'un fichier ( 2 colonnes : temps bruit). Le programme charge l'ensemble des valeurs est commence \`a lire les valeurs à partir d'un point quelconque du fichier. Une fois que la dernière donnée est lue, la lecture recommence à la première donnée.\\
+Ligne de configuration pour d\'efinir un bruit lu dans le fichier {\it NoiseOB.txt} contenant des données de variation de fréquence, d'où le facteur multiplicatif de normalisation à $1 / f_{0} = 3.5491 \times 10^{-15}$ pour passer en unités de variation relative de fréquence. Ce bruit est attribu\'e au banc optique du satellite 1 en vis-\`a-vis avec le satellite 2 : \\
+\hphantom{aaaaa}\texttt{Noise : Laser 1 0 : File NoiseOB.txt 3.5491e-15;}  \\
 \end{itemize}
 
 % USO
@@ -851,7 +977,11 @@ Ligne de configuration pour d\'efinir l'oscillateur du satellite 2 avec un offse
 \subsubsection{Configuration de TDI}
 \label{SSSConfigTDI}
 Le mot cl\'e principal d'une ligne de configuration d'un g\'en\'erateur TDI est \texttt{TDI}. Le mot cl\'e est suivi du nom du g\'en\'erateur puis de sa description. Le g\'en\'erateur est d\'ecompos\'e en un ensemble de "packs" \'ecris les uns \`a la suite des autres et s\'epar\'es par un espace. Un pack correspond \`a l'application de retards sur la mesure d'un phasemetre ; par exemple $-D_{2'} D_{2} D_{3} D_{3'} D_{3} D_{3'}  s_{1'}$ est un pack qui se code par $-5236364$.  Le dernier chiffre correspond \`a la mesure du phasemtre code selon le tableau \ref{TDICodePha} . Les autres chiffres aux retards que l'on applique sur la mesure. La correspondance entre un bras et un chiffre du codage est donn\'e par le tableau \ref{TDICodeDelay} \\
-\begin{table}[htdp]
+%
+Ligne de configuration pour d\'efinir le g\'en\'erateur TDI Michelson de deuxi\`eme g\'en\'eration $Z2$  : 
+\hphantom{aaaaa}\texttt{TDI : Z2Man  3 , 24 , 256 , 2542 , 25416 , 254142 , 2541413 , 25414124 , -6 , -42 , -413 , -4124 , -41253 , -412524 , -4125256 , -41252542 ;} 
+
+\begin{table}[!htb]
 \begin{center}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -875,43 +1005,55 @@ $s'_{3}$ & 3 & 2 & 6\\
 \label{TDICodePha}
 \end{table} 
 
-\begin{table}[htdp]
+\begin{table}[!htb]
 \begin{center}
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 \hline
-Bras & Emetteur $\rightarrow$ R\'ecepteur & Code \\
+Opérateur & Bras & Emetteur $\rightarrow$ R\'ecepteur & Code \\
 \hline
-1 & 3 $\rightarrow$ 2 & 1\\
+${D}_{1}$ & 1 & 3 $\rightarrow$ 2 & 1\\
 \hline
-2 & 1 $\rightarrow$ 3 & 2\\
+${D}_{2}$ & 2 & 1 $\rightarrow$ 3 & 2\\
 \hline 
-3 & 2 $\rightarrow$ 1 & 3\\
+${D}_{3}$ & 3 & 2 $\rightarrow$ 1 & 3\\
 \hline 
-1' & 2 $\rightarrow$ 3 & 4\\
+${D'}_{1}$ & 1' & 2 $\rightarrow$ 3 & 4\\
 \hline 
-2' & 3 $\rightarrow$ 1 & 5\\
+${D'}_{2}$ & 2' & 3 $\rightarrow$ 1 & 5\\
 \hline 
-3' & 1 $\rightarrow$ 2 & 6\\
+${D'}_{3}$ & 3' & 1 $\rightarrow$ 2 & 6\\
 \hline 
 \end{tabular}
 \end{center}
-\caption{Tableau donnant le codage utilis\'e dans TDI pour les phasemetre.}
+\caption{Tableau donnant la correspondance entre les chiffres du pack et le bras concerné par l'opérateur de retard.}
 \label{TDICodeDelay}
 \end{table} 
 
-Ligne de configuration pour d\'efinir le g\'en\'erateur TDI Michelson de deuxi\`eme g\'en\'eration $Z2$  : 
-\hphantom{aaaaa}\texttt{TDI : Z2  3 , 24 , 256 , 2542 , 25416 , 254142 , 2541413 , 25414124 , -6 , -42 , -413 , -4124 , -41253 , -412524 , -4125256 , -41252542 ;} \\
+Il est également possible d'associer à chaque pack du générateur, un facteur\footnote{Indispensable par exemple pour d\'efinir A,E et T. \cite{VallisCsqPerteLiens}}. Dans la syntaxe, ce facteur suit le nombre entier décrivant le pack, séparé de celui-ci par un {\tt x}, avec touours un espace entre chaque groupe de caract\`eres. \\
+%
++ Ligne de configuration pour d\'efinir le g\'en\'erateur TDI \`a bruit non-corr\'el\'e $E_b$\footnote{Le g\'en\'erateur E est d\'efini comme $E = {Y - Z \over \sqrt{3}}$}  : \\
+\hphantom{aaaaa}\texttt{TDI : EMan 2 x 0.577350269 , 16 x 0.577350269 , 145 x 0.577350269 ,}\\
+\hphantom{aaaaa}\texttt{1461  x 0.577350269 , -5 x 0.577350269 , -61 x 0.577350269 , -632}\\
+\hphantom{aaaaa}\texttt{x 0.577350269 , -6316 x 0.577350269 , 3 x -0.577350269 , 24 x }\\
+\hphantom{aaaaa}\texttt{-0.577350269 , 256 x -0.577350269 , 2542 x -0.577350269 , -6 x }\\
+\hphantom{aaaaa}\texttt{-0.577350269 , -42 x -0.577350269 , -413 x -0.577350269 , }\\
+\hphantom{aaaaa}\texttt{-4124 x -0.577350269  ; } \\
 
-Il existe egalement un certain nombre de generateur dont le pack est predefini dans LISACode. Pour ces generateurs listes dans le tableau \ref{table_paramTDI},  le nom du generateur suffi. \\
- Ligne de configuration pour d\'efinir le g\'en\'erateur TDI Michelson de deuxi\`eme g\'en\'eration $Z2$  : 
-\hphantom{aaaaa}\texttt{ TDI : X ; } \\
+
+Pour un certain nombre de générateurs, l'ensemble de packs est predefinis dans LISACode. Pour ces generateurs listes dans les tableaux~\ref{table_paramTDI} et~\ref{table_paramTDI2},  le nom du generateur suffi. \\
+%
++ Ligne de configuration pour d\'efinir le g\'en\'erateur TDI Michelson de deuxi\`eme g\'en\'eration $X^{2nd}$  : \\
+\hphantom{aaaaa}\texttt{ TDI : X2 ; } \\
 
 
 \newpage
 
 \subsection{Configuration par fichier XML}
 \label{SSConfXML}
-LISACode peut \'egalement ce configurer \`a partir d'un fichier xml construit avec l'interface graphique \textbf{LISA\_AutoGUI.jar}
+LISACode peut \'egalement ce configurer \`a partir d'un fichier XML.
+%construit avec l'interface graphique \textbf{LISA\_AutoGUI.jar}
+La structure du fichier XML est celle utilise dans le Mock LISA Data Challenge (cf. articles~\cite{MLDCHowTo,MLDC1Res,MLDC2} et site web~\cite{MLDCWeb}. 
+
 
 \newpage
 
@@ -922,6 +1064,9 @@ LISACode peut \'egalement ce configurer \`a partir d'un fichier xml construit av
 \subsubsection{Erreur lors de l'installation}
 \label{SSSErrInstall}
 \begin{itemize}
+\item V\'erifier que le syst\`eme poss\`ede bien une version de fftw3 et si n\'ecessaire sp\'ecifier son emplacement en moment de la configuration comme par exemple : \\ 
+ {\tt CPPFLAGS=-I/cheminfftw3/include LDFLAGS=-L/cheminfftw3/lib}
+
 \item V\'erifier que le syst\`eme poss\`ede bien une version d'automake 1.8 ou plus r\'ecente car dans certaine installtion, il peut \^etre n\'ecessaire d'utiliser automake.
 \end{itemize}
 
@@ -933,28 +1078,26 @@ LISACode peut \'egalement ce configurer \`a partir d'un fichier xml construit av
 \item V\'erifier qu'il y ait bien un point virgule \`a la fin de chaque  ligne de commande et de commentaire.
 \item V\'erifier qu'il n'y ait pas  de ligne vide \`a la fin de votre fichier de configuration. La derni\`ere ligne doit comporter une commande ou un commentaire. Elle peut \'egalement comporter l'instruction \texttt{END}.
 \end{itemize}
+
 \section{Support - Contact}
 \label{SSupport}
-\subsection{A l'APC}
+\subsection{A l'APC (AstroParticule et Cosmologie)}
 \label{SSSupAPC}
-Antoine PETITEAU : petiteau@apc.univ-paris7.fr - 01 44 27 15 11 \\
+Antoine PETITEAU : 
+%petiteau@apc.univ-paris7.fr 
 
+\subsection{A l'AEI (Albert Einstein Institute)}
+\label{SSSupAEI}
+Antoine PETITEAU : Antoine.Petiteau@aei.mpg.de  - +49 (331) 567-7134 \\
+
+
+\bibliographystyle{plain}
 
 \bibliography{ManuelFR_v1.4}
+%\bibliography{/Users/petiteau/Documents/Articles/BiblioLISA}
 
-%\bibliographystyle{plain}
-%\bibliography{/Users/petiteau/Documents/Rapport/BiblioLISA}
+%\bibliography{BiblioLISA}
 
-
-%\begin{thebibliography}{99}
-%\bibitem{LISACode}A. Petiteau and al. ''LISACode: A scientific simulator of LISA'', 
-%Publication in progress ...  (2007).
-%\bibitem{PrePhaseAReport}LISA Pre-Phase A Report, 2nd Ed. (1998): \\ http://www.srl.caltech.edu/lisa/documents/PrePhaseA.pdf 
-%\bibitem{TDIVinet}S. V. Dhurandhar, K. Rajesh Nayak, and J.-Y. Vinet, 
-%"Algebraic Approach to Time-Delay Data Analysis for LISA", Phys. Rev. D. 65, 102002 (2002).
-%\bibitem{TDITinto}M. Tinto, F. B. Estabrook, and J. W. Armstrong, "Time-Delay Interferometry for LISA", Phys. Rev. D 65, 082003 (2002). 
-%\bibitem{2PN}  L. Blanchet et al. Class. Quantum Grav. 13(1996) 575-584; L. Blanchet. Class. Quantum Grav. 15(1998) 113; L.Blanchet et al. Phys. Rev. D 65 061501; L. Blanchet et al. Phys. Rev. D 71, 129902(E) (2005)
-%\end{thebibliography}
 
 \end{document}
 

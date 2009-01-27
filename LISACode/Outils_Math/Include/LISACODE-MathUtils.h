@@ -21,7 +21,7 @@
 #define __MATHUTILS_H
 
 #include <math.h>
-#include <vector>
+#include <vector.h>
 
 
 #define SWAP(a,b) tempr=(a);(a)=(b);(b)=tempr

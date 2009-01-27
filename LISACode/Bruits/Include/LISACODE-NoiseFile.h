@@ -22,10 +22,11 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <vector>
+#include <vector.h>
 #include <stdlib.h>
 #include <math.h>
-#include <fstream>
+#include <fstream.h>
+#include "randlib.h"
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"
 #include "LISACODE-LISAConstants.h"
@@ -44,17 +45,21 @@ protected:
     char * FileName; // Name of file where the noise is readed
     /*! \todo Are StoredData and NbDataStored necessary. Are they different to #NbData and #NoiseData?*/
     /*! \brief List of noise date read in the file.*/
-    vector<double> StoredData; // List of noise readed in file.   
+    double * StoredData; // List of noise readed in file.   
     /*! \brief Number of data stored in the noise data list #StoredData.*/
     int NbDataStored;   // Number of noise data stored in StoredData.
-    /*! \brief Index of last bin read in #StoredData.*/ 
+    /*! \brief Multtplication factor on data.*/ 
+    double FactMult; 
+	/*! \brief Index of last bin read in #StoredData.*/ 
     int ReadBin; // Index of last bin readed in StoredData.
+	
 	
 public:
 		/* Constructor */
    		/*Doc in .cpp*/
 		NoiseFile();
-    		NoiseFile(double tStep_n, double tDurAdd_n, double tFirst_n, double tLast_n, char * FileName_n);
+		NoiseFile(double tStep_n, double tDurAdd_n, double tFirst_n, double tLast_n, char * FileName_n);
+		NoiseFile(double tStep_n, double tDurAdd_n, double tFirst_n, double tLast_n, char * FileName_n, double FactMult_n);
 	
     /* Access methods */
    /*Doc in .cpp*/

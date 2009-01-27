@@ -19,7 +19,10 @@
 #include "LISACODE-Filter.h"
 using namespace std;
 
-/* Constructor */
+// *****************
+// *  Constructor  *
+// *****************
+
 /*! \brief Constructs an instance and initializes it with default values.
  *
  * \arg	#alpha = empty
@@ -126,8 +129,27 @@ Filter::Filter( double fe, double at, double bp, double fb, double fa)
 Filter::~Filter(){
 	
 }
-	
-/* Access methods */
+
+// ***************
+// *  Operators  *
+// ***************
+
+Filter Filter::operator= (Filter Model)
+{
+	Filter FCopy(Model.alpha, Model.beta, Model.NbDataStab);
+	return(FCopy);
+}
+
+void Filter::Copy(Filter Model)
+{
+	init(Model.alpha, Model.beta, Model.NbDataStab);
+}
+
+
+// ********************
+// *  Access methods  *
+// ********************
+
 /*! \brief Initializes an instance with default values and inputs.
  *
  * \arg	#alpha = alpha_n input
@@ -144,6 +166,7 @@ void Filter::init(	vector< vector<double> > alpha_n,
 		alpha[iFil].resize(alpha_n[iFil].size());
 		for(int i=0; i<alpha[iFil].size(); i++){
 			(alpha[iFil])[i] = (alpha_n[iFil])[i];
+			//cout << (alpha[iFil])[i] << " ";
 		}
 	}
     //cout << endl;
@@ -152,9 +175,11 @@ void Filter::init(	vector< vector<double> > alpha_n,
 		beta[iFil].resize(beta_n[iFil].size());
 		for(int i=0; i<beta[iFil].size(); i++){
 			(beta[iFil])[i] = (beta_n[iFil])[i];
+			//cout << (beta[iFil])[i] << " ";
 		}
 
 	}
+	//cout << endl;
 	NbDataStab = NbDataStabilization_n;
 	TmpData.resize(alpha.size()+1);
 	for(int iFil=0; iFil<alpha.size(); iFil++)
@@ -178,7 +203,10 @@ int Filter::getNbDataStab()
 	return(NbDataStab);
 }
 
-/*  Others methods */
+// ********************
+// *  Others methods  *
+// ********************
+
 /*! \brief Appends data from RawData input (starting at StartBin index) to #TmpData attribute and ti FilterData output.
  *
  * RawData is first copied in TmpData, then filtering is applied.\n
@@ -197,6 +225,24 @@ void Filter::App(int StartBin, const vector<double> & RawData, vector<double> & 
 	}*/
 	TmpData[0] = RawData; 
 	// Parcours des listes intermediaires en appliquant le filtre correspondant sur chacune
+	
+	/*
+	cout << endl << "Alpha = ";
+	for(int iFil=0; iFil<alpha.size(); iFil++){
+		for(int i=0; i<alpha[iFil].size(); i++){
+			cout << (alpha[iFil])[i] << " ";
+		}
+	}
+    cout << "   Beta = ";
+	for(int iFil=0; iFil<beta.size(); iFil++){
+		for(int i=0; i<beta[iFil].size(); i++){
+			cout << (beta[iFil])[i] << " ";
+		}
+		
+	}
+	cout << endl;
+	*/
+	 
 	for(int iFil=0; iFil<alpha.size(); iFil++){
 		//cout << "Filtre " << iFil+1 << " :" << endl;
 		if(TmpData[iFil+1].size() == 0) // Si premiere utilisation du filtre
@@ -211,12 +257,13 @@ void Filter::App(int StartBin, const vector<double> & RawData, vector<double> & 
 			// Calcul du numerateur
 			for(int k=0; k<(int)(alpha[iFil].size()); k++){
 				Den_tmp += (alpha[iFil])[k]*(TmpData[iFil+1])[k+i+1];
-				//cout << "   ++ a " << k << "(sur " << (TmpData[iFil+1])[k+i+1] <<") : " << (alpha[iFil])[k]*(TmpData[iFil+1])[k+i+1]<< " " << Den_tmp << endl;
+				//cout << "   ++ a " << k << "(sur " << (TmpData[iFil+1])[k+i+1] <<") : " << (alpha[iFil])[k]*(TmpData[iFil+1])[k+i+1]<< " " << Den_tmp << endl; fflush(stdout);
 			}
 			// Calcul du denominateur
 			for(int k=0; k<(int)(beta[iFil].size()); k++){
+				//cout << "   ++ b " << k << "(sur " << (TmpData[iFil])[k+i] <<") : " << (beta[iFil])[k]*(TmpData[iFil])[k+i] << " " << Num_tmp << endl; fflush(stdout);
 				Num_tmp += (beta[iFil])[k]*(TmpData[iFil])[k+i];
-				//cout << "   ++ b " << k << "(sur " << (TmpData[iFil])[k+i] <<") : " << (beta[iFil])[k]*(TmpData[iFil])[k+i] << " " << Num_tmp << endl;
+				
 			}
 			//cout << " ++ Result : " << Num_tmp << " + " << Den_tmp << " = " << Num_tmp + Den_tmp << endl;
 			(TmpData[iFil+1])[i] = Num_tmp + Den_tmp;

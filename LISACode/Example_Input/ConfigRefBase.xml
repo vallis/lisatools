@@ -1,0 +1,518 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE XSIL SYSTEM "lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+
+<!--
+ <!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+ <?xml-stylesheet type="text/xsl" href="http://www.vallis.org/lisa-xml.xsl"?>
+ -->
+
+<XSIL> 
+    <Comment>
+		This XML file is the reference file for the XML
+		configuration of LISACode (version 1.4.2 and upper)
+		</Comment>
+    <Param Name="Author">Antoine Petiteau</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2008-07-24T10:30:31CEST</Param>
+    <Comment>
+        lisaXML 1.0 [M. Vallisneri, June 2006] updated for LISACode
+		</Comment>
+	
+    <XSIL Type="Simulate">
+        <Param Name="TimeOffset" Unit="Second">
+            0.0
+        </Param>
+        <Param Name="Cadence" Unit="Second">
+            1.0
+        </Param>
+        <Param Name="Duration" Unit="Second">
+            10000.0
+        </Param>
+        <Param Name="Observables" Unit="String">
+            t,X,Y,Z,X2s1,X2s2,X2s3,P1,Zeta1,A,E,T,Alpha
+        </Param>
+        <Param Name="OutputFile" Unit="String">
+            ConfigRefBase.out.xml
+        </Param>
+    </XSIL>
+    <XSIL Type="LISACode">
+        <Param Name="GlobalRandomSeed" Unit="Second">
+            123456
+        </Param>
+        <Param Name="StepPhysic" Unit="Second">
+            0.5
+        </Param>
+        <Param Name="DeltaTDIDelay" Unit="Second">
+            0
+        </Param>
+        <Param Name="StepDisplay" Unit="Second">
+            500
+        </Param>
+        <XSIL Type="Detector">
+            <Param Name="LaserPower" Unit="Watt">
+                1
+            </Param>
+            <Param Name="PhaMetFilter" Unit="None">
+                On
+            </Param>
+            <Param Name="PMFAttenuation" Unit="dB">
+                180
+            </Param>
+            <Param Name="PMFOscillation" Unit="dB">
+                0.1
+            </Param>
+            <Param Name="PMFLowFreqFact" Unit="None">
+                0.1
+            </Param>
+            <Param Name="PMFHighFreqFact" Unit="None">
+                0.3
+            </Param>
+            <Param Name="InternalPhasemeters" Unit="String">
+                IfNoises
+            </Param>
+        </XSIL>
+        <XSIL Type="OutputFiles">
+            <Param Name="SignalSC1" Encoding="ASCII">
+				SC1_xml.txt
+            </Param>
+            <Param Name="SignalSC2" Encoding="Binary">
+				SC2_xml.bin
+            </Param>
+            <Param Name="SignalSC3" Encoding="Binary">
+				SC3_xml.bin
+            </Param>
+            <Param Name="Delay" Encoding="ASCII">
+				Delay_xml.txt
+            </Param>
+            <Param Name="Position" Encoding="ASCII">
+				Pos_xml.txt
+            </Param>
+            <Param Name="TDI" Encoding="ASCII">
+				TDI_xml.txt
+            </Param>
+        </XSIL>
+        <XSIL Type="PrecisionTDI">
+            <Param Name="InterpType" Unit="String">LAG</Param>
+            <Param Name="InterpValue" Unit="none">20</Param>
+            <Param Name="DelayApprox" Unit="String">Off</Param>
+        </XSIL>
+        <!--
+        <XSIL Type="USO">
+            <Param Name="SCIndex" Unit="none">1</Param>
+            <Param Name="Offset" Unit="Second">0.1</Param>
+            <Param Name="Derivs" Unit="Second">0.0001</Param>
+            <Param Name="Noise" Unit="2">0.00001</Param>
+        </XSIL>
+        -->
+        <XSIL Type="TDISpecificGenerator">
+            <Param Name="GeneratorName" Unit="String">AlphaId</Param>
+            <Param Name="Pack" Unit="1">-1</Param>
+            <Param Name="Pack" Unit="1">-32</Param>
+            <Param Name="Pack" Unit="1">-133</Param>
+            <Param Name="Pack" Unit="1">4</Param>
+            <Param Name="Pack" Unit="1">455</Param>
+            <Param Name="Pack" Unit="1">56</Param>
+        </XSIL>
+        <XSIL Type="TDISpecificGenerator">
+            <Param Name="GeneratorName" Unit="String">Alphaf2</Param>
+            <Param Name="Pack" Unit="2">-1</Param>
+            <Param Name="Pack" Unit="2">-32</Param>
+            <Param Name="Pack" Unit="2">-133</Param>
+            <Param Name="Pack" Unit="2">4</Param>
+            <Param Name="Pack" Unit="2">455</Param>
+            <Param Name="Pack" Unit="2">56</Param>
+        </XSIL>
+        <Comment>
+            Note: the PseudoRandomSeed and InterpolationOrder Params in the noise
+			specifications below are ignored by LISACode, which uses GlobalRandomSeed
+			and sets the interpolation level to 7.
+        </Comment>
+    </XSIL>
+    <XSIL Type="LISAData">
+        <XSIL Name="LISACode orbits" Type="LISACode_Orbits">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+				</Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0
+				</Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                0
+				</Param>
+            <Param Name="Armlength" Unit="Second">
+                16.678204759907
+				</Param>
+			<Param Name="OrbitApproximation" Unit="String">
+				Eccentric
+			</Param>
+            <Param Name="OrderDelay" Unit="none">
+            	2
+            </Param>
+        </XSIL>
+    </XSIL>
+
+    <XSIL Type="SourceData">
+        <XSIL Name="MonoGW" Type="PlaneWave">
+            <Param Name="SourceType">Monochromatic</Param>
+            <Param Name="EclipticLatitude" Unit="Degree">27</Param>
+            <Param Name="EclipticLongitude" Unit="Degree">297</Param>
+            <Param Name="Polarization" Unit="Degree">229</Param>
+            <Param Name="Frequency" Unit="Hertz">1e-4</Param>
+            <Param Name="AmplitudePlus" Unit="1">1e-19</Param>
+            <Param Name="AmplitudeCross" Unit="none">0</Param>
+            <Param Name="InitialPhasePlus" Unit="Radian">0</Param>
+            <Param Name="InitialPhaseCross" Unit="Radian">0</Param>
+        </XSIL>
+        
+        <XSIL Name="BinaryGW" Type="PlaneWave">
+            <Param Name="SourceType">GalacticBinary</Param>
+            <Param Name="EclipticLatitude" Unit="Degree">68</Param>
+            <Param Name="EclipticLongitude" Unit="Degree">135</Param>
+            <Param Name="Polarization" Unit="Degree">12</Param>
+            <Param Name="OrbitalFrequency" Unit="Hertz">1e-3</Param>
+            <Param Name="Inclination" Unit="Degree">42</Param>
+            <Param Name="InitialPhase" Unit="Radian">0</Param>
+            <!-- LISACode -->
+            <Param Name="Mass1" Unit="SolarMass">1e5</Param>
+            <Param Name="Mass2" Unit="SolarMass">1e6</Param>
+            <Param Name="Distance" Unit="KiloParsec">1e5</Param>
+            <!-- MLDC
+            <Param Name="Amplitude" Unit="1">1e5</Param>
+            <Param Name="Frequency" Unit="Hertz">2e-3</Param>
+            -->
+        </XSIL>
+        <XSIL Name="PostNewtonBinaryGW" Type="PlaneWave">
+            <Param Name="SourceType">BlackHoleBinary</Param>
+            <Param Name="EclipticLatitude" Unit="Degree">-56</Param>
+            <Param Name="EclipticLongitude" Unit="Degree">154</Param>
+            <Param Name="Polarization" Unit="Degree">32</Param>
+            <Param Name="Mass1" Unit="SolarMass">1e6</Param>
+            <Param Name="Mass2" Unit="SolarMass">1e6</Param>
+            <Param Name="CoalescenceTime" Unit="Second">9676800</Param>
+            <Param Name="Inclination" Unit="Degree">90</Param>
+            <Param Name="Distance" Unit="KiloParsec">1e5</Param>
+            <Param Name="Type" Unit="none">2</Param>
+            <Param Name="Omega0" Unit="none">1</Param>
+            <Param Name="Taud0" Unit="none">10</Param>
+            <Param Name="gw" Unit="none">1</Param>
+            <!-- LISACode -->
+            <Param Name="CoalescencePhase" Unit="Radian">1.2</Param>
+            <!-- MLDC
+            <Param Name="InitialAngularOrbitalPhase" Unit="Radian">3.67499142949</Param>
+            -->
+            <!-- Not used at the moment -->
+            <Param Name="TruncationTime" Unit="Second">0.0</Param>
+            <Param Name="TaperApplied" Unit="TotalMass">7.0</Param>
+        </XSIL>
+		<XSIL Name="SpinSMBH" Type="PlaneWave">
+            <Param Name="SourceType">
+                FastSpinBlackHoleBinary
+				</Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.657644432309
+				</Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                4.98921990792
+				</Param>
+            <Param Name="PolarAngleOfSpin1" Unit="Radian">
+                2.79680864369
+				</Param>
+            <Param Name="PolarAngleOfSpin2" Unit="Radian">
+                2.27928544629
+				</Param>
+            <Param Name="AzimuthalAngleOfSpin1" Unit="Radian">
+                0.0140107251252
+				</Param>
+            <Param Name="AzimuthalAngleOfSpin2" Unit="Radian">
+                4.17130033043
+				</Param>
+            <Param Name="Spin1" Unit="MassSquared">
+                0.0770493004546
+				</Param>
+            <Param Name="Spin2" Unit="MassSquared">
+                0.268523395273
+				</Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                1465580.75942
+				</Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                868710.795073
+				</Param>
+            <Param Name="CoalescenceTime" Unit="Second">
+                31525128.7938
+				</Param>
+            <Param Name="PhaseAtCoalescence" Unit="Radian">
+                1.16933157672
+				</Param>
+            <Param Name="InitialPolarAngleL" Unit="Radian">
+                2.82873004221
+				</Param>
+            <Param Name="InitialAzimuthalAngleL" Unit="Radian">
+                5.74015227561
+				</Param>
+            <Param Name="Distance" Unit="Parsec">
+                1000000000.0
+				</Param>
+            <Param Name="TaperApplied" Unit="TotalMass">
+                7.0
+				</Param>
+            <Param Name="AmplPNorder" Unit="Unit">
+                0.0
+				</Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+				</Param>
+			</XSIL>
+		<XSIL Name="GW stochastic background pseudosource #0" Type="PlaneWave">
+            <Param Name="SourceType">
+                Stochastic
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.204480198969
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.785398163397
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz">
+                2.6042e-50
+            </Param>
+            <Param Name="SpectralSlope" Unit="1">
+                -3
+            </Param>
+            <Param Name="Flow" Unit="Hertz">
+                1e-05
+            </Param>
+            <Param Name="Fknee" Unit="Hertz">
+                0.1
+            </Param>
+            <Param Name="PseudoRandomSeed" Unit="1">
+                473233025
+            </Param>
+            <Param Name="InterpolationOrder" Unit="1">
+                1
+            </Param>
+        </XSIL>
+	</XSIL>
+    <XSIL Type="NoiseData">
+        <XSIL Name="pm1" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+				</Param>
+            <Param Name="Fknee">
+                0.0001
+				</Param>
+			</XSIL>
+        <XSIL Name="pm1s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+				</Param>
+            <Param Name="Fknee">
+                0.0001
+				</Param>
+			</XSIL>
+        <XSIL Name="pm2" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+				</Param>
+            <Param Name="Fknee">
+                0.0001
+				</Param>
+			</XSIL>
+        <XSIL Name="pm2s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+				</Param>
+            <Param Name="Fknee">
+                0.0001
+				</Param>
+			</XSIL>
+        <XSIL Name="pm3" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+				</Param>
+            <Param Name="Fknee">
+                0.0001
+				</Param>
+			</XSIL>
+        <XSIL Name="pm3s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                PinkAcceleration
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                2.5281e-48
+				</Param>
+            <Param Name="Fknee">
+                0.0001
+				</Param>
+			</XSIL>
+        <XSIL Name="pd1" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhitePhase
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1.75e-37
+				</Param>
+			</XSIL>
+        <XSIL Name="pd1s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhitePhase
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1.75e-37
+				</Param>
+			</XSIL>
+        <XSIL Name="pd2" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhitePhase
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1.75e-37
+				</Param>
+			</XSIL>
+        <XSIL Name="pd2s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhitePhase
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1.75e-37
+				</Param>
+			</XSIL>
+        <XSIL Name="pd3" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhitePhase
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1.75e-37
+				</Param>
+			</XSIL>
+        <XSIL Name="pd3s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhitePhase
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1.75e-37
+				</Param>
+			</XSIL>
+        <XSIL Name="c1" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+				</Param>
+			</XSIL>
+        <XSIL Name="c1s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+				</Param>
+			</XSIL>
+        <XSIL Name="c2" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+				</Param>
+			</XSIL>
+        <XSIL Name="c2s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+				</Param>
+			</XSIL>
+        <XSIL Name="c3" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+				</Param>
+			</XSIL>
+        <XSIL Name="c3s" Type="Noise">
+            <Param Name="SourceType">
+                PseudoRandomNoise
+				</Param>
+            <Param Name="SpectralType">
+                WhiteFrequency
+				</Param>
+            <Param Name="PowerSpectralDensity">
+                1e-26
+				</Param>
+        </XSIL>
+    </XSIL>
+</XSIL>

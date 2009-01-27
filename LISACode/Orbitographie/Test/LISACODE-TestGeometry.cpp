@@ -16,10 +16,12 @@
  */
 
 #include <stdexcept>
-#include <iostream>
+#include <iostream.h>
 #include <fstream>
 #include <math.h>
 #include "LISACODE-Geometry.h"
+#include "LISACODE-GeometryAnalytic.h"
+#include "LISACODE-GeometryMLDC.h"
 #include "LISACODE-Couple.h"
 #include "LISACODE-Vect.h"
 using namespace std;
@@ -33,6 +35,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *                                * ";
 		cout << endl << "   *  Test de la Geometrie de LISA  * ";
 		cout << endl << "   *  ---------------------------   * ";
+		cout << endl << "   *      ("<< LCVersion <<")       * ";
 		cout << endl << "   *                                * ";
 		cout << endl << "   ********************************** " << endl << endl; 
 		
@@ -73,7 +76,7 @@ int main (int argc, char * const argv[])
 		
 		// Creation of Geometry
 		cout << " Compute geometry at order " << GeoOrder << endl;
-		Geometry Geometry(t0, rot0, L0_m, GeoOrder, 1);
+		GeometryAnalytic Geo(t0, rot0, L0_m, GeoOrder, 1);
 		
 		cout << "  Creation --> OK" << endl << endl;
 		
@@ -115,9 +118,9 @@ int main (int argc, char * const argv[])
 			Record_velocity << t;
 			Record_QuickPos << t;
 			for(int iSC=1; iSC<=3; iSC++) {
-				Vect tmp_pos(Geometry.position(iSC,t));
-				Vect tmp_vel(Geometry.velocity(iSC,t));
-				Vect tmp_qp(Geometry.gposition(iSC,t));
+				Vect tmp_pos(Geo.position(iSC,t));
+				Vect tmp_vel(Geo.velocity(iSC,t));
+				Vect tmp_qp(Geo.gposition(iSC,t));
 				Record_position << " " << tmp_pos.p[0] << " " << tmp_pos.p[1] << " " << tmp_pos.p[2];
 				Record_velocity << " " << tmp_vel.p[0] << " " << tmp_vel.p[1] << " " << tmp_vel.p[2];
 				Record_QuickPos << " " << tmp_qp.p[0] << " " << tmp_qp.p[1] << " " << tmp_qp.p[2];
@@ -125,58 +128,58 @@ int main (int argc, char * const argv[])
 			Record_position << endl;
 			Record_velocity << endl;
 			Record_QuickPos << endl;
-			Vect tmp_n(Geometry.VectNormal(t));
+			Vect tmp_n(Geo.VectNormal(t));
 			Record_normal << t << " " << tmp_n.p[0] << " " << tmp_n.p[1] << " " << tmp_n.p[2] << endl;  
 			
 			//Record Delay
 			Record_tdelay.precision(10);
 			Record_tdelay << t ;
-			Record_tdelay << " " << Geometry.tdelay(1, 2, order, t);
-			Record_tdelay << " " << Geometry.tdelay(2, 3, order, t);
-			Record_tdelay << " " << Geometry.tdelay(3, 1, order, t);
-			Record_tdelay << " " << Geometry.tdelay(1, 3, order, t);
-			Record_tdelay << " " << Geometry.tdelay(2, 1, order, t);
-			Record_tdelay << " " << Geometry.tdelay(3, 2, order, t);
+			Record_tdelay << " " << Geo.tdelay(1, 2, order, t);
+			Record_tdelay << " " << Geo.tdelay(2, 3, order, t);
+			Record_tdelay << " " << Geo.tdelay(3, 1, order, t);
+			Record_tdelay << " " << Geo.tdelay(1, 3, order, t);
+			Record_tdelay << " " << Geo.tdelay(2, 1, order, t);
+			Record_tdelay << " " << Geo.tdelay(3, 2, order, t);
 			Record_tdelay << endl;
 						
 			
 			// Record Order 1/2
 			Record_order05 << t ;
-			Record_order05 << " " << Geometry.tdelayOrderContribution(1, 2, 1, t);
-			Record_order05 << " " << Geometry.tdelayOrderContribution(2, 3, 1, t);
-			Record_order05 << " " << Geometry.tdelayOrderContribution(3, 1, 1, t);
-			Record_order05 << " " << Geometry.tdelayOrderContribution(1, 3, 1, t);
-			Record_order05 << " " << Geometry.tdelayOrderContribution(2, 1, 1, t);
-			Record_order05 << " " << Geometry.tdelayOrderContribution(3, 2, 1, t);
+			Record_order05 << " " << Geo.tdelayOrderContribution(1, 2, 1, t);
+			Record_order05 << " " << Geo.tdelayOrderContribution(2, 3, 1, t);
+			Record_order05 << " " << Geo.tdelayOrderContribution(3, 1, 1, t);
+			Record_order05 << " " << Geo.tdelayOrderContribution(1, 3, 1, t);
+			Record_order05 << " " << Geo.tdelayOrderContribution(2, 1, 1, t);
+			Record_order05 << " " << Geo.tdelayOrderContribution(3, 2, 1, t);
 			Record_order05 << endl;
 			
 			// Record Order 1
 			Record_order1 << t ;
-			Record_order1 << " " << Geometry.tdelayOrderContribution(1, 2, 2, t);
-			Record_order1 << " " << Geometry.tdelayOrderContribution(2, 3, 2, t);
-			Record_order1 << " " << Geometry.tdelayOrderContribution(3, 1, 2, t);
-			Record_order1 << " " << Geometry.tdelayOrderContribution(1, 3, 2, t);
-			Record_order1 << " " << Geometry.tdelayOrderContribution(2, 1, 2, t);
-			Record_order1 << " " << Geometry.tdelayOrderContribution(3, 2, 2, t);
+			Record_order1 << " " << Geo.tdelayOrderContribution(1, 2, 2, t);
+			Record_order1 << " " << Geo.tdelayOrderContribution(2, 3, 2, t);
+			Record_order1 << " " << Geo.tdelayOrderContribution(3, 1, 2, t);
+			Record_order1 << " " << Geo.tdelayOrderContribution(1, 3, 2, t);
+			Record_order1 << " " << Geo.tdelayOrderContribution(2, 1, 2, t);
+			Record_order1 << " " << Geo.tdelayOrderContribution(3, 2, 2, t);
 			Record_order1 << endl;
 			
 			// Record velocity along an arm
 			Record_ArmVelocity << t ;
-			Record_ArmVelocity << " " << Geometry.ArmVelocity(1, 2, t);
-			Record_ArmVelocity << " " << Geometry.ArmVelocity(2, 3, t);
-			Record_ArmVelocity << " " << Geometry.ArmVelocity(3, 1, t);
+			Record_ArmVelocity << " " << Geo.ArmVelocity(1, 2, t);
+			Record_ArmVelocity << " " << Geo.ArmVelocity(2, 3, t);
+			Record_ArmVelocity << " " << Geo.ArmVelocity(3, 1, t);
 			Record_ArmVelocity << endl;
 			
 			
 			//Record Delay
 			Record_QuickDelay.precision(10);
 			Record_QuickDelay << t ;
-			Record_QuickDelay << " " << Geometry.gtdelay(1, 2, order, t);
-			Record_QuickDelay << " " << Geometry.gtdelay(2, 3, order, t);
-			Record_QuickDelay << " " << Geometry.gtdelay(3, 1, order, t);
-			Record_QuickDelay << " " << Geometry.gtdelay(1, 3, order, t);
-			Record_QuickDelay << " " << Geometry.gtdelay(2, 1, order, t);
-			Record_QuickDelay << " " << Geometry.gtdelay(3, 2, order, t);
+			Record_QuickDelay << " " << Geo.gtdelay(1, 2, order, t);
+			Record_QuickDelay << " " << Geo.gtdelay(2, 3, order, t);
+			Record_QuickDelay << " " << Geo.gtdelay(3, 1, order, t);
+			Record_QuickDelay << " " << Geo.gtdelay(1, 3, order, t);
+			Record_QuickDelay << " " << Geo.gtdelay(2, 1, order, t);
+			Record_QuickDelay << " " << Geo.gtdelay(3, 2, order, t);
 			Record_QuickDelay << endl;
 			
 			
