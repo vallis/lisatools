@@ -2,6 +2,7 @@
 
 import os
 import sys
+import string
 import random
 from random import seed, randint
 from optparse import OptionParser
@@ -56,33 +57,35 @@ seed34,seed34t = twoseeds()
 seed35,seed35t = twoseeds()
 seed35e,seed35et = twoseeds()
 
-if '3.1' in options.runOnly:
+runonly = map(string.strip,options.runOnly.split(','))
+
+if '3.1' in runonly:
     if not options.trainingOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed31)s  challenge3.1' % globals())
     if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed31t)s challenge3.1' % globals())
 
-if '3.2' in options.runOnly:
+if '3.2' in runonly:
     if not options.trainingOnly:                                                                  
         run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed32)s  --combinedSNR challenge3.2' % globals())
     if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed32t)s --combinedSNR challenge3.2' % globals())
 
-if '3.3' in options.runOnly:
+if '3.3' in runonly:
     if not options.trainingOnly:                                                                  
         run('%(mydir)s/challenge.py -P %(nproc)s            --seed=%(seed33)s  --combinedSNR challenge3.3' % globals())
     if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --training --seed=%(seed33t)s --combinedSNR challenge3.3' % globals())
 
 options34 = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10'
-if '3.4' in options.runOnly:
+if '3.4' in runonly:
     if not options.trainingOnly:                                                                  
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa            --duration=2097152 --timeStep=1 --seed=%(seed34)s  --combinedSNR %(options34)s challenge3.4' % globals())
     if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --training --duration=2097152 --timeStep=1 --seed=%(seed34t)s --combinedSNR %(options34)s challenge3.4' % globals())
 
 options35 = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Rigid'
-if '3.5' in options.runOnly:
+if '3.5' in runonly:
     if not options.trainingOnly:                                                                  
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
     if not options.blindOnly:
@@ -90,7 +93,7 @@ if '3.5' in options.runOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
 
 options35e = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Eccentric'
-if '3.5e' in options.runOnly:
+if '3.5e' in runonly:
     if not options.trainingOnly:                                                                  
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode            --duration=2097152 --timeStep=2 --seed=%(seed35e)s  %(options35e)s challenge3.5e' % globals())
     if not options.blindOnly:
