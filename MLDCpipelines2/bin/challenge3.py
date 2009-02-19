@@ -26,7 +26,7 @@ parser.add_option("-P", "--nProc",
                   help="run in parallel on nproc CPUs [default 1]")
 
 parser.add_option("-R", "--runOnly",
-                  type="string", dest="runOnly", default="3.1,3.2,3.3,3.4,3.5",
+                  type="string", dest="runOnly", default="3.1,3.2,3.3,3.4,3.5,3.5e",
                   help="which challenges to run (use a comma-separated list like 3.1,3.2) [default: all of them]")
 
 parser.add_option("-T", "--trainingOnly",
@@ -54,6 +54,7 @@ seed32,seed32t = twoseeds()
 seed33,seed33t = twoseeds()
 seed34,seed34t = twoseeds()
 seed35,seed35t = twoseeds()
+seed35e,seed35et = twoseeds()
 
 if '3.1' in options.runOnly:
     if not options.trainingOnly:
@@ -84,6 +85,14 @@ options35 = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Rigid
 if '3.5' in options.runOnly:
     if not options.trainingOnly:                                                                  
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
-    if not options.blindOnly:                    
+    if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
         run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
+
+options35e = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Eccentric'
+if '3.5e' in options.runOnly:
+    if not options.trainingOnly:                                                                  
+        run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode            --duration=2097152 --timeStep=2 --seed=%(seed35e)s  %(options35e)s challenge3.5e' % globals())
+    if not options.blindOnly:
+        run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35et)s %(options35e)s challenge3.5e' % globals())
+        run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35et)s %(options35e)s challenge3.5e' % globals())
