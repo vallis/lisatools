@@ -75,8 +75,8 @@ parser.add_option("-e", "--deltadotf",
                   help="half width of uniform probability distribution for frequency derivative (Hz/s) [optional]")
 
 parser.add_option("-n", "--sourceName",
-                  type="string", dest="sourceName", default="monochromatic Galactic binary",
-                  help='name of source [defaults to "monochromatic Galactic binary"]')
+                  type="string", dest="sourceName", default="Galactic binary",
+                  help='name of source [defaults to "Galactic binary"]')
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
