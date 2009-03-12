@@ -22,7 +22,7 @@ seed = int(sys.argv[1])
 
 mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
-run('%s/makesource-Galaxy.py %s' % (mydir,seed))
+run('%s/makesource-Galaxy2.py -v -s %s Galaxy/Galaxy_%s.xml' % (mydir,seed,seed))
 
 # then the desired Galaxy file is in Galaxy/Galaxy_{Seed}.dat
 # the order of the parameters is 0 -> Frequency
@@ -93,5 +93,4 @@ for source in chosensources:
     written += 1
     binaryseed += 1
 
-run('rm ../MLDCwaveforms/Galaxy/Data/Galaxy_%(seed)s.dat ../MLDCwaveforms/Galaxy/Data/Galaxy_Bright_%(seed)s.dat ../MLDCwaveforms/Galaxy/Data/count_%(seed)s.dat')
 run('rm Galaxy/*.xml Galaxy/*.dat')
