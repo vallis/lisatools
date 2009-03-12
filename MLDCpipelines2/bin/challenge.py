@@ -328,6 +328,10 @@ if (not makemode) and (not sourcekeyfile):
     # look for the script relative to challenge.py
     
     sourcescript = execdir + '/' + challengename + '.py'
+    if 'challenge1C' in challengename and not os.path.isfile(sourcescript):
+        sourcescript = re.sub('challenge1C','challenge1B',sourcescript)
+        print "--> I'm using script %s for %s" % (sourcescript,challengename)
+    
     if not os.path.isfile(sourcescript):
         parser.error("I need the challenge script %s!" % sourcescript)
     else:
