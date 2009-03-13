@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>MLDC3 result submission</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+
+    <style>
+        body { font-family: Helvetica, sans-serif; font-size: 11pt; color: #000;}
+    
+        .sourceclass { width: 720px; border: solid #000 1px; margin: 20px 0px 20px 0px; padding: 10px 10px 10px 10px; }
+        .entry { width: 696px; border: dotted #88a 1px; padding: 2px; }
+    
+        table { width: 700px; color: #800; font-size: 10pt; border-spacing: 0px; border-collapse: collapse; table-layout: fixed; }
+        tr { border: solid #008 1px; }
+        td { width: auto; border: solid #008 1px; margin: 0px; padding: 2px; }
+        td i { color: #000; }
+    </style>
+</head>
+
+<body>
+
+    <form enctype = "multipart/form-data" method = "post" action = "http://www.tapir.caltech.edu/~mldc/cgi-bin/get-query-3.cgi" target="_blank">
+
+        <h1>Mock LISA Data Challenge 3 response entry</h1>
+
+		<div class="sourceclass" style="background: #eff;">
+			<p>Short name for your collaboration; a few characters, alphanumeric only, please:</p>
+			<input type="text" name="shortcollaboration" size="40" maxlength="255" />
+
+			<p>Full name for your collaboration:</p>
+			<input type="text" name="collaboration" size="80" maxlength="255" />
+		
+			<p>Authors in your collaboration; please list full names with middle initials (if any), using numbers in parentheses for affiliations, and following up with full list of affiliation addresses:</p>
+		    <textarea name="authors" rows="10" cols="80">
+		    </textarea>
+			<p>(This author list will be used for proceedings covering the entire challenge; corrections will be possible before publication, but we'd rather get everything right the first time).</p>
+		</div>
+
+		<div class="sourceclass" style="background: #fef;">
+			<p>Now submit your entries for your choice of challenges. Each of the buttons below will open a new window for data entry. If you have already made a submission for a challenge, reposting it will replace the older version.</p>
+
+			<p>Note that this form will accept submissions past the deadline of 11:59pm PST, Apr 30, but late submissions will be tagged as such and not included in the official evaluation.</p>
+
+			<!-- <input type="submit" name = "action" value = "MLDC 3.1"><br/> -->
+			<input type="submit" name = "action" value = "MLDC 3.2"><br/>
+			<input type="submit" name = "action" value = "MLDC 3.3"><br/>
+			<input type="submit" name = "action" value = "MLDC 3.4"><!--<br/>
+			<input type="submit" name = "action" value = "MLDC 3.5">-->
+		</div>
+
+		<div class="sourceclass" style="background: #ffe;">
+			<p>Now submit the technical write-up of your work as a single tar.gz (or zip) archive containing all files needed to reproduce a printable document. Note that reposting the archive will replace previous versions.</p>
+			<input type="submit" name = "action" value = "Submit write-up">
+			<input type="file" name="writeup" size="48"/>
+		</div>
+
+    </form>
+
+<p>This web interface by M. Vallisneri, 2009/03/12. Please contact <a href="mailto:vallis@vallis.org">him</a> for any problems or questions.</p>
+
+</body>
+
+</html>

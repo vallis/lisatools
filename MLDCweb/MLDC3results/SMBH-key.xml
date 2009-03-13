@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="SMBH-1" Type="PlaneWave">
+            <Param Name="SourceType">
+                FastSpinBlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                [-pi,pi]
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                [0,2pi]
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+                [solar masses]
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+                [solar masses]
+            </Param>
+            <Param Name="Spin1" Unit="MassSquared">
+                [0,1]
+            </Param>
+            <Param Name="Spin2" Unit="MassSquared">
+                [0,1]
+            </Param>            
+            <Param Name="PolarAngleOfSpin1" Unit="Radian">
+                [0,pi]
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin1" Unit="Radian">
+                [0,2pi]
+            </Param>
+            <Param Name="PolarAngleOfSpin2" Unit="Radian">
+                [0,pi]
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin2" Unit="Radian">
+                [0,2pi]
+            </Param>
+            <Param Name="InitialPolarAngleL" Unit="Radian">
+                [0,pi]
+            </Param>
+            <Param Name="InitialAzimuthalAngleL" Unit="Radian">
+                [0,2pi]
+            </Param>            
+            <Param Name="CoalescenceTime" Unit="Second">
+                [seconds]
+            </Param>
+            <Param Name="PhaseAtCoalescence" Unit="Radian">
+                [0,2pi]
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                [parsecs]
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-2" Type="PlaneWave">
+            <Param Name="SourceType">
+                FastSpinBlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+            </Param>
+            <Param Name="Spin1" Unit="MassSquared">
+            </Param>
+            <Param Name="Spin2" Unit="MassSquared">
+            </Param>            
+            <Param Name="PolarAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="PolarAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="InitialPolarAngleL" Unit="Radian">
+            </Param>
+            <Param Name="InitialAzimuthalAngleL" Unit="Radian">
+            </Param>            
+            <Param Name="CoalescenceTime" Unit="Second">
+            </Param>
+            <Param Name="PhaseAtCoalescence" Unit="Radian">
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-3" Type="PlaneWave">
+            <Param Name="SourceType">
+                FastSpinBlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+            </Param>
+            <Param Name="Spin1" Unit="MassSquared">
+            </Param>
+            <Param Name="Spin2" Unit="MassSquared">
+            </Param>            
+            <Param Name="PolarAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="PolarAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="InitialPolarAngleL" Unit="Radian">
+            </Param>
+            <Param Name="InitialAzimuthalAngleL" Unit="Radian">
+            </Param>            
+            <Param Name="CoalescenceTime" Unit="Second">
+            </Param>
+            <Param Name="PhaseAtCoalescence" Unit="Radian">
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-4" Type="PlaneWave">
+            <Param Name="SourceType">
+                FastSpinBlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+            </Param>
+            <Param Name="Spin1" Unit="MassSquared">
+            </Param>
+            <Param Name="Spin2" Unit="MassSquared">
+            </Param>            
+            <Param Name="PolarAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="PolarAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="InitialPolarAngleL" Unit="Radian">
+            </Param>
+            <Param Name="InitialAzimuthalAngleL" Unit="Radian">
+            </Param>            
+            <Param Name="CoalescenceTime" Unit="Second">
+            </Param>
+            <Param Name="PhaseAtCoalescence" Unit="Radian">
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-5" Type="PlaneWave">
+            <Param Name="SourceType">
+                FastSpinBlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+            </Param>
+            <Param Name="Spin1" Unit="MassSquared">
+            </Param>
+            <Param Name="Spin2" Unit="MassSquared">
+            </Param>            
+            <Param Name="PolarAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="PolarAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="InitialPolarAngleL" Unit="Radian">
+            </Param>
+            <Param Name="InitialAzimuthalAngleL" Unit="Radian">
+            </Param>            
+            <Param Name="CoalescenceTime" Unit="Second">
+            </Param>
+            <Param Name="PhaseAtCoalescence" Unit="Radian">
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+            </Param>
+        </XSIL>
+        <XSIL Name="SMBH-6" Type="PlaneWave">
+            <Param Name="SourceType">
+                FastSpinBlackHoleBinary
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Mass1" Unit="SolarMass">
+            </Param>
+            <Param Name="Mass2" Unit="SolarMass">
+            </Param>
+            <Param Name="Spin1" Unit="MassSquared">
+            </Param>
+            <Param Name="Spin2" Unit="MassSquared">
+            </Param>            
+            <Param Name="PolarAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin1" Unit="Radian">
+            </Param>
+            <Param Name="PolarAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin2" Unit="Radian">
+            </Param>
+            <Param Name="InitialPolarAngleL" Unit="Radian">
+            </Param>
+            <Param Name="InitialAzimuthalAngleL" Unit="Radian">
+            </Param>            
+            <Param Name="CoalescenceTime" Unit="Second">
+            </Param>
+            <Param Name="PhaseAtCoalescence" Unit="Radian">
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>

@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="CosmicString-1" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                [-pi,pi]
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                [0,2pi]
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                [0,pi]
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+                [strain]
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+                [seconds]
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+                [Hertz, if undetermined report f_Nyquist]
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-2" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-3" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-4" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-5" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-6" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-7" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-8" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>
+        <XSIL Name="CosmicString-9" Type="PlaneWave">
+            <Param Name="SourceType">
+                CosmicStringCusp
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+            </Param>
+            <Param Name="Amplitude" Unit="1">
+            </Param>
+            <Param Name="CentralTime" Unit="Second">
+            </Param>
+            <Param Name="MaximumFrequency" Unit="Hertz">
+            </Param>
+        </XSIL>        
+    </XSIL>
+</XSIL>
