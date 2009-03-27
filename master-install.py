@@ -217,8 +217,10 @@ if not os.path.isfile(gsldir + '/bin/gsl-config') or installgsl:
         print "    v1.8 for you if you give me the --installgsl option."
         sys.exit(1)
 
-fftw3package = 'fftw-3.1.2'
+fftw3package = 'fftw-3.2.1'
 fftw3tar = fftw3package + '.tar.gz'
+fftwdownload = 'http://www.fftw.org/' + fftw3tar
+# also ftp://ftp.fftw.org/pub/fftw/old/
 
 # universal binary technique should work here, too
 # may need to remove build dir between two compilations
@@ -227,9 +229,9 @@ print "--> Checking FFTW"
 if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
     if installfftw == True:
         print "--> Installing FFTW"    
-        installpackage('http://www.fftw.org/fftw-3.1.2.tar.gz',prefix=fftwdir,keepdownload=True)
+        installpackage(fftwdownload,prefix=fftwdir,keepdownload=True)
         # redo in single precision, get rid of tar.gz
-        installpackage('http://www.fftw.org/fftw-3.1.2.tar.gz',prefix=fftwdir,keepdownload=False,configureflags='--enable-float')
+        installpackage(fftwdownload,prefix=fftwdir,keepdownload=False,configureflags='--enable-float')
         
         # os.chdir('Packages')
         # if not os.path.isfile(fftw3tar):
