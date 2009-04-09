@@ -18,10 +18,20 @@
         td { width: auto; border: solid #008 1px; margin: 0px; padding: 2px; }
         td i { color: #000; }
     </style>
+    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var email = "vallis";
+            var host  = "vallis.org";
+            
+           $('a[href^=mailto:]').attr('href','mail' + 'to:' + email + '@' + host);
+        });
+    </script>
 </head>
 
 <body>
-
+    
     <form enctype = "multipart/form-data" method = "post" action = "http://www.tapir.caltech.edu/~mldc/cgi-bin/get-query-3.cgi" target="_blank">
 
         <h1>Mock LISA Data Challenge 3 response entry</h1>
@@ -44,11 +54,11 @@
 
 			<p>Note that this form will accept submissions past the deadline of 11:59pm PST, Apr 30, but late submissions will be tagged as such and not included in the official evaluation.</p>
 
-			<!-- <input type="submit" name = "action" value = "MLDC 3.1"><br/> -->
+			<input type="submit" name = "action" value = "MLDC 3.1"><br/>
 			<input type="submit" name = "action" value = "MLDC 3.2"><br/>
 			<input type="submit" name = "action" value = "MLDC 3.3"><br/>
-			<input type="submit" name = "action" value = "MLDC 3.4"><!--<br/>
-			<input type="submit" name = "action" value = "MLDC 3.5">-->
+			<input type="submit" name = "action" value = "MLDC 3.4"><br/>
+			<input type="submit" name = "action" value = "MLDC 3.5">
 		</div>
 
 		<div class="sourceclass" style="background: #ffe;">
@@ -59,7 +69,7 @@
 
     </form>
 
-<p>This web interface by M. Vallisneri, 2009/03/12. Please contact <a href="mailto:vallis@vallis.org">him</a> for any problems or questions.</p>
+<p>This web interface by M. Vallisneri, 2009/04/09. Please contact <a href="mailto:nospam@please">him</a> for any problems or questions.</p>
 
 </body>
 

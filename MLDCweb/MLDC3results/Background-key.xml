@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="SMBH" Type="PlaneWave">
+            <Param Name="SourceType">
+                StochasticBackground
+            </Param>
+            <Param Name="GravitationalWavePSD" Unit="Hertz^2">
+                [sky-integrated, polarization-summed GW PSD]
+            </Param>
+            <Param Name="pm1" Unit="Hertz">
+                [proof mass 1 noise PSD]
+            </Param>
+            <Param Name="pm1s" Unit="Hertz">
+                [proof mass 1* noise PSD]
+            </Param>            
+            <Param Name="pm2" Unit="Hertz">
+                [proof mass 2 noise PSD]
+            </Param>
+            <Param Name="pm2s" Unit="Hertz">
+                [proof mass 2* noise PSD]
+            </Param>            
+            <Param Name="pm3" Unit="Hertz">
+                [proof mass 3 noise PSD]
+            </Param>
+            <Param Name="pm3s" Unit="Hertz">
+                [proof mass 3* noise PSD]
+            </Param>
+            <Param Name="pd1" Unit="Hertz">
+                [photodetector 1 noise PSD]
+            </Param>
+            <Param Name="pd1s" Unit="1/Hertz">
+                [photodetector 1* noise PSD]
+            </Param>            
+            <Param Name="pd2" Unit="1/Hertz">
+                [photodetector 2 noise PSD]
+            </Param>
+            <Param Name="pd2s" Unit="1/Hertz">
+                [photodetector 2* noise PSD]
+            </Param>            
+            <Param Name="pd3" Unit="1/Hertz">
+                [photodetector 3 noise PSD]
+            </Param>
+            <Param Name="pd3s" Unit="1/Hertz">
+                [photodetector 3* noise PSD]
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>

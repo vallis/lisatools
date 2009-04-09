@@ -39,6 +39,8 @@ if 'MLDC' in submit:
         viewpage = htmldir + '?filename=EMRI-key.xml&challenge=%s&collaboration=%s'           % (submitchallenge,shortcollaboration)
     elif '3.4' in submit:
         viewpage = htmldir + '?filename=CosmicString-key.xml&challenge=%s&collaboration=%s'   % (submitchallenge,shortcollaboration)
+    elif '3.5' in submit:
+        viewpage = htmldir + '?filename=Background-key.xml&challenge=%s&collaboration=%s'   % (submitchallenge,shortcollaboration)        
 elif 'write-up' in submit:
     viewpage = 'writeup'
 

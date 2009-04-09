@@ -3,12 +3,12 @@
 <?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
 <XSIL>
     <XSIL Type="SourceData">
-        <XSIL Name="EMRI-1" Type="PlaneWave">
+        <XSIL Name="EMRI" Type="PlaneWave">
             <Param Name="SourceType">
                 ExtremeMassRatioInspiral
             </Param>
             <Param Name="EclipticLatitude" Unit="Radian">
-                [-pi,pi]
+                [-pi/2,pi/2]
             </Param>
             <Param Name="EclipticLongitude" Unit="Radian">
                 [0,2pi]
@@ -48,138 +48,6 @@
             </Param>
             <Param Name="Distance" Unit="Parsec">
                 [parsecs]
-            </Param>
-        </XSIL>
-        <XSIL Name="EMRI-2" Type="PlaneWave">
-            <Param Name="SourceType">
-                ExtremeMassRatioInspiral
-            </Param>
-            <Param Name="EclipticLatitude" Unit="Radian">
-            </Param>
-            <Param Name="EclipticLongitude" Unit="Radian">
-            </Param>
-            <Param Name="MassOfSMBH" Unit="SolarMass">
-            </Param>
-            <Param Name="MassOfCompactObject" Unit="SolarMass">
-            </Param>
-            <Param Name="Spin" Unit="MassSquared">
-            </Param>            
-            <Param Name="PolarAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
-            </Param>
-            <Param Name="InitialEccentricity" Unit="Unit">
-            </Param>
-            <Param Name="InitialTildeGamma" Unit="Radian">
-            </Param>
-            <Param Name="InitialAlphaAngle" Unit="Radian">
-            </Param>
-            <Param Name="LambdaAngle" Unit="Radian">
-            </Param>
-            <Param Name="Distance" Unit="Parsec">
-            </Param>
-        </XSIL>
-        <XSIL Name="EMRI-3" Type="PlaneWave">
-            <Param Name="SourceType">
-                ExtremeMassRatioInspiral
-            </Param>
-            <Param Name="EclipticLatitude" Unit="Radian">
-            </Param>
-            <Param Name="EclipticLongitude" Unit="Radian">
-            </Param>
-            <Param Name="MassOfSMBH" Unit="SolarMass">
-            </Param>
-            <Param Name="MassOfCompactObject" Unit="SolarMass">
-            </Param>
-            <Param Name="Spin" Unit="MassSquared">
-            </Param>            
-            <Param Name="PolarAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
-            </Param>
-            <Param Name="InitialEccentricity" Unit="Unit">
-            </Param>
-            <Param Name="InitialTildeGamma" Unit="Radian">
-            </Param>
-            <Param Name="InitialAlphaAngle" Unit="Radian">
-            </Param>
-            <Param Name="LambdaAngle" Unit="Radian">
-            </Param>
-            <Param Name="Distance" Unit="Parsec">
-            </Param>
-        </XSIL>
-        <XSIL Name="EMRI-4" Type="PlaneWave">
-            <Param Name="SourceType">
-                ExtremeMassRatioInspiral
-            </Param>
-            <Param Name="EclipticLatitude" Unit="Radian">
-            </Param>
-            <Param Name="EclipticLongitude" Unit="Radian">
-            </Param>
-            <Param Name="MassOfSMBH" Unit="SolarMass">
-            </Param>
-            <Param Name="MassOfCompactObject" Unit="SolarMass">
-            </Param>
-            <Param Name="Spin" Unit="MassSquared">
-            </Param>            
-            <Param Name="PolarAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
-            </Param>
-            <Param Name="InitialEccentricity" Unit="Unit">
-            </Param>
-            <Param Name="InitialTildeGamma" Unit="Radian">
-            </Param>
-            <Param Name="InitialAlphaAngle" Unit="Radian">
-            </Param>
-            <Param Name="LambdaAngle" Unit="Radian">
-            </Param>
-            <Param Name="Distance" Unit="Parsec">
-            </Param>
-        </XSIL>
-        <XSIL Name="EMRI-5" Type="PlaneWave">
-            <Param Name="SourceType">
-                ExtremeMassRatioInspiral
-            </Param>
-            <Param Name="EclipticLatitude" Unit="Radian">
-            </Param>
-            <Param Name="EclipticLongitude" Unit="Radian">
-            </Param>
-            <Param Name="MassOfSMBH" Unit="SolarMass">
-            </Param>
-            <Param Name="MassOfCompactObject" Unit="SolarMass">
-            </Param>
-            <Param Name="Spin" Unit="MassSquared">
-            </Param>            
-            <Param Name="PolarAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
-            </Param>
-            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
-            </Param>
-            <Param Name="InitialEccentricity" Unit="Unit">
-            </Param>
-            <Param Name="InitialTildeGamma" Unit="Radian">
-            </Param>
-            <Param Name="InitialAlphaAngle" Unit="Radian">
-            </Param>
-            <Param Name="LambdaAngle" Unit="Radian">
-            </Param>
-            <Param Name="Distance" Unit="Parsec">
             </Param>
         </XSIL>
     </XSIL>

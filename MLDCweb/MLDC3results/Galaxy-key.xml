@@ -3,9 +3,15 @@
 <?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
 <XSIL>
     <XSIL Type="SourceData">
-        <XSIL Name="CosmicString" Type="PlaneWave">
+        <XSIL Name="SMBH" Type="PlaneWave">
             <Param Name="SourceType">
-                CosmicStringCusp
+                GalacticBinary
+            </Param>
+            <Param Name="Frequency" Unit="Hertz">
+                [Hertz]
+            </Param>
+            <Param Name="FrequencyDerivative" Unit="Hertz/Second">
+                [Hertz/Second, leave empty if undetermined]
             </Param>
             <Param Name="EclipticLatitude" Unit="Radian">
                 [-pi/2,pi/2]
@@ -13,18 +19,18 @@
             <Param Name="EclipticLongitude" Unit="Radian">
                 [0,2pi]
             </Param>
-            <Param Name="Polarization" Unit="Radian">
-                [0,pi]
-            </Param>
             <Param Name="Amplitude" Unit="1">
                 [strain]
             </Param>
-            <Param Name="CentralTime" Unit="Second">
-                [seconds]
+            <Param Name="Inclination" Unit="Radian">
+                [0,pi]
+            </Param>            
+            <Param Name="Polarization" Unit="Radian">
+                [0,pi]
             </Param>
-            <Param Name="MaximumFrequency" Unit="Hertz">
-                [Hertz, if undetermined report f_Nyquist]
+            <Param Name="InitialPhase" Unit="Radian">
+                [0,2pi]
             </Param>
-        </XSIL>     
+        </XSIL>
     </XSIL>
 </XSIL>
