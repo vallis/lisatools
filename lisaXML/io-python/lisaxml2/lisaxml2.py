@@ -966,7 +966,8 @@ class Source(XSILobject):
             module = __import__(SourceClassModules[sourcetype])
             self = getattr(module,sourcetype)()
         except KeyError:
-            raise NotImplementedError, 'Source.makeSource(): unknown object type %s' % sourcetype
+            # print 'Source.makeSource(): unknown object type %s, I will make it a generic source' % sourcetype
+            self = Source(sourcetype)
         except ImportError:
             print 'Source.makeSource(): cannot import module %s for object type %s, I will make it a generic source' % (SourceClassModules[sourcetype],sourcetype)
             self = Source(sourcetype)
@@ -1166,6 +1167,13 @@ class writeXML(object):
         self.decind()
         self.iprint(string)    
     
+    def printstream(self,stream):
+        if stream:
+            print >> self.f, stream,
+        
+            if stream[-1] != '\n':
+                print >> self.f
+    
     def content(self,thevalue):
         """Output XML characters, adding indentation."""
         # try to keep indentation for multiline content
@@ -1186,8 +1194,12 @@ class writeXML(object):
                 if type(elem) in (tuple,list):
                     self.outputrxp(elem)
                 else:
-                    self.content(elem)
-                
+                    # hack: don't indent Streams
+                    if rxpexp[0] == 'Stream':
+                        self.printstream(elem)
+                    else:
+                        self.content(elem)
+            
             self.closetag(rxpexp[0])
         else:
             # I am a singleton
