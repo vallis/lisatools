@@ -142,10 +142,15 @@ while True:
                 
                 if par in theunits:
                     setattr(table,par + '_Unit',theunits[par])
+                else:
+                    outxml.Comment += '\n\nWARNING: unknown parameter %s in table %s' % (par,sourcename)
             
             sourcetable = lisaxml.SourceTable(sourcetype,sourcename,table)
             
             outxml.SourceData.append(sourcetable)
+            
+            if stream.Records != len(theparams):
+                outxml.Comment += '\n\nWARNING: number of row columns (%d) does not match number of parameters (%d) in table %s' % (stream.Records,len(theparams),sourcename)        
         
             srccnt2 = 1; break
         elif (srcstr + "source") in data.keys():
