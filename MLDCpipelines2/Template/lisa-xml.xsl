@@ -7,16 +7,13 @@
             <link href="lisa-xml.css" rel="Stylesheet" type="text/css" media="screen"/>    
             <title>Mock LISA Data Challenge XML File Format, v. 1.0</title>
 
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript"></script>
             <script type="text/javascript">
-            function switchMenu(obj) {
-                    var el = document.getElementById(obj);
-                    if ( el.style.display != "none" ) {
-                            el.style.display = 'none';
-                    }
-                    else {
-                            el.style.display = '';
-                    }
-            }
+                $(document).ready(function () {
+                    $('.toggledisplay').click(function() {
+                        $(this).parent().next().toggle();
+                    });
+                });
             </script>
         </head>
         <body>
@@ -83,7 +80,7 @@
 
             <xsl:for-each select="XSIL[@Type='LISAData']">
                 <div class="LISAData">                
-                    <h2>LISA data [<a onclick="switchMenu('LISAData');">+/-</a>]</h2><div id="LISAData">
+                    <h2>LISA data [<a href="#" class="toggledisplay">+/-</a>]</h2><div id="LISAData">
                     
                     <xsl:for-each select="XSIL">
                         <div class="LISA">
@@ -109,7 +106,7 @@
             
             <xsl:for-each select="XSIL[@Type='SourceData']">
                 <div class="SourceData">                
-                    <h2>Source data [<a onclick="switchMenu('SourceData');">+/-</a>]</h2><div id="SourceData">
+                    <h2>Source data [<a href="#" class="toggledisplay">+/-</a>]</h2><div id="SourceData">
                         
                     <xsl:for-each select="XSIL[@Type='SampledPlaneWave' or @Type='PlaneWave']">
                         <div class="Wave">
@@ -156,7 +153,7 @@
                    
             <xsl:for-each select="XSIL[@Type='TDIData']">
                 <div class="TDIData">                
-                    <h2>TDI data [<a onclick="switchMenu('TDIData');">+/-</a>]</h2><div id="TDIData">
+                    <h2>TDI data [<a href="#" class="toggledisplay">+/-</a>]</h2><div id="TDIData">
                     
                     <xsl:for-each select="XSIL">
                         <div class="Observable">
@@ -182,7 +179,7 @@
             
             <xsl:for-each select="XSIL[@Type='NoiseData']">
                 <div class="NoiseData">                
-                    <h2>LISA noise data [<a onclick="switchMenu('NoiseData');">+/-</a>]</h2><div id="NoiseData">
+                    <h2>LISA noise data [<a href="#" class="toggledisplay">+/-</a>]</h2><div id="NoiseData">
                     
                     <xsl:for-each select="XSIL">
                         <div class="Noise">
@@ -276,12 +273,14 @@
             </tr>
         </xsl:for-each>
     </table>
+
+    <!-- Previously the content of Stream was passed to pre-text:
+         <xsl:call-template name="pre-text"><xsl:with-param name="string" select="Stream" /></xsl:call-template> -->
 	
 	<xsl:if test="Stream/@Type = 'Local'">
-		<pre>
-        	<xsl:call-template name="pre-text">
-        		<xsl:with-param name="string" select="Stream" />
-        	</xsl:call-template>
+		<p style="text-align: center"><a href="#" class="toggledisplay">[Toggle stream display]</a></p>
+		<pre style="display: none">
+<xsl:value-of select="Stream"/>
 		</pre>
 	</xsl:if>
 </xsl:template>
