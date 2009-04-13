@@ -122,7 +122,7 @@ for xmlfile in glob.glob(barycentric):
 if (options.usekey):
    run('./bin/compute-KeyData.py %(challengename)s')
 
-sys.exit(0)
+
 
 #### call evaluation script for synthetic LISA data
 
@@ -194,11 +194,26 @@ if (challengename == "Challenge2.2"):
    
 """
 
-print KeyTDI
+print keyTdis
+
 
 if (challengename == "Challenge3.2"):
-   tdis = glob.glob('TDI/'+challengename+'/*challenge3.2-*frequency.xml')
+   logFile = "Results/log_" + challengename
+   tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
 #   dataTdi = 'Data/challenge3.2-frequency.xml'
    dataTdi = 'Data/challenge3.2-training-frequency.xml'
-   
+   if (os.path.isfile(dataTdi) ):
+      pass
+   else:   
+      print "data file ", dataTdi, "cannot be found"
+      sys.exit(1)
+   if (options.usekey):   
+      ind = 0
+      for KeyTDI in (keyTdis):
+         logFile = logFile + "_" + str(ind)
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         ind = ind+1
+      #  sys.exit(0)
+   else:
+      run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
    
