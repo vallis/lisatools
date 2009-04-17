@@ -53,10 +53,8 @@ parser.add_option("-P", "--poldebug",
 
 (options, args) = parser.parse_args()
 
-if options.duration == 1:
-    options.duration = 31457280
-elif options.duration == 2:
-    options.duration = 62914560
+if options.duration < 10:
+    options.duration = options.duration * 31457280
 
 # currently we support only a single source parameter file
 
@@ -71,9 +69,7 @@ inputXML = lisaxml.readXML(inputfile)
 
 allsystems = inputXML.getLISASources()
 
-for cnt in range(len(allsystems)):
-    mysystem = allsystems[0]
-
+for cnt,mysystem in zip(range(len(allsystems)),allsystems):
     # print out parameters
 
     if options.verbose:
@@ -138,7 +134,5 @@ for cnt in range(len(allsystems)):
     outputXML = lisaxml.lisaXML(oneoutputfile,author='Michele Vallisneri')
     outputXML.SourceData(mysystem)
     outputXML.close()
-
-    del allsystems[0]
 
 inputXML.close()
