@@ -7,8 +7,8 @@
             <Param Name="SourceType">
                 StochasticBackground
             </Param>
-            <Param Name="GravitationalWavePSD" Unit="Hertz^2">
-                [sky-integrated, polarization-summed GW PSD]
+            <Param Name="OmegaGW" Unit="1">
+                [GW background density]
             </Param>
             <Param Name="pm1" Unit="Hertz">
                 [proof mass 1 noise PSD]
