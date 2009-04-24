@@ -48,7 +48,7 @@ print '<html>'
 
 print """<head>
     <title>
-        MLDC2 result submission
+        MLDC3 result submission
     </title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <style type="text/css">
@@ -134,6 +134,11 @@ use multiple entries (dotted boxes) for different sources
 in the same maximum (yellow box), and indicate the relative likelihood/posterior
 in the Probability field of the first source.</li></ul>
 <p>Please use the Comments field to specify which you have done.</p></small>"""
+
+print '<hr/>'
+
+print """<small><p>For challenges 3.1-3.3 and 3.5, please indicate in the comments which dataset you analyzed
+(synthLISA or LISA Simulator or LISAcode).</p></small>"""
 
 print '<hr/>'
 
