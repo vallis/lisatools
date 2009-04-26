@@ -23,7 +23,7 @@ The main script is evaluate-challenge3.py
 run 
 ./bin/evaluate-challenge3.py --help
 to see options.
-To evaluate submissions with known key file use -k option
+To evaluate submissions with known key file use -k option with name of the key file
 The key file for 3.2 has to be modified: the Galaxyy should be removed from there!!!
 
 

@@ -60,10 +60,18 @@ parser.add_option("-T", "--duration",
 parser.add_option("-d", "--timeStep",
                   type="float", dest="timestep", default=15.0,
                   help="timestep for waveform sampling (s) [default 15]")
-                  
+ 
 parser.add_option("-k","--usekey",
-                  action="store_true", dest="usekey", default=False,
-                  help="generate data corresponding to key file [default: False]")                  
+                  type="string", dest="usekey", default=None,
+                  help="generate data using given key file [default: None]")  
+                  
+parser.add_option("-S", "--synthlisa",
+                  action="store_true", dest="synthlisaonly", default=False,
+                  help="run only Synthetic LISA")
+                  
+parser.add_option("-L", "--lisasim",
+                  action="store_true", dest="lisasimonly", default=False,
+                  help="run only the LISA Simulator")                                                    
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -78,6 +86,13 @@ challengename = args[0]
 timestep = options.timestep
 duration = options.duration
 
+dosynthlisa = not (options.lisasimonly) or options.synthlisaonly
+dolisasim   = not (options.synthlisaonly) or options.lisasimonly
+
+if (challengename == "Challenge3.4"):
+   dosynthlisa = True
+   dolisasim = False
+
 run('cp ../MLDCpipelines2/bin/lisasimulator.py bin/')
 run('cp ../MLDCpipelines2/bin/lisasimulator.pyc bin/')
 
@@ -88,7 +103,7 @@ if duration == 62914560:
 elif options.duration == 31457280:
    lisasimdir = lisasimulator.lisasim1yr
 
-
+"""
 ##### I : creating barycentric data
 
 sources = "Source/"+ challengename + '/' + "/*xml"
@@ -99,32 +114,38 @@ for xmlfile in glob.glob(sources):
 
 #### IIa : creating TDI files for all barycentric files using synthetic LISA
 
-barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
-for xmlfile in glob.glob(barycentric):
-    if (re.search('key', xmlfile) == None):
-         tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-         run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+if (dosynthlisa):
+   barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+   for xmlfile in glob.glob(barycentric):
+       if (re.search('key', xmlfile) == None):
+            tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+            run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
 
 
 
 #### IIb : creating TDI files for all barycentric files using LISA simulator
-barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
-for xmlfile in glob.glob(barycentric):
-    if (re.search('key', xmlfile) == None):
-         tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(xmlfile))
-         run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
+if (dolisasim):
+   barycentric = 'Barycentric/'+challengename+'/*-barycentric.xml'
+   for xmlfile in glob.glob(barycentric):
+       if (re.search('key', xmlfile) == None):
+            tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(xmlfile))
+            run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
 
-
+"""
 
 ### if key is know -- generate the data corresponding to the keys 
 
-if (options.usekey):
-   run('./bin/compute-KeyData.py %(challengename)s')
+
+if (options.usekey != None):
+   key = options.usekey
+   if (dolisasim):
+      run('./bin/compute-KeyData.py -k %(key)s -L %(challengename)s')
+   if (dosynthlisa):
+      run('./bin/compute-KeyData.py -k %(key)s -S  %(challengename)s')
 
 
-
-#### call evaluation script for synthetic LISA data
+#### IIIa. call evaluation script for synthetic LISA data
 
 keyTdis = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
 
@@ -207,7 +228,7 @@ if (challengename == "Challenge3.2"):
    else:   
       print "data file ", dataTdi, "cannot be found"
       sys.exit(1)
-   if (options.usekey):   
+   if (options.usekey != None):   
       ind = 0
       for KeyTDI in (keyTdis):
          logFile = logFile + "_" + str(ind)
@@ -217,3 +238,44 @@ if (challengename == "Challenge3.2"):
    else:
       run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
    
+
+if (challengename == "Challenge3.3"):
+   logFile = "Results/log_" + challengename
+   tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
+#   dataTdi = 'Data/challenge3.3-frequency.xml'
+   dataTdi = 'Data/challenge3.2-training-frequency.xml'
+   if (os.path.isfile(dataTdi) ):
+      pass
+   else:   
+      print "data file ", dataTdi, "cannot be found"
+      sys.exit(1)
+   if (options.usekey != None):   
+      ind = 0
+      for KeyTDI in (keyTdis):
+         logFile = logFile + "_" + str(ind)
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         ind = ind+1
+      #  sys.exit(0)
+   else:
+      run('bin/evaluate-syntheticLISA3.py --maxPhase   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+
+if (challengename == "Challenge3.4"):
+   logFile = "Results/log_" + challengename
+   tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
+#   dataTdi = 'Data/challenge3.3-frequency.xml'
+   dataTdi = 'Data/challenge3.2-training-frequency.xml'
+   if (os.path.isfile(dataTdi) ):
+      pass
+   else:   
+      print "data file ", dataTdi, "cannot be found"
+      sys.exit(1)
+   if (options.usekey != None):   
+      ind = 0
+      for KeyTDI in (keyTdis):
+         logFile = logFile + "_" + str(ind)
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         ind = ind+1
+      #  sys.exit(0)
+   else:
+      run('bin/evaluate-syntheticLISA3.py --maxPhase   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+

@@ -69,6 +69,19 @@ parser.add_option("-T", "--duration",
 parser.add_option("-d", "--timeStep",
                   type="float", dest="timestep", default=15.0,
                   help="timestep for waveform sampling (s) [default 15]")
+                  
+parser.add_option("-k", "--usekey",
+                  type="string", dest="usekey", default=None,
+                  help="generate data using given key file [default: None]")   
+                  
+parser.add_option("-L", "--lisasim",
+                  action="store_true", dest="lisasimonly", default=False,
+                  help="run only the LISA Simulator")                                                    
+
+parser.add_option("-S", "--synthlisa",
+                  action="store_true", dest="synthlisaonly", default=False,
+                  help="run only Synthetic LISA")
+                                 
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -83,10 +96,15 @@ challengename = args[0]
 timestep = options.timestep
 duration = options.duration
 
+dosynthlisa = not (options.lisasimonly) or options.synthlisaonly
+dolisasim   = not (options.synthlisaonly) or options.lisasimonly
+
+
 if duration == 62914560:
    lisasimdir = lisasimulator.lisasim2yr
 elif options.duration == 31457280:
    lisasimdir = lisasimulator.lisasim1yr
+    
 
 
 KeysChal1_3 = ["Key/challenge1.3.1-key.xml", "Key/challenge1.3.2-key.xml","Key/challenge1.3.4-key.xml"]
@@ -145,48 +163,57 @@ if (challengename == "Challenge1B.3"):
         #run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=/home/stas/lisasimulator-2year/  --duration=%(duration)s  %(baryKeyFile)s %(tdiKeyFileS)s')    
             
 if (challengename == "Challenge3.2"):
-   xmlKeysChal3 = ["Key/challenge3.2-training-key.xml"]
+   xmlKey = "Key/challenge3.2-key.xml"
+   if (options.usekey != None):
+      xmlKey = options.usekey
 #   xmlKeys = ["Key/challenge3.2-key.xml", "Key/challenge3.3-key.xml", "Key/challenge3.4-key.xml"]
-   for xmlKey in xmlKeysChal3:
-      baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
-      run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
+   baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
+   run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
    barycentric = 'Barycentric/'+challengename+'/*key-*barycentric.xml'
    for baryxmlfile in glob.glob(barycentric):
       tdiKeyFileF = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryxmlfile))
       tdiKeyFileS = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(baryxmlfile))
       if (re.search('key', baryxmlfile) != None):
-         run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
-         run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
+         if (dosynthlisa):
+            run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
+         if (dolisasim):   
+            run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
 
 
 if (challengename == "Challenge3.3"):
-   xmlKeysChal3 = ["Key/challenge3.3-training-key.xml"]
-   #   xmlKeys = ["Key/challenge3.2-key.xml", "Key/challenge3.3-key.xml", "Key/challenge3.4-key.xml"]
-   for xmlKey in xmlKeysChal3:
-      baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
-      run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
+   #xmlKeysChal3 = ["Key/challenge3.3-training-key.xml"]
+   xmlKey = "Key/challenge3.3-key.xml"
+   if (options.usekey != None):
+        xmlKey = options.usekey
+   baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
+   run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
    barycentric = 'Barycentric/'+challengename+'/*key-*barycentric.xml'
    for baryxmlfile in glob.glob(barycentric):
       tdiKeyFileF = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryxmlfile))
       tdiKeyFileS = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(baryxmlfile))
       if (re.search('key', baryxmlfile) != None):
-         run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
-         run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
+         if (dosynthlisa):
+            run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
+         if (dolisasim):    
+            run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
 
 
 if (challengename == "Challenge3.4"):
-   xmlKeysChal3 = ["Key/challenge3.4-training-key.xml"]
-   #   xmlKeys = ["Key/challenge3.2-key.xml", "Key/challenge3.3-key.xml", "Key/challenge3.4-key.xml"]
-   for xmlKey in xmlKeysChal3:
-      baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
-      run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
+#   xmlKeysChal3 = ["Key/challenge3.4-training-key.xml"]
+   xmlKey = "Key/challenge3.4-key.xml"
+   if (options.usekey != None):
+        xmlKey = options.usekey
+   baryKeyFile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlKey))
+   run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlKey)s %(baryKeyFile)s')
    barycentric = 'Barycentric/'+challengename+'/*key-*barycentric.xml'
    for baryxmlfile in glob.glob(barycentric):
       tdiKeyFileF = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(baryxmlfile))
       tdiKeyFileS = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(baryxmlfile))
       if (re.search('key', baryxmlfile) != None):
-         run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
-         run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
+         if (dosynthlisa):
+            run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --noiseOnly --duration=%(duration)s --timeStep=%(timestep)s %(baryxmlfile)s %(tdiKeyFileF)s')
+         if (dolisasim):   
+            run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(baryxmlfile)s %(tdiKeyFileS)s')
             
             
 #, "Key/challenge3.3-training-key.xml", "Key/challenge3.4-training-key.xml            
