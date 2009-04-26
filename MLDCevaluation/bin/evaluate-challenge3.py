@@ -103,7 +103,7 @@ if duration == 62914560:
 elif options.duration == 31457280:
    lisasimdir = lisasimulator.lisasim1yr
 
-"""
+
 ##### I : creating barycentric data
 
 sources = "Source/"+ challengename + '/' + "/*xml"
@@ -132,7 +132,7 @@ if (dolisasim):
             tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(xmlfile))
             run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
 
-"""
+
 
 ### if key is know -- generate the data corresponding to the keys 
 
