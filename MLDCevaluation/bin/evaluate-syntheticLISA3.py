@@ -362,6 +362,8 @@ if (options.usekey):
    print rec
    fout.write(rec)
    
+SMBH = False
+EMRI = False   
 for userfile in Detfiles:
    # print userfile
    if ( re.search('key', userfile) == None):
@@ -377,60 +379,63 @@ for userfile in Detfiles:
     #   foutS.close()
        fout.write(rec)
        print rec
-       src = BBH
-       if (options.usekey):
-          Tc = Detsources.CoalescenceTime
-          if (Tc <= 1.0368e7):
-             src = 1
+       if (re.search('SMBH', Detsources.name)):
+         src = BBH
+         if (options.usekey):
+            Tc = Detsources.CoalescenceTime
+            if (Tc <= 1.0368e7):
+               src = 1
          #elif (Tc >= 1.5552e7 and Tc <= 6.2208e7):
          #     src = 3.4
-          elif (Tc >= 1.55e7 and Tc <= 3.0e7):
-             src = 3
-          elif (Tc >= 3e7 and Tc <= 5.0e7):
-             src = 4   
+            elif (Tc >= 1.55e7 and Tc <= 3.0e7):
+               src = 3
+            elif (Tc >= 3e7 and Tc <= 5.0e7):
+               src = 4   
         # elif (Tc >= 4.2768e7 <= 5.0544e7):
         #    src = 5   
-          elif (Tc >= 6.9984e7 and Tc<=7.2576e7):
-             src = 6
-          elif (Tc>=6.48e7 and  Tc < 6.7392e7 ):
-             src = 2
-          rec = "According to Tc-classification: BBH_key #  " +  str(BBH) +  " and  BBH_src  #  " + str(src) + "\n"
-          print rec
-          fout.write(rec)
+            elif (Tc >= 6.9984e7 and Tc<=7.2576e7):
+               src = 6
+            elif (Tc>=6.48e7 and  Tc < 6.7392e7 ):
+               src = 2
+            rec = "According to Tc-classification: BBH_key #  " +  str(BBH) +  " and  BBH_src  #  " + str(src) + "\n"
+            print rec
+            fout.write(rec)
        
-       if (src == BBH):
-          Dettdi =  Dettdifile.getTDIObservables()[0]
-          Xs = Dettdi.Xf
-          As = (2.0*Dettdi.Xf - Dettdi.Yf - Dettdi.Zf)/3.0
-          Es = (Dettdi.Zf - Dettdi.Yf)/math.sqrt(3.0)
-          InnerA = sampling*InnerProd(Adata, As, SnA)
-          InnerE = sampling*InnerProd(Edata, Es, SnA)
-          normAs =  sampling*InnerProd(As, As, SnA)
-          normEs =  sampling*InnerProd(Es, Es, SnA)
-          print "norms: ", normAs, normEs
-          print "in prods: ", InnerA, InnerE
-          logL = (InnerA + InnerE) - 0.5*(normAs + normEs)
-          rec = "LogL_comb  =  " + str(logL) 
-          print rec
-          fout.write(rec+"\n")
-          rec = "computing snr -> logL maximized over amplitude (1/DL) \n"
-          print rec
-          fout.write(rec)
-          SNRA = InnerA/math.sqrt(normAs)
-          SNRE = InnerE/math.sqrt(normEs)
-          rec = "SNR_A = " + str(SNRA) + "   SNR_E = " + str(SNRE)
-          print rec
-          fout.write(rec + "\n")
-          SNRcomb = (InnerA + InnerE)/math.sqrt(normAs + normEs)
-          rec = "SNR_comb = " + str(SNRcomb)
-          print rec
-          InnerA = sampling*InnerProd(A, As, SnA)
-          InnerE = sampling*InnerProd(E, Es, SnA)
-          olapA = InnerA/math.sqrt(normAs*normA)
-          olapE = InnerE/math.sqrt(normEs*normE)
-          rec = "Overlap_A = " + str(olapA) + "   Overlap_E = " + str(olapE) + "\n"
-          print rec
-          fout.write(rec + "\n")
+       if (SMBH and src != BBH):
+          continue
+       Dettdi =  Dettdifile.getTDIObservables()[0]
+       Xs = Dettdi.Xf
+       As = (2.0*Dettdi.Xf - Dettdi.Yf - Dettdi.Zf)/3.0
+       Es = (Dettdi.Zf - Dettdi.Yf)/math.sqrt(3.0)
+       InnerA = sampling*InnerProd(Adata, As, SnA)
+       InnerE = sampling*InnerProd(Edata, Es, SnA)
+       normAs =  sampling*InnerProd(As, As, SnA)
+       normEs =  sampling*InnerProd(Es, Es, SnA)
+       print "norms: ", normAs, normEs
+       print "in prods: ", InnerA, InnerE
+       logL = (InnerA + InnerE) - 0.5*(normAs + normEs)
+       rec = "LogL_comb  =  " + str(logL) 
+       print rec
+       fout.write(rec+"\n")
+       rec = "computing snr -> logL maximized over amplitude (1/DL) \n"
+       print rec
+       fout.write(rec)
+       SNRA = InnerA/math.sqrt(normAs)
+       SNRE = InnerE/math.sqrt(normEs)
+       rec = "SNR_A = " + str(SNRA) + "   SNR_E = " + str(SNRE)
+       print rec
+       fout.write(rec + "\n")
+       SNRcomb = (InnerA + InnerE)/math.sqrt(normAs + normEs)
+       rec = "SNR_comb = " + str(SNRcomb)
+       print rec
+       if (options.usekey):
+           InnerA = sampling*InnerProd(A, As, SnA)
+           InnerE = sampling*InnerProd(E, Es, SnA)
+           olapA = InnerA/math.sqrt(normAs*normA)
+           olapE = InnerE/math.sqrt(normEs*normE)
+           rec = "Overlap_A = " + str(olapA) + "   Overlap_E = " + str(olapE) + "\n"
+           print rec
+           fout.write(rec + "\n")
           
           #sys.exit(0)
        

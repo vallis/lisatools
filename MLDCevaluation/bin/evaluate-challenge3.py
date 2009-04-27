@@ -242,8 +242,8 @@ if (challengename == "Challenge3.2"):
 if (challengename == "Challenge3.3"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-#   dataTdi = 'Data/challenge3.3-frequency.xml'
-   dataTdi = 'Data/challenge3.2-training-frequency.xml'
+   dataTdi = 'Data/challenge3.3-frequency.xml'
+ #  dataTdi = 'Data/challenge3.3-training-frequency.xml'
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -253,17 +253,17 @@ if (challengename == "Challenge3.3"):
       ind = 0
       for KeyTDI in (keyTdis):
          logFile = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
          ind = ind+1
       #  sys.exit(0)
    else:
-      run('bin/evaluate-syntheticLISA3.py --maxPhase   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+      run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
 
 if (challengename == "Challenge3.4"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-#   dataTdi = 'Data/challenge3.3-frequency.xml'
-   dataTdi = 'Data/challenge3.2-training-frequency.xml'
+#   dataTdi = 'Data/challenge3.4-frequency.xml'
+   dataTdi = 'Data/challenge3.4-training-frequency.xml'
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -273,9 +273,9 @@ if (challengename == "Challenge3.4"):
       ind = 0
       for KeyTDI in (keyTdis):
          logFile = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         run('bin/evaluate-syntheticLISA3.py --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
          ind = ind+1
       #  sys.exit(0)
    else:
-      run('bin/evaluate-syntheticLISA3.py --maxPhase   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+      run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
 
