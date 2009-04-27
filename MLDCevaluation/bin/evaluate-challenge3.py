@@ -65,6 +65,14 @@ parser.add_option("-k","--usekey",
                   type="string", dest="usekey", default=None,
                   help="generate data using given key file [default: None]")  
                   
+parser.add_option("-x", "--dataFile",
+                 type="string", dest="dataFile", default=None,
+                 help="path and name of the xml with data file [default: None]")   
+                 
+parser.add_option("-s", "--sourceFile",
+                 type="string", dest="sourceFile", default=None,
+                 help="path and name of the xml submission file [default: None]")                                
+                  
 parser.add_option("-S", "--synthlisa",
                   action="store_true", dest="synthlisaonly", default=False,
                   help="run only Synthetic LISA")
@@ -106,10 +114,21 @@ elif options.duration == 31457280:
 
 ##### I : creating barycentric data
 
-sources = "Source/"+ challengename + '/' + "/*xml"
-for xmlfile in glob.glob(sources):
+if (options.sourceFile  == None):
+    print "Use default location of source xml files"   
+    sources = "Source/"+ challengename + '/' + "/*xml"
+    for xmlfile in glob.glob(sources):
+        baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
+        run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
+else:
+    xmlfile = options.sourceFile 
+    if (os.path.isfile(xmlfile) ):
+       pass
+    else:   
+       print "source file ", xmlfile, "cannot be found"
+       sys.exit(1)
     baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
-    run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
+    run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')       
 
 
 #### IIa : creating TDI files for all barycentric files using synthetic LISA
@@ -222,7 +241,11 @@ if (challengename == "Challenge3.2"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
 #   dataTdi = 'Data/challenge3.2-frequency.xml'
-   dataTdi = 'Data/challenge3.2-training-frequency.xml'
+   if (options.sourceFile  == None):
+      print "use default location of data xmlfile"
+      dataTdi = 'Data/challenge3.2-frequency.xml'
+   else:
+      dataTdi = options.sourceFile    
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -242,8 +265,11 @@ if (challengename == "Challenge3.2"):
 if (challengename == "Challenge3.3"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-   dataTdi = 'Data/challenge3.3-frequency.xml'
- #  dataTdi = 'Data/challenge3.3-training-frequency.xml'
+   if (options.sourceFile  == None):
+      print "use default location of data xmlfile"
+      dataTdi = 'Data/challenge3.3-frequency.xml'
+   else:
+      dataTdi = options.sourceFile
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -262,8 +288,11 @@ if (challengename == "Challenge3.3"):
 if (challengename == "Challenge3.4"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-#   dataTdi = 'Data/challenge3.4-frequency.xml'
-   dataTdi = 'Data/challenge3.4-training-frequency.xml'
+   if (options.sourceFile  == None):
+        print "use default location of data xmlfile"
+        dataTdi = 'Data/challenge3.4-frequency.xml'
+   else:
+        dataTdi = options.sourceFile
    if (os.path.isfile(dataTdi) ):
       pass
    else:   

@@ -18,6 +18,7 @@ import numpy.fft as FFT
 
 fHigh = 1.e-2
 fLow = 1.e-5
+nyquistf = 0.5/15.0
 
 spr = "     "
 
@@ -27,7 +28,6 @@ spr = "     "
 def MaxInnerProd(ser1, ser2, PSD):
   size = Numeric.shape(ser1)[0]
   pdlen = size/2
-  nyquistf = 0.5/15.0   #   !!! hardcoded !!!!
   freqs = Numeric.arange(0,pdlen+1,dtype='d') * (nyquistf / pdlen)
   if(Numeric.shape(ser2)[0] != size):
      print "size of time series must be the same"
@@ -121,7 +121,6 @@ parser = OptionParser(usage="""usage: %prog [options] OutputFile BlindData.xml C
 !!!! IMPORTANT !!!! if you do not use key file, please provide a dummy xml file anyway""",
                       version="$Id:  $")
 
-
 parser.add_option("-p", "--maxPhase",
                   action="store_true", dest="phasemax", default=False,
                   help="maximizes over the phase on a single channel [off by default]")
@@ -133,6 +132,11 @@ parser.add_option("-g", "--Galaxy",
 parser.add_option("-k", "--usekey",
                   action="store_true", dest="usekey", default=False,
                   help="use key file in the evaluation results as well [off by default]")
+
+
+#parser.add_option("-d", "--timeStep",
+#                  type="float", dest="timestep", default=15.0,
+#                  help="timestep for waveform sampling (s) [default 15]")
 
 (options, args) = parser.parse_args()
 
@@ -146,7 +150,6 @@ fileout = args[0]
 Datafile = args[1]
 Injfile = args[2]
 Detfiles = args[3:]
-
 
 sz = len(Detfiles)
 if (sz > 0):
@@ -164,14 +167,6 @@ if options.phasemax :
 	print "phase maximization can be done only for 3.2 chalenge"
 	sys.exit(1)
 
-
-challname = ""
-if ( re.search('challenge3.2', Datafile) == None ):
-  challname = "3.2"
-elif ( re.search('challenge3.3', Datafile) == None ):
-  challname = "3.3"
-elif ( re.search('challenge3.4', Datafile) == None ):
-  challname = "3.4"
      
 # Reading the data 
 
@@ -184,6 +179,18 @@ Edata = (tdiData.Zf - tdiData.Yf)/math.sqrt(3.0)
 sampling = tdiData.TimeSeries.Cadence
 samples = Numeric.shape(Xdata)[0]
 
+nyquistf = 0.5/sampling
+print "Cadence = ", sampling, "   Nyquist freq = ", nyquistf
+
+challname = ""
+if ( re.search('challenge3.2', Datafile) == None ):
+  challname = "3.2"
+elif ( re.search('challenge3.3', Datafile) == None ):
+  challname = "3.3"
+elif ( re.search('challenge3.4', Datafile) == None ):
+  challname = "3.4"
+  fHigh = nyquistf
+
 
 Specdat = synthlisa.spect(Adata,sampling,0)
 fr = Specdat[1:,0]
@@ -192,7 +199,6 @@ PSDdat = Specdat[1:,1]
 
 # computing useful number of points
 pdlen3 = samples/2
-nyquistf = 0.5/15.0   #   !!! hardcoded !!!!
 freqs = Numeric.arange(0,pdlen3+1,dtype='d') * (nyquistf / pdlen3)
 ind = 0
 for i in xrange(pdlen3):
@@ -287,8 +293,14 @@ if (options.gal):
     SnX = Sx + Sgal
     SnA = Sa + Sgal   # for galaxy Sxy = -1/2 Sx
 
-
-
+# clipping: check (roughly) if first null is within the computed range
+highf = 0.01
+highi = int(highf / fr[0])
+if  fr[-1] > highf and highi > 1:
+         # then find the minimum of the noise curve up to highf and clip to that minimum value
+         minSn = numpy.min(SnA[1:highi])
+         SnA = numpy.maximum(SnA,minSn)
+         print "Clipping noise PSD to %s" % minSn
 
 """
 foutS = open("PsdTest.dat",'w')
