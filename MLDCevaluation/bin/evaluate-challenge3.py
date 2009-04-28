@@ -267,12 +267,17 @@ if (challengename == "Challenge3.2"):
       ind = 0
       for KeyTDI in (keyTdis):
          logFilek = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         if (dosynthlisa):
+           run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         if (dolisasim):
+           run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')   
          ind = ind+1
       #  sys.exit(0)
    else:
-      run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
-   
+      if (dosynthlisa):
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+      if (dolisasim):  
+         run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')    
 
 if (challengename == "Challenge3.3"):
    logFile = "Results/log_" + challengename
@@ -291,11 +296,17 @@ if (challengename == "Challenge3.3"):
       ind = 0
       for KeyTDI in (keyTdis):
          logFilek = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         if (dosynthlisa):
+            run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         if (dolisasim):
+            run('bin/evaluate-LISAsimulator3.py  --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')   
          ind = ind+1
       #  sys.exit(0)
    else:
-      run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+      if (dosynthlisa):
+         run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+      if (dolisasim):   
+         run('bin/evaluate-LISAsimulator3.py   %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
 
 if (challengename == "Challenge3.4"):
    logFile ="Results/log_" + challengename 
@@ -314,9 +325,14 @@ if (challengename == "Challenge3.4"):
       ind = 0
       for KeyTDI in (keyTdis):
          logFilek = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         if (dosynthlisa):
+            run('bin/evaluate-syntheticLISA3.py --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         if (dolisasim):
+            run('bin/evaluate-LISAsimulator3.py --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')   
          ind = ind+1
       #  sys.exit(0)
    else:
-      run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
-
+      if (dosynthlisa):
+         run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+      if (dolisasim):   
+         run('bin/evaluate-LISAsimulator3.py   %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')

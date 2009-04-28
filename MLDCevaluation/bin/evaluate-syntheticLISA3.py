@@ -119,7 +119,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="""usage: %prog [options] OutputFile BlindData.xml ChallengeNTDI_Key.xml Result1TDI.xml Result2TDI.xml ...
-!!!! IMPORTANT !!!! if you do not use key file, please provide a dummy xml file anyway""",
+""",
                       version="$Id:  $")
 
 parser.add_option("-p", "--maxPhase",
@@ -319,6 +319,7 @@ if (options.usekey):
 #  print "computing NormX", Numeric.shape(Xdata)[0], Numeric.shape(X)[0]
   normX = ComputeNorm(X,sampling, SnX)
 #  print "computing NormE"
+  normA = ComputeNorm(A,sampling, SnA)
   normE = ComputeNorm(E,sampling, SnA)
 
 
