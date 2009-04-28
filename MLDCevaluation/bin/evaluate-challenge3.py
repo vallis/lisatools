@@ -111,7 +111,7 @@ if duration == 62914560:
 elif options.duration == 31457280:
    lisasimdir = lisasimulator.lisasim1yr
 
-
+"""
 ##### I : creating barycentric data
 
 if (options.sourceFile  == None):
@@ -163,7 +163,7 @@ if (options.usekey != None):
    if (dosynthlisa):
       run('./bin/compute-KeyData.py -k %(key)s -S  %(challengename)s')
 
-
+"""
 #### IIIa. call evaluation script for synthetic LISA data
 
 keyTdis = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
@@ -241,11 +241,11 @@ if (challengename == "Challenge3.2"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
 #   dataTdi = 'Data/challenge3.2-frequency.xml'
-   if (options.sourceFile  == None):
+   if (options.dataFile  == None):
       print "use default location of data xmlfile"
       dataTdi = 'Data/challenge3.2-frequency.xml'
    else:
-      dataTdi = options.sourceFile    
+      dataTdi = options.dataFile    
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -265,11 +265,11 @@ if (challengename == "Challenge3.2"):
 if (challengename == "Challenge3.3"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-   if (options.sourceFile  == None):
+   if (options.dataFile  == None):
       print "use default location of data xmlfile"
       dataTdi = 'Data/challenge3.3-frequency.xml'
    else:
-      dataTdi = options.sourceFile
+      dataTdi = options.dataFile
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -288,11 +288,11 @@ if (challengename == "Challenge3.3"):
 if (challengename == "Challenge3.4"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-   if (options.sourceFile  == None):
+   if (options.dataFile  == None):
         print "use default location of data xmlfile"
         dataTdi = 'Data/challenge3.4-frequency.xml'
    else:
-        dataTdi = options.sourceFile
+        dataTdi = options.dataFile
    if (os.path.isfile(dataTdi) ):
       pass
    else:   

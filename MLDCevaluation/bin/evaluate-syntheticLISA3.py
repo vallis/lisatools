@@ -321,7 +321,7 @@ if (options.usekey):
 
 
 fout = open(fileout, 'w')
-
+BBH = 1
 if (options.usekey):
    # use the key file   
    rec = 80*'*' + "\n" + "using key file: "+ Injfile + "\n" + Injsources.name + "\n"+ 80*'*' + "\n"
