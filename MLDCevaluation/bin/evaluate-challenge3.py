@@ -148,8 +148,6 @@ if (dosynthlisa):
        if (re.search('key', xmlfile) == None):
             tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
             if (not makemode) or newer(xmlfile, tdifile):
-                print "about to run tdi generation"
-                sys.exit(0)
                 run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
 
