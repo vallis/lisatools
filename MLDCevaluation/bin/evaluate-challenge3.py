@@ -111,7 +111,7 @@ if duration == 62914560:
 elif options.duration == 31457280:
    lisasimdir = lisasimulator.lisasim1yr
 
-"""
+
 ##### I : creating barycentric data
 
 if (options.sourceFile  == None):
@@ -159,11 +159,11 @@ if (dolisasim):
 if (options.usekey != None):
    key = options.usekey
    if (dolisasim):
-      run('./bin/compute-KeyData.py -k %(key)s -L %(challengename)s')
+      run('./bin/compute-KeyData.py -k %(key)s -L --duration=%(duration)s --timeStep=%(timestep)s %(challengename)s')
    if (dosynthlisa):
-      run('./bin/compute-KeyData.py -k %(key)s -S  %(challengename)s')
+      run('./bin/compute-KeyData.py -k %(key)s -S  --duration=%(duration)s --timeStep=%(timestep)s %(challengename)s')
 
-"""
+
 #### IIIa. call evaluation script for synthetic LISA data
 
 keyTdis = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')

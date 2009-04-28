@@ -39,6 +39,7 @@ and LISA simulator data will be produced (only synthetic LISA for 3.4).
 The results of evaluation will be seen on the screen and also recorded
 in the directory Results.
 
+
 As default the script looks for data and submitted xml files in the directories 
 described above, however one can provide the path to the key file, source 
 xml file and to data xml file. Please use 

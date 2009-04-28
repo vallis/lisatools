@@ -33,7 +33,7 @@ def MaxInnerProd(ser1, ser2, PSD):
      print "size of time series must be the same"
      sys.exit(1)
   if(Numeric.shape(PSD)[0] != pdlen):
-     print "wrong size of psd: ", pdlen, Numeric.shape(PSD)
+     print "MaxInnerProd: wrong size of psd: ", pdlen, Numeric.shape(PSD)
      sys.exit(1)
   fourier1 = FFT.fft(ser1)
   fourier2 = FFT.fft(ser2)
@@ -70,7 +70,7 @@ def InnerProd(ser1, ser2, PSD):
      print "size of time series must be the same"
      sys.exit(1)
   if(Numeric.shape(PSD)[0] != pdlen):
-     print "wrong size of psd: ", pdlen, Numeric.shape(PSD)
+     print "Inner Prod: wrong size of psd: ", pdlen, Numeric.shape(PSD)
      sys.exit(1)
   fourier1 = FFT.fft(ser1)
   fourier2 = FFT.fft(ser2)
@@ -89,8 +89,9 @@ def InnerProd(ser1, ser2, PSD):
 
 def ComputeNorm(ser, sampling, PSD):
      size = Numeric.shape(ser)[0]
+     pdlen = size/2
      if(Numeric.shape(PSD)[0] != size/2):
-         print "wrong size of psd: ", pdlen, Numeric.shape(PSD)
+         print "ComputeNorm: wrong size of psd: ", size, pdlen, Numeric.shape(PSD)[0]
          sys.exit(1)
      ser2 = synthlisa.spect(ser, sampling,0)
      norm = 0.0
@@ -182,14 +183,16 @@ samples = Numeric.shape(Xdata)[0]
 nyquistf = 0.5/sampling
 print "Cadence = ", sampling, "   Nyquist freq = ", nyquistf
 
+print "Deaing with data file:", Datafile
 challname = ""
-if ( re.search('challenge3.2', Datafile) == None ):
+if ( re.search('challenge3.2', Datafile) != None ):
   challname = "3.2"
-elif ( re.search('challenge3.3', Datafile) == None ):
+elif ( re.search('challenge3.3', Datafile) != None ):
   challname = "3.3"
-elif ( re.search('challenge3.4', Datafile) == None ):
+elif ( re.search('challenge3.4', Datafile) != None ):
   challname = "3.4"
   fHigh = nyquistf
+  print "challenge3.4 -> upper frequency is extended to nyquist frequency"
 
 
 Specdat = synthlisa.spect(Adata,sampling,0)
@@ -207,7 +210,7 @@ for i in xrange(pdlen3):
 
 ind = ind*2
 print "data size = ", samples
-print "number of used points ", ind 
+print "number of used points ", ind, "corresponds to the freq range: ", fLow, "-", fHigh
 
 
 """
@@ -310,10 +313,12 @@ for i in xrange(len(fr)):
 foutS.close()
 
 sys.exit(0)
-"""   
+"""  
 
 if (options.usekey):
+#  print "computing NormX", Numeric.shape(Xdata)[0], Numeric.shape(X)[0]
   normX = ComputeNorm(X,sampling, SnX)
+#  print "computing NormE"
   normE = ComputeNorm(E,sampling, SnA)
 
 
@@ -322,7 +327,7 @@ if (options.usekey):
 
 fout = open(fileout, 'w')
 BBH = 1
-if (options.usekey):
+if (options.usekey and challname == "3.2"):
    # use the key file   
    rec = 80*'*' + "\n" + "using key file: "+ Injfile + "\n" + Injsources.name + "\n"+ 80*'*' + "\n"
    print rec
@@ -351,6 +356,37 @@ if (options.usekey):
    
    #normA = ComputeNorm(A,sampling, SnA)
    #normE = ComputeNorm(E,sampling, SnA)
+   rec = 80*'='+"\n"
+   print rec
+   fout.write(rec)
+   logL = (InnerA + InnerE) - 0.5*(normA + normE)
+   rec = "LogL_comb  =  " + str(logL) 
+   print rec
+   fout.write(rec+"\n")
+   rec = "computing snr -> logL maximized over amplitude (1/DL) \n"
+   print rec
+   fout.write(rec)
+   SNRA = InnerA/math.sqrt(normA)
+   SNRE = InnerE/math.sqrt(normE)
+   rec = "SNR_A = " + str(SNRA) + "   SNR_E = " + str(SNRE)
+   print rec
+   fout.write(rec + "\n")
+   SNRcomb = (InnerA + InnerE)/math.sqrt(normA + normE)
+   rec = "SNR_comb = " + str(SNRcomb)
+   print rec
+   fout.write(rec + "\n")
+   rec = 80*'='+"\n"
+   print rec
+   fout.write(rec)
+   
+if (options.usekey and challname == "3.4"):   
+   rec = 80*'*' + "\n" + "using key file: "+ Injfile + "\n" + Injsources.name + "\n"+ 80*'*' + "\n"
+   print rec
+   fout.write(rec)
+   InnerA = sampling*InnerProd(Adata, A, SnA)
+   InnerE = sampling*InnerProd(Edata, E, SnA)
+   normA =  sampling*InnerProd(A, A, SnA)
+   normE =  sampling*InnerProd(E, E, SnA)
    rec = 80*'='+"\n"
    print rec
    fout.write(rec)
