@@ -46,6 +46,23 @@ xml file and to data xml file. Please use
 ./bin/evaluate-challenge3.py --help
 
 
+What do you see in the result log file:
+log_Challenge3..._0 
+
+coherent log loikelihood
+logL_comb = (x_A | h_A )  - 0.5*(h_A | h_A) +  (x_E | h_E )  - 0.5*(h_E | h_E)
+
+snr or rho-statistic: logL maximized over the constant amplitude of the signal:
+
+SNR_A = (x_A |h_A)/(h_A |h_A)^{1/2} similar for E
+
+and combined:
+
+SNR_comb = [  (x_A | h_A )  +  (x_E | h_E )]/[ (h_A | h_A) + (h_E | h_E) ]^{1/2}
+
+If key are known, then overlap between each submitted signal and each key signal is computed 
+for A and E channel.
+
 If you have questions/problems, please contact 
 Stanislav Babak: stba@aei.mpg.de 
 

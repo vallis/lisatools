@@ -12,6 +12,7 @@ import math
 import os
 import glob
 import re
+from distutils.dep_util import newer, newer_group
 
 import synthlisa
 #import lisasimulator
@@ -79,7 +80,11 @@ parser.add_option("-S", "--synthlisa",
                   
 parser.add_option("-L", "--lisasim",
                   action="store_true", dest="lisasimonly", default=False,
-                  help="run only the LISA Simulator")                                                    
+                  help="run only the LISA Simulator")       
+
+parser.add_option("-m", "--make",
+                  action="store_true", dest="makemode", default=False,
+                  help="run in make mode (use already-generated source key files and intermediate data products)")                                                               
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -93,6 +98,7 @@ if len(args) < 1:
 challengename = args[0]
 timestep = options.timestep
 duration = options.duration
+makemode = options.makemode
 
 dosynthlisa = not (options.lisasimonly) or options.synthlisaonly
 dolisasim   = not (options.synthlisaonly) or options.lisasimonly
@@ -119,7 +125,8 @@ if (options.sourceFile  == None):
     sources = "Source/"+ challengename + '/' + "/*xml"
     for xmlfile in glob.glob(sources):
         baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
-        run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
+        if (not makemode) or newer(xmlfile,baryfile):
+            run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 else:
     xmlfile = options.sourceFile 
     if (os.path.isfile(xmlfile) ):
@@ -128,7 +135,9 @@ else:
        print "source file ", xmlfile, "cannot be found"
        sys.exit(1)
     baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
-    run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')       
+    if (not makemode) or newer(xmlfile,baryfile):
+        run('../MLDCpipelines2/bin/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')       
+
 
 
 #### IIa : creating TDI files for all barycentric files using synthetic LISA
@@ -138,7 +147,10 @@ if (dosynthlisa):
    for xmlfile in glob.glob(barycentric):
        if (re.search('key', xmlfile) == None):
             tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
-            run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            if (not makemode) or newer(xmlfile, tdifile):
+                print "about to run tdi generation"
+                sys.exit(0)
+                run('../MLDCpipelines2/bin/makeTDIsignal-synthlisa.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
 
 
@@ -149,12 +161,12 @@ if (dolisasim):
    for xmlfile in glob.glob(barycentric):
        if (re.search('key', xmlfile) == None):
             tdifile = 'TDI/'+challengename + '/' + re.sub('barycentric\.xml$','tdi-strain.xml',os.path.basename(xmlfile))
-            run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
+            if (not makemode) or newer(xmlfile, tdifile):
+               run('../MLDCpipelines2/bin/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s  --duration=%(duration)s  %(xmlfile)s %(tdifile)s')
 
 
 
 ### if key is know -- generate the data corresponding to the keys 
-
 
 if (options.usekey != None):
    key = options.usekey
@@ -254,8 +266,8 @@ if (challengename == "Challenge3.2"):
    if (options.usekey != None):   
       ind = 0
       for KeyTDI in (keyTdis):
-         logFile = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         logFilek = logFile + "_" + str(ind)
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
          ind = ind+1
       #  sys.exit(0)
    else:
@@ -278,15 +290,15 @@ if (challengename == "Challenge3.3"):
    if (options.usekey != None):   
       ind = 0
       for KeyTDI in (keyTdis):
-         logFile = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         logFilek = logFile + "_" + str(ind)
+         run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
          ind = ind+1
       #  sys.exit(0)
    else:
       run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
 
 if (challengename == "Challenge3.4"):
-   logFile = "Results/log_" + challengename
+   logFile ="Results/log_" + challengename 
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
    if (options.dataFile  == None):
         print "use default location of data xmlfile"
@@ -301,8 +313,8 @@ if (challengename == "Challenge3.4"):
    if (options.usekey != None):   
       ind = 0
       for KeyTDI in (keyTdis):
-         logFile = logFile + "_" + str(ind)
-         run('bin/evaluate-syntheticLISA3.py --usekey  %(logFile)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         logFilek = logFile + "_" + str(ind)
+         run('bin/evaluate-syntheticLISA3.py --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
          ind = ind+1
       #  sys.exit(0)
    else:
