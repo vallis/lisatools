@@ -328,11 +328,13 @@ if (challengename == "Challenge3.4"):
          if (dosynthlisa):
             run('bin/evaluate-syntheticLISA3.py --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
          if (dolisasim):
-            run('bin/evaluate-LISAsimulator3.py --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')   
+            print "There is no LISA simulator data for this challenge"
+            sys.exit(1)  
          ind = ind+1
       #  sys.exit(0)
    else:
       if (dosynthlisa):
          run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
       if (dolisasim):   
-         run('bin/evaluate-LISAsimulator3.py   %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         print "There is no LISA simulator data for this challenge"
+         sys.exit(1)
