@@ -16,6 +16,7 @@ import numpy.oldnumeric as Numeric
 import numpy.fft as FFT
 
 
+#fHigh = 1.e-3
 fHigh = 1.e-2
 fLow = 1.e-5
 nyquistf = 0.5/15.0
@@ -60,7 +61,7 @@ def MaxInnerProd(ser1, ser2, PSD):
   print "angle of maxim. = ", math.atan(olappiby2/olap0)
   return sqrt(olap0**2 + olappiby2**2) 
 
-
+"""
 def InnerProd(ser1, ser2, PSD):
   size = Numeric.shape(ser1)[0]
   pdlen = size/2
@@ -85,6 +86,35 @@ def InnerProd(ser1, ser2, PSD):
   olap0 = 2.0*olap0/float(size)
  # olap0 =  2.0*(numpy.sum(prod[1:]))/float(size) #it must be scaled by dt
   return  olap0
+"""
+
+
+def InnerProd(ser1, ser2, PSD):
+  size = Numeric.shape(ser1)[0]
+  pdlen = size/2
+  nyquistf = 0.5/15.0   #   !!! hardcoded !!!!
+  freqs = Numeric.arange(0,pdlen+1,dtype='d') * (nyquistf / pdlen)
+  if(Numeric.shape(ser2)[0] != size):
+     print "size of time series must be the same"
+     sys.exit(1)
+  if(Numeric.shape(PSD)[0] != pdlen):
+     print "Inner Prod: wrong size of psd: ", pdlen, Numeric.shape(PSD)
+     sys.exit(1)
+  fourier1 = FFT.fft(ser1)
+  fourier2 = FFT.fft(ser2)
+  prod = Numeric.zeros(pdlen+1, dtype='d')
+  prod[0] = 0.0
+  prod[1:pdlen] = numpy.multiply(fourier1[1:pdlen],numpy.conjugate(fourier2[1:pdlen])) + numpy.multiply(fourier1[-1:pdlen:-1],numpy.conjugate(fourier2[-1:pdlen:-1]))
+  prod[pdlen] = fourier1[pdlen]*fourier2[pdlen]
+  Numeric.divide(prod[1:], PSD, prod[1:]) 
+  olap0 = 0.0
+  for i in xrange(pdlen):
+      if (freqs[i] > fLow and freqs[i]<= fHigh):
+           olap0 += prod[i]
+  olap0 = 2.0*olap0/float(size)
+ # olap0 =  2.0*(numpy.sum(prod[1:]))/float(size) #it must be scaled by dt
+  return  olap0
+
 
 def ComputeNorm(ser, sampling, PSD):
      size = Numeric.shape(ser)[0]
@@ -106,7 +136,6 @@ def ComputeNorm(ser, sampling, PSD):
      #print "indx = ", indx
      #norm = sqrt(2.0 *numpy.sum(ser2[1:,1]/PSD))
      return norm
-
 
 
 # set ourselves up to parse command-line options
@@ -243,6 +272,10 @@ L  = 16.6782
 Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
 Sop = 1.8e-37 * fr**2
 
+#Sop = 3.675e-42
+#Sacc = 5.75e-53*( fr**-4 + 1.e-8*fr**-6 )
+#Spm = Sacc
+
 Synx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
 Synxy = -4.0 * numpy.sin(2.0*om*L)*numpy.sin(om*L) * ( Sop + 4.*Spm )
 Syn = 2.0 * (Synx - Synxy)/3.0
@@ -250,6 +283,8 @@ Syn = 2.0 * (Synx - Synxy)/3.0
 SnX = Synx/(4.0*L*L*om*om)
 SnA = Syn/(4.0*L*L*om*om)
 
+#SnX = Synx
+#SnA = Syn
 
 
 

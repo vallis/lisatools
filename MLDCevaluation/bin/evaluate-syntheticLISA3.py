@@ -17,6 +17,7 @@ import numpy.fft as FFT
 
 
 fHigh = 1.e-2
+#fHigh = 1.e-3
 fLow = 1.e-5
 nyquistf = 0.5/15.0
 

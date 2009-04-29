@@ -45,6 +45,7 @@ described above, however one can provide the path to the key file, source
 xml file and to data xml file. Please use 
 ./bin/evaluate-challenge3.py --help
 
+Note that the option -S or -L is required if you specify a data xml file using -x option.
 
 What do you see in the result log file:
 log_Challenge3..._0 
@@ -62,6 +63,11 @@ SNR_comb = [  (x_A | h_A )  +  (x_E | h_E )]/[ (h_A | h_A) + (h_E | h_E) ]^{1/2}
 
 If key are known, then overlap between each submitted signal and each key signal is computed 
 for A and E channel.
+
+NOTE that integrals are evaluated between freq.= [1.e-5 and 1.e-2] for challenges 3.2 and 3.3
+and up to nyquist freq for 3.4. This could lead to partial corruptio of the SNR (spectrum of
+the signal falling not fast enough). 
+
 
 If you have questions/problems, please contact 
 Stanislav Babak: stba@aei.mpg.de 
