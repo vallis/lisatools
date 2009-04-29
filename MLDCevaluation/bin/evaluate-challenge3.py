@@ -123,6 +123,13 @@ if duration == 62914560:
 elif options.duration == 31457280:
    lisasimdir = lisasimulator.lisasim1yr
 
+####### Cleaning #######
+
+if (not makemode):
+   bdir = 'Barycentric/'+challengename+'/*.xml' + '  Barycentric/'+challengename+'/*.bin'
+   run('rm -f %(bdir)s')
+   tdir = 'TDI/' + challengename + '/*.xml' + '  TDI/'+ challengename+ '/*.bin'
+   run('rm -f  %(tdir)s')
 
 ##### I : creating barycentric data
 
