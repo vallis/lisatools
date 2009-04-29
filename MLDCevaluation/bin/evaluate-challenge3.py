@@ -258,11 +258,11 @@ if (challengename == "Challenge3.3"):
          ind = 0
          for KeyTDI in (keyTdisF):
             logFilek = logFile + "_" + str(ind)
-            run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdisF)s')
+            run('bin/evaluate-syntheticLISA3.py --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdisF)s')
             ind = ind+1
             #  sys.exit(0)
       else:
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdisF)s')   
+         run('bin/evaluate-syntheticLISA3.py %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdisF)s')   
    if (dolisasim):
       tdisS = glob.glob('TDI/'+challengename+'/*strain.xml')
       if (options.dataFile  == None):
@@ -281,11 +281,11 @@ if (challengename == "Challenge3.3"):
          ind = 0
          for KeyTDI in (keyTdisS):
             logFilek = logFile + "_" + str(ind)
-            run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdisS)s')
+            run('bin/evaluate-LISAsimulator3.py --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdisS)s')
             ind = ind+1
                #  sys.exit(0)
       else:
-         run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdisS)s')  
+         run('bin/evaluate-LISAsimulator3.py  %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdisS)s')  
        
        
 if (challengename == "Challenge3.4"):
@@ -308,11 +308,11 @@ if (challengename == "Challenge3.4"):
          ind = 0
          for KeyTDI in (keyTdisF):
             logFilek = logFile + "_" + str(ind)
-            run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdisF)s')
+            run('bin/evaluate-syntheticLISA3.py --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdisF)s')
             ind = ind+1
             #  sys.exit(0)
       else:
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdisF)s')   
+         run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdisF)s')   
    if (dolisasim):       
       print "There is no LISA simulator data for this challenge"
       sys.exit(1) 
