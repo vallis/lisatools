@@ -102,6 +102,12 @@ makemode = options.makemode
 
 dosynthlisa = not (options.lisasimonly) or options.synthlisaonly
 dolisasim   = not (options.synthlisaonly) or options.lisasimonly
+if (options.verbose):
+   if (dosynthlisa):
+      print "we will generate the data using synthetic lisa"
+   if (dolisasim):
+      print "we will generate the data using lisa simulator"   
+
 
 if (challengename == "Challenge3.4"):
    dosynthlisa = True
@@ -253,9 +259,15 @@ if (challengename == "Challenge3.2"):
 #   dataTdi = 'Data/challenge3.2-frequency.xml'
    if (options.dataFile  == None):
       print "use default location of data xmlfile"
-      dataTdi = 'Data/challenge3.2-frequency.xml'
+      if (dosynthlisa):
+          dataTdiF = 'Data/challenge3.2-frequency.xml'
+      if (dolisasim):
+          dataTdiS = 'Data/challenge3.2-strain.xml'    
    else:
-      dataTdi = options.dataFile    
+      dataTdi = options.dataFile 
+      dataTdiF = dataTdi
+      dataTdiS = dataTdi
+      print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"   
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -266,25 +278,32 @@ if (challengename == "Challenge3.2"):
       for KeyTDI in (keyTdis):
          logFilek = logFile + "_" + str(ind)
          if (dosynthlisa):
-           run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+           run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdis)s')
          if (dolisasim):
-           run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')   
+           run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdis)s')   
          ind = ind+1
       #  sys.exit(0)
    else:
       if (dosynthlisa):
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdis)s')   
       if (dolisasim):  
-         run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')    
-
+         run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdis)s')    
+      
 if (challengename == "Challenge3.3"):
    logFile = "Results/log_" + challengename
    tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
    if (options.dataFile  == None):
       print "use default location of data xmlfile"
-      dataTdi = 'Data/challenge3.3-frequency.xml'
+     # dataTdi = 'Data/challenge3.3-frequency.xml'
+      if (dosynthlisa):
+          dataTdiF = 'Data/challenge3.3-frequency.xml'
+      if (dolisasim):
+          dataTdiS = 'Data/challenge3.3-strain.xml'
    else:
       dataTdi = options.dataFile
+      dataTdiF = dataTdi
+      dataTdiS = dataTdi
+      print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"
    if (os.path.isfile(dataTdi) ):
       pass
    else:   
@@ -295,16 +314,16 @@ if (challengename == "Challenge3.3"):
       for KeyTDI in (keyTdis):
          logFilek = logFile + "_" + str(ind)
          if (dosynthlisa):
-            run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+            run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdis)s')
          if (dolisasim):
-            run('bin/evaluate-LISAsimulator3.py  --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')   
+            run('bin/evaluate-LISAsimulator3.py  --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdis)s')   
          ind = ind+1
       #  sys.exit(0)
    else:
       if (dosynthlisa):
-         run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
+         run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdis)s')   
       if (dolisasim):   
-         run('bin/evaluate-LISAsimulator3.py   %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
+         run('bin/evaluate-LISAsimulator3.py   %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdis)s')
 
 if (challengename == "Challenge3.4"):
    logFile ="Results/log_" + challengename 
