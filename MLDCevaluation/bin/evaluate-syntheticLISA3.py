@@ -283,8 +283,9 @@ Sa = 2.0 * (Sx - Sxy)/3.0
 # conversion LS to SL (incl.deriv.) -- TDI response function Michelson to X,Y,Z
 
 
+
 Sgal = (2.0*L*om)**2 * 4.0 * numpy.sin(om*L)**2 * (
-          numpy.piecewise(fr,(fr >= 1.0e-4  ) & (fr < 1.0e-3  ),[lambda f: 10**-44.62 * f**-2.3, 0]) + \
+          numpy.piecewise(fr,(fr >= 1.0e-5  ) & (fr < 1.0e-3  ),[lambda f: 10**-44.62 * f**-2.3, 0]) + \
           numpy.piecewise(fr,(fr >= 1.0e-3  ) & (fr < 10**-2.7),[lambda f: 10**-50.92 * f**-4.4, 0]) + \
           numpy.piecewise(fr,(fr >= 10**-2.7) & (fr < 10**-2.4),[lambda f: 10**-62.8  * f**-8.8, 0]) + \
           numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )
@@ -430,6 +431,7 @@ for userfile in Detfiles:
        print rec
        if (re.search('SMBH', Detsources.name)):
          src = BBH
+         SMBH = True
          if (options.usekey):
             Tc = Detsources.CoalescenceTime
             if (Tc <= 1.0368e7):

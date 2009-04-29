@@ -259,7 +259,7 @@ SnA = Syn/(4.0*L*L*om*om)
 # for fractional frequency fluctuations
 
 # conversion LS to SL (incl.deriv.) -- TDI response function Michelson to X,Y,Z
-Sgal = numpy.sin(om*L)**2 * (
+Sgal = 4.*numpy.sin(om*L)**2 * (
          numpy.piecewise(fr,(fr >= 1.0e-5  ) & (fr < 1.0e-3  ),[lambda f: 10**-44.62 * f**-2.3, 0]) + \
          numpy.piecewise(fr,(fr >= 1.0e-3  ) & (fr < 10**-2.7),[lambda f: 10**-50.92 * f**-4.4, 0]) + \
          numpy.piecewise(fr,(fr >= 10**-2.7) & (fr < 10**-2.4),[lambda f: 10**-62.8  * f**-8.8, 0]) + \
@@ -396,8 +396,9 @@ if (options.usekey and challname == "3.4"):
    rec = 80*'='+"\n"
    print rec
    fout.write(rec)
-   SMBH = False
-   EMRI = False   
+   
+SMBH = False
+EMRI = False   
 
 for userfile in Detfiles:
       # print userfile
@@ -416,6 +417,7 @@ for userfile in Detfiles:
        print rec
        if (re.search('SMBH', Detsources.name)):
          src = BBH
+         SMBH = True
          if (options.usekey):
             Tc = Detsources.CoalescenceTime
             if (Tc <= 1.0368e7):

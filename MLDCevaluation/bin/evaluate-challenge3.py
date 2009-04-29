@@ -182,176 +182,139 @@ if (options.usekey != None):
 
 #### IIIa. call evaluation script for synthetic LISA data
 
-keyTdis = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
-
-if (challengename == "Challenge1.3"):
-   tdis =  glob.glob('TDI/'+challengename+'/*challenge1.3-*frequency.xml')
-   for keyTDI in (keyTdis):
-       if(re.search('1.3.1', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.1-frequency/challenge1.3.1-frequency.xml'
-       elif (re.search('1.3.2', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.2-frequency/challenge1.3.2-frequency.xml'
-       elif (re.search('1.3.4', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.4-frequency/challenge1.3.4-frequency.xml'
-       run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
-       
-if (challengename == "Challenge1B.3"):
-          #tdis =  glob.glob('TDI/'+challengename+'/*1B.3.*frequency.xml')
-          for keyTDI in (keyTdis):
-              if(re.search('3.1', keyTDI) != None):
-                  dataTdi = 'Data/challenge1.3.1-frequency/challenge1B.3.1-frequency.xml'
-                  tdis =  glob.glob('TDI/'+challengename+'/*1B.3.1*frequency.xml')
-                  run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
-              elif (re.search('3.2', keyTDI) != None):
-                  dataTdi = 'Data/challenge1.3.2-frequency/challenge1B.3.2-frequency.xml'
-                  tdis =  glob.glob('TDI/'+challengename+'/*1B.3.2*frequency.xml')
-                  run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
-              elif (re.search('3.3', keyTDI) != None):
-                    dataTdi = 'Data/challenge1.3.3-frequency/challenge1B.3.3-frequency.xml'
-                    tdis =  glob.glob('TDI/'+challengename+'/*1B.3.3*frequency.xml')
-                    run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
-              elif (re.search('3.4', keyTDI) != None):
-                  dataTdi = 'Data/challenge1.3.4-frequency/challenge1B.3.4-frequency.xml'
-                  tdis =  glob.glob('TDI/'+challengename+'/*1B.3.4*frequency.xml')
-                  run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
-              elif (re.search('3.5', keyTDI) != None):
-                    dataTdi = 'Data/challenge1.3.5-frequency/challenge1B.3.5-frequency.xml'
-                    tdis =  glob.glob('TDI/'+challengename+'/*1B.3.5*frequency.xml')
-                    run('bin/evaluate-syntheticLISA2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
-
-
-if (challengename == "Challenge2.2"):
-   tdis = glob.glob('TDI/'+challengename+'/*challenge2.2-*frequency.xml')
-   dataTdi = 'Data/challenge2.2-frequency/challenge2.2-frequency.xml'
-   for KeyTDI in (keyTdis):
-      run('bin/evaluate-syntheticLISA2.py --maxPhase --Galaxy  %(dataTdi)s %(KeyTDI)s %(tdis)s')
-"""
-
-#### call evaluation script for LISA Simulator data
-
-keyTdis = glob.glob('TDI/'+challengename+'/*key-*strain.xml')
-
-if (challengename == "Challenge1.3"):
-   tdis =  glob.glob('TDI/'+challengename+'/*challenge1.3-*strain.xml')
-   for keyTDI in (keyTdis):
-       if(re.search('1.3.1', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.1-strain/challenge1.3.1-strain.xml'
-       elif (re.search('1.3.2', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.2-strain/challenge1.3.2-strain.xml'
-       elif (re.search('1.3.4', keyTDI) != None):
-           dataTdi = 'Data/challenge1.3.4-strain/challenge1.3.4-strain.xml'
-       run('bin/evaluate-LISAsimulator2.py  %(dataTdi)s %(keyTDI)s %(tdis)s')
-
-if (challengename == "Challenge2.2"):
-   tdis = glob.glob('TDI/'+challengename+'/*challenge2.2-*strain.xml')
-   dataTdi = 'Data/challenge2.2-strain/challenge2.2-strain.xml'
-   for KeyTDI in (keyTdis):
-      run('bin/evaluate-LISAsimulator2.py --maxPhase --Galaxy  %(dataTdi)s %(KeyTDI)s %(tdis)s')
-   
-"""
-
-print keyTdis
+if (dosynthlisa):
+   keyTdisF = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
+if (dolisasim):
+   keyTdisS = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
 
 
 if (challengename == "Challenge3.2"):
    logFile = "Results/log_" + challengename
-   tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-#   dataTdi = 'Data/challenge3.2-frequency.xml'
-   if (options.dataFile  == None):
-      print "use default location of data xmlfile"
-      if (dosynthlisa):
-          dataTdiF = 'Data/challenge3.2-frequency.xml'
-      if (dolisasim):
-          dataTdiS = 'Data/challenge3.2-strain.xml'    
-   else:
-      dataTdi = options.dataFile 
-      dataTdiF = dataTdi
-      dataTdiS = dataTdi
-      print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"   
-   if (os.path.isfile(dataTdi) ):
-      pass
-   else:   
-      print "data file ", dataTdi, "cannot be found"
-      sys.exit(1)
-   if (options.usekey != None):   
-      ind = 0
-      for KeyTDI in (keyTdis):
-         logFilek = logFile + "_" + str(ind)
-         if (dosynthlisa):
-           run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdis)s')
-         if (dolisasim):
-           run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdis)s')   
-         ind = ind+1
-      #  sys.exit(0)
-   else:
-      if (dosynthlisa):
-         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdis)s')   
-      if (dolisasim):  
-         run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdis)s')    
-      
+   if (dosynthlisa):
+      tdisF = glob.glob('TDI/'+challengename+'/*frequency.xml')
+      if (options.dataFile  == None):
+         print "use default location of data xmlfile"
+         dataTdiF = 'Data/challenge3.2-frequency.xml'
+      else:
+         dataTdi = options.dataFile 
+         dataTdiF = dataTdi   
+         print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"  
+      if (os.path.isfile(dataTdiF) ):
+         pass
+      else:   
+         print "data file ", dataTdiF, "cannot be found"
+         sys.exit(1)
+      if (options.usekey != None):   
+         ind = 0
+         for KeyTDI in (keyTdisF):
+            logFilek = logFile + "_" + str(ind)
+            run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdisF)s')
+            ind = ind+1
+            #  sys.exit(0)
+      else:
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdisF)s')   
+   if (dolisasim):
+      tdisS = glob.glob('TDI/'+challengename+'/*strain.xml')
+      if (options.dataFile  == None):
+         print "use default location of data xmlfile"
+         dataTdiS = 'Data/challenge3.2-strain.xml'
+      else:
+         dataTdi = options.dataFile 
+         dataTdiS = dataTdi   
+         print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"  
+      if (os.path.isfile(dataTdiS) ):
+         pass
+      else:   
+         print "data file ", dataTdiS, "cannot be found"
+         sys.exit(1)
+      if (options.usekey != None):   
+         ind = 0
+         for KeyTDI in (keyTdisS):
+            logFilek = logFile + "_" + str(ind)
+            run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdisS)s')
+            ind = ind+1
+                  #  sys.exit(0)
+      else:
+         run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdisS)s')  
+          
+       
 if (challengename == "Challenge3.3"):
    logFile = "Results/log_" + challengename
-   tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-   if (options.dataFile  == None):
-      print "use default location of data xmlfile"
-     # dataTdi = 'Data/challenge3.3-frequency.xml'
-      if (dosynthlisa):
-          dataTdiF = 'Data/challenge3.3-frequency.xml'
-      if (dolisasim):
-          dataTdiS = 'Data/challenge3.3-strain.xml'
-   else:
-      dataTdi = options.dataFile
-      dataTdiF = dataTdi
-      dataTdiS = dataTdi
-      print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"
-   if (os.path.isfile(dataTdi) ):
-      pass
-   else:   
-      print "data file ", dataTdi, "cannot be found"
-      sys.exit(1)
-   if (options.usekey != None):   
-      ind = 0
-      for KeyTDI in (keyTdis):
-         logFilek = logFile + "_" + str(ind)
-         if (dosynthlisa):
-            run('bin/evaluate-syntheticLISA3.py  --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdis)s')
-         if (dolisasim):
-            run('bin/evaluate-LISAsimulator3.py  --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdis)s')   
-         ind = ind+1
-      #  sys.exit(0)
-   else:
-      if (dosynthlisa):
-         run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdis)s')   
-      if (dolisasim):   
-         run('bin/evaluate-LISAsimulator3.py   %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdis)s')
-
-if (challengename == "Challenge3.4"):
-   logFile ="Results/log_" + challengename 
-   tdis = glob.glob('TDI/'+challengename+'/*frequency.xml')
-   if (options.dataFile  == None):
-        print "use default location of data xmlfile"
-        dataTdi = 'Data/challenge3.4-frequency.xml'
-   else:
-        dataTdi = options.dataFile
-   if (os.path.isfile(dataTdi) ):
-      pass
-   else:   
-      print "data file ", dataTdi, "cannot be found"
-      sys.exit(1)
-   if (options.usekey != None):   
-      ind = 0
-      for KeyTDI in (keyTdis):
-         logFilek = logFile + "_" + str(ind)
-         if (dosynthlisa):
-            run('bin/evaluate-syntheticLISA3.py --usekey  %(logFilek)s  %(dataTdi)s %(KeyTDI)s %(tdis)s')
-         if (dolisasim):
-            print "There is no LISA simulator data for this challenge"
-            sys.exit(1)  
-         ind = ind+1
-      #  sys.exit(0)
-   else:
-      if (dosynthlisa):
-         run('bin/evaluate-syntheticLISA3.py   %(logFile)s  %(dataTdi)s %(dataTdi)s %(tdis)s')   
-      if (dolisasim):   
-         print "There is no LISA simulator data for this challenge"
+   if (dosynthlisa):
+      tdisF = glob.glob('TDI/'+challengename+'/*frequency.xml')
+      if (options.dataFile  == None):
+         print "use default location of data xmlfile"
+         dataTdiF = 'Data/challenge3.3-frequency.xml'
+      else:
+         dataTdi = options.dataFile 
+         dataTdiF = dataTdi   
+         print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"  
+      if (os.path.isfile(dataTdiF) ):
+         pass
+      else:   
+         print "data file ", dataTdiF, "cannot be found"
          sys.exit(1)
+      if (options.usekey != None):   
+         ind = 0
+         for KeyTDI in (keyTdisF):
+            logFilek = logFile + "_" + str(ind)
+            run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdisF)s')
+            ind = ind+1
+            #  sys.exit(0)
+      else:
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdisF)s')   
+   if (dolisasim):
+      tdisS = glob.glob('TDI/'+challengename+'/*strain.xml')
+      if (options.dataFile  == None):
+         print "use default location of data xmlfile"
+         dataTdiS = 'Data/challenge3.3-strain.xml'
+      else:
+         dataTdi = options.dataFile 
+         dataTdiS = dataTdi   
+         print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"  
+      if (os.path.isfile(dataTdiS) ):
+         pass
+      else:   
+         print "data file ", dataTdiS, "cannot be found"
+         sys.exit(1)
+      if (options.usekey != None):   
+         ind = 0
+         for KeyTDI in (keyTdisS):
+            logFilek = logFile + "_" + str(ind)
+            run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiS)s %(KeyTDI)s %(tdisS)s')
+            ind = ind+1
+               #  sys.exit(0)
+      else:
+         run('bin/evaluate-LISAsimulator3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiS)s %(dataTdiS)s %(tdisS)s')  
+       
+       
+if (challengename == "Challenge3.4"):
+   logFile = "Results/log_" + challengename
+   if (dosynthlisa):
+      tdisF = glob.glob('TDI/'+challengename+'/*frequency.xml')
+      if (options.dataFile  == None):
+         print "use default location of data xmlfile"
+         dataTdiF = 'Data/challenge3.4-frequency.xml'
+      else:
+         dataTdi = options.dataFile 
+         dataTdiF = dataTdi   
+         print "WARNING: you have supplied the data file: make sure you have specified -L or -S options"  
+      if (os.path.isfile(dataTdiF) ):
+         pass
+      else:   
+         print "data file ", dataTdiF, "cannot be found"
+         sys.exit(1)
+      if (options.usekey != None):   
+         ind = 0
+         for KeyTDI in (keyTdisF):
+            logFilek = logFile + "_" + str(ind)
+            run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy --usekey  %(logFilek)s  %(dataTdiF)s %(KeyTDI)s %(tdisF)s')
+            ind = ind+1
+            #  sys.exit(0)
+      else:
+         run('bin/evaluate-syntheticLISA3.py --maxPhase --Galaxy  %(logFile)s  %(dataTdiF)s %(dataTdiF)s %(tdisF)s')   
+   if (dolisasim):       
+      print "There is no LISA simulator data for this challenge"
+      sys.exit(1) 
+      
+
