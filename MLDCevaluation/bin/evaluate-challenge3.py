@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-__version__='$Id:  $'
+__version__='$Id$'
 
 
 import lisaxml
@@ -12,6 +12,8 @@ import math
 import os
 import glob
 import re
+import py_compile
+
 from distutils.dep_util import newer, newer_group
 
 import synthlisa
@@ -37,7 +39,7 @@ from optparse import OptionParser
 # note that correct management of the Id string requires issuing the command
 # svn propset svn:keywords Id FILENAME
 
-parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME [Challenge3.2, Challenge3.3 or Challenge3.4]", version="$Id: $")
+parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME [Challenge3.2, Challenge3.3 or Challenge3.4]", version="$Id$")
 
 
 parser.add_option("-b", "--preBuffer",
@@ -93,7 +95,7 @@ parser.add_option("-v", "--verbose",
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
-    parser.error("I need the challenge name: Challenge3.2/Challenege3.3/Challenge3.4")
+    parser.error("I need the challenge name: Challenge3.2/Challenge3.3/Challenge3.4")
 
 challengename = args[0]
 timestep = options.timestep
@@ -104,9 +106,9 @@ dosynthlisa = not (options.lisasimonly) or options.synthlisaonly
 dolisasim   = not (options.synthlisaonly) or options.lisasimonly
 if (options.verbose):
    if (dosynthlisa):
-      print "we will generate the data using synthetic lisa"
+      print "We will generate the data using synthetic lisa"
    if (dolisasim):
-      print "we will generate the data using lisa simulator"   
+      print "We will generate the data using lisa simulator"   
 
 
 if (challengename == "Challenge3.4"):
@@ -114,7 +116,7 @@ if (challengename == "Challenge3.4"):
    dolisasim = False
 
 run('cp ../MLDCpipelines2/bin/lisasimulator.py bin/')
-run('cp ../MLDCpipelines2/bin/lisasimulator.pyc bin/')
+py_compile.compile("bin/lisasimulator.py")
 
 import lisasimulator
 
@@ -145,7 +147,7 @@ else:
     if (os.path.isfile(xmlfile) ):
        pass
     else:   
-       print "source file ", xmlfile, "cannot be found"
+       print "Source file ", xmlfile, "cannot be found"
        sys.exit(1)
     baryfile = 'Barycentric/'+challengename+"/" + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
     if (not makemode) or newer(xmlfile,baryfile):
@@ -200,7 +202,7 @@ if (challengename == "Challenge3.2"):
    if (dosynthlisa):
       tdisF = glob.glob('TDI/'+challengename+'/*frequency.xml')
       if (options.dataFile  == None):
-         print "use default location of data xmlfile"
+         print "Use default location of data xmlfile"
          dataTdiF = 'Data/challenge3.2-frequency.xml'
       else:
          dataTdi = options.dataFile 
@@ -209,7 +211,7 @@ if (challengename == "Challenge3.2"):
       if (os.path.isfile(dataTdiF) ):
          pass
       else:   
-         print "data file ", dataTdiF, "cannot be found"
+         print "Data file ", dataTdiF, "cannot be found"
          sys.exit(1)
       if (options.usekey != None):   
          ind = 0
@@ -223,7 +225,7 @@ if (challengename == "Challenge3.2"):
    if (dolisasim):
       tdisS = glob.glob('TDI/'+challengename+'/*strain.xml')
       if (options.dataFile  == None):
-         print "use default location of data xmlfile"
+         print "Use default location of data xmlfile"
          dataTdiS = 'Data/challenge3.2-strain.xml'
       else:
          dataTdi = options.dataFile 
@@ -232,7 +234,7 @@ if (challengename == "Challenge3.2"):
       if (os.path.isfile(dataTdiS) ):
          pass
       else:   
-         print "data file ", dataTdiS, "cannot be found"
+         print "Data file ", dataTdiS, "cannot be found"
          sys.exit(1)
       if (options.usekey != None):   
          ind = 0
@@ -250,7 +252,7 @@ if (challengename == "Challenge3.3"):
    if (dosynthlisa):
       tdisF = glob.glob('TDI/'+challengename+'/*frequency.xml')
       if (options.dataFile  == None):
-         print "use default location of data xmlfile"
+         print "Use default location of data xmlfile"
          dataTdiF = 'Data/challenge3.3-frequency.xml'
       else:
          dataTdi = options.dataFile 
@@ -259,7 +261,7 @@ if (challengename == "Challenge3.3"):
       if (os.path.isfile(dataTdiF) ):
          pass
       else:   
-         print "data file ", dataTdiF, "cannot be found"
+         print "Data file ", dataTdiF, "cannot be found"
          sys.exit(1)
       if (options.usekey != None):   
          ind = 0
@@ -273,7 +275,7 @@ if (challengename == "Challenge3.3"):
    if (dolisasim):
       tdisS = glob.glob('TDI/'+challengename+'/*strain.xml')
       if (options.dataFile  == None):
-         print "use default location of data xmlfile"
+         print "Use default location of data xmlfile"
          dataTdiS = 'Data/challenge3.3-strain.xml'
       else:
          dataTdi = options.dataFile 
@@ -282,7 +284,7 @@ if (challengename == "Challenge3.3"):
       if (os.path.isfile(dataTdiS) ):
          pass
       else:   
-         print "data file ", dataTdiS, "cannot be found"
+         print "Data file ", dataTdiS, "cannot be found"
          sys.exit(1)
       if (options.usekey != None):   
          ind = 0
@@ -300,7 +302,7 @@ if (challengename == "Challenge3.4"):
    if (dosynthlisa):
       tdisF = glob.glob('TDI/'+challengename+'/*frequency.xml')
       if (options.dataFile  == None):
-         print "use default location of data xmlfile"
+         print "Use default location of data xmlfile"
          dataTdiF = 'Data/challenge3.4-frequency.xml'
       else:
          dataTdi = options.dataFile 
@@ -309,7 +311,7 @@ if (challengename == "Challenge3.4"):
       if (os.path.isfile(dataTdiF) ):
          pass
       else:   
-         print "data file ", dataTdiF, "cannot be found"
+         print "Data file ", dataTdiF, "cannot be found"
          sys.exit(1)
       if (options.usekey != None):   
          ind = 0
