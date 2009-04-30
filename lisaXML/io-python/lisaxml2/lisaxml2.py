@@ -781,6 +781,35 @@ class SourceTable(XSILobject):
                 # inherit the name of the Table, if given...
                 self.__dict__['Name'] = self.__dict__['name'] = self.Table.Name
     
+    # I'm not happy with the semantics here... do we have any other generators in lisaxml2?
+    def makeTableSources(self):
+        if not hasattr(self,'Table'):
+            raise StopIteration
+        
+        for row,index in zip(self.Table.Data,range(self.Table.Length)):
+            newsrc = Source.makeSource(self.Type)
+            
+            if self.Name:
+                newsrc.Name = '%s-%s' % (self.Name,index)
+            else:
+                newsrc.Name = 'Table source #%s' % index
+            
+            for par,val in zip(self.Table.parameters,row):
+                setattr(newsrc,par,val)
+            
+            for par in self.Table.parameters:
+                parunit = par + '_Unit'
+                
+                if hasattr(self.Table,parunit):
+                    setattr(newsrc,parunit,getattr(self.Table,parunit))
+            
+            yield newsrc
+        
+        raise StopIteration
+    
+    def getTableSources(self):
+        return list(self.makeTableSources())
+    
 
 
 class TimeSeries(XSILobject):
