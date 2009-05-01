@@ -483,8 +483,10 @@ for userfile in Detfiles:
        InnerE = sampling*InnerProd(Edata, Es, SnA)
        normAs =  sampling*InnerProd(As, As, SnA)
        normEs =  sampling*InnerProd(Es, Es, SnA)
-       print "norms: ", normAs, normEs
-       print "in prods: ", InnerA, InnerE
+       rec=  " norms of signal (A, E): " + str(normAs) + "   " + str(normEs) + "\n" +\
+              " inner prods with data (A, E): " + str(InnerA) +  "   " + str(InnerE)
+       print rec
+       fout.write(rec+"\n")
        logL = (InnerA + InnerE) - 0.5*(normAs + normEs)
        rec = "LogL_comb  =  " + str(logL) 
        print rec
@@ -500,6 +502,7 @@ for userfile in Detfiles:
        SNRcomb = (InnerA + InnerE)/math.sqrt(normAs + normEs)
        rec = "SNR_comb = " + str(SNRcomb)
        print rec
+       fout.write(rec + "\n")
        if (options.usekey):
           InnerA = sampling*InnerProd(A, As, SnA)
           InnerE = sampling*InnerProd(E, Es, SnA)
