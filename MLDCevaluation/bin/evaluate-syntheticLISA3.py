@@ -382,7 +382,7 @@ if (options.usekey and challname == "3.2"):
    print rec
    fout.write(rec)
    
-if (options.usekey and challname == "3.4"):   
+if (options.usekey and (challname == "3.4" or challname == "3.3") ):   
    rec = 80*'*' + "\n" + "using key file: "+ Injfile + "\n" + Injsources.name + "\n"+ 80*'*' + "\n"
    print rec
    fout.write(rec)
