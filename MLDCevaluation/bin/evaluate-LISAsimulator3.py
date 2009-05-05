@@ -358,13 +358,13 @@ if (options.usekey and challname == "3.2"):
    if (Tc <= 1.0368e7):
       BBH = 1
    #elif (Tc >= 1.5552e7 and Tc <= 6.2208e7):
-   elif (Tc >= 1.55e7 and Tc <= 3.0e7):
+   elif (Tc >= 1.55e7 and Tc <= 3.3e7):
       BBH = 3
-   elif (Tc >= 3e7 and Tc <= 5.0e7):
+   elif (Tc >= 3.5e7 and Tc <= 3.8e7):
       BBH = 4   
    elif (Tc >= 6.9984e7 and Tc<=7.2576e7):
       BBH = 6
-   elif (Tc>=6.48e7 and  Tc < 6.7392e7 ):
+   elif (Tc>=6.3e7 and  Tc < 6.7e7 ):
       BBH = 2
    #############################################
    ## Computing chi^2 and SNR with the key file
@@ -459,15 +459,15 @@ for userfile in Detfiles:
                src = 1
          #elif (Tc >= 1.5552e7 and Tc <= 6.2208e7):
          #     src = 3.4
-            elif (Tc >= 1.55e7 and Tc <= 3.0e7):
+            elif (Tc >= 1.55e7 and Tc <= 3.3e7):
                src = 3
-            elif (Tc >= 3e7 and Tc <= 5.0e7):
+            elif (Tc >= 3.5e7 and Tc <= 3.8e7):
                src = 4   
           # elif (Tc >= 4.2768e7 <= 5.0544e7):
         #    src = 5   
             elif (Tc >= 6.9984e7 and Tc<=7.2576e7):
                src = 6
-            elif (Tc>=6.48e7 and  Tc < 6.7392e7 ):
+            elif (Tc>=6.3e7 and  Tc < 6.72e7 ):
                src = 2
             rec = "According to Tc-classification: BBH_key #  " +  str(BBH) +  " and  BBH_src  #  " + str(src) + "\n"
             print rec
