@@ -194,7 +194,7 @@ if (options.usekey != None):
 if (dosynthlisa):
    keyTdisF = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
 if (dolisasim):
-   keyTdisS = glob.glob('TDI/'+challengename+'/*key-*frequency.xml')
+   keyTdisS = glob.glob('TDI/'+challengename+'/*key-*strain.xml')
 
 
 if (challengename == "Challenge3.2"):
