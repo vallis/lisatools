@@ -180,7 +180,7 @@ if (dolisasim):
 
 
 ### if key is know -- generate the data corresponding to the keys 
-"""
+
 if (options.usekey != None):
    key = options.usekey
    if (dolisasim):
@@ -188,7 +188,7 @@ if (options.usekey != None):
    if (dosynthlisa):
       run('./bin/compute-KeyData.py -k %(key)s -S  --duration=%(duration)s --timeStep=%(timestep)s %(challengename)s')
 
-"""
+
 #### IIIa. call evaluation script for synthetic LISA data
 
 if (dosynthlisa):
