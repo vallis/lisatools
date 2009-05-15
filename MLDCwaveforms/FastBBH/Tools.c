@@ -947,6 +947,9 @@ void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
   
   for (k = n-2; k >= 0; k--)
     y2[k] = y2[k]*y2[k+1]+u[k];
+	
+  // Add A. Petiteau
+  y2[n] = 0.0;
   
   free_dvector(u, 0, n-2);
 }
