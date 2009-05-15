@@ -1,1 +1,1 @@
-lisasim1yr = '/local_data/stas/lisasimulator-1year'; lisasim2yr = '/local_data/stas/lisasimulator-2year'
+lisasim1yr = '/Users/petiteau/Applications/lisatools/share/lisasimulator-1year'; lisasim2yr = '/Users/petiteau/Applications/lisatools/share/lisasimulator-2year'

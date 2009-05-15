@@ -146,31 +146,9 @@ using namespace std;
 int main (int argc, char * const argv[])
 {
 	try {
-		cout << endl << "   ************************* ";
-		cout << endl << "   *                       * ";
-		cout << endl << "   *       LISACode        * ";
-		cout << endl << "   *   -----------------   * ";
-		cout << endl << "   *   Simulator of LISA   * ";
-		cout << endl << "   *   -----------------   * ";
-		cout << endl << "   *  ("<< LCVersion<<")   * ";
-		cout << endl << "   *                       * ";
-		cout << endl << "   ************************* " << endl << endl; 
-		
-		// ************************************
-		// * Read configuration file and help *
-		// ************************************
-		char * ConfigFileName("ConfigRefBase");
-		//char * ConfigFileName("ConfigSMBH3_NN");
-		//char * ConfigFileName("QuickConfig_LAG4.xml");
-		//char * ConfigFileName("QuickConfig_LAG4_AfterAppDelay.xml");
-		//char * ConfigFileName("ConfigTraining-111a_NN_Nov3");
-		//char * ConfigFileName("challenge2.2-frequency-training.xml");
-		int nOption(0);
-		bool BinHeader(false);
-		
 		
 		// *********** HELP *************
-		if((argc>1)&&(strcmp(argv[1],"--help")==0)){
+		if(((argc>1)&&(strcmp(argv[1],"--help")==0))||((argc>1)&&(strcmp(argv[1],"-h")==0))){
 			cout << " ----- HELP -----" << endl;
 			cout << endl << "\tExecution :" << endl;
 			cout << "\t\t(./)LISACode [Options] ConfigFileName RandomSeed" << endl;
@@ -189,11 +167,36 @@ int main (int argc, char * const argv[])
 		
 		// *********** Version *************
 		if((argc>1)&&(strcmp(argv[1],"--version")==0)){
-		   cout << " ----- VERSION -----" << endl;
-		   cout << " LISACode : main executable of LISACode package - version " << LCVersion << endl;
-		   cout << " ----------------" << endl;
-		   return 0;
-		   }
+			cout << " ----- VERSION -----" << endl;
+			cout << " LISACode : main executable of LISACode package - version " << LCVersion << " at " << DateOfLastUpdate << endl;
+			cout << " ----------------" << endl;
+			return 0;
+		}
+		
+		
+		cout << endl << "   ************************* ";
+		cout << endl << "   *                       * ";
+		cout << endl << "   *       LISACode        * ";
+		cout << endl << "   *   -----------------   * ";
+		cout << endl << "   *   Simulator of LISA   * ";
+		cout << endl << "   *   -----------------   * ";
+		cout << endl << "   *  (LISACode v "<<LCVersion<<")   * ";
+		cout << endl << "   *                       * ";
+		cout << endl << "   ************************* " << endl << endl; 
+		
+		// ************************************
+		// * Read configuration file and help *
+		// ************************************
+		char * ConfigFileName("ConfigRefBase");
+		//char * ConfigFileName("ConfigSMBH3_NN");
+		//char * ConfigFileName("QuickConfig_LAG4.xml");
+		//char * ConfigFileName("QuickConfig_LAG4_AfterAppDelay.xml");
+		//char * ConfigFileName("ConfigTraining-111a_NN_Nov3");
+		//char * ConfigFileName("challenge2.2-frequency-training.xml");
+		int nOption(0);
+		bool BinHeader(false);
+		
+		
 		
 		// *********** Options *************
 		for(int iarg=1; iarg<argc; iarg++){
@@ -263,19 +266,17 @@ int main (int argc, char * const argv[])
 		double tStepMes(Config.gettStepMes());
 		double tMax(Config.gettMax());
 		double DisplayStep(Config.gettDisplay());
-		//Declaration des variables temporaires
+		// Temporary variables
 		double t(0.0), ttmpAff(0.0), tSinceFirstReception(0.0);
-		// Critere sur la moyenne d'un generateur TDI pour qu'il soit declare efficace
+		// * Critere sur la moyenne d'un generateur TDI pour qu'il soit declare efficace
 		//double TDIGood(1.0e-19);
-		//Ecart entre les retards reels et les retards appliques dans TDI (en s)
+		// * Offset between real delays and delays used in TDI (in seconds)
 		double DeltaTDIDelay(Config.gettDeltaTDIDelay());
-		// Ecart entre l'instant de lecture des donnees et l'instant d'application de TDI
-		double tTDIShift(2.0*MAX(0.0,Config.tMemNecInterpTDI()-Config.tMinDelay()));
-		// Time of storage for TDI delays and Eta
-		double tMemPDPM(tTDIShift + Config.tMemNecInterpTDI() + Config.tMaxDelay());
-		double tMemTDI(tTDIShift + Config.tMemNecInterpTDI() + Config.getNbMaxDelays()*Config.tMaxDelay());
+		double tTDIShift(Config.gettTDIShift());
+		double tMemPDPM(Config.gettMemPhasemeters());
+		double tMemTDI(Config.gettMemTDI());
 		Vect tmp;
-		// For time display 
+		// ** For time display 
 		time_t tstart, tcur;
 		float EstimTStop;
 		int hh, mm;
@@ -285,7 +286,7 @@ int main (int argc, char * const argv[])
 		
 		cout << "    Parameters --> OK !" << endl << endl;
 		
-		//Declaration des memoires utilises
+		// *** Declaration of used memories
 		cout << "  - Memorys..." << endl;
 		vector<Memory *> RecordPDPM;
 		for(int iSC=1; iSC<=3; iSC++){
@@ -328,7 +329,7 @@ int main (int argc, char * const argv[])
 				DelayTDI->AddSerieData(iSC+3*IndirectDir-1, "D" , IndirectDir, iSC);
 			}
 		}
-		//Declaration des retards
+		// ** Declaration of delays and sky position
 		Memory * SCPos;
 		if(strcmp(Config.getFileNamePositions(),"None")==0){
 			cout << "     Record Positions  : RAM" << endl;
@@ -344,18 +345,18 @@ int main (int argc, char * const argv[])
 		}
 		cout << " --> OK !" << endl << endl;
 		
-		//Declaration de LISA
+		// *** Declaration of LISA
 		cout << "  - LISA..." << endl;
 		LISA LISACode(& Config, & RecordPDPM);
 		cout << "    LISA --> OK !" << endl << endl;
 		
-		//Declaration des generateurs TDI
+		// *** Declaration TDI generators
 		cout << "  - TDI... " << endl;
-		// Creation of Eta signals
+		// ** Creation of Eta signals
 		TDI_InterData Eta(DelayTDI, & RecordPDPM, tMemTDI, tTDIShift/2.0, Config.getNoNoise(), Config.getTDIInterp(), Config.getTDIInterpUtilVal());
-		// Acceleration module of TDI
+		// ** Acceleration module of TDI
 		TDITools TDIQuickMod(DelayTDI, Config.getTDIDelayApprox());
-		// Creation of generators
+		// ** Creation of generators
 		vector<TDI> TDIGens;
 		int NbGenTDI (Config.NbGenTDI());
 		for(int iGen=0; iGen<NbGenTDI; iGen++){
@@ -363,7 +364,6 @@ int main (int argc, char * const argv[])
 			TDIGens.push_back(TDI(DelayTDI, & Eta, & RecordTDI, Config.getFileEncodingTDI(), iGen, Config.getGenTDIPacks(iGen), Config.getGenTDIPacksFact(iGen), & TDIQuickMod));
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " --> OK" << endl;
 		}
-		// Ecart entre l'instant de lecture des donnees et l'instant d'application de TDI
 		cout << "    TDI --> OK !" << endl << endl;
 		
 		cout << "Creation --> OK" << endl << endl;
@@ -376,16 +376,16 @@ int main (int argc, char * const argv[])
 		
 		for(int iSC=1; iSC<=3; iSC++)
 			RecordPDPM[iSC-1]->MakeTitles(ConfigFileName);
-		// Write TDI file Header
+		// ** Write TDI file Header
 		if(Config.getFileEncodingTDI() == 0){
 			ifstream FileHead;
 			char Buf[1064] ;
-			// Copy of configuration file in header
+			// * Copy of configuration file in header
 			FileHead.open(ConfigFileName);
 			if (!FileHead){
 				throw invalid_argument("Main : Can not open the configuration file ! ");
 			}
-			RecordTDI << "############## " << LCVersion <<  " ##############" << endl;
+			RecordTDI << "############## LISACode v " << LCVersion << "-" << DateOfLastUpdate << " at " << MathUtils::TimeISO8601() << " ##############" << endl;
 			RecordTDI << "############## Configuration : " << ConfigFileName <<  " ##############" << endl;
 			while(!FileHead.eof()) {
 				FileHead.getline(Buf, 1064);
@@ -439,7 +439,7 @@ int main (int argc, char * const argv[])
 		//  d'une utilisation dans TDI. Le nombre de donnees qu'il est necessaire d'enregistrer
 		//  avant de lancer TDI est choisi par rapport au retard maximal present dans les generateurs.
 		cout << endl << "Runnning in progress : receive datas (-> " << tMemPDPM << " s)..." << endl;
-		t = -1.0*(tMemPDPM+tMemTDI+tTDIShift);
+		t = Config.gettStartPhasemeters();
 		//cout << t << " " << tMemTDI << " " << tTDIShift << endl;
 		do{
 			//Display time

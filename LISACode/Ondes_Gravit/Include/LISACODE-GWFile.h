@@ -66,8 +66,8 @@ public:
 	       int FileEncoding, 
 	       double TimeOffset, 
 	       double TimeStep, 
-	       int Length, 
-	       int Records);
+	       int Length_n, 
+	       int Records_n);
 	~GWFile();
 	
 	// ** Access methods **

@@ -37,13 +37,40 @@ int main (int argc, char * const argv[])
 {
 	try {
 		
+		// *********** HELP *************
+		if(((argc>1)&&(strcmp(argv[1],"--help")==0))||((argc>1)&&(strcmp(argv[1],"-h")==0))){
+			cout << " ----- HELP -----" << endl;
+			cout << endl << "\tExecution :" << endl;
+			cout << "\t\t(./)DnonGW ConfigFileName SignalFileName GWStrainFileName PositionFileName DelayFileName" << endl;
+			cout << endl << "\tArguments :" << endl;
+			cout << endl << "\t\t * ConfigFileName (required)       : Configuration file name. Same file than LISACode" << endl;
+			cout <<         "\t\t    configuration but only measurement time step, maximal time (duration), gravitational" << endl;
+			cout <<         "\t\t    waves and orbit parameters are required." << endl;
+			cout << endl << "\t\t * SignalFileName (required)       : Output file for the gravitational strain on 6 phasemeters." << endl;
+			cout << endl << "\t\t * GWStrainFileName (not required) : Output file for the gravitational strain for each GWs." << endl;
+			cout << endl << "\t\t * PositionFileName (not required) : Output file for the spacecraft positions." << endl;
+			cout << endl << "\t\t * DelayFileName (not required)    : Output file for the time delay between spacecrafts." << endl;
+			cout << endl << "\tNOTE :" << endl;
+			cout <<  "\t\t There are more details in the user's manual." << endl;
+			cout << endl << " ----------------" << endl;
+			return 0;
+			
+		}
+		// *********** Version *************
+		if(strcmp(argv[1],"--version")==0){
+			cout << " ----- VERSION -----" << endl;
+			cout << " DnonGW : executable of LISACode package - version " << LCVersion << " at " << DateOfLastUpdate << endl;
+			cout << " ----------------" << endl;
+			return 0;
+		}
+		
 		cout << endl << "   **************************** ";
 		cout << endl << "   *                          * ";
 		cout << endl << "   *        LISACode          * ";
 		cout << endl << "   *   --------------------   * ";
 		cout << endl << "   *   Gravitational Strain   * ";
 		cout << endl << "   *   --------------------   * ";
-		cout << endl << "   *    ("<<LCVersion<<")     * ";
+		cout << endl << "   *    (LISACode v "<<LCVersion<<")     * ";
 		cout << endl << "   *                          * ";
 		cout << endl << "   **************************** " << endl << endl; 
 		
@@ -66,32 +93,6 @@ int main (int argc, char * const argv[])
 		if(argc>1)
 			ConfigFileName = argv[1];
 		
-		// *********** HELP *************
-		if(strcmp(ConfigFileName,"--help")==0){
-			cout << " ----- HELP -----" << endl;
-			cout << endl << "\tExecution :" << endl;
-			cout << "\t\t(./)DnonGW ConfigFileName SignalFileName GWStrainFileName PositionFileName DelayFileName" << endl;
-			cout << endl << "\tArguments :" << endl;
-			cout << endl << "\t\t * ConfigFileName (required)       : Configuration file name. Same file than LISACode" << endl;
-			cout <<         "\t\t    configuration but only measurement time step, maximal time (duration), gravitational" << endl;
-			cout <<         "\t\t    waves and orbit parameters are required." << endl;
-			cout << endl << "\t\t * SignalFileName (required)       : Output file for the gravitational strain on 6 phasemeters." << endl;
-			cout << endl << "\t\t * GWStrainFileName (not required) : Output file for the gravitational strain for each GWs." << endl;
-			cout << endl << "\t\t * PositionFileName (not required) : Output file for the spacecraft positions." << endl;
-			cout << endl << "\t\t * DelayFileName (not required)    : Output file for the time delay between spacecrafts." << endl;
-			cout << endl << "\tNOTE :" << endl;
-			cout <<  "\t\t There are more details in the user's manual." << endl;
-			cout << endl << " ----------------" << endl;
-			return 0;
-			
-		}
-		// *********** Version *************
-		if(strcmp(ConfigFileName,"--version")==0){
-			cout << " ----- VERSION -----" << endl;
-			cout << " DnonGW : executable of LISACode package - version " << LCVersion << endl;
-			cout << " ----------------" << endl;
-			return 0;
-		}
 		
 		// *********** Read file names *************
 		if(argc>2)

@@ -150,6 +150,7 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
 	NbMaxDelays = 0;
     ConfigFileName = NameConfigFile_n;
     Endian = 0 ;
+	Simulator = "LISACode";
 	
 }
 
@@ -1498,7 +1499,7 @@ void ConfigSim::ReadXMLFile()
 {
 	try{
 		int NbSrc(0);
-		cout << "  Read XML configuration file : " << ConfigFileName << endl;
+		cout << ">>> Read XML configuration file : " << ConfigFileName << endl;
 		
 		// Test if  file exist
 		ifstream ConfigFile;
@@ -1526,7 +1527,7 @@ void ConfigSim::ReadXMLFile()
 			if(strcmp(ezxml_attr(head,"Name"),"GenerationDate")==0){
 				GenerationDate = gXMLstring(head);
 				GenerationType = ezxml_attr(head,"Type");
-				cout << " - Type = "<< GenerationType << endl ;
+				cout << "   x Type = "<< GenerationType << endl ;
 			}
 		}
 		//modif E.P.
@@ -1637,8 +1638,10 @@ void ConfigSim::ReadXMLFile()
 				const char * lisacode0type;
 				cout << "Section : LISACode " << endl ;
 				for(param = ezxml_child(section,"Param"); param; param = param->next){
-					if(strcmp(ezxml_attr(param,"Name"),"GlobalRandomSeed")==0)
-						GlobalRandomSeed = gXMLint(param);
+					if(strcmp(ezxml_attr(param,"Name"),"GlobalRandomSeed")==0){
+						if(isdigit((gXMLstring(param))[0]))
+							GlobalRandomSeed = gXMLint(param);
+					}
 					if(strcmp(ezxml_attr(param,"Name"),"StepPhysic")==0)
 						tStepPhy = gXMLTime(param);
 					if(strcmp(ezxml_attr(param,"Name"),"StepMeasure")==0)
@@ -1662,64 +1665,70 @@ void ConfigSim::ReadXMLFile()
 					if((strcmp(lisacode0type,"OutputData")==0)||(strcmp(lisacode0type,"OutputFiles")==0)){
 						for(param = ezxml_child(lisacode0,"Param"); param; param = param->next){
 							if(strcmp(ezxml_attr(param,"Name"),"SignalSC1")==0){
-								strcpy(FileNameSigSC1,gXMLWord(param));
-								cout << "   x filename = " << FileNameSigSC1 ;
-								//throw ;
-								FileEncodingSC1 = 0;
-								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-									FileEncodingSC1 = 1 ;
+								if(strncmp(gXMLWord(param),"None",4) != 0){
+									strcpy(FileNameSigSC1,gXMLWord(param));
+									cout << "   x filename = " << FileNameSigSC1 ;
+									FileEncodingSC1 = 0;
+									if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+										FileEncodingSC1 = 1 ;
+									}
+									cout << "   --> Encoding = " << FileEncodingSC1  << endl;
 								}
-								cout << "   --> Encoding = " << FileEncodingSC1  << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"SignalSC2")==0){
-								strcpy(FileNameSigSC2,gXMLWord(param));
-								cout << "   x filename = " << FileNameSigSC2 ;
-								//throw ;
-								FileEncodingSC2 = 0;
-								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-									FileEncodingSC2 = 1;
+								if(strncmp(gXMLWord(param),"None",4) != 0){
+									strcpy(FileNameSigSC2,gXMLWord(param));
+									cout << "   x filename = " << FileNameSigSC2 ;
+									FileEncodingSC2 = 0;
+									if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+										FileEncodingSC2 = 1;
+									}
+									cout << "   --> Encoding = " << FileEncodingSC2  << endl;
 								}
-								cout << "   --> Encoding = " << FileEncodingSC2  << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"SignalSC3")==0){
-								strcpy(FileNameSigSC3,gXMLWord(param));
-								cout << "   x filename = " << FileNameSigSC3 ;
-								//throw ;
-								FileEncodingSC3 = 0;
-								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-									FileEncodingSC3 = 1 ;
+								if(strncmp(gXMLWord(param),"None",4) != 0){
+									strcpy(FileNameSigSC3,gXMLWord(param));
+									cout << "   x filename = " << FileNameSigSC3 ;
+									FileEncodingSC3 = 0;
+									if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+										FileEncodingSC3 = 1 ;
+									}
+									cout << "   --> Encoding = " << FileEncodingSC3  << endl;
 								}
-								cout << "   --> Encoding = " << FileEncodingSC3  << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"TDI")==0){
-								strcpy(FileNameTDI,gXMLWord(param));
-								cout << "   x filename = " << FileNameTDI ;
-								//throw ;
-								FileEncodingTDI = 0;
-								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-									FileEncodingTDI = 1 ;
+								if(strncmp(gXMLWord(param),"None",4) != 0){
+									strcpy(FileNameTDI,gXMLWord(param));
+									cout << "   x filename = " << FileNameTDI ;
+									FileEncodingTDI = 0;
+									if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+										FileEncodingTDI = 1 ;
+									}
+									cout << "   --> Encoding = " <<  FileEncodingTDI << endl;
 								}
-								cout << "   --> Encoding = " <<  FileEncodingTDI << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"Delay")==0){
-								strcpy(FileNameDelays,gXMLWord(param));
-								cout << "   x filename = " << FileNameDelays ;
-								//throw ;
-								FileEncodingDelays = 0;
-								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-									FileEncodingDelays = 1 ;
+								if(strncmp(gXMLWord(param),"None",4) != 0){
+									strcpy(FileNameDelays,gXMLWord(param));
+									cout << "   x filename = " << FileNameDelays ;
+									FileEncodingDelays = 0;
+									if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+										FileEncodingDelays = 1 ;
+									}
+									cout << "   --> Encoding = " << FileEncodingDelays << endl;
 								}
-								cout << "   --> Encoding = " << FileEncodingDelays << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"Position")==0){
-								strcpy(FileNamePositions,gXMLWord(param));
-								cout << "   x filename = " << FileNamePositions ;
-								//throw ;
-								FileEncodingPos = 0;
-								if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
-									FileEncodingPos = 1 ;
+								if(strncmp(gXMLWord(param),"None",4) != 0){
+									strcpy(FileNamePositions,gXMLWord(param));
+									cout << "   x filename = " << FileNamePositions ;
+									FileEncodingPos = 0;
+									if(strcmp(uppercase(ezxml_attr(param,"Encoding")),"ASCII")!=0){
+										FileEncodingPos = 1 ;
+									}
+									cout << "   --> Encoding = " << FileEncodingPos  << endl;
 								}
-								cout << "   --> Encoding = " << FileEncodingPos  << endl;
 							}
 						}
 					}
@@ -1955,7 +1964,7 @@ void ConfigSim::ReadXMLFile()
 				cout << "Section : SourceData" << endl ;
 				for (source = ezxml_child(section, "XSIL"); source; source = source->next) {
 					name = ezxml_attr(source,"Name");
-					cout << endl << "Source : Name = " << name << endl;
+					cout << "  Source name = " << name << endl;
 					
 					ezxml_t param;
 					for(param = ezxml_child(source,"Param"); param; param = param->next){
@@ -1966,7 +1975,7 @@ void ConfigSim::ReadXMLFile()
 						if(strcmp(ezxml_attr(param,"Name"),"Polarization")==0)
 							Psi = gXMLAngle(param);
 					}
-					cout << " Source : type = " << ezxml_attr(source,"Type")<< endl ;
+					cout << "   Type = " << ezxml_attr(source,"Type")<< endl ;
 					
 					
 					// ***************  Read PlaneWave Source *************** //
@@ -2342,7 +2351,7 @@ void ConfigSim::ReadXMLFile()
 					double PSD ;
 					// Noise localisation in LISA : instrument and spacecraft
 					instrument = ezxml_attr(noisedata,"Name");
-					cout << endl << "  Noisy Instrument = " << instrument << endl;
+					cout << "  Noisy Instrument = " << instrument << endl;
 					for(param = ezxml_child(noisedata,"Param"); param; param = param->next){
 						if(strcmp(ezxml_attr(param,"Name"),"PowerSpectralDensity")==0){
 							PSD = gXMLdouble(param);
@@ -2600,7 +2609,6 @@ void ConfigSim::ReadXMLFile()
 						}
 					}
 				}
-				cout << endl ;
 			}
 			
 			// *******************
@@ -2756,12 +2764,13 @@ void ConfigSim::ReadXMLFile()
 			 */
 			
 		}
-		cout << endl << "   ==================  Create XML Outputfile here" << endl << endl;
-		if(XmlOutputFile != "None"){
-			CreateXmlOutputFile();
-			//throw ;
-		}
+		
 		ezxml_free(tree);
+		
+		if(XmlOutputFile != "None"){
+			cout << endl << " ==========  Create XML Outputfile ==========" << endl << endl;
+			CreateXmlOutputFile();
+		}
 		
 		// Creation of tMemNoiseFirst and tMemNoiseLast
 		double OrderLagrangeNoise(7);
@@ -2770,10 +2779,6 @@ void ConfigSim::ReadXMLFile()
 		
 		// Noises creation
 		NoisesCreation();
-		
-		// Display of TDI generators
-		
-		
 		
 		// Display of TDI generators
 		cout << "  ----------" << endl;
@@ -2789,7 +2794,7 @@ void ConfigSim::ReadXMLFile()
 		
 		// ** Default value for display time step
 		if(tDisplay<0.0)
-			tDisplay = tMax/1000.0;
+			tDisplay = tMax/200.0;
 		
 		cout << "  ----------" << endl;
 		cout << "  Sources number = " << NbSrc << endl;
@@ -2825,12 +2830,15 @@ void ConfigSim::CreateXmlOutputFile()
 {
 	char *  OutputFileName;
 	string xsil_beg("<XSIL>\n"),xsil_end("</XSIL>\n");
-	string spc_5("     "),spc_9("         "),spc_3("   ");
+	string spc_5("     "),spc_9("         "),spc_3("    ");
+	string ind1("     "), ind2(ind1+ind1), ind3(ind2+ind1), ind4(ind3+ind1), ind5(ind4+ind1), ind6(ind5+ind1);
+	
 	string ParamName("<Param Name=\""),Param_end("</Param>\n");
 	string ArrayName("<Array Name=\""),Array_end("</Array>\n");
 	string DimName("<Dim Name=\""),Dim_end("</Dim>\n");
 	string StreamType("<Stream Type=\""),Stream_end("</Stream>\n");
 	string ObsName;
+
 	OutputFileName = getXmlOutputFile();
 	FichXML.open(OutputFileName);
 	cout << "Creating XML Output File :" << OutputFileName << endl ;
@@ -2840,125 +2848,97 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML << "<?xml-stylesheet type=\"text/xsl\" href=\"lisa-xml.xsl\"?>" << endl ;
 	FichXML <<xsil_beg;
 	
-	FichXML << spc_3 <<ParamName<<"Author\" >" << endl ;
-	FichXML << spc_9 << getAuthor() << endl << spc_3 << Param_end ;
-	FichXML << spc_3 <<ParamName<<"GenerationDate\" Type =\"" << getGenerationType() << "\"> "<< endl ;
-	FichXML << spc_9 << getGenerationDate()  << endl << spc_3 << Param_end ;
-	FichXML << spc_3 <<ParamName<<"Simulator\">" << endl ;
-	FichXML << spc_9 << getSimulator() <<endl << spc_3 << Param_end ;
+	FichXML << ind1 << ParamName << "Author\" >" << endl ;
+	FichXML << ind2 << getAuthor() << endl;
+	FichXML << ind1 << Param_end ;
+	FichXML << ind1 << ParamName << "GenerationDate\" Type =\"ISO-8601\"> "<< endl ;
+	FichXML << ind2 << MathUtils::TimeISO8601()  << endl;
+	FichXML << ind1 << Param_end ;
+	FichXML << ind1 << ParamName <<"Simulator\">" << endl ;
+	FichXML << ind2 << "LISACode-v" << LCVersion << "-" << DateOfLastUpdate << endl;
+	FichXML << ind1 << Param_end ;
 	
-	// TDI data
-	FichXML <<"<XSIL Type=\"TDIData\">"<<endl;
+	// *** Output data
+	FichXML << ind1 << "<XSIL Type=\"TDIData\">"<<endl;
 	
-	FichXML <<"   <XSIL Name=\""<<getTDIParamName()<<"\" Type=\"TDIObservable\">"<< endl;
-	FichXML << spc_5 <<ParamName <<"DataType\">"<<endl <<spc_5<<"FractionalFrequency"<< endl<<spc_5 << Param_end;
-	FichXML <<"   <XSIL Name=\""<<getTDIParamName()<<"\" Type=\"TimeSeries\">"<< endl;
-	FichXML << spc_5 <<ParamName<<"TimeOffset\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << getTimeOffset() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Cadence\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << gettStepMes() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Duration\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
-	FichXML << spc_5 << ArrayName << getTDIParamName()<<"\" Type=\"double\" Unit=\"Word\">" << endl;
-	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
-	FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "4"<<endl<<spc_5 <<Dim_end;
-	if(getFileEncodingTDI()==0)
-		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
-	else{
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
-	FichXML << spc_9 << getFileNameTDI() << endl <<spc_5<<Stream_end;
-	FichXML << spc_5 << Array_end;
-	FichXML << spc_3 << xsil_end;
-	FichXML << xsil_end;
+	// ** TDI data
+	string TDIsGenName;
+	TDIsGenName = "t";
+	for(int iTDI=0; iTDI<TDIsName.size(); iTDI++){
+		TDIsGenName += ",";
+		TDIsGenName += TDIsName[iTDI];
+	}
+	AddTimeSeriesInXMLOutput(&FichXML, ind1, TDIsGenName, 0.0, 4, getFileEncodingTDI(), getFileNameTDI());
 	
-	// SC1 Phasemeter data
-	ObsName="t,y231,y321,z231,z321";
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TDIObservable\">"<< endl;
-	FichXML << spc_5 <<ParamName <<"DataType\">"<<endl <<spc_5<<"TimeSeries"<<endl<< spc_5 << Param_end;
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TimeSeries\">"<< endl;
-	FichXML << spc_5 <<ParamName<<"TimeOffset\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << getTimeOffset() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Cadence\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << gettStepMes() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Duration\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
-	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
-	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
-	if(UseInternalPhasemeter())
-		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	else
-		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "3"<<endl<<spc_5 <<Dim_end;
-		
-	if(getFileEncodingSig(1)==0)
-		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
-	else
-		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
-	FichXML << spc_9 << getFileNameSigSC1() << endl <<spc_5<<Stream_end;
-	FichXML << spc_5 << Array_end;
-	FichXML << spc_3 << xsil_end;
-	FichXML << xsil_end;
+	// ** SC1 Phasemeter data
+	if(strcmp(getFileNameSig(1),"None")!=0){
+		if(UseInternalPhasemeter())
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y231,y321,z231,z321", gettStartPhasemeters(), 5, getFileEncodingSig(1), getFileNameSig(1));
+		else
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y231,y321", gettStartPhasemeters(), 3, getFileEncodingSig(1), getFileNameSig(1));
+	}
 	
-	// SC2 Phasemeter data
-	ObsName="t,y312,y132,z312,z132";
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TDIObservable\">"<< endl;
-	FichXML << spc_5 <<ParamName <<"DataType\">"<<endl <<spc_5<<"TimeSeries"<< spc_5<<endl<<Param_end;
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TimeSeries\">"<< endl;
-	FichXML << spc_5 <<ParamName<<"TimeOffset\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << getTimeOffset() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Cadence\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << gettStepMes() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Duration\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
-	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
-	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
-	if(UseInternalPhasemeter())
-		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	else
-		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "3"<<endl<<spc_5 <<Dim_end;
-	if(getFileEncodingSig(2)==0)
-		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
-	else
-		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;
-	FichXML << spc_9 << getFileNameSigSC2() << endl <<spc_5<<Stream_end;
-	FichXML << spc_5 << Array_end;
-	FichXML << spc_3 << xsil_end;
-	FichXML << xsil_end;
+	// ** SC2 Phasemeter data
+	if(strcmp(getFileNameSig(2),"None")!=0){
+		if(UseInternalPhasemeter())
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y312,y132,z312,z132", gettStartPhasemeters(), 5, getFileEncodingSig(2), getFileNameSig(2));
+		else
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y312,y132", gettStartPhasemeters(), 3, getFileEncodingSig(2), getFileNameSig(2));
+	}
 	
-	// SC3 Phasemeter data
-	ObsName="t,y123,y213,z123,z213";
+	// ** SC3 Phasemeter data
+	if(strcmp(getFileNameSig(3),"None")!=0){
+		if(UseInternalPhasemeter())
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y123,y213,z123,z213", gettStartPhasemeters(), 5, getFileEncodingSig(3), getFileNameSig(3));
+		else
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y123,y213", gettStartPhasemeters(), 3, getFileEncodingSig(3), getFileNameSig(3));
+	}
 	
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TDIObservable\">"<< endl;
-	FichXML << spc_5 <<ParamName <<"DataType\">"<<endl <<spc_5<<"TimeSeries"<< spc_5<<endl<<Param_end;
-	FichXML <<"   <XSIL Name=\""<<ObsName<<"\" Type=\"TimeSeries\">"<< endl;
-	FichXML << spc_5 <<ParamName<<"TimeOffset\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << getTimeOffset() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Cadence\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << gettStepMes() << endl << spc_5 <<Param_end;
-	FichXML << spc_5 <<ParamName<<"Duration\" Unit=\"Second\">" << endl ;
-	FichXML << spc_9 << int(gettMax()) << endl << spc_5 <<Param_end;
-	FichXML << spc_5 << ArrayName << ObsName<<"\" Type=\"double\" Unit=\"Word\">" << endl;
-	FichXML << spc_5 << DimName <<"Length\">"<<endl <<spc_9<< int(gettMax()/gettStepMes()+1)<<endl<<spc_5<<Dim_end;
-	if(UseInternalPhasemeter())
-		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "5"<<endl<<spc_5 <<Dim_end;
-	else
-		FichXML << spc_5 << DimName <<"Records\">"<<endl <<spc_9<< "3"<<endl<<spc_5 <<Dim_end;
-	if(getFileEncodingSig(3)==0)
-		FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
-	else{
-	FichXML << spc_5 << StreamType<<"Remote\" Encoding=\"Binary,"<<getSystemEncoding()<<"\">" <<endl;}
-	FichXML << spc_9 << getFileNameSigSC3() << endl <<spc_5<<Stream_end;
-	FichXML << spc_5 << Array_end;
-	FichXML << spc_3 << xsil_end;
-	FichXML << xsil_end;
-	
-	
-	FichXML << xsil_end;
+	FichXML << ind1 << xsil_end;
 	FichXML << xsil_end;
 	FichXML.close();
-	//throw;
 }
 
-
+void ConfigSim::AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string ObsDescr, double tOffset, int NRec, int DataFileEncoding, char * DataFileName)
+{
+	string ind2(ind1+ind1), ind3(ind2+ind1), ind4(ind3+ind1), ind5(ind4+ind1), ind6(ind5+ind1);
+	string ParamName("<Param Name=\""),Param_end("</Param>\n");
+	string ArrayName("<Array Name=\""),Array_end("</Array>\n");
+	string DimName("<Dim Name=\""),Dim_end("</Dim>\n");
+	string StreamType("<Stream Type=\""),Stream_end("</Stream>\n");
+	string xsil_end("</XSIL>\n");
+	
+	(*FichXML) << ind2 << "<XSIL Name=\"" << ObsDescr << "\" Type=\"TDIObservable\">"<< endl;
+	(*FichXML) << ind3 << ParamName <<"DataType\">"<<endl;
+	(*FichXML) << ind4 <<"FractionalFrequency"<< endl;
+	(*FichXML) << ind3 << Param_end;
+	(*FichXML) << ind3 << "<XSIL Name=\"" << ObsDescr << "\" Type=\"TimeSeries\">"<< endl;
+	(*FichXML) << ind4 << ParamName << "TimeOffset\" Unit=\"Second\">" << endl ;
+	(*FichXML) << ind5 << tOffset << endl;
+	(*FichXML) << ind4 << Param_end;
+	(*FichXML) << ind4 << ParamName << "Cadence\" Unit=\"Second\">" << endl ;
+	(*FichXML) << ind5 << gettStepMes() << endl;
+	(*FichXML) << ind4 << Param_end;
+	(*FichXML) << ind4 << ParamName << "Duration\" Unit=\"Second\">" << endl ;
+	(*FichXML) << ind5 << gettMax() << endl;
+	(*FichXML) << ind4 << Param_end;
+	(*FichXML) << ind4 << ArrayName << ObsDescr << "\" Type=\"double\" Unit=\"Word\">" << endl;
+	(*FichXML) << ind5 << DimName <<"Length\">"<<endl;
+	(*FichXML) << ind6 << int((gettMax()-tOffset)/gettStepMes()+1) << endl;
+	(*FichXML) << ind5 << Dim_end;
+	(*FichXML) << ind5 << DimName <<"Records\">" << endl;
+	(*FichXML) << ind6 << NRec << endl;
+	(*FichXML) << ind5 << Dim_end;
+	if(DataFileEncoding==0)
+		(*FichXML) << ind5 << StreamType<<"Remote\" Encoding=\"ASCII\">" <<endl;
+	else
+		(*FichXML) << ind5 << StreamType<<"Remote\" Encoding=\"Binary," << getSystemEncoding() << "\">" << endl;
+	(*FichXML) << ind6 << DataFileName << endl;
+	(*FichXML) << ind5 << Stream_end;
+	(*FichXML) << ind4 << Array_end;
+	(*FichXML) << ind3 << xsil_end;
+	(*FichXML) << ind2 << xsil_end;
+}
 
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*!\brief
@@ -3523,6 +3503,8 @@ double ConfigSim::tMemNecInterpTDI()
 		tMemOtStep += ceil(TDIInterpUtilVal/2.0);
 	return(tMemOtStep*tStepMes);
 }
+
+
 /*!\brief
  * Checks if there are noises or not.
  *

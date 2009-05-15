@@ -37,7 +37,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *     --------------------------    *";
 		cout << endl << "   *         en calcul 2.5 PN          *";
 		cout << endl << "   *         ----------------          *";
-		cout << endl << "   *         ("<<LCVersion<<")         *";
+		cout << endl << "   *         (LISACode v "<<LCVersion<<")         *";
 		cout << endl << "   *                                   *";
 		cout << endl << "   **************************************" << endl << endl; 
 		

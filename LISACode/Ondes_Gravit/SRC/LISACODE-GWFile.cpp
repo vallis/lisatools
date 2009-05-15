@@ -40,6 +40,8 @@ GW(Beta_n, Lambda_n, AnglPol_n)
 	FileEncoding = 0;
 	TimeOffset = -1.0;
 	TimeStep = -1.0;
+	Length = 0;
+	Records = 0;
 	init();
 }
 
@@ -66,6 +68,8 @@ GW(Beta_n, Lambda_n, AnglPol_n)
 	FileEncoding = FileEncoding_n;
 	TimeOffset = TimeOffset_n;
 	TimeStep = TimeStep_n;
+	Length = Length_n;
+	Records = Records_n;
 	init();
 }
 
@@ -238,7 +242,7 @@ void GWFile::ReadBinaryFile(char * FileName, double TimeOffset, double TimeStep,
 
   NbDat = Length;
 
-  cout << " (" << Records << "x" << NbDat << ")";
+	cout << " (" << Records << "x" << NbDat << ")"; fflush(stdout);
   
   /****  Allocate memory ****/
   TimeList = (double*)malloc(NbDat*sizeof(double));

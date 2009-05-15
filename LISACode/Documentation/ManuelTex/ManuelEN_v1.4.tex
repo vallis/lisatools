@@ -13,6 +13,11 @@
 \usepackage{hyperref}
 \pagestyle{headings} 
 
+% Profondeur de numerotation jusqu'au 3eme niveau de section (subsubsection)
+\setcounter{secnumdepth}{3}
+
+% Numerotation de la table des matiere jusqu'au 3eme niveau de section (subsubsection)
+\setcounter{tocdepth}{3}
 
 \definecolor{pink}{rgb}{0.55,0,0.52}
 \definecolor{mygreen}{rgb}{0.19,0.55,0.11}
@@ -21,7 +26,7 @@
 \title{
 \Huge \bf LISACode \\ 
 \vspace{0.5cm}
-\Large version 1.4.4\\
+\Large version 1.4.5\\
 \vspace{2cm}
 \huge A scientific simulator of LISA \\
 \vspace{1cm}
@@ -30,7 +35,7 @@
 \author{
 Antoine Petiteau\\
 \vspace{1cm}
-(LISA France)}
+for LISA France}
 
 \date{\today}
 \maketitle
@@ -265,7 +270,7 @@ The software run during about 10 secondes or 3 minutes , for make 10 000 s of si
 %
 \subsection{For Windows}
 \label{SWindows}
-There is a LISACode executable for Windows which is tested on Windows XP.
+There is a LISACode executable for Windows which is tested on Windows XP. But it corresponds to an old version of LISACode.
 \subsubsection{Install}
 \label{SSInstallWindows}
 There isn''t really install ; just download the package {\it LISACode\_1\_3\_for\_Windows.zip}  at : \\
@@ -289,7 +294,7 @@ The result is the same than~\ref{SSSTestFonctUNIX}.
 %%%%%%%%%%%
 \section{Use LISACode}
 \label{SUse}
-\subsection{Ex\'ecution of simulator and the two annexe softwares}
+\subsection{Running of simulator and the two annexe softwares}
 \label{SSExecution}
 The main software which make all the simulation (from gravitational waves to TDI) is called LISACode.
 For configure the simulation the software read informations in the configuration file. This configuration file may be two type : ASCII or XML. The technicalities of this configuration file is gave in the part \ref{SSConfigFile}. The path of the output files is in the configuration file. For launch a simulation, enter LISACode executable path followed by the configuration file path : \\
@@ -311,6 +316,32 @@ There are two others executables which also read information on configuration fi
 The time parameters are specified in configuration file.\\
 
 \item {\it \bf TDIApply} : This program apply TDI generator specified in configuration file, on phasemeter raw data read in files specified in configuration file. The output contains time evolution for each TDI generator. The name of this ouput file is specified in configuration file.
+\end{itemize}
+
+\subsection{Running using { \it makeTDI-LISACode.py} (required lisatools)}
+If you are familiar with lisatools package software (http://code.google.com/p/lisatools/), it possible to use LISACode in the same way using { \it makeTDI-LISACode.py}. 
+\begin{itemize}
+\item If necessary, install of lisatools package following instruction at : \\ http://code.google.com/p/lisatools/wiki/Install . 
+\item Make the XML files which describes the source of gravitational wave. This file must be in XML MLDC format. You can make them manually or using {\it makesource[...].py} softwares.
+\item If you want to use the MLDC waveform and not LISACode waveform, you have to make a file which contains the times series of $h_{+} $ and $h_{\times}$ using  . For example, for an EMRI which is not yet simulated by LISACode : \\
+\hphantom{aaa}\texttt{makebarycentric.py EMRI.xml EMRI-barycentric.xml} \\
+It produces a new XML file associated with a binary file.
+\item Now, you can run LISACode using { \it makeTDI-LISACode.py} following by XML source files which can be file with source's parameters only or  file pointing toward a binary data file. For example, if you want to include a Black Hole binary computed using LISACode waveform and an EMRI computed using MLDC waveform, use : \\
+\hphantom{aaa}\texttt{makeTDI-LISACode.py  BBH.xml EMRI-barycentric.xml} \\
+\end{itemize}
+Using options given by : \\
+\hphantom{aaa}\texttt{makeTDI-LISACode.py  -h} \\
+you can specify the duration, the time step, the seed, noise or not, orbit (LISAmodel), phasemeter output or not and output base file name :
+\begin{itemize}
+\item -T DURATION, --duration=DURATION : total time for TDI observables (s) [default 62914560 =  2\^ 22 * 15]
+ \item -d TIMESTEP, --timeStep=TIMESTEP :    timestep for TDI observable sampling (s) [default 15]
+ \item -s SEED, --seed=SEED  : seed for random number generator (int); None time based seed [default None]
+ \item -N, --noNoise         do not include noise [default False]
+ \item -I LISAMODEL, --LISA=LISAMODEL :  LISA model: Static, Rigid, Eccentric [default Eccentric]
+ \item  -r, --rawMeasurements :  output raw phase measurements (y's and z's) in addition to TDI X, Y, Z [default False]
+ \item  -R RANDOMIZENOISE, --randomizeNoise=RANDOMIZENOISE randomize level of noises [e.g., 0.2 for 20\% randomization; defaults to 0]
+ \item  -l LASERNOISE, --laserNoise=LASERNOISE : laser noise level: None, Standard, <numerical value>  [e.g., 0.2 for 20\% of pm noise at 1 mHz; defaults to None]
+ \item  -o OUTPUTFILE, --outputfile=OUTPUTFILE : basename for the datasets [defaults to LC]
 \end{itemize}
 
 %%%%%%%%%%%%%%%
@@ -630,20 +661,20 @@ W1 & Relay generator with no beams from SC2 to SC3 and  from SC3 to SC1 & 364 , 
 %%%%%%%%%%%%%%%%%
 \subsection{Configuration par fichier ASCII}
 \label{SSConfACII}
-\textcolor{red}{The english version si not finished !} 
 
 LISACode can read information of simulation in ASCII configuration file. The syntax of this file obeys certain very strict rules :
 \begin{itemize}
-\item \underline{\bf Toutes les lignes se terminent par un point virgule pr\'ec\'ed\'e d'un espace (“ ;”)} que ce soit des lignes de commandes ou des lignes de commentaires.
-\item Chaque bloc de caracteres doit etre separe du suivant par un espace.
-\item Pour qu'une ligne soit en commentaire, il faut qu’elle commence par un "\#" suivi d'un espace.
-\item C'est le premier mot d'une ligne (mot cl\'e principal) qui renseigne sur l'information que contient la ligne. Il existe 9 mots cl\'es principaux qui sont : \texttt{Time}, \texttt{Interpolation}, \texttt{TDIDelayApprox} , \texttt{Orbits}, \texttt{Detector}, \texttt{Record}, \texttt{GW}, \texttt{Noise}, \texttt{USO} et \texttt{TDI}. Le mot cl\'e principal est toujours suivi de ":".
-\item La commande "END" stoppe la lecture du fichier de configuration.
+\item \underline{\bf All commands or comments end by a coma dot with a space before(`` ;'')}. 
+\item Words are separated by space.
+\item The comments begin by "\#" followed by a space.
+\item The first word of each command is the main key word. It gives information about the command contains. There are 9 main key words which are :  \texttt{Time}, \texttt{Interpolation}, \texttt{TDIDelayApprox} , \texttt{Orbits}, \texttt{Detector}, \texttt{Record}, \texttt{GW}, \texttt{Noise}, \texttt{USO} et \texttt{TDI}. This main key word is followed by ``:'' .
+\item The command \texttt{END} stops the reading of configuration file.
 \end{itemize}
 
 % Configuration des temps
 \subsubsection{Configuration des temps}
 \label{SSSConfigTime}
+\textcolor{red}{The english version si not finished !} 
 Le mot cl\'e principal d'une ligne de configuration d'un param\`etre temporel est  \texttt{Time}. Une liste des parametres est donnee dans la tableau \ref{table_paramTime}. Les diff\'erents param\`etres temporels et les lignes les configurant sont :
 \begin{itemize}
 \item { \it Pas de temps physique} : C'est le pas de temps le plus petit de la simulation. Il correspond \`a la simulation des ph\'enom\`enes continus.\\
@@ -984,14 +1015,15 @@ The structure of this XML file is the same than its of the Mock LISA Data Challe
 
 \section{Support - Contact}
 \label{SSupport}
-\subsection{At APC (AstroParticule et Cosmologie)}
-\label{SSSupAPC}
-Antoine PETITEAU 
-%: petiteau@apc.univ-paris7.fr \\
-
 \subsection{At AEI (Albert Einstein Institute)}
 \label{SSSupAEI}
-Antoine PETITEAU : Antoine.Petiteau@aei.mpg.de  - +49 (331) 567-7134 \\
+Antoine PETITEAU : Antoine.Petiteau[at]aei.mpg.de  - +49 (331) 567-7134 \\
+
+\subsection{At APC (AstroParticule et Cosmologie)}
+\label{SSSupAPC}
+Eric PLAGNOL : plagnol[at]apc.univ-paris7.fr 
+Gerard AUGER : auger[at]apc.univ-paris7.fr 
+%: petiteau@apc.univ-paris7.fr \\
 
 
 \bibliographystyle{plain}

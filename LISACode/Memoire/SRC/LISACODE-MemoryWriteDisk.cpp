@@ -172,7 +172,7 @@ void MemoryWriteDisk::MakeTitles(char * FileNameHead)
 		if (!FileHead){
 			throw invalid_argument("MemoryWriteDisk::MakeTitles : Can not open the configuration file ! ");
 		}
-		FichMem << "############## " << LCVersion <<  " ##############" << endl;
+		FichMem << "############## LISACode v " << LCVersion << "-" << DateOfLastUpdate << " at " << MathUtils::TimeISO8601() << " ##############" << endl;
 		FichMem << "############## Configuration : " << FileNameHead <<  " ##############" << endl;
 		while(!FileHead.eof()) {
 			FileHead.getline(Buf, 256);

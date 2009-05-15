@@ -53,7 +53,7 @@ typedef struct {
 /*!\brief Pure imaginary=(0,1)	
  */
 /************************************/
-static complex<double> I(0,1);
+static complex<double> Im(0,1);
 /************************************/
 
 

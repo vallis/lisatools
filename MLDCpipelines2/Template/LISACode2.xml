@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <XSIL Type="Simulate">
+        <Param Name="TimeOffset" Unit="Second">
+            0.0
+        </Param>
+        <Param Name="Cadence" Unit="Second">
+            {cadence}
+        </Param>
+        <Param Name="Duration" Unit="Second">
+            {duration}
+        </Param>
+        <Param Name="Observables" Unit="String">
+            {outputsignals}
+        </Param>
+        <Param Name="OutputFile" Unit="String">
+            {challengename}-lisacode.xml
+        </Param>
+    </XSIL>
+
+    <XSIL Type="LISACode">
+        <Param Name="GlobalRandomSeed" Unit="Second">{randomseed}</Param>
+        <Param Name="StepPhysic" Unit="Second">1</Param>
+        <Param Name="DeltaTDIDelay" Unit="Second">0</Param>
+
+        <XSIL Type="Detector">
+            <Param Name="LaserPower" Unit="Watt">1</Param>
+            <Param Name="PhaMetFilter" Unit="None">{phasemeterfilter}</Param>
+            <Param Name="PMFAttenuation" Unit="dB">180</Param>
+            <Param Name="PMFOscillation" Unit="dB">0.1</Param>
+            <Param Name="PMFLowFreqFact" Unit="None">0.1</Param>
+            <Param Name="PMFHighFreqFact" Unit="None">0.3</Param>
+        </XSIL>
+
+        <XSIL Type="OutputFiles">
+            <Param Name="SignalSC1" Encoding="Binary">{rawchallengename}-lisacode-Phasemeter-1.bin</Param>
+            <Param Name="SignalSC2" Encoding="Binary">{rawchallengename}-lisacode-Phasemeter-2.bin</Param>
+            <Param Name="SignalSC3" Encoding="Binary">{rawchallengename}-lisacode-Phasemeter-3.bin</Param>
+            <Param Name="TDI" Encoding="Binary">{challengename}-lisacode-TDI.bin</Param>
+        </XSIL>
+
+        <Comment>
+            Note: the PseudoRandomSeed and InterpolationOrder Params in the noise
+            specifications below are ignored by LISACode, which uses GlobalRandomSeed
+            and sets the interpolation level to 7.
+        </Comment>
+    </XSIL>
+    
+    <XSIL Type="LISAData">
+        <XSIL Name="Standard MLDC PseudoLISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+            <Param Name="OrbitApproximation" Unit="String">
+                {orbit}
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>

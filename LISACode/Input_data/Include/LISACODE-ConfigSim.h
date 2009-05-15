@@ -406,7 +406,6 @@ class ConfigSim
 		vector<double> getGenTDIPacksFact(int iGen);
 		/*! \brief It returns  #NbMaxDelays attribute plus 1.*/
 		int getNbMaxDelays(){return(NbMaxDelays+1);};
-		
 		char * getXmlOutputFile() {return(XmlOutputFile);};
 		string getAuthor() {return(Author);};
 		string getGenerationDate() {return(GenerationDate);};
@@ -425,28 +424,59 @@ class ConfigSim
 		
 		
 		// **  Others methods ** //	
-		void ReadFile(); // Read the configuration file.
-		void ReadASCIIFile(); // Read the ASCII configuration file.
-		void ReadXMLFile(); // Read the ASCII configuration file.
-		void CreateXmlOutputFile();// Creates Xml Output File for MLDC
+		/*! \brief Read the configuration file. */
+		void ReadFile();
+		/*! \brief  Read the ASCII configuration file. */
+		void ReadASCIIFile();
+		/*! \brief Read the ASCII configuration file. */
+		void ReadXMLFile();
+		/*! \brief Creates Xml Output File as header of binary file */
+		void CreateXmlOutputFile();
+		/*! \brief Write in XML output file the bloc corresponding to an output data file */
+		void AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string ObsDescr, double tOffset, int NRec, int DataFileEncoding, char * DataFileName);
+		/*! \brief Return unit */
 		char * gXMLUnit(const char In[], double & Fact);
-		double gXMLTime(ezxml_t param); // Return a time value read in XML file. Unit is Second.
-		double gXMLAngle(ezxml_t param); // Return an angle value read in XML file. Unit is Degree or Radian.
-		double gXMLFrequency(ezxml_t param); // Return an frequency value read in XML file in MilliHertz or Hertz.
-		double gXMLAstroMass(ezxml_t param); // Return an astronomic mass value read in XML file. Unit is SolarMass.
-		double gXMLAstroDistance(ezxml_t param); // Return an astronomic distance value read in XML file. Unit is Parsec or KiloParsec.
+		/*! \brief Return a time value read in XML file. Unit is Second. */
+		double gXMLTime(ezxml_t param);
+		/*! \brief Return an angle value read in XML file. Unit is Radian. */
+		double gXMLAngle(ezxml_t param);
+		/*! \brief Return an frequency value read in XML file. Unit is Hertz. */
+		double gXMLFrequency(ezxml_t param);
+		/*! \brief Return an astronomic mass value read in XML file. Unit is SolarMass. */
+		double gXMLAstroMass(ezxml_t param);
+		/*! \brief Return an astronomic distance value read in XML file. Unit is KiloParsec. */
+		double gXMLAstroDistance(ezxml_t param);
+		/*! \brief Return the first word read in bloc XML file */
 		char * gXMLWord(ezxml_t param);
-		double gXMLdouble(ezxml_t param); // Returns a value (double).
-		string gXMLstring(ezxml_t param); // Returns a value (double).
-		int gXMLint(ezxml_t param); // Returns a value (integer).
+		/*! \brief Return the real value read in bloc XML file */
+		double gXMLdouble(ezxml_t param);
+		/*! \brief Return the string read in bloc XML file */
+		string gXMLstring(ezxml_t param);
+		/*! \brief Return the integer in read in bloc XML file */
+		int gXMLint(ezxml_t param);
 		//char * gXMLTimeSeries(ezxml_t series, const char * type, const char * encoding, int & length, int & record); // Return timeseries parameters for an input file.
-		char * gXMLTimeSeries(ezxml_t series, int & type, int & encoding, int & length, int & record); // Return timeseries parameters for an input file.
-		void NoisePlace(NoiseSpec tmp_noise, int iSC, int IndDir, int InstrumentIndex); // Place a noise 
-		void NoisesCreation(); // Creation of noise's object.
-		double tMaxDelay(); // Maximal time travel for one delay.
-		double tMinDelay(); // Minimal time travel for one delay.
-		double tMemNecInterpTDI(); // Return the time the memory time during which data must be saved for apply TDI interpolation
-		bool getNoNoise(); // Return true if there are no noises
+		/*! \brief Return timeseries parameters for an input file.  */
+		char * gXMLTimeSeries(ezxml_t series, int & type, int & encoding, int & length, int & record); 
+		/*! \brief Place a noise in the noises' list */
+		void NoisePlace(NoiseSpec tmp_noise, int iSC, int IndDir, int InstrumentIndex);
+		/*! \brief Creation of noise's object. */
+		void NoisesCreation();
+		/*! \brief Maximal time travel for one delay. */
+		double tMaxDelay();
+		/*! \brief Minimal time travel for one delay. */
+		double tMinDelay();
+		/*! \brief Return the time the memory time during which data must be saved for apply TDI interpolation */
+		double tMemNecInterpTDI();
+		/*! \brief Offset between the start of data reading and the start of TDI application */
+		double gettTDIShift() { return(2.0*MAX(0.0, tMemNecInterpTDI() - tMinDelay()) ); };
+		/*! \brief Required time storage in phasemeters */
+		double gettMemPhasemeters() { return(gettTDIShift() + tMemNecInterpTDI() + tMaxDelay()); };
+		/*! \brief Reauired time storage in TDI */
+		double gettMemTDI() { return(gettTDIShift() + tMemNecInterpTDI() + getNbMaxDelays() * tMaxDelay()); };
+		/*! \brief Starting time for phasemeters */
+		double gettStartPhasemeters() { return(-1.0 * ( gettMemPhasemeters() + gettMemTDI() + gettTDIShift() ) ); };
+		/*! \brief Return true if there are no noises */
+		bool getNoNoise();
 		/*! \brief Return true if internal phasemeter must be used */
 		bool UseInternalPhasemeter();
 		int testbyteorder();

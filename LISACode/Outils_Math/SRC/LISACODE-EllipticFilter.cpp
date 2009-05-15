@@ -6,7 +6,7 @@
 /* Date of creation : 07 Nov 2006                          */
 /*                                                         */
 /* Adapted from correponding program in                    */
-/* Maurice Bellanger, Traitement numérique du signal       */
+/* Maurice Bellanger, Traitement numÃˆrique du signal       */
 /*                                                         */
 /***********************************************************/
 
@@ -139,8 +139,8 @@ void elli(double eps,      // Oscillations in working bandwidth
   U0 = (-ak3/ak4)*alog((1+sqrtl(1+eps*eps))/eps);
   for (i=1;i<=N;i++) {
     xmag = (2*i-1)*ak1/NDeu;
-    zeros[i-1] = -ak3 + I*xmag;
-    poles[i-1] =   U0 + I*xmag;
+    zeros[i-1] = -ak3 + Im*xmag;
+    poles[i-1] =   U0 + Im*xmag;
   }
 
   for (i=1; i<=NDeu; i++) {
@@ -172,10 +172,10 @@ void elli(double eps,      // Oscillations in working bandwidth
     omega = omega*tan(wc*T/2.);
     
     if ( i <= N ) {
-      zeros[i-1] = sigma + I*omega;
+      zeros[i-1] = sigma + Im*omega;
     }
     else {
-      poles[i-N-1] = sigma + I*omega;
+      poles[i-N-1] = sigma + Im*omega;
     }
   }
 
@@ -200,12 +200,12 @@ void elli(double eps,      // Oscillations in working bandwidth
     c1 = -2*Re;
     d1 = Re*Re + V*V;
     if ( i <= N ) {
-      zeros[i-1] = Re + I*V;
+      zeros[i-1] = Re + Im*V;
       CoefB[i-1] = c1;
       CoefA[i-1] = d1;
     }
     else {
-      poles[i-N-1] = Re + I*V;
+      poles[i-N-1] = Re + Im*V;
       CoefD[i-N-1] = c1;
       CoefC[i-N-1] = d1;
     }

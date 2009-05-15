@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 		cout << endl << "   *       LISACode        * ";
 		cout << endl << "   *   -----------------   * ";
 		cout << endl << "   *      Test Noise       * ";
-		cout << endl << "   *   ("<<LCVersion<<")   * ";
+		cout << endl << "   *   (LISACode v "<<LCVersion<<")   * ";
 		cout << endl << "   *                       * ";
 		cout << endl << "   ************************* " << endl << endl;
 		

@@ -36,7 +36,7 @@ int main (int argc, char * const argv[])
 		cout << endl << "   *       ---------------       *";
 		cout << endl << "   *  Simulator's Configuration  *";
 		cout << endl << "   *  -------------------------  *";
-		cout << endl << "   *      ("<<LCVersion<<")      *";
+		cout << endl << "   *      (LISACode v "<<LCVersion<<")      *";
 		cout << endl << "   *                             *";
 		cout << endl << "   *******************************" << endl << endl; 
 		
