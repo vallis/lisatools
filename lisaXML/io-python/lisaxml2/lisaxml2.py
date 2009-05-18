@@ -18,6 +18,9 @@ except:
 
 # TO DO:
 #
+# - added Checksum facility to the writing of external binary tables; however Stream objects don't automatically
+#   get the attribute. Should they?
+#
 # - some MLDC utilities may use xmltype to check for source type (makebarycentric and fixemri2) see how it's used here
 # - also the standard is that a PlaneWave becomes a SampledPlaneWave once it acquires a TimeSeries;
 #   we should probably deal with this in PlaneWave
@@ -428,6 +431,13 @@ class Stream(object):
             if 'Binary' in node.Encoding:
                 data = numpy.fromstring(loadfile.read(readlength),'double')
                 
+                if hasattr(node,'Checksum'):
+                    import zlib
+                    
+                    if int(node.Checksum) != zlib.crc32(data):
+                        print 'Stream.makeStream(): failed checksum for binary file %s' % loadfile.name
+                        raise IOError
+                
                 # change endianness if needed
                 if ( ('BigEndian' in node.Encoding and sys.byteorder == 'little') or
                      ('LittleEndian' in node.Encoding and sys.byteorder == 'big') ):
@@ -464,7 +474,12 @@ class Stream(object):
                 filename = xmlfile.nextbinfile()
             
                 if type(self.Data) == numpy.ndarray:
-                    open(filename,'w').write(self.Data.tostring())
+                    writebuffer = self.Data.tostring()
+                    
+                    import zlib
+                    checksum = zlib.crc32(writebuffer)
+                    
+                    open(filename,'w').write(writebuffer)
                 elif type(self.Data) == str:
                     if os.path.abspath(self.Data) != os.path.abspath(filename):
                         if os.path.isfile(filename):
@@ -477,12 +492,21 @@ class Stream(object):
                             shutil.copy(self.Data,filename)
                         else:
                             os.symlink(self.Data,filename)
+                    
+                    if hasattr(self,'Checksum'):
+                        checksum = self.Checksum
+                    else:
+                        checksum = None
                 else:
                     raise NotImplementedError, 'Stream.XML(): I do not know how to handle these Stream data.'
                 
-                stream = ('Stream',
-                          {'Type': 'Remote', 'Encoding': sys.byteorder == 'big' and 'Binary,BigEndian' or 'Binary,LittleEndian'},
-                          [os.path.basename(filename)])
+                attrlist = {'Type': 'Remote',
+                            'Encoding': sys.byteorder == 'big' and 'Binary,BigEndian' or 'Binary,LittleEndian'}
+                
+                if checksum != None:
+                    attrlist['Checksum'] = str(checksum)
+                
+                stream = ('Stream',attrlist,[os.path.basename(filename)])
             elif 'Text' in self.Encoding:
                 filename = xmlfile.nexttxtfile()
                 

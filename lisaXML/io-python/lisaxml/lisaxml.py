@@ -277,12 +277,18 @@ class TimeSeries(XMLobject):
             buffer[:,i] = self.Arrays[i]
         
         if encoding == 'Binary':
+            import zlib
+            
+            checksum = zlib.crc32(buffer)
+            
             bfile = open(filename,'w')
-            bfile.write(buffer.tostring())              
+            bfile.write(buffer.tostring())
             bfile.close()
             
             Stream = ('Stream',
-                      {'Type': 'Remote', 'Encoding': sys.byteorder == 'big' and 'Binary,BigEndian' or 'Binary,LittleEndian'},
+                      {'Type': 'Remote',
+                       'Encoding': sys.byteorder == 'big' and 'Binary,BigEndian' or 'Binary,LittleEndian',
+                       'Checksum': str(checksum)},
                       [os.path.basename(filename)])
         else:
             textdata = ''
@@ -1166,6 +1172,11 @@ class readXML(object):
                         encoding = node3.Encoding
                         stype    = node3.Type
                         
+                        if hasattr(node3,'Checksum'):
+                            checksum = int(node3.Checksum)
+                        else:
+                            checksum = None
+                        
                         content = str(node3)
         
         length  = dim['Length']
@@ -1190,6 +1201,13 @@ class readXML(object):
         
             readbuffer = numpy.fromstring(binaryfile.read(readlength),'double')
             binaryfile.close()
+            
+            if checksum != None:
+                import zlib
+                
+                if checksum != zlib.crc32(readbuffer):
+                    print 'readXML.__processTimeSeries(): failed checksum for binary file %s' % binaryfile.name
+                    raise IOError
             
             if ( ('BigEndian' in encoding and sys.byteorder == 'little') or
                  ('LittleEndian' in encoding and sys.byteorder == 'big') ):
