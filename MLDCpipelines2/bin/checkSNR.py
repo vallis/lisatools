@@ -13,6 +13,18 @@ parser.add_option("-g", "--includeGalaxy",
                   action="store_true", dest="includeGalaxy", default=False,
                   help="include galaxy")
 
+parser.add_option("-m", "--minimumFrequency",
+                  type="float", dest="minimumFrequency", default=1e-5,
+                  help="minimum integration frequency (default 1e-5 Hz)")
+
+parser.add_option("-M", "--maximumFrequency",
+                  type="float", dest="maximumFrequency", default=1e-2,
+                  help="maximum integration frequency (default 0.01 Hz)")
+
+parser.add_option("-o", "--outputIntegrand",
+                  type="string", dest="outputIntegrand", default=None,
+                  help="output A and E normalized SNR integrands (give filename; experimental)")
+
 (options, args) = parser.parse_args()
 
 class memoize:
@@ -58,8 +70,8 @@ def lisanoise(fr):
 
 
 class tdifile:
-    fLow = 1.0e-5
-    fHigh = 1.0e-2
+    fLow  = options.minimumFrequency
+    fHigh = options.maximumFrequency
     
     def __init__(self,file):
         # use only the first source in each file
@@ -91,12 +103,21 @@ class tdifile:
         
         sn = lisanoise(self.f[lowi:highi])
         
-        innerA = 4.0 / (self.len**2 * self.df) * numpy.sum(numpy.conj(self.At[lowi:highi]) * other.At[lowi:highi] / sn)
-        innerE = 4.0 / (self.len**2 * self.df) * numpy.sum(numpy.conj(self.Et[lowi:highi]) * other.Et[lowi:highi] / sn)
+        if options.outputIntegrand:
+            intA = 4.0 / (self.len**2 * self.df) * numpy.conj(self.At[lowi:highi]) * other.At[lowi:highi] / sn
+            intE = 4.0 / (self.len**2 * self.df) * numpy.conj(self.Et[lowi:highi]) * other.Et[lowi:highi] / sn
+            
+            ints = numpy.concatenate((intA,intE))
+            ints.tofile(options.outputIntegrand)
+            
+            innerA = numpy.sum(intA); innerE = numpy.sum(intE)
+        else:
+            innerA = 4.0 / (self.len**2 * self.df) * numpy.sum(numpy.conj(self.At[lowi:highi]) * other.At[lowi:highi] / sn)
+            innerE = 4.0 / (self.len**2 * self.df) * numpy.sum(numpy.conj(self.Et[lowi:highi]) * other.Et[lowi:highi] / sn)
         
         return innerA.real, innerE.real
     
-    def snr(self):        
+    def snr(self):
         snrA, snrE = map(math.sqrt,self.innerproduct(self))
         snrAE = math.sqrt(snrA**2 + snrE**2)
         
