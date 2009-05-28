@@ -13,6 +13,10 @@ parser.add_option("-g", "--includeGalaxy",
                   action="store_true", dest="includeGalaxy", default=False,
                   help="include galaxy")
 
+parser.add_option("-T", "--useT",
+                  action="store_true", dest="useT", default=False,
+                  help="use the T TDI combination in addition to A and E")
+
 parser.add_option("-m", "--minimumFrequency",
                   type="float", dest="minimumFrequency", default=1e-5,
                   help="minimum integration frequency (default 1e-5 Hz)")
@@ -46,27 +50,32 @@ class memoize:
 
 @memoize
 def lisanoise(fr):
-    om = 2.0 * math.pi * fr
-    L  = 16.6782
+    L = 16.6782
+    x = 2.0 * math.pi * fr * L
     
     Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
     Sop = 1.8e-37 * fr**2
     
-    Sx  = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
-    Sxy = -4.0 * numpy.sin(2.0*om*L) * numpy.sin(om*L) * (Sop + 4.0*Spm)
+    Sx  = 16.0 * numpy.sin(x)**2 * (2.0 * (1.0 + numpy.cos(x)**2) * Spm + Sop)
+    Sxy = -4.0 * numpy.sin(2.0*x) * numpy.sin(x) * (Sop + 4.0*Spm)
     
-    Sa = 2.0 * (Sx - Sxy)/3.0
+    St  = 16.0 * (1.0 - numpy.cos(x)) * numpy.sin(x)**2 * Sop + \
+          128.0 * numpy.sin(0.5*x)**4 * numpy.sin(x)**2 * Spm
+    
+    Sa  = 2.0 * (Sx - Sxy)/3.0
     
     if not options.includeGalaxy:
-        return Sa
+        return Sa, St
     else:
-        Sgal = (2.0*L*om)**2 * 4.0 * numpy.sin(om*L)**2 * (
+        Sgal = (2.0*x)**2 * 4.0 * numpy.sin(x)**2 * (
             numpy.piecewise(fr,(fr >= 1.0e-5  ) & (fr < 1.0e-3  ),[lambda f: 10**-44.62 * f**-2.3, 0]) + \
             numpy.piecewise(fr,(fr >= 1.0e-3  ) & (fr < 10**-2.7),[lambda f: 10**-50.92 * f**-4.4, 0]) + \
             numpy.piecewise(fr,(fr >= 10**-2.7) & (fr < 10**-2.4),[lambda f: 10**-62.8  * f**-8.8, 0]) + \
-            numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )  
-            
-        return Sa + Sgal/3.0
+            numpy.piecewise(fr,(fr >= 10**-2.4) & (fr < 10**-2.0),[lambda f: 10**-89.68 * f**-20.0,0])     )
+        
+        # assuming no Galaxy noise in T
+        return Sa + Sgal/3.0, St
+    
 
 
 class tdifile:
@@ -79,12 +88,14 @@ class tdifile:
         
         A = (2.0*tdidata.Xf - tdidata.Yf - tdidata.Zf) / 3.0
         E = (tdidata.Zf - tdidata.Yf) / math.sqrt(3.0)
+        T = (tdidata.Xf + tdidata.Yf + tdidata.Zf) / math.sqrt(3.0)
         
         self.dt = tdidata.TimeSeries.Cadence
         self.len = len(A)
         
         self.At = numpy.fft.fft(A)
         self.Et = numpy.fft.fft(E)
+        self.Tt = numpy.fft.fft(T)
         
         self.df = 1.0 / (self.dt * self.len)
         self.nyquistf = 0.5 / self.dt
@@ -101,28 +112,31 @@ class tdifile:
         lowi  = max(1,self.fLow/self.df)
         highi = min(self.len/2,self.fHigh/self.df)
         
-        sn = lisanoise(self.f[lowi:highi])
+        sn, st = lisanoise(self.f[lowi:highi])
         
-        if options.outputIntegrand:
-            intA = 4.0 / (self.len**2 * self.df) * numpy.conj(self.At[lowi:highi]) * other.At[lowi:highi] / sn
-            intE = 4.0 / (self.len**2 * self.df) * numpy.conj(self.Et[lowi:highi]) * other.Et[lowi:highi] / sn
-            
-            ints = numpy.concatenate((intA,intE))
+        intA = 4.0 / (self.len**2 * self.df) * numpy.conj(self.At[lowi:highi]) * other.At[lowi:highi] / sn
+        intE = 4.0 / (self.len**2 * self.df) * numpy.conj(self.Et[lowi:highi]) * other.Et[lowi:highi] / sn
+        intT = 4.0 / (self.len**2 * self.df) * numpy.conj(self.Tt[lowi:highi]) * other.Tt[lowi:highi] / st
+        
+        if options.outputIntegrand:                
+            ints = numpy.concatenate((intA,intE,intT))
             ints.tofile(options.outputIntegrand)
             
-            innerA = numpy.sum(intA); innerE = numpy.sum(intE)
-        else:
-            innerA = 4.0 / (self.len**2 * self.df) * numpy.sum(numpy.conj(self.At[lowi:highi]) * other.At[lowi:highi] / sn)
-            innerE = 4.0 / (self.len**2 * self.df) * numpy.sum(numpy.conj(self.Et[lowi:highi]) * other.Et[lowi:highi] / sn)
+        innerA = numpy.sum(intA); innerE = numpy.sum(intE); innerT = numpy.sum(intT)
         
-        return innerA.real, innerE.real
+        return innerA.real, innerE.real, innerT.real
     
     def snr(self):
-        snrA, snrE = map(math.sqrt,self.innerproduct(self))
-        snrAE = math.sqrt(snrA**2 + snrE**2)
+        snrA, snrE, snrT = map(math.sqrt,self.innerproduct(self))            
         
-        return snrA, snrE, snrAE
+        if options.useT:
+            snrAET = math.sqrt(snrA**2 + snrE**2 + snrT**2)
+            return snrA, snrE, snrT, snrAET
+        else:
+            snrAE = math.sqrt(snrA**2 + snrE**2)
+            return snrA, snrE, snrAE
     
+
 
 def tabprint(tup):
     for t in tup:
@@ -140,8 +154,16 @@ else:
     for f in fs[1:]:
         snrs = f.snr()
         prod = f.innerproduct(fs[0])
-    
-        tabprint( ( prod[0]/snrs0[0], prod[1]/snrs0[1], # SNR_A, SNR_E
-                    (prod[0]+prod[1])/snrs0[2],         # SNR_AE
-                    prod[0]/(snrs0[0] * snrs[0]),       # overlap_A
-                    prod[1]/(snrs0[1] * snrs[1]) ) )    # overlap_E
+        
+        if options.useT:
+            tabprint( ( prod[0]/snrs0[0], prod[1]/snrs0[1], prod[2]/snrs0[2] # SNR_A, SNR_E, SNR_T
+                        (prod[0] + prod[1])/snrs0[2] + prod[2]/snrs[2],      # SNR_AET
+                        prod[0]/(snrs0[0] * snrs[0]),       # overlap_A
+                        prod[1]/(snrs0[1] * snrs[1]),       # overlap_E
+                        prod[2]/(snrs0[2] * snrs[2])  ) )   # overlap_T        
+        else:
+            tabprint( ( prod[0]/snrs0[0], prod[1]/snrs0[1], # SNR_A, SNR_E
+                        (prod[0] + prod[1])/snrs0[2],       # SNR_AE
+                        prod[0]/(snrs0[0] * snrs[0]),       # overlap_A
+                        prod[1]/(snrs0[1] * snrs[1]) ) )    # overlap_E
+
