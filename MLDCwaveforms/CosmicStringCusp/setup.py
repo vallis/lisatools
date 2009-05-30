@@ -30,12 +30,16 @@ from distutils.util import get_platform
 argv_replace = []
 make_clib = False
 fftwdir = None
+prefix = None
 
 for arg in sys.argv:
     if arg == '--make-clib':
         make_clib = True
     elif arg.startswith('--fftw='):
-        fftwdir = arg.split('=',1)[1]        
+        fftwdir = arg.split('=',1)[1]
+    elif arg.startswith('--prefix='):
+        prefix = arg.split('=',1)[1]
+        argv_replace.append(arg)
     else:
         argv_replace.append(arg)
 
@@ -78,6 +82,9 @@ includedirs, librarydirs, runtimelibrarydirs = [], [], []
 
 from numpy import __path__ as numpypath
 includedirs.append(numpypath[0] + '/core/include')
+
+if fftwdir == None and prefix != None and os.path.isfile(prefix + '/include/fftw3.h'):
+    fftwdir = prefix
 
 if fftwdir:
     includedirs.append(fftwdir + '/include')
