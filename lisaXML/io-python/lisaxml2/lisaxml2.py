@@ -199,6 +199,8 @@ class XSILobject(XMLobject,list):
             self = Observable()
         elif objtype == 'TimeSeries':
             self = TimeSeries()
+        elif objtype == 'FrequencySeries':
+            self = FrequencySeries()
         elif objtype == 'PlaneWaveTable':
             for node2 in node:
                 if node2.tagName == 'Param' and node2.Name == 'SourceType':
@@ -836,6 +838,47 @@ class SourceTable(XSILobject):
     
 
 
+# TODO: it may be good to consolidate some of this code with TimeSeries
+class FrequencySeries(XSILobject):
+    def __init__(self,data=None,name='',unit='',Cadence=None,FrequencyOffset=None):
+        super(FrequencySeries,self).__init__('FrequencySeries',name)
+        
+        if data:
+            if type(data) in (tuple,list):
+                length, records = len(data[0]), len(data)
+            elif type(data) == numpy.ndarray:
+                if len(data.shape) == 1:
+                    length, records = data.shape[0], 1
+                elif len(data.shape) == 2:
+                    length, records = data.shape
+                else:
+                    raise NotImplementedError, 'Sorry, I can work only with 1D or 2D numpy arrays.'
+            else:
+                raise TypeError, 'Sorry, I cannot parse these FrequencySeries data.'
+        
+            self.__dict__['Array'] = Array(data,length,records,name,unit)
+        
+            if Cadence != None:
+                self.Cadence = Cadence
+                self.Cadence_Unit = 'Hertz'
+            
+            if FrequencyOffset != None:
+                self.FrequencyOffset = FrequencyOffset
+                self.FrequencyOffset_Unit = 'Hertz'
+    
+    def checkContent(self):
+        if hasattr(self,'Array'):
+            if not hasattr(self,'Bandwidth') and hasattr(self,'Cadence'):
+                self.Bandwidth = self.Array.Length * self.Cadence
+                self.Bandwidth_Unit = self.Cadence_Unit
+            
+            columnnames = [s.strip(' ') for s in self.Array.Name.split(',')]
+            if len(columnnames) == self.Array.Records:
+                for col in range(len(columnnames)):
+                    if not hasattr(self,columnnames[col]):
+                        self.__dict__[columnnames[col]] = self.Array.Arrays[col]
+    
+
 class TimeSeries(XSILobject):
     """TimeSeries alternate, inheriting from XSILobject."""
     
@@ -853,7 +896,7 @@ class TimeSeries(XSILobject):
                 else:
                     raise NotImplementedError, 'Sorry, I can work only with 1D or 2D numpy arrays.'
             else:
-                raise TypeError, 'Sorry, I cannot parse this TimeSeries data.'
+                raise TypeError, 'Sorry, I cannot parse these TimeSeries data.'
         
             self.__dict__['Array'] = Array(data,length,records,name,unit)
         
@@ -863,7 +906,7 @@ class TimeSeries(XSILobject):
         
             if TimeOffset != None:
                 self.TimeOffset = TimeOffset
-                self.Cadence_Unit = 'Second'
+                self.TimeOffset_Unit = 'Second'
     
     def checkContent(self):
         if hasattr(self,'Array'):
@@ -879,7 +922,7 @@ class TimeSeries(XSILobject):
     
 
 class Observable(XSILobject):
-    def __init__(self,name='',timeseries=None,datatype=None):
+    def __init__(self,name='',timeseries=None,frequencyseries=None,datatype=None):
         """Creates an Observable object."""
         
         super(Observable,self).__init__('TDIObservable',name)
@@ -891,7 +934,15 @@ class Observable(XSILobject):
             if not self.Name:
                 # inherit the name of the TimeSeries, if given...
                 self.__dict__['Name'] = self.__dict__['name'] = self.TimeSeries.Name
+        
+        if frequencyseries and type(frequencyseries) == FrequencySeries:
+            self.__dict__['FrequencySeries'] = frequencyseries
+            self.append(frequencyseries)
             
+            if not self.Name:
+                # inherit the name of the TimeSeries, if given...
+                self.__dict__['Name'] = self.__dict__['name'] = self.FrequencySeries.Name
+        
         if datatype:
             self.DataType = datatype
         else:
@@ -905,8 +956,8 @@ class Observable(XSILobject):
                 self.DataType = 'Strain'
     
     def __setattr__(self,attr,value):
-        if attr == 'TimeSeries':
-            self.__dict__['TimeSeries'] = value
+        if attr in ['TimeSeries','FrequencySeries']:
+            self.__dict__[attr] = value
             self.append(value)
         else:
             super(Observable,self).__setattr__(attr,value)
@@ -919,8 +970,15 @@ class Observable(XSILobject):
                 for col in range(len(columnnames)):
                     if not hasattr(self,columnnames[col]):
                         self.__dict__[columnnames[col]] = ar.Arrays[col]
-    
-    
+        
+        # TODO: there may be collisions here
+        if hasattr(self,'FrequencySeries') and hasattr(self.FrequencySeries,'Array'):
+            ar = self.FrequencySeries.Array
+            columnnames = [s.strip(' ') for s in ar.Name.split(',')]
+            if len(columnnames) == ar.Records:
+                for col in range(len(columnnames)):
+                    if not hasattr(self,columnnames[col]):
+                        self.__dict__[columnnames[col]] = ar.Arrays[col]
     
 
 class Source(XSILobject):
