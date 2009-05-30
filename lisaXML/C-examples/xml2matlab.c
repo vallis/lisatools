@@ -68,9 +68,9 @@ static mxArray *parsefile(char *filename,int obsnum) {
         timeseries = firstsource->TimeSeries;
     }
 
-    mexPrintf("Reading TimeSeries '%s' from file '%s':\n",timeseries->Name,timeseries->FileName);
+    mexPrintf("Reading Series '%s' from file '%s':\n",timeseries->Name,timeseries->FileName);
     mexPrintf("-> %d x %d values\n",timeseries->Length,timeseries->Records);
-    mexPrintf("-> cadence = %g s, time offset = %g s\n",timeseries->Cadence,timeseries->TimeOffset);
+    mexPrintf("-> cadence = %g s, offset = %g s\n",timeseries->Cadence,timeseries->TimeOffset);
 
     mexPrintf("-> columns = ");
     for(i=0;i<timeseries->Records;i++) {

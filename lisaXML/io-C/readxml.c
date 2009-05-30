@@ -177,7 +177,8 @@ static TimeSeries *dotimeseries(ezxml_t series,char *xmlname) {
     name = ezxml_attr(series,"Name");
     
     for(param = ezxml_child(series,"Param"); param; param = param->next) {
-        if(!strcmp(ezxml_attr(param,"Name"),"TimeOffset")) {
+        // TODO: again we're reading a FrequencySeries by pretending it's a TimeSeries
+        if(!strcmp(ezxml_attr(param,"Name"),"TimeOffset") || !strcmp(ezxml_attr(param,"Name"),"FrequencyOffset")) {
             timeoffset = ezxml_txt(param);
             assert(timeoffset);
             }
@@ -449,7 +450,8 @@ TimeSeries *getmultipleTDIdata(char *filename,int obsnum) {
                 
                 if(obscnt == obsnum) {
                     series = ezxml_child(obs,"XSIL");
-                    if(!strcmp(ezxml_attr(series,"Type"),"TimeSeries")) {
+                    // TODO: here we're reading a FrequencySeries by pretending it's a TimeSeries
+                    if(!strcmp(ezxml_attr(series,"Type"),"TimeSeries") || !strcmp(ezxml_attr(series,"Type"),"FrequencySeries")) {
                         timeseries = dotimeseries(series,filename);
                         return timeseries;
                     }
