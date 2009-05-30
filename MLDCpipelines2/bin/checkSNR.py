@@ -2,7 +2,8 @@
 
 import sys, math
 import numpy
-import lisaxml, synthlisa
+import lisaxml2 as lisaxml
+import synthlisa
 
 from optparse import OptionParser
 
@@ -25,9 +26,17 @@ parser.add_option("-M", "--maximumFrequency",
                   type="float", dest="maximumFrequency", default=1e-2,
                   help="maximum integration frequency (default 0.01 Hz)")
 
+parser.add_option("-N", "--useNyquist",
+                  action="store_true", dest="useNyquist", default=False,
+                  help="use Nyquist as maximum integration frequency (false by default)")
+
+parser.add_option("-C", "--noClipping",
+                  action="store_true", dest="noClipping", default=False,
+                  help="disable clipping of noise PSD (false by default)")
+
 parser.add_option("-o", "--outputIntegrand",
                   type="string", dest="outputIntegrand", default=None,
-                  help="output A and E normalized SNR integrands (give filename; experimental)")
+                  help="output A, E, and T normalized SNR integrands (give filename; experimental)")
 
 (options, args) = parser.parse_args()
 
@@ -48,6 +57,22 @@ class memoize:
     
 
 
+# clipping: if the first null is within the computed range, find the minimum
+# of the noise curve up to highf and clip to that minimum value
+
+def simpleclip(fr,Sn):
+    highf = 0.01
+    highi = int(highf / fr[0])
+    
+    if fr[-1] > highf and highi > 1:
+        minSn = numpy.min(Sn[1:highi])
+        Sn[:] = numpy.maximum(Sn,minSn)
+
+def aetclip(fr,Sa,St):
+    Sa[:] = numpy.maximum(Sa,1e-38 * fr**4)    
+    St[:] = numpy.maximum(St,numpy.maximum(3e-47,1e-37 * fr**4))
+
+
 @memoize
 def lisanoise(fr):
     L = 16.6782
@@ -64,6 +89,9 @@ def lisanoise(fr):
     
     Sa  = 2.0 * (Sx - Sxy)/3.0
     
+    if not options.noClipping:
+        aetclip(fr,Sa,St)
+    
     if not options.includeGalaxy:
         return Sa, St
     else:
@@ -78,6 +106,9 @@ def lisanoise(fr):
     
 
 
+class resprod(object):
+    pass
+
 class tdifile:
     fLow  = options.minimumFrequency
     fHigh = options.maximumFrequency
@@ -91,6 +122,9 @@ class tdifile:
         T = (tdidata.Xf + tdidata.Yf + tdidata.Zf) / math.sqrt(3.0)
         
         self.dt = tdidata.TimeSeries.Cadence
+        if options.useNyquist:
+            self.fHigh = 0.5/self.dt
+        
         self.len = len(A)
         
         self.At = numpy.fft.fft(A)
@@ -105,7 +139,7 @@ class tdifile:
             numpy.linspace(-(self.nyquistf-self.df),self.df,self.len/2-1)
         ) )
     
-    def innerproduct(self,other):
+    def product(self,other):
         assert self.dt  == other.dt
         assert self.len == other.len
         
@@ -118,23 +152,39 @@ class tdifile:
         intE = 4.0 / (self.len**2 * self.df) * numpy.conj(self.Et[lowi:highi]) * other.Et[lowi:highi] / sn
         intT = 4.0 / (self.len**2 * self.df) * numpy.conj(self.Tt[lowi:highi]) * other.Tt[lowi:highi] / st
         
-        if options.outputIntegrand:                
-            ints = numpy.concatenate((intA,intE,intT))
-            ints.tofile(options.outputIntegrand)
+        if options.outputIntegrand:
+            # ints = numpy.concatenate((self.f[lowi:highi],sn,st))
+            
+            tdistr = 'f,Are,Aim,Ere,Eim,Tre,Tim'
+            tdiobs = lisaxml.Observable(tdistr)
+            tdiobs.FrequencySeries = lisaxml.FrequencySeries([self.f[lowi:highi],
+                                                              intA.real,intA.imag,
+                                                              intE.real,intE.imag,
+                                                              intT.real,intT.imag],tdistr)
+            
+            tdiobs.DataType = 'FractionalFrequency'
+            tdiobs.FrequencySeries.Cadence      = self.df
+            tdiobs.FrequencySeries.Cadence_Unit = 'Hertz'
+            tdiobs.FrequencySeries.FrequencyOffset      = self.f[lowi]
+            tdiobs.FrequencySeries.FrequencyOffset_Unit = 'Hertz'
+            
+            outputXML = lisaxml.lisaXML(options.outputIntegrand)
+            outputXML.TDIData(tdiobs)
+            outputXML.close()            
             
         innerA = numpy.sum(intA); innerE = numpy.sum(intE); innerT = numpy.sum(intT)
         
-        return innerA.real, innerE.real, innerT.real
-    
-    def snr(self):
-        snrA, snrE, snrT = map(math.sqrt,self.innerproduct(self))            
+        res = resprod()
+        res.A = innerA.real; res.E = innerE.real; res.T = innerT.real
         
-        if options.useT:
-            snrAET = math.sqrt(snrA**2 + snrE**2 + snrT**2)
-            return snrA, snrE, snrT, snrAET
-        else:
-            snrAE = math.sqrt(snrA**2 + snrE**2)
-            return snrA, snrE, snrAE
+        return res
+    
+    def dosnr(self):
+        res = self.product(self)
+        self.snrA, self.snrE, self.snrT = map(math.sqrt,(res.A,res.E,res.T))
+        
+        self.snrAE = math.sqrt(self.snrA**2 + self.snrE**2)        
+        self.snrAET = math.sqrt(self.snrA**2 + self.snrE**2 + self.snrT**2)
     
 
 
@@ -144,26 +194,29 @@ def tabprint(tup):
         
     print
 
-fs = [tdifile(arg) for arg in args]
+sigs = [tdifile(arg) for arg in args]
 
-snrs0 = fs[0].snr()
+temp = sigs[0]
+temp.dosnr()
 
-if len(fs) == 1:
-    tabprint(snrs0)
+if len(sigs) == 1:
+    if options.useT:
+        tabprint([temp.snrA,temp.snrE,temp.snrT,temp.snrAET])
+    else:
+        tabprint([temp.snrA,temp.snrE,temp.snrAET])
 else:
-    for f in fs[1:]:
-        snrs = f.snr()
-        prod = f.innerproduct(fs[0])
+    for sig in sigs[1:]:
+        sig.dosnr()
+        prod = sig.product(temp)
         
         if options.useT:
-            tabprint( ( prod[0]/snrs0[0], prod[1]/snrs0[1], prod[2]/snrs0[2] # SNR_A, SNR_E, SNR_T
-                        (prod[0] + prod[1])/snrs0[2] + prod[2]/snrs[2],      # SNR_AET
-                        prod[0]/(snrs0[0] * snrs[0]),       # overlap_A
-                        prod[1]/(snrs0[1] * snrs[1]),       # overlap_E
-                        prod[2]/(snrs0[2] * snrs[2])  ) )   # overlap_T        
+            tabprint( [ prod.A/temp.snrA, prod.E/temp.snrE, prod.T/temp.snrT,   # SNRs
+                        (prod.A + prod.E + prod.T) / temp.snrAET,               # collective SNR
+                        prod.A / (temp.snrA * sig.snrA),                        # correlations
+                        prod.E / (temp.snrE * sig.snrE),
+                        prod.T / (temp.snrT * sig.snrT) ] )
         else:
-            tabprint( ( prod[0]/snrs0[0], prod[1]/snrs0[1], # SNR_A, SNR_E
-                        (prod[0] + prod[1])/snrs0[2],       # SNR_AE
-                        prod[0]/(snrs0[0] * snrs[0]),       # overlap_A
-                        prod[1]/(snrs0[1] * snrs[1]) ) )    # overlap_E
-
+            tabprint( [ prod.A/temp.snrA, prod.E/temp.snrE,
+                        (prod.A + prod.E) / temp.snrAE,
+                        prod.A / (temp.snrA * sig.snrA),
+                        prod.E / (temp.snrE * sig.snrE) ] )
