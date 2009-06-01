@@ -793,6 +793,9 @@ class Array(object):
     
 
 
+# TO DO: should move this on-demand loading code to Stream, and figure out how to access it from here
+# TO DO: support Streams that are not newline-separated
+
 class SourceTable(XSILobject):
     def __init__(self,sourcetype='',name='',table=None):
         super(SourceTable,self).__init__('PlaneWaveTable',name)
@@ -812,7 +815,32 @@ class SourceTable(XSILobject):
         if not hasattr(self,'Table'):
             raise StopIteration
         
-        for row,index in zip(self.Table.Data,range(self.Table.Length)):
+        stream = self.Table.Stream
+        
+        if stream.Type == 'Remote' and stream.Encoding == 'Text' and Table.DisableRemoteTableLoad == True:
+            if 'http://' in stream.Data:
+                tablerows = urllib.urlopen(stream.Data)
+            else:
+                tablerows = open(stream.Data,'r')
+            
+            # TO DO: note that currently gzip does not work for urllib objects...
+            #        ...will need to download the file locally, which is a shame
+            if len(stream.Data) > 3 and stream.Data[-3:] == '.gz':
+                import gzip
+                tablerows = gzip.GzipFile(fileobj=tablerows,mode='r')
+            
+            delim = getattr(stream,'Delimiter',' ')
+        elif stream.Type == 'Local' or DisableRemoteTableLoad == False:
+            tablerows = stream.Data
+        else:
+            print 'SourceTable.makeTableSource(): wrong table format, or cannot find table data'
+            raise IOError        
+        
+        index = 0
+        for row in tablerows:
+            if type(row) == str:
+                row = map(float,row.split(delim))
+            
             newsrc = Source.makeSource(self.Type)
             
             if self.Name:
@@ -828,6 +856,8 @@ class SourceTable(XSILobject):
                 
                 if hasattr(self.Table,parunit):
                     setattr(newsrc,parunit,getattr(self.Table,parunit))
+            
+            index = index + 1
             
             yield newsrc
         
