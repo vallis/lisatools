@@ -1,0 +1,32 @@
+The evalution script has been simplified relative to the Challenge 3 version. All it does
+is sort the bright source file and the entry file by frequency, then compares the injected
+and recovered signals. To run the evaluation on the Prix-Whelan entry, for example, just type
+
+./Evaluation.csh challenge3.1-key-0.txt PrixWhelan.txt PrixWhelan
+
+Here challenge3.1-key-0.txt is the bright source file, and PrixWhelan.txt is the entry file. Both MUST
+be in the format 
+
+frequency  frequency-derivative  ecliptic-lat ecliptic-long  amplitude  inlination polarization initial-phase
+
+(Note that the Prix-Whelan entry as submitted has an extra, extraneous column, and has to be converted to
+the correct format before running the evaluation script.)
+
+Once the script has been run, several files will have been produced, all tagged with the PrixWhelan name.
+
+The file PrixWhelan_report.dat is a report card produced by the MLDC3_pairing code. This code compare recovered sources to the brights file using
+noise weighted residual to do the pairing and full templates to compute the correlations.  The columns are:
+
+| # rec | # inj | nwr | correlation | SNR rec | SNR inj | d_f * T | d_fdot * T*T | d_theta | d_phi | d_A/A | d_iota | d_psi | d_phase |
+
+Here # rec is the name of the recovered source and # inj is the line in bright file where the closest match
+was found (based of their ordering by frequency). The quantity "nwr" is noise weighted residual. The other columns
+are the SNRs or the template and the source, and the parameter errors.
+
+The files
+
+PrixWhelan_correlation_histograms.dat 
+PrixWhelan_parameter_histograms.dat
+
+contain histogram data (or sometimes binned counts) of the correlations, the recovered SNR and the parameter errors.
+
