@@ -8,6 +8,7 @@ from lisaxml.convertunit import convertUnit
 import sys
 import re
 import math
+import string
 
 # set ourselves up to parse command-line options
 
@@ -51,6 +52,10 @@ parser.add_option("-P", "--poldebug",
                   action="store_true", dest="poldebug", default=False,
                   help="use SL polarization convention for EMRIs [off by default]")
 
+parser.add_option("-s", "--sourceName",
+                  type="string", dest="sourcename", default=None,
+                  help="select a source by name among those in the SOURCEDEF.xml file [default None]")
+
 (options, args) = parser.parse_args()
 
 if options.duration < 10:
@@ -68,6 +73,10 @@ if len(args) != 2:
 inputXML = lisaxml.readXML(inputfile)
 
 allsystems = inputXML.getLISASources()
+
+if options.sourcename:
+    chosensources = map(string.strip,options.sourcename.split(','))
+    allsystems = [x for x in allsystems if x.name in chosensources]
 
 for cnt,mysystem in zip(range(len(allsystems)),allsystems):
     # print out parameters
@@ -124,12 +133,17 @@ for cnt,mysystem in zip(range(len(allsystems)),allsystems):
     if len(allsystems) == 1:
         oneoutputfile = outputfile
     else:
-        if '-barycentric.xml' in outputfile:
-            oneoutputfile = re.sub('-barycentric\.xml','-%d-barycentric.xml' % cnt,outputfile)
-        elif '.xml' in outputfile:
-            oneoutputfile = re.sub('\.xml','-%d.xml' % cnt,outputfile)
+        if options.sourcename:
+            filestr = mysystem.name
         else:
-            oneoutputfile = outputfile + ('-%d' % cnt)
+            filestr = '%d' % cnt
+        
+        if '-barycentric.xml' in outputfile:
+            oneoutputfile = re.sub('-barycentric\.xml','-%s-barycentric.xml' % filestr,outputfile)
+        elif '.xml' in outputfile:
+            oneoutputfile = re.sub('\.xml','-%s.xml' % filestr,outputfile)
+        else:
+            oneoutputfile = outputfile + ('-%s' % filestr)
 
     outputXML = lisaxml.lisaXML(oneoutputfile,author='Michele Vallisneri')
     outputXML.SourceData(mysystem)
