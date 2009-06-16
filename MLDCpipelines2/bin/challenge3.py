@@ -4,6 +4,7 @@ import os
 import sys
 import string
 import random
+import re
 from random import seed, randint
 from optparse import OptionParser
 
@@ -38,7 +39,15 @@ parser.add_option("-B", "--blindOnly",
                   action="store_true", dest="blindOnly", default=False,
                   help="run only blind [default: False]")
 
+parser.add_option("-N", "--nolisacode",
+                  action="store_true", dest="nolisacode", default=False,
+                  help="do not run lisacode [default: False]")
+
 (options, args) = parser.parse_args()
+
+if options.nolisacode:
+    oldrun = run
+    run = lambda c: oldrun(re.sub('--lisacode','',c))
 
 nproc = options.nproc
 
@@ -90,7 +99,8 @@ if '3.5' in runonly:
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode            --duration=2097152 --timeStep=2 --seed=%(seed35)s  %(options35)s challenge3.5' % globals())
     if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
-        run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
+        if not options.nolisacode:
+            run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35t)s %(options35)s challenge3.5' % globals())
 
 options35e = '--rawMeasurements --randomizeNoise=0.2 --laserNoise=10 --LISA=Eccentric'
 if '3.5e' in runonly:
@@ -98,4 +108,5 @@ if '3.5e' in runonly:
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode            --duration=2097152 --timeStep=2 --seed=%(seed35e)s  %(options35e)s challenge3.5e' % globals())
     if not options.blindOnly:
         run('%(mydir)s/challenge.py -P %(nproc)s --synthlisa --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35et)s %(options35e)s challenge3.5e' % globals())
-        run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35et)s %(options35e)s challenge3.5e' % globals())
+        if not options.nolisacode:
+            run('%(mydir)s/challenge.py -P %(nproc)s --noNoise   --lisacode --training --duration=2097152 --timeStep=2 --seed=%(seed35et)s %(options35e)s challenge3.5e' % globals())
