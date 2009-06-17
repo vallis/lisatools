@@ -3,7 +3,71 @@
 __version__='$Id$'
 
 import lisaxml
-import sys
+import sys, string
+import numpy
+
+def extend(tdi,begtime,endtime):
+    ts = tdi.TimeSeries
+    
+    # TO DO: keep in mind that the alignment maybe off if mod(ts.TimeOffset - begtime,ts.Cadence) != 0
+    #        should warn about this?
+    if ts.TimeOffset > begtime or endtime > ts.TimeOffset + ts.Cadence * ts.Length:
+        newlength = int( (endtime - begtime) / ts.Cadence )
+        
+        begindex  = int( (ts.TimeOffset - begtime) / ts.Cadence )
+        endindex  = int( (ts.TimeOffset + ts.Cadence * ts.Length - begtime) / ts.Cadence )
+        
+        ts.Arrays = []
+        for obs in map(string.strip,ts.name.split(',')):            
+            if obs == 't':
+                newobs = numpy.linspace(begtime,endtime-ts.Cadence,newlength)
+            else:
+                newobs = numpy.zeros(newlength,'d')
+                newobs[begindex:endindex] = getattr(ts,obs)
+            
+            # the following is appropriate for lisaxml (not lisaxml2)
+            setattr(tdi,obs,newobs)
+            setattr(ts,obs,newobs)
+            ts.Arrays.append(newobs)
+        
+        ts.TimeOffset = begtime
+        ts.Length = newlength
+        ts.Duration = ts.Length * ts.Cadence
+
+def upsample(tdi,mincadence):
+    ts = tdi.TimeSeries
+    
+    if ts.Cadence > mincadence:
+        if ts.Cadence % mincadence != 0:
+            print "Cannot upsample cadence %s to noncommensurable cadence %s." % (ts.Cadence,mincadence)
+            sys.exit(1)
+        
+        newlength = ts.Length * (ts.Cadence / mincadence)
+        
+        if newlength % 2 != 0 or ts.Length % 2 != 0:
+            print "Sorry, I don't know how to deal with odd-point FFTs."
+            sys.exit(1)
+        
+        ts.Arrays = []
+        for obs in map(string.strip,ts.name.split(',')):
+            if obs == 't':
+                newobs = numpy.linspace(ts.TimeOffset,ts.TimeOffset + ts.Duration - mincadence,newlength)
+            else:
+                newfft = numpy.zeros(newlength/2 + 1,'complex128')
+                
+                # FFT upsample
+                newfft[0:(ts.Length/2 + 1)] = numpy.fft.rfft(getattr(ts,obs))
+                newfft[ts.Length/2 + 1] *= 0.5
+                newobs = numpy.fft.irfft(newfft) * (ts.Cadence / mincadence)
+            
+            # the following is appropriate for lisaxml (not lisaxml2)
+            setattr(tdi,obs,newobs)
+            setattr(ts,obs,newobs)
+            ts.Arrays.append(newobs)
+        
+        ts.Cadence = mincadence
+        ts.Length = newlength
+        ts.Duration = ts.Length * ts.Cadence
 
 # set ourselves up to parse command-line options
 
@@ -31,6 +95,10 @@ parser.add_option("-s", "--subtract",
 parser.add_option("-N", "--tdiName",
                   type="string", dest="tdiName", default=None,
                   help="use this string as the name of TDIobservable sections [off by default]")
+
+parser.add_option("-C", "--cadence",
+                  type="float", dest="cadence", default=None,
+                  help="forced Cadence of final output [off by default]")
 
 parser.add_option("-o", "--outputfile",
                   type="string", dest="outputfile", default=None,
@@ -119,32 +187,48 @@ for inputfile in inputfiles:
 
         for thistdi in alltdi:
             obsname = thistdi.TimeSeries.name
-
+            
             if not (obsname in tdin):
                 tdid[obsname] = thistdi
                 # to keep them in order...
                 tdin.append(obsname)
             else:
                 tdi = tdid[obsname]
-
-                try:
-                    assert tdi.DataType              == thistdi.DataType
-                    assert tdi.TimeSeries.Length     == thistdi.TimeSeries.Length
-                    assert tdi.TimeSeries.Cadence    == thistdi.TimeSeries.Cadence
-                    assert tdi.TimeSeries.TimeOffset == thistdi.TimeSeries.TimeOffset
-                except:
-                    print "Script %s finds mismatched DataType, Length, or Cadence for TDI TimeSeries in file %s." % (sys.argv[0],inputfile)
+                
+                if tdi.DataType != thistdi.DataType:
+                    print "Script %s finds mismatched DataType TDI TimeSeries in file %s." % (sys.argv[0],inputfile)
                     sys.exit(1)
-
+                
+                if tdi.TimeSeries.name != thistdi.TimeSeries.name:
+                    print "Script %s finds mismatched observables in file %s." % (sys.argv[0],inputfile)
+                    sys.exit(1)
+                
+                # upsample all datasets to the fastest one
+                
+                mincadence = min(thistdi.TimeSeries.Cadence,tdi.TimeSeries.Cadence)
+                
+                upsample(tdi,    mincadence)
+                upsample(thistdi,mincadence)                
+                
+                # extend datasets as needed to sum them properly
+                
+                minoffset = min(thistdi.TimeSeries.TimeOffset,
+                                tdi.TimeSeries.TimeOffset)
+                maxend    = max(thistdi.TimeSeries.TimeOffset + thistdi.TimeSeries.Cadence * thistdi.TimeSeries.Length,
+                                tdi.TimeSeries.TimeOffset + tdi.TimeSeries.Cadence * tdi.TimeSeries.Length)
+                
+                extend(tdi,    minoffset,maxend)
+                extend(thistdi,minoffset,maxend)
+                
                 # add tdi observables to accumulator arrays
-
+                
                 for name in obsname.split(','):
                     obs = name.strip()
-
+                    
                     if obs != 't':
                         tdio = getattr(tdi,obs)
                         thistdio = getattr(thistdi,obs)
-
+                        
                         if options.subtract:
                             tdio -= thistdio
                         else:
@@ -153,6 +237,10 @@ for inputfile in inputfiles:
     for sec in ['Simulate','LISACode','NoiseData']:
         if inputtdifile.getExtraSection(sec):
             extrasecs.append(inputtdifile.getExtraSection(sec))
+    
+    inputtdifile.close()
+
+# do all the other sections
 
 if lisa:
     newmergedtdifile.LISAData(lisa)
