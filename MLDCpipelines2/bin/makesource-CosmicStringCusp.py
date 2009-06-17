@@ -50,6 +50,10 @@ parser.add_option("-f", "--maximumFrequency",
                   type="float", dest="MaximumFrequency", default=None,
                   help="maximum burst frequency (Hz) [default random log-uniform 1e-3--10 Hz]")
 
+parser.add_option("-T", "--requestTime",
+                  type="float", dest="requestTime", default=None,
+                  help="request that barycentric time series be stored only for this period around CentralTime (second) [off by defaults]")
+
 parser.add_option("-n", "--sourceName",
                   type="string", dest="sourceName", default="Cosmic string cusp burst",
                   help='name of source [defaults to "Cosmic string cusp burst"]')
@@ -101,6 +105,13 @@ else:
 if options.RequestSN:
     mysystem.RequestSN = options.RequestSN
     mysystem.RequestSN_Unit = '1'
+
+if options.requestTime:
+    mysystem.RequestTimeOffset = int(mysystem.CentralTime - 0.5 * options.requestTime)
+    mysystem.RequestTimeOffset_Unit = 'Second'
+    
+    mysystem.RequestDuration = options.requestTime
+    mysystem.RequestDuration_Unit = 'Second'
 
 if options.verbose:
     for p in mysystem.parameters:
