@@ -56,6 +56,10 @@ parser.add_option("-s", "--sourceName",
                   type="string", dest="sourcename", default=None,
                   help="select a source by name among those in the SOURCEDEF.xml file [default None]")
 
+parser.add_option("-S", "--singleOutput",
+                  action="store_true", dest="singleOutput", default=False,
+                  help="write all barycentric time series to the same lisaXML file [off by default]")
+
 (options, args) = parser.parse_args()
 
 if options.duration < 10:
@@ -77,6 +81,9 @@ allsystems = inputXML.getLISASources()
 if options.sourcename:
     chosensources = map(string.strip,options.sourcename.split(','))
     allsystems = [x for x in allsystems if x.name in chosensources]
+
+if options.singleOutput or len(allsystems) == 1:
+    outputXML = lisaxml.lisaXML(outputfile,author='Michele Vallisneri')
 
 for cnt,mysystem in zip(range(len(allsystems)),allsystems):
     # print out parameters
@@ -111,6 +118,21 @@ for cnt,mysystem in zip(range(len(allsystems)),allsystems):
         (ga,al) = mysystem.waveforms(samples,options.timestep,initialtime,debug=2)
         (ps,pl) = mysystem.waveforms(samples,options.timestep,initialtime,debug=3)
 
+    # crop the waveform if requested
+    
+    if hasattr(mysystem,'RequestTimeOffset') and hasattr(mysystem,'RequestDuration'):
+        if mysystem.RequestTimeOffset < initialtime or mysystem.RequestDuration > samples * options.timestep:
+            print >> sys.stderr, "Cannot honor RequestTimeOffset (%s) or RequestDuration (%s) for source %s" % (mysystem.RequestTimeOffset,mysystem.RequestDuration,mysystem.name)
+            sys.exit(1)
+        
+        initialindex = max(0,int( mysystem.RequestTimeOffset / options.timestep))
+        finalindex   = min(len(hp0),initialindex + int( (mysystem.RequestDuration + options.prebuffer + options.postbuffer) / options.timestep))
+        
+        hp0 = hp0[initialindex:finalindex].copy()
+        hc0 = hc0[initialindex:finalindex].copy()
+        
+        initialtime = options.timestep * initialindex - options.prebuffer
+    
     # impose polarization on waveform if given
     
     if hasattr(mysystem,'Polarization') and (not hasattr(mysystem,'dopolarization') or not mysystem.dopolarization):
@@ -126,12 +148,12 @@ for cnt,mysystem in zip(range(len(allsystems)),allsystems):
         mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc,Ap,Ac,ga,al,ps,pl),'hp,hc,Ap,Ac,gamma,alpha,psi,psisl')
     else:
         mysystem.TimeSeries = lisaxml.TimeSeries((hp,hc),'hp,hc')
-
+    
     mysystem.TimeSeries.Cadence = options.timestep
     mysystem.TimeSeries.TimeOffset = initialtime
-
-    if len(allsystems) == 1:
-        oneoutputfile = outputfile
+    
+    if options.singleOutput or len(allsystems) == 1:
+        outputXML.SourceData(mysystem)
     else:
         if options.sourcename:
             filestr = mysystem.name
@@ -144,9 +166,12 @@ for cnt,mysystem in zip(range(len(allsystems)),allsystems):
             oneoutputfile = re.sub('\.xml','-%s.xml' % filestr,outputfile)
         else:
             oneoutputfile = outputfile + ('-%s' % filestr)
+        
+        oneoutputXML = lisaxml.lisaXML(oneoutputfile,author='Michele Vallisneri')
+        oneoutputXML.SourceData(mysystem)
+        oneoutputXML.close()
 
-    outputXML = lisaxml.lisaXML(oneoutputfile,author='Michele Vallisneri')
-    outputXML.SourceData(mysystem)
+if options.singleOutput or len(allsystems) == 1:
     outputXML.close()
 
 inputXML.close()
