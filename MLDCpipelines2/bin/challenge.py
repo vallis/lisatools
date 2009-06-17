@@ -366,7 +366,11 @@ if (not makemode):
 for xmlfile in glob.glob('Source/*.xml'):
     baryfile = 'Barycentric/' + re.sub('\.xml$','-barycentric.xml',os.path.basename(xmlfile))
     if (not makemode) or newer(xmlfile,baryfile):
-        prun('%(execdir)s/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
+        # TO DO - more kludging... would be better to do RequestTimeStep 
+        if 'challenge4' in challengename and 'Burst' in baryfile:
+            prun('%(execdir)s/makebarycentric.py --duration=%(duration)s --timeStep=2 %(xmlfile)s %(baryfile)s')
+        else:
+            prun('%(execdir)s/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 
 pwait()
 
@@ -399,7 +403,7 @@ if dosynthlisa:
     # they may carry
         
     # for safety: use new makeTDIsignal-synthlisa.py only if we have immediate sources or nonstandard
-    if glob.glob('Immediate/*.xml') or (options.rawMeasurements == True) or (options.LISAmodel != 'Eccentric'):
+    if glob.glob('Immediate/*.xml') or (options.rawMeasurements == True) or (options.LISAmodel != 'Eccentric') or ('challenge4' in challengename):
         runfile = 'makeTDIsignal-synthlisa2.py'
     else:
         runfile = 'makeTDIsignal-synthlisa.py'
@@ -422,7 +426,11 @@ if dosynthlisa:
             tdifile = 'TDI/' + re.sub('\.xml$','-tdi-frequency.xml',os.path.basename(xmlfile))
 
         if (not makemode) or newer(xmlfile,tdifile):
-            prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            # TO DO - more kludging... would be better to do RequestTimeStep
+            if 'challenge4' in challengename and 'Burst' in baryfile:
+                prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=2 %(xmlfile)s %(tdifile)s')
+            else:
+                prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
     if noiseoptions or (timestep != 15.0):
         runfile = 'makeTDInoise-synthlisa2.py'
@@ -433,7 +441,10 @@ if dosynthlisa:
     noisefile = 'TDI/tdi-frequency-noise.xml'
         
     if donoise and ((not makemode) or (not os.path.isfile(noisefile))):        
-        prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s %(noisefile)s')
+        if 'challenge4' in challengename:
+            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=2 %(noiseoptions)s %(noisefile)s')        
+        else:
+            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s %(noisefile)s')
 
     pwait()
 
