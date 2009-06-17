@@ -40,6 +40,10 @@ parser.add_option("-M", "--massSMBH",
                   type="float", dest="massSMBH", default=1.0e6,
                   help="approximate mass of central black hole (defaults to 1.0e6)")
 
+parser.add_option("-e", "--minEccentricity",
+                  type="float", dest="minEccentricity", default=0.15,
+                  help="minimum eccentricity at plunge (defaults to 0.15)")
+
 parser.add_option("-n", "--sourceName",
                   type="string", dest="sourceName", default="Analytical kludge EMRI",
                   help='name of source [defaults to "Analytical kludge EMRI"]')
@@ -109,7 +113,7 @@ mysystem.LambdaAngle	= math.acos(random.uniform(-1.0, 1.0))      # angle between
 #mysystem.InitialAlphaAngle            = random.uniform(0.0, math.pi*2.0)             
 # initial azimuthal direction of L (in the orbital plane)
 
-e_lso = random.uniform(0.15, 0.25)                           # estimated eccentricity at the plunge
+e_lso = random.uniform(options.minEccentricity, 0.25)                           # estimated eccentricity at the plunge
 Tend  = random.uniform(1.0, 2.0)*2**21*15.0                  # plungetime: between 1 and 2 years which is assumed to be 2**21*15 seconds
 
 mysystem.IntegrationStep              = 15.0                                         # integration timestep in seconds
