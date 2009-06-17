@@ -85,10 +85,26 @@ inputXML.close()
 
 sourceobjects = []
 
+settime = False
+
 for waveforms in allsources:
     if hasattr(waveforms,'RequestSN') and len(allsources) > 1:
-        print "Cannot process multiple sources with RequestSN field."
+        print "Cannot process multiple sources with RequestSN."
         sys.exit(1)
+    
+    if hasattr(waveforms,'RequestTimeOffset') and hasattr(waveforms,'RequestDuration'):
+        RequestInitTime = waveforms.RequestTimeOffset
+        RequestSamples  = int( waveforms.RequestDuration / options.timestep + 0.1 )
+
+        if not settime:
+            options.inittime = RequestInitTime
+            samples = RequestSamples
+            
+            settime = True
+        else:
+            if options.inittime != RequestInitTime or samples != RequestSamples:
+                print "Found multiple, incompatible RequestTimeOffset or RequestDuration parameters."
+                sys.exit(1)
     
     if hasattr(waveforms,'TimeSeries'):
         ts = waveforms.TimeSeries
@@ -119,7 +135,7 @@ for waveforms in allsources:
     else:
         print "!!! Cannot find hp/hc table or synthesize source %s" % source.name
         sys.exit(1)
-
+    
     sourceobjects.append(source)
 
 # add caching?
