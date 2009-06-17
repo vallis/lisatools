@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__version__ = '$Id: challenge2.py 415 2007-06-14 22:47:09Z vallisneri $'
+__version__ = '$Id$'
 
 # some definitions...
 
@@ -134,7 +134,7 @@ from optparse import OptionParser
 # svn propset svn:keywords Id FILENAME
 
 parser = OptionParser(usage="usage: %prog [options] CHALLENGENAME...",
-                      version="$Id: challenge2.py 415 2007-06-14 22:47:09Z vallisneri $")
+                      version="$Id$")
 
 parser.add_option("-t", "--training",
                   action="store_true", dest="istraining", default=False,
@@ -368,7 +368,7 @@ for xmlfile in glob.glob('Source/*.xml'):
     if (not makemode) or newer(xmlfile,baryfile):
         # TO DO - more kludging... would be better to do RequestTimeStep 
         if 'challenge4' in challengename and 'Burst' in baryfile:
-            prun('%(execdir)s/makebarycentric.py --duration=%(duration)s --timeStep=2 %(xmlfile)s %(baryfile)s')
+            prun('%(execdir)s/makebarycentric.py --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(baryfile)s')
         else:
             prun('%(execdir)s/makebarycentric.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(baryfile)s')
 
@@ -428,7 +428,7 @@ if dosynthlisa:
         if (not makemode) or newer(xmlfile,tdifile):
             # TO DO - more kludging... would be better to do RequestTimeStep
             if 'challenge4' in challengename and 'Burst' in baryfile:
-                prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=2 %(xmlfile)s %(tdifile)s')
+                prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
             else:
                 prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
@@ -442,7 +442,7 @@ if dosynthlisa:
         
     if donoise and ((not makemode) or (not os.path.isfile(noisefile))):        
         if 'challenge4' in challengename:
-            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=2 %(noiseoptions)s %(noisefile)s')        
+            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=1.875 %(noiseoptions)s %(noisefile)s')        
         else:
             prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s %(noisefile)s')
 

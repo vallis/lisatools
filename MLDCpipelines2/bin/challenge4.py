@@ -21,7 +21,7 @@ def run(command):
 mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 parser = OptionParser(usage="usage: %prog [options] SEED...",
-                      version="$Id: $")
+                      version="$Id$")
 
 parser.add_option("-P", "--nProc",
                   type="int", dest="nproc", default=1,
@@ -57,7 +57,7 @@ def twoseeds():
 
 seed4,seed4t = twoseeds()
 
-options4 = '--duration=67108864 --timeStep=16 --LISA=Eccentric'
+options4 = '--duration=67108864 --timeStep=15 --LISA=Eccentric'
 
 if 'sl' in options.simulators:
     options4 += ' --synthlisa'
