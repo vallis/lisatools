@@ -25,6 +25,7 @@ istraining = (sys.argv[2] == 'True')
 nproc = int(sys.argv[3])
 
 random.seed(seed)
+numpy.random.seed(seed)
 
 # --- DEFINITION OF THE CHALLENGE
 
@@ -74,28 +75,26 @@ if 6 in chosen:
 
 # --- EMRIs!
 
-srcnum = numpy.random.poisson(2)
-
-for srcind in range(numpy.random.poisson(2)):
-    requestsn = random.randint(10,50)
-    run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=1.e7 --sourceName="EMRI-1-%(srcind)s" Source/EMRI-1-%(srcind)s.xml' % globals())
+for srcind in range(numpy.random.poisson(3)):
+    requestsn = random.randint(25,50)
+    run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=1.e7 --minEccentricity=0.05 --sourceName="EMRI-1-%(srcind)s" Source/EMRI-1-%(srcind)s.xml' % globals())
     seed = seed + 1
 
 for srcind in range(numpy.random.poisson(2)):
-    requestsn = random.randint(10,50)
-    run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=5.e6 --sourceName="EMRI-2-%(srcind)s" Source/EMRI-2-%(srcind)s.xml' % globals())
+    requestsn = random.randint(25,50)
+    run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=5.e6 --minEccentricity=0.05 --sourceName="EMRI-2-%(srcind)s" Source/EMRI-2-%(srcind)s.xml' % globals())
     seed = seed + 1
 
-for srcind in range(numpy.random.poisson(2)):
-    requestsn = random.randint(10,50)
-    run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=1.e6 --sourceName="EMRI-3-%(srcind)s" Source/EMRI-3-%(srcind)s.xml' % globals())
+for srcind in range(numpy.random.poisson(1)):
+    requestsn = random.randint(25,50)
+    run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=1.e6 --minEccentricity=0.05 --sourceName="EMRI-3-%(srcind)s" Source/EMRI-3-%(srcind)s.xml' % globals())
     seed = seed + 1
 
 # --- cosmic strings
 
 for srcind in range(numpy.random.poisson(20)):
     requestsn = random.randint(10,100)  # assuming dataset duration of 2**26 = 67108864
-    run('%(mydir)s/makesource-CosmicStringCusp.py --seed=%(seed)s -t 33554432 -r 33554432 -S %(requestsn)s -n "CosmicString-%(srcind)s" Source/Burst-%(srcind)s' % globals())
+    run('%(mydir)s/makesource-CosmicStringCusp.py --seed=%(seed)s -t 33554432 -r 33554432 -T 2097152 -S %(requestsn)s -n "CosmicString-%(srcind)02d" Source/Burst-%(srcind)02d' % globals())
     seed = seed + 1
 
 # --- GWDB
