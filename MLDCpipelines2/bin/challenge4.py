@@ -57,7 +57,7 @@ def twoseeds():
 
 seed4,seed4t = twoseeds()
 
-options4 = '--duration=67108864 --timeStep=2 --LISA=Eccentric'
+options4 = '--duration=67108864 --timeStep=16 --LISA=Eccentric'
 
 if 'sl' in options.simulators:
     options4 += ' --synthlisa'
