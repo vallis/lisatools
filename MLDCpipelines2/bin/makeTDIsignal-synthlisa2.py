@@ -93,8 +93,13 @@ for waveforms in allsources:
         sys.exit(1)
     
     if hasattr(waveforms,'RequestTimeOffset') and hasattr(waveforms,'RequestDuration'):
-        RequestInitTime = waveforms.RequestTimeOffset
-        RequestSamples  = int( waveforms.RequestDuration / options.timestep + 0.1 )
+        # modify the region where we are making TDI, but not beyond the boundaries
+        # of the region requested by command-line arguments
+
+        RequestInitTime = max(waveforms.RequestTimeOffset,options.inittime)
+        RequestEndTime  = min(waveforms.RequestTimeOffset + waveforms.RequestDuration,options.inittime + options.duration)
+
+        RequestSamples  = int( (RequestEndTime - RequestInitTime) / options.timestep + 0.1 )
 
         if not settime:
             options.inittime = RequestInitTime
