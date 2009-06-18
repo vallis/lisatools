@@ -95,7 +95,13 @@ mysystem.EclipticLongitude          = random.uniform(0.0,2.0*math.pi)           
 mysystem.Polarization               = random.uniform(0.0,2.0*math.pi)
 mysystem.Amplitude                  = options.Amplitude
 
-mysystem.CentralTime                = options.Tc + random.uniform(-options.deltaTc,options.deltaTc)
+if(options.deltaTc < 0.5 * options.requestTime):
+     print >> sys.stderr, "The central time (%s) should be larger than 1/2 request time (%s) " % (options.deltaTc, options.requestTime)
+     sys.exit(1)
+     
+     
+mysystem.CentralTime                = options.Tc + random.uniform(-options.deltaTc + 0.5 * options.requestTime\
+                                                                  ,options.deltaTc - 0.5 * options.requestTime)
 
 if options.MaximumFrequency != None:
     mysystem.MaximumFrequency = options.MaximumFrequency
@@ -108,6 +114,9 @@ if options.RequestSN:
 
 if options.requestTime:
     mysystem.RequestTimeOffset = int(mysystem.CentralTime - 0.5 * options.requestTime)
+    # added by Stas:
+    #if (mysystem.RequestTimeOffset < 0.0)
+    #    mysystem.RequestTimeOffset = 0.0
     mysystem.RequestTimeOffset_Unit = 'Second'
     
     mysystem.RequestDuration = options.requestTime
