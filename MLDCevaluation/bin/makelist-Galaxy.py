@@ -31,10 +31,16 @@ outfile = open(args[1],'w')
 
 count = 0
 for s in table.makeTableSources():
+#    if not (f0 < s.Frequency < f1) and not (f2 < s.Frequency < f3) and not (f4 < s.Frequency < f5):
+#        break
+    
     if options.addCount:    
         print >> outfile, count,
-    print >> outfile, s.Frequency, s.EclipticLatitude, s.EclipticLongitude, s.Amplitude,
-    print >> outfile, s.Inclination, s.Polarization, s.InitialPhase, s.FrequencyDerivative
+    print >> outfile, s.Frequency, s.FrequencyDerivative, s.EclipticLatitude, s.EclipticLongitude,
+    print >> outfile, s.Amplitude, s.Inclination, s.Polarization, s.InitialPhase, 
+
+    # print >> outfile, s.Frequency, s.EclipticLatitude, s.EclipticLongitude, s.Amplitude,
+    # print >> outfile, s.Inclination, s.Polarization, s.InitialPhase, s.FrequencyDerivative
     
     count = count + 1
     if count == options.firstN:
