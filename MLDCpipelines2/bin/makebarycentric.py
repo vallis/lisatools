@@ -121,12 +121,12 @@ for cnt,mysystem in zip(range(len(allsystems)),allsystems):
     # crop the waveform if requested
     
     if hasattr(mysystem,'RequestTimeOffset') and hasattr(mysystem,'RequestDuration'):
-        if mysystem.RequestTimeOffset < initialtime or mysystem.RequestDuration > samples * options.timestep:
-            print >> sys.stderr, "Cannot honor RequestTimeOffset (%s) or RequestDuration (%s) for source %s" % (mysystem.RequestTimeOffset,mysystem.RequestDuration,mysystem.name)
-            sys.exit(1)
+        # the arrays hp0 and hc0 begin at i=0,t=-prebuffer, and go until i=samples,t=duration+postbuffer (excluded, à la C loops)
+        # now we wish to crop to t=RequestTimeOffset-prebuffer until t=RequestTimeOffset+RequestDuration+postbuffer
+        # however we cannot go before the first sample, or after the last
         
-        initialindex = max(0,int( mysystem.RequestTimeOffset / options.timestep))
-        finalindex   = min(len(hp0),initialindex + int( (mysystem.RequestDuration + options.prebuffer + options.postbuffer) / options.timestep))
+        initialindex = max(0,int(mysystem.RequestTimeOffset / options.timestep))
+        finalindex   = min(len(hp0),initialindex + int((mysystem.RequestDuration + options.prebuffer + options.postbuffer) / options.timestep))
         
         hp0 = hp0[initialindex:finalindex].copy()
         hc0 = hc0[initialindex:finalindex].copy()
