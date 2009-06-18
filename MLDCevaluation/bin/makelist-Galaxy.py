@@ -37,7 +37,7 @@ for s in table.makeTableSources():
     if options.addCount:    
         print >> outfile, count,
     print >> outfile, s.Frequency, s.FrequencyDerivative, s.EclipticLatitude, s.EclipticLongitude,
-    print >> outfile, s.Amplitude, s.Inclination, s.Polarization, s.InitialPhase, 
+    print >> outfile, s.Amplitude, s.Inclination, s.Polarization, s.InitialPhase 
 
     # print >> outfile, s.Frequency, s.EclipticLatitude, s.EclipticLongitude, s.Amplitude,
     # print >> outfile, s.Inclination, s.Polarization, s.InitialPhase, s.FrequencyDerivative
