@@ -427,7 +427,7 @@ if dosynthlisa:
 
         if (not makemode) or newer(xmlfile,tdifile):
             # TO DO - more kludging... would be better to do RequestTimeStep
-            if 'challenge4' in challengename and 'Burst' in baryfile:
+            if 'challenge4' in challengename and 'Burst' in xmlfile:
                 prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
             else:
                 prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
