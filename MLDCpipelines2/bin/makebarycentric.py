@@ -121,7 +121,7 @@ for cnt,mysystem in zip(range(len(allsystems)),allsystems):
     # crop the waveform if requested
     
     if hasattr(mysystem,'RequestTimeOffset') and hasattr(mysystem,'RequestDuration'):
-        # the arrays hp0 and hc0 begin at i=0,t=-prebuffer, and go until i=samples,t=duration+postbuffer (excluded, à la C loops)
+        # the arrays hp0 and hc0 begin at i=0,t=-prebuffer, and go until i=samples,t=duration+postbuffer (excluded, a la C loops)
         # now we wish to crop to t=RequestTimeOffset-prebuffer until t=RequestTimeOffset+RequestDuration+postbuffer
         # however we cannot go before the first sample, or after the last
         
