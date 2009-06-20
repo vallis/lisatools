@@ -67,8 +67,8 @@ class Stochastic(lisaxml.Source):
         
         # should check what the requested deltat is...
         mydeltat = 0.1 / self.Fknee
-        if deltat > mydeltat / 5:
-            raise ValueError, "Stochastic.py: for this stochastic sources (Fknee = %s Hz), the cadence needs to be faster than %s s" % (self.Fknee,mydeltat)
+        # if deltat > mydeltat / 5:
+        #     raise ValueError, "Stochastic.py: for this stochastic source (Fknee = %s Hz), the cadence needs to be faster than %s s" % (self.Fknee,mydeltat)
         
         noisehp = self.makealphanoise(mydeltat,prebuf,self.PowerSpectralDensity,-self.SpectralSlope,
                                       self.Flow,self.Fknee,self.InterpolationOrder,seedhp)
