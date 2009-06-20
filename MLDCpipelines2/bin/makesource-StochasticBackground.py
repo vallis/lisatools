@@ -44,7 +44,7 @@ parser.add_option("-l", "--fLow",
                   type="float", dest="fLow", default=1e-5,
                   help="lower end of frequency range for power-law behavior (Hertz) [default = 1e-5]")
 
-parser.add_option("-h", "--fHigh",
+parser.add_option("-i", "--fHigh",
                   type="float", dest="fHigh", default=1e-2,
                   help="higher end of frequency range for power-law behavior (Hertz) [default = 1e-2]")
 
