@@ -58,7 +58,7 @@ if 3 in chosen:
     run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=1000 --coalescTime=450 --coalescRange=270 --massRatioRange=10 --sourceName="SMBH-3" Source/BH-3.xml' % globals())
     seed = seed + 1
     
-# 4 - A loud (SNR ~ 200) signal coalescing between 6 and 24 months from beginning of observations
+# 4 - A loud (SNR ~ 200) signaql coalescing between 6 and 24 months from beginning of observations
 if 4 in chosen:
     run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=200  --coalescTime=450 --coalescRange=270 --massRatioRange=10 --sourceName="SMBH-4" Source/BH-4.xml' % globals())
     seed = seed + 1
@@ -100,6 +100,6 @@ for srcind in range(numpy.random.poisson(20)):
 # --- GWDB
 
 pixelref = 2
-run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --pixelRefinement=%(pixelref)s --nProc=%(nproc)s Immediate/Background.xml' % globals())
-run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --pixelRefinement=%(pixelref)s LISACode/source-Background.xml' % globals())
+run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --fLow=5e-6 --fHigh=0.03 --pixelRefinement=%(pixelref)s --nProc=%(nproc)s Immediate/Background.xml' % globals())
+run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --fLow=5e-6 --fHigh=0.03 --pixelRefinement=%(pixelref)s LISACode/source-Background.xml' % globals())
 seed = seed + 1
