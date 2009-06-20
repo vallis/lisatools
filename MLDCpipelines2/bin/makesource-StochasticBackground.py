@@ -40,6 +40,14 @@ parser.add_option("-r", "--randomizePSD",
                   type="float", dest="randomizePSD", default=0.0,
                   help="fractional random displacement in total power spectral density (as a fraction of PSD) [default = 0]")
 
+parser.add_option("-l", "--fLow",
+                  type="float", dest="fLow", default=1e-5,
+                  help="lower end of frequency range for power-law behavior (Hertz) [default = 1e-5]")
+
+parser.add_option("-h", "--fHigh",
+                  type="float", dest="fHigh", default=1e-2,
+                  help="higher end of frequency range for power-law behavior (Hertz) [default = 1e-2]")
+
 parser.add_option("-R", "--pixelRefinement",
                   type="int", dest="refine", default=2,
                   help="healpix refinement level")
@@ -100,8 +108,8 @@ for i in range(npixels):
     
     mysystem.PowerSpectralDensity = PSD / (2*npixels)
     mysystem.SpectralSlope = -3
-    mysystem.Flow  = 1e-5
-    mysystem.Fknee = 1e-2
+    mysystem.Flow  = options.fLow
+    mysystem.Fknee = options.fHigh
 
     mysystem.PseudoRandomSeed = random.randint(0,2**30)
 
