@@ -159,8 +159,9 @@ if options.outputfile:
 else:
     newmergedtdifile = lisaxml.lisaXML(mergedfile,author=author,comments=comments)
 
-for source in sources:
-    newmergedtdifile.SourceData(source)
+if not options.nokey:
+    for source in sources:
+        newmergedtdifile.SourceData(source)
 
 for inputfile in inputfiles:
     inputtdifile = lisaxml.readXML(inputfile)
