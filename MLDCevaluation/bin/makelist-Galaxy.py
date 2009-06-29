@@ -13,6 +13,10 @@ parser.add_option("-c", "--addCount",
                   action="store_true", dest="addCount", default=False,
                   help="add a src count at the beginning of each line (off by default)")
 
+parser.add_option("-l", "--logAmplitude",
+                  action="store_true", dest="logAmplitude", default=False,
+                  help="assume the Amplitude column is given as log10 (off by default)")
+
 parser.add_option("-N", "--firstN",
                   type="int", dest="firstN", default=None,
                   help="limit total number of lines printed")
@@ -32,12 +36,12 @@ outfile = open(args[1],'w')
 count = 0
 for s in table.makeTableSources():
 #    if not (f0 < s.Frequency < f1) and not (f2 < s.Frequency < f3) and not (f4 < s.Frequency < f5):
-#        break
+#        continue
     
     if options.addCount:    
         print >> outfile, count,
     print >> outfile, s.Frequency, s.FrequencyDerivative, s.EclipticLatitude, s.EclipticLongitude,
-    print >> outfile, s.Amplitude, s.Inclination, s.Polarization, s.InitialPhase 
+    print >> outfile, (options.logAmplitude and 10**s.Amplitude or s.Amplitude), s.Inclination, s.Polarization, s.InitialPhase 
 
     # print >> outfile, s.Frequency, s.EclipticLatitude, s.EclipticLongitude, s.Amplitude,
     # print >> outfile, s.Inclination, s.Polarization, s.InitialPhase, s.FrequencyDerivative
