@@ -18,86 +18,131 @@
 
 LISACodeLightClass::LISACodeLightClass()
 {
+	MT = new Tools;
 	t0 = 0.0;;
 	dt = 15.0;
 	Tobs = pow(2.0,21)*dt;
 	TDIsPacks.resize(0);
 	TDIsPacksFact.resize(0);
 	TDIAE = false;
+	TDIInterpType = LAG;
+	TDIInterpVal = 4;
+	TDIDelayInterpType = TRU;
+	TDIDelayInterpVal = 0;
 	NbMaxDelays = 0;	
 	NoUsed = true;
+	setTDIDelayApprox();
+	settStoreGeo(3600.0);
+	settStoreGeo(30.0);
 	GWs = new vector <GW *>;
 	(*GWs).resize(0);
 	NbParams = 0;
+	TFUsed = false;
 }
 
 
-LISACodeLightClass::LISACodeLightClass(double t0_n, double dt_n, double Tobs_n)
+LISACodeLightClass::LISACodeLightClass(Tools * MT_n, double t0_n, double dt_n, double Tobs_n)
 {
+	MT = MT_n;
 	t0 = t0_n;
 	dt = dt_n;
 	Tobs = Tobs_n;
 	TDIsPacks.resize(0);
 	TDIsPacksFact.resize(0);
 	TDIAE = false;
+	TDIInterpType = LAG;
+	TDIInterpVal = 4;
+	TDIDelayInterpType = TRU;
+	TDIDelayInterpVal = 0;
+	tGWExtra = 900.0;
+	GWBufInterpType = LAG;
+	GWBufInterpVal = 4;
 	NbMaxDelays = 0;	
 	NoUsed = true;
+	setTDIDelayApprox();
+	settStoreGeo(3600.0);
+	settStoreGeo(30.0);
 	GWs = new vector <GW *>;
 	(*GWs).resize(0);
 	NbParams = 0;
+	TFUsed = false;
 }
 
 
-LISACodeLightClass::LISACodeLightClass(double t0_n, double dt_n, double Tobs_n, vector <GW *> * GWs_n)
+LISACodeLightClass::LISACodeLightClass(Tools * MT_n, double t0_n, double dt_n, double Tobs_n, vector <GW *> * GWs_n)
 {
+	MT = MT_n;
 	t0 = t0_n;
 	dt = dt_n;
 	Tobs = Tobs_n;
 	TDIsPacks.resize(0);
 	TDIsPacksFact.resize(0);
 	TDIAE = false;
+	TDIInterpType = LAG;
+	TDIInterpVal = 4;
+	TDIDelayInterpType = TRU;
+	TDIDelayInterpVal = 0;
+	tGWExtra = 900.0;
+	GWBufInterpType = LAG;
+	GWBufInterpVal = 4;
 	NbMaxDelays = 0;	
 	NoUsed = true;
+	setTDIDelayApprox();
+	settStoreGeo(3600.0);
+	settStoreGeo(30.0);
 	GWs = GWs_n;
 	CountNbGWsParams();
 	NbParams = 0;
+	TFUsed = false;
 }
 
-LISACodeLightClass::LISACodeLightClass(double t0_n, double dt_n, double Tobs_n, int * GWSrcTypes, int NbGWSrc)
+LISACodeLightClass::LISACodeLightClass(Tools * MT_n, double t0_n, double dt_n, double Tobs_n, int * GWSrcTypes, int NbGWSrc)
 {
+	MT = MT_n;
 	t0 = t0_n;
 	dt = dt_n;
 	Tobs = Tobs_n;
 	TDIsPacks.resize(0);
 	TDIsPacksFact.resize(0);
 	TDIAE = false;
+	TDIInterpType = LAG;
+	TDIInterpVal = 4;
+	TDIDelayInterpType = TRU;
+	TDIDelayInterpVal = 0;
+	tGWExtra = 900.0;
+	GWBufInterpType = LAG;
+	GWBufInterpVal = 4;
 	NbMaxDelays = 0;	
 	NoUsed = true;
+	setTDIDelayApprox();
+	settStoreGeo(3600.0);
+	settStoreGeo(30.0);
 	GWs = new vector <GW *>;
 	(*GWs).resize(0);
 	for(int iGW=0; iGW<NbGWSrc; iGW++){
 		switch (GWSrcTypes[iGW]) {
-		case 1 :
-			(*GWs).push_back(new GWMono);
-			break;
-		case 2 :
-			(*GWs).push_back(new GWBinary);
-			break;
-		case 3 :
-			(*GWs).push_back(new GWNewton2);
-			break;
-		case 4 :
-			(*GWs).push_back(new GWFastSpinBBH);
-			break;
-		case 5 :
-			(*GWs).push_back(new GWCusp);
-			break;
-		default :
+			case 1 :
+				(*GWs).push_back(new GWMono);
+				break;
+			case 2 :
+				(*GWs).push_back(new GWBinary);
+				break;
+			case 3 :
+				(*GWs).push_back(new GWNewton2);
+				break;
+			case 4 :
+				(*GWs).push_back(new GWFastSpinBBH);
+				break;
+			case 5 :
+				(*GWs).push_back(new GWCusp);
+				break;
+			default :
 				throw invalid_argument("LISACodeLightClass::LISACodeLightClass :: Undefined GW source type.");
 		}
 	}
-	CountNbGWsParams();
 	NbParams = 0;
+	CountNbGWsParams();
+	TFUsed = false;
 }
 
 
@@ -110,6 +155,15 @@ LISACodeLightClass::~LISACodeLightClass()
 // **********************
 // **  Access methods  **
 // **********************
+
+void LISACodeLightClass::settEndGW(double TEndGW) 
+{
+	int tmpiTEndGW((int)(floor(TEndGW/dt+0.1)));
+	if(tmpiTEndGW < iTEndGW)
+		iTEndGW = tmpiTEndGW;
+}
+
+
 void LISACodeLightClass::ChangeParamsGWs(double * NewParams)
 {
 	int iP(0);
@@ -122,11 +176,18 @@ void LISACodeLightClass::ChangeParamsGWs(double * NewParams)
 	}
 }
 
+void LISACodeLightClass::AddGW(GW * GW_n)
+{
+	GWs->push_back(GW_n);
+	NbParams += (*GWs)[GWs->size()-1]->getNParam();
+	(*GWs)[GWs->size()-1]->setTools(MT);
+}
 
 void LISACodeLightClass::AddGWMono()
 {
 	GWs->push_back(new GWMono);
 	NbParams += (*GWs)[GWs->size()-1]->getNParam();
+	(*GWs)[GWs->size()-1]->setTools(MT);
 }
 
 
@@ -134,6 +195,7 @@ void LISACodeLightClass::AddGWBinaryFixFreq()
 {
 	GWs->push_back(new GWBinary);
 	NbParams += (*GWs)[GWs->size()-1]->getNParam();
+	(*GWs)[GWs->size()-1]->setTools(MT);
 }
 
 
@@ -141,71 +203,116 @@ void LISACodeLightClass::AddGWBinaryInspiralPN()
 {
 	GWs->push_back(new GWNewton2);
 	NbParams += (*GWs)[GWs->size()-1]->getNParam();
+	(*GWs)[GWs->size()-1]->setTools(MT);
 }
 
 
 void LISACodeLightClass::AddGWSpinBBH()
 {
-	GWs->push_back(new GWFastSpinBBH(-900.0, Tobs));
+	//GWs->push_back(new GWFastSpinBBH(-900.0, Tobs));
+	GWs->push_back(new GWFastSpinBBH(t0-tGWExtra, Tobs));
 	NbParams += (*GWs)[GWs->size()-1]->getNParam();
+	(*GWs)[GWs->size()-1]->setTools(MT);
 }
 
 void LISACodeLightClass::AddGWSpinBBH (double Beta_n,
-										   double Lambda_n, 
-										   double Mass1_n,                
-										   double Mass2_n,                 
-										   double CoalescenceTime_n,
-										   double Distance_n,
-										   double Spin1_n,
-										   double Spin2_n,
-										   double PolarAngleOfSpin1_n,
-										   double PolarAngleOfSpin2_n,    
-										   double AzimuthalAngleOfSpin1_n,
-										   double AzimuthalAngleOfSpin2_n,
-										   double PhaseAtCoalescence_n,
-										   double InitialPolarAngleL_n,
-										   double InitialAzimuthalAngleL_n,
-										   double t0, 
-										   double Tobs)
+									   double Lambda_n, 
+									   double Mass1_n,                
+									   double Mass2_n,                 
+									   double CoalescenceTime_n,
+									   double Distance_n,
+									   double Spin1_n,
+									   double Spin2_n,
+									   double PolarAngleOfSpin1_n,
+									   double PolarAngleOfSpin2_n,    
+									   double AzimuthalAngleOfSpin1_n,
+									   double AzimuthalAngleOfSpin2_n,
+									   double PhaseAtCoalescence_n,
+									   double InitialPolarAngleL_n,
+									   double InitialAzimuthalAngleL_n,
+									   double Tobs)
 {
 	GWs->push_back(new GWFastSpinBBH (Beta_n, Lambda_n, Mass1_n, Mass2_n, CoalescenceTime_n, Distance_n, 
 									  Spin1_n, Spin2_n, PolarAngleOfSpin1_n, PolarAngleOfSpin2_n, AzimuthalAngleOfSpin1_n, AzimuthalAngleOfSpin2_n,
 									  PhaseAtCoalescence_n,InitialPolarAngleL_n, InitialAzimuthalAngleL_n,
-									  0.0, t0, Tobs, 7.0, 150.0, 6.0) );
+									  0.0, t0-tGWExtra, Tobs, 7.0, 150.0, 6.0) );
 	NbParams += (*GWs)[GWs->size()-1]->getNParam();
+	(*GWs)[GWs->size()-1]->setTools(MT);
 }
 
 
 void LISACodeLightClass::AddGWCusp()
 {
-	GWs->push_back(new GWCusp(dt, Tobs, 900.0));
+	GWs->push_back(new GWCusp(dt, Tobs, 900.0)); // ?? 900.0 equivalent to -tGWExtra ?
 	NbParams += (*GWs)[GWs->size()-1]->getNParam();
+	(*GWs)[GWs->size()-1]->setTools(MT);
+}
+
+void LISACodeLightClass::BufferGW(int iGW)
+{
+	GW * GWswap;
+	
+	if((iGW<0)||(iGW>=GWs->size()))
+		throw invalid_argument("Bad GW index.");
+	
+	GWswap = (*GWs)[iGW];
+	
+	(*GWs)[iGW] = new GWBuffer(GWswap, t0, dt, Tobs, tGWExtra, GWBufInterpType, GWBufInterpVal);
+}
+
+void LISACodeLightClass::DispConfig()
+{
+	if(MT->DispScreen()){
+		cout << " - Obs. time   = " << Tobs << endl;
+		cout << " - Time step   = " << dt << endl;
+		cout << " - Time offset = " << t0 << endl;
+		cout << " - Nb of data = " << NbtDat << endl;
+		cout << " - TF used = " << TFUsed << endl;
+		cout << " - GW time offset = " << tGWExtra << endl;
+		cout << " - GW Interp type = " << GWBufInterpType << endl;
+		cout << " - GW Interp val = " << GWBufInterpVal << endl;
+		cout << " - Time memory for GW interp = " << tMemInterpGW << endl;
+		cout << " - TDI Interp type = " << TDIInterpType << endl;
+		cout << " - TDI Interp val = " << TDIInterpVal << endl;
+		cout << " - TDI Time shift = " << tTDIShift << endl;
+		cout << " - Time memory for TDI interp = " << tMemInterpTDI << endl;
+		cout << " - Time memory for TDI = " << tMemTDI << endl;
+	}
 }
 
 
 // **********************
 // **  Others methods  **
 // **********************
-void LISACodeLightClass::initFirst()
+void LISACodeLightClass::initTimeBase()
 {
-	TDIInterpUtilVal = 4;
-	tMemInterpTDI = dt*(2.0+ceil(TDIInterpUtilVal/2.0));
+	tMemInterpTDI = dt*(2.0+ceil(TDIInterpVal/2.0));
+	tMemInterpGW  = dt*(2.0+ceil(GWBufInterpVal/2.0));
 	tMinDelay     = dt*ceil(0.8*L0_m_default/(dt*c_SI));
 	tMaxDelay     = dt*ceil(1.2*L0_m_default/(dt*c_SI));
 	tTDIShift     = 2.0 * MAX(0.0 , tMemInterpTDI-tMinDelay );
 	tMemTDI       = tTDIShift + tMemInterpTDI + NbMaxDelays*tMaxDelay;
+	tGWExtra      = 600.0 + tMemInterpGW + tMemTDI + tTDIShift ;
 	
-	cout << " Shift for TDI = " << tTDIShift << endl;
-	cout << " Duration for storing SC data = " << tMemTDI << endl; 
+	NbTDI = TDIsPacks.size();
+	NbtDat = (int) (floor(Tobs/dt+0.1));
+	iTEndGW = NbtDat;
+	NbfDat = NbtDat/2+1;
 	
-	LISAGeo = new GeometryMLDC(t0, 0.0, L0_m_default, 0, 1, dt);
+	FreqMin = -1.0;
+	FreqMax = -1.0;
+}
+
+void LISACodeLightClass::initFirst()
+{	
+	LISAGeo = new GeometryMLDC(t0, 0.0, 16.6782*c_SI, -2, 1, dt);
 	SigGWs = new TrFctGW(GWs, LISAGeo);
-	LISAGeo->settRangeStorePos(3600.0);
-	LISAGeo->settRangeStoreDelay(3600.0);
-	cout << "Geometry : Range Store Position = " << LISAGeo->gettRangeStorePos() << " , Range Store Delay = " <<  LISAGeo->gettRangeStoreDelay() << endl;
+	LISAGeo->settRangeStorePos(tStoreGeo);
+	LISAGeo->settRangeStoreDelay(tStoreGeo);
 	
 	// Spacecraft signals
 	SCSig = new Memory(tMemTDI, dt);
+	//SCSig = new MemoryWriteDisk(tMemTDI, dt, "LCL_SC.txt",0);
 	SCSig->AddSerieData(0, "s", 0, 1);
 	SCSig->AddSerieData(1, "s", 0, 2);
 	SCSig->AddSerieData(2, "s", 0, 3);
@@ -215,6 +322,7 @@ void LISACodeLightClass::initFirst()
 	
 	// Delay
 	DelayTDI = new Memory(tMemTDI, dt);
+	//DelayTDI = new MemoryWriteDisk(tMemTDI, dt, "LCL_Delay.txt",0);
 	DelayTDI->AddSerieData(0, "D", 0, 1);
 	DelayTDI->AddSerieData(1, "D", 0, 2);
 	DelayTDI->AddSerieData(2, "D", 0, 3);
@@ -222,26 +330,24 @@ void LISACodeLightClass::initFirst()
 	DelayTDI->AddSerieData(4, "D", 1, 2);
 	DelayTDI->AddSerieData(5, "D", 1, 3);
 	
-	TDIQuick = new TDITools(DelayTDI, true);
-	
-	NbTDI = TDIsPacks.size();
-	NbtDat = (int) (floor(Tobs/dt+0.1));
-	NbfDat = NbtDat/2+1;
+	TDIQuick = new TDITools(DelayTDI, TDIDelayApprox, TDIDelayInterpType, TDIDelayInterpVal);
 	
 	TDIGens = (TDI**) malloc(NbTDI*sizeof(TDI*));
 	for(int iGen=0; iGen<NbTDI; iGen++){
-		TDIGens[iGen] = new TDI(DelayTDI, SCSig, TDIsPacks[iGen], TDIsPacksFact[iGen], TDIQuick);
+		TDIGens[iGen] = new TDI(MT, DelayTDI, SCSig, TDIsPacks[iGen], TDIsPacksFact[iGen], TDIQuick);
 	}
 	
 	if(TDIAE)
 		NbTDI = 2;
 	
-	tDat = (double**)malloc(NbTDI*sizeof(double*));
-	for(int i=0; i<NbTDI; i++)
-		tDat[i] = (double*)malloc(NbtDat*sizeof(double));
-	tmptDat = (double*)malloc(NbtDat*sizeof(double));
-	tmpfDat = (fftw_complex*)malloc(NbfDat*sizeof(fftw_complex));
-	FwdPlan = fftw_plan_dft_r2c_1d(NbtDat, tmptDat, tmpfDat, FFTW_ESTIMATE);
+	if(TFUsed){
+		tDat = (double**)malloc(NbTDI*sizeof(double*));
+		for(int i=0; i<NbTDI; i++)
+			tDat[i] = (double*)malloc(NbtDat*sizeof(double));
+		tmptDat = (double*)malloc(NbtDat*sizeof(double));
+		tmpfDat = (fftw_complex*)malloc(NbfDat*sizeof(fftw_complex));
+		FwdPlan = fftw_plan_dft_r2c_1d(NbtDat, tmptDat, tmpfDat, FFTW_ESTIMATE);
+	}
 	
 	NoUsed = false;
 	init();
@@ -298,7 +404,7 @@ void LISACodeLightClass::ComputeTDI(double ** &tDatExt)
 	double Xtmp, Ytmp, Ztmp;
 	
 	t = t0+tTDIShift;
-	for (int iT=0; iT<NbtDat; iT++) {
+	for (int iT=0; iT<iTEndGW; iT++) {
 		RunLISA(t);
 		
 		//for(int i=0; i<6; i++)
@@ -309,19 +415,44 @@ void LISACodeLightClass::ComputeTDI(double ** &tDatExt)
 		TDIQuick->RefreshDelay(tTDIShift);
 		//cout << "*************** t = " << t+tTDIShift << endl;
 		if(TDIAE){
-			Xtmp = TDIGens[0]->ComputeNoEta(tTDIShift);
-			Ytmp = TDIGens[1]->ComputeNoEta(tTDIShift);
-			Ztmp = TDIGens[2]->ComputeNoEta(tTDIShift);
+			////cout << " ======================>>>>>>>>>>>>>>>>>>>>>>>> t = " << t-tTDIShift << endl ;
+			////if(t-tTDIShift>100)
+			////	cout << "Pause" << endl;
+			Xtmp = TDIGens[0]->ComputeNoEta(tTDIShift, TDIInterpType, TDIInterpVal);
+			Ytmp = TDIGens[1]->ComputeNoEta(tTDIShift, TDIInterpType, TDIInterpVal);
+			Ztmp = TDIGens[2]->ComputeNoEta(tTDIShift, TDIInterpType, TDIInterpVal);
 			tDatExt[0][iT] = (2.0*Xtmp-Ytmp-Ztmp)/3.0;
 			tDatExt[1][iT] = (Ztmp-Ytmp)/sqrt(3.0);
 		}else{
 			for(int iTDI=0; iTDI<NbTDI; iTDI++){
-				tDatExt[iTDI][iT] = TDIGens[iTDI]->ComputeNoEta(tTDIShift);
+				tDatExt[iTDI][iT] = TDIGens[iTDI]->ComputeNoEta(tTDIShift, TDIInterpType, TDIInterpVal);
 				//cout << " " << tDatExt[iTDI][iT];
 			}
 		}
+		
+		////if((t-tTDIShift>34602000)&&(t-tTDIShift<34603000)){
+		////	TDIGens[0]->DEBUGWRITE = true;
+		////	cout << iT << " : t-tTDIShift = " << t-tTDIShift << " ----------->>>>>>>>>> A = " << tDatExt[0][iT] << endl;
+		////}else {
+		////	TDIGens[0]->DEBUGWRITE = false;
+		////}
+		
 		//cout << endl;
 		t += dt;
+	}
+	for (int iT=iTEndGW; iT<NbtDat; iT++) {
+		for(int iTDI=0; iTDI<NbTDI; iTDI++)
+			tDatExt[iTDI][iT] = 0.0;
+	}
+	
+	// ** Define frequency from GWs
+	FreqMin = 1.0e30;
+	FreqMax = 1.0e-30;
+	for(int iGW=0; iGW<(*GWs).size(); iGW++){
+		if((*GWs)[iGW]->getFreqMin() < FreqMin)
+			FreqMin = (*GWs)[iGW]->getFreqMin();
+		if((FreqMax>=0.0)&&(((*GWs)[iGW]->getFreqMax() > FreqMax)||((*GWs)[iGW]->getFreqMax() < 0.0)))
+			FreqMax = (*GWs)[iGW]->getFreqMax();
 	}
 }
 

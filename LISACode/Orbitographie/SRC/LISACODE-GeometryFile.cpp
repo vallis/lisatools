@@ -317,6 +317,10 @@ Vect GeometryFile::velocity(int nb, double t)
 }
 
 
+double GeometryFile::tdelaySpecific(int em, int rec, int order, double trec)
+{
+	return (L0m/c_SI);
+}
 
 //end of LISACODE-GeometryFile.cpp
 

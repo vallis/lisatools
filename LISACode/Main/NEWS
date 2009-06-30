@@ -1,0 +1,5 @@
+AP : v145 : 05/06/2009 
+----------------------
+- Add Tools object for preparing global managing of display and memory
+- Change the end condition for obtaining right number of data in output N : starting at 0 and stopping at N-1  
+- Big update of LISACodeLightClass

@@ -4,7 +4,7 @@
 <XSIL>
     <XSIL Type="Simulate">
         <Param Name="TimeOffset" Unit="Second">
-            0.0
+            {timeoffset}
         </Param>
         <Param Name="Cadence" Unit="Second">
             {cadence}
@@ -16,13 +16,13 @@
             {outputsignals}
         </Param>
         <Param Name="OutputFile" Unit="String">
-            {challengename}-lisacode.xml
+            {challengename}.xml
         </Param>
     </XSIL>
 
     <XSIL Type="LISACode">
         <Param Name="GlobalRandomSeed" Unit="Second">{randomseed}</Param>
-        <Param Name="StepPhysic" Unit="Second">1</Param>
+        <Param Name="StepPhysic" Unit="Second">{cadence}</Param>
         <Param Name="DeltaTDIDelay" Unit="Second">0</Param>
 
         <XSIL Type="Detector">
@@ -35,10 +35,10 @@
         </XSIL>
 
         <XSIL Type="OutputFiles">
-            <Param Name="SignalSC1" Encoding="Binary">{rawchallengename}-lisacode-Phasemeter-1.bin</Param>
-            <Param Name="SignalSC2" Encoding="Binary">{rawchallengename}-lisacode-Phasemeter-2.bin</Param>
-            <Param Name="SignalSC3" Encoding="Binary">{rawchallengename}-lisacode-Phasemeter-3.bin</Param>
-            <Param Name="TDI" Encoding="Binary">{challengename}-lisacode-TDI.bin</Param>
+            <Param Name="SignalSC1" Encoding="Binary">{rawchallengename}-Phasemeter-1.bin</Param>
+            <Param Name="SignalSC2" Encoding="Binary">{rawchallengename}-Phasemeter-2.bin</Param>
+            <Param Name="SignalSC3" Encoding="Binary">{rawchallengename}-Phasemeter-3.bin</Param>
+            <Param Name="TDI" Encoding="Binary">{challengename}-TDI.bin</Param>
         </XSIL>
 
         <Comment>

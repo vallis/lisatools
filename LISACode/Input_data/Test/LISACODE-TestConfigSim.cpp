@@ -70,7 +70,7 @@ int main (int argc, char * const argv[])
 		cout << " tMemSig          = " << m_Conf.gettMemSig() << " s" << endl;
 		cout << " tDisplay         = " << m_Conf.gettDisplay() << " s" << endl;
 		cout << " tDeltaTDIDelay   = " << m_Conf.gettDeltaTDIDelay() << " s" << endl;
-		cout << " InterpUtilVal    = " << m_Conf.getTDIInterpUtilVal() << endl;
+		cout << " InterpUtilVal    = " << m_Conf.getTDIInterpVal() << endl;
 		cout << " Armlenght        = " << m_Conf.getArmlength() << " m" << endl;
 		cout << " OrbStartTime     = " << m_Conf.getOrbStartTime() << " s" << endl;
 		cout << " OrbInitRot       = " << m_Conf.getOrbInitRot()<< " rad" << endl;

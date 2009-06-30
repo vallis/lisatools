@@ -104,6 +104,7 @@ There is a variety of output files. Some of them are related to the phasemeter o
 #include <stdlib.h>
 #include "randlib.h"
 #include "LISACODE-PhysicConstants.h"
+#include "LISACODE-Tools.h"
 #include "LISACODE-MathUtils.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-GW.h"
@@ -157,7 +158,7 @@ int main (int argc, char * const argv[])
 			cout << endl << "\t\t * RandomSeed (not required) : Seed of random generator. If it's" << endl;
 			cout << "\t\t\t  not specified the random seed is the time machine." << endl;
 			cout << endl << "\tOptions :" << endl;
-			cout << "\t\t * -h : Write header in binary files."  << endl ;
+			cout << "\t\t * -H : Write header in binary files."  << endl ;
 			cout << endl << "\tNOTE :" << endl;
 			cout <<  "\t\t There are more details in the user's manual." << endl;
 			cout << endl << " ----------------" << endl;
@@ -166,13 +167,14 @@ int main (int argc, char * const argv[])
 		}
 		
 		// *********** Version *************
-		if((argc>1)&&(strcmp(argv[1],"--version")==0)){
+		if(((argc>1)&&(strcmp(argv[1],"--version")==0))&&((argc>1)&&(strcmp(argv[1],"-v")==0))){
 			cout << " ----- VERSION -----" << endl;
 			cout << " LISACode : main executable of LISACode package - version " << LCVersion << " at " << DateOfLastUpdate << endl;
 			cout << " ----------------" << endl;
 			return 0;
 		}
 		
+		Tools MT;
 		
 		cout << endl << "   ************************* ";
 		cout << endl << "   *                       * ";
@@ -200,7 +202,7 @@ int main (int argc, char * const argv[])
 		
 		// *********** Options *************
 		for(int iarg=1; iarg<argc; iarg++){
-			if((argc>1)&&(strcmp(argv[iarg],"-h")==0)){
+			if((argc>1)&&(strcmp(argv[iarg],"-H")==0)){
 				BinHeader = true;
 				cout << "Options : Header in biary files" << endl;
 				nOption++;
@@ -265,6 +267,8 @@ int main (int argc, char * const argv[])
 		//double tStepPhy(Config.gettStepPhy());
 		double tStepMes(Config.gettStepMes());
 		double tMax(Config.gettMax());
+		double tDur(Config.gettDur());
+		double tOffset(Config.gettOffset());
 		double DisplayStep(Config.gettDisplay());
 		// Temporary variables
 		double t(0.0), ttmpAff(0.0), tSinceFirstReception(0.0);
@@ -353,7 +357,7 @@ int main (int argc, char * const argv[])
 		// *** Declaration TDI generators
 		cout << "  - TDI... " << endl;
 		// ** Creation of Eta signals
-		TDI_InterData Eta(DelayTDI, & RecordPDPM, tMemTDI, tTDIShift/2.0, Config.getNoNoise(), Config.getTDIInterp(), Config.getTDIInterpUtilVal());
+		TDI_InterData Eta(DelayTDI, & RecordPDPM, tMemTDI, tTDIShift/2.0, Config.getNoNoise(), Config.getTDIInterp(), Config.getTDIInterpVal());
 		// ** Acceleration module of TDI
 		TDITools TDIQuickMod(DelayTDI, Config.getTDIDelayApprox());
 		// ** Creation of generators
@@ -361,7 +365,7 @@ int main (int argc, char * const argv[])
 		int NbGenTDI (Config.NbGenTDI());
 		for(int iGen=0; iGen<NbGenTDI; iGen++){
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " ...";
-			TDIGens.push_back(TDI(DelayTDI, & Eta, & RecordTDI, Config.getFileEncodingTDI(), iGen, Config.getGenTDIPacks(iGen), Config.getGenTDIPacksFact(iGen), & TDIQuickMod));
+			TDIGens.push_back(TDI(&MT, DelayTDI, & Eta, & RecordTDI, Config.getFileEncodingTDI(), iGen, Config.getGenTDIPacks(iGen), Config.getGenTDIPacksFact(iGen), & TDIQuickMod));
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " --> OK" << endl;
 		}
 		cout << "    TDI --> OK !" << endl << endl;
@@ -404,7 +408,7 @@ int main (int argc, char * const argv[])
 				for(int i=0; i<NbGenTDI; i++)
 					RecordTDI << "," << Config.getNameGenTDI(i);
 					RecordTDI << endl; 
-				RecordTDI << "#RECORD " << NbGenTDI+1<< " " << (int)ceil((tMax)/tStepMes+1) <<  endl;
+				RecordTDI << "#RECORD " << NbGenTDI+1<< " " << (int)ceil((tMax)/tStepMes) <<  endl;
 				RecordTDI << "#TIME 0.0 " << tStepMes << " " << tMax+tTDIShift << endl;
 			}
 		}
@@ -439,14 +443,14 @@ int main (int argc, char * const argv[])
 		//  d'une utilisation dans TDI. Le nombre de donnees qu'il est necessaire d'enregistrer
 		//  avant de lancer TDI est choisi par rapport au retard maximal present dans les generateurs.
 		cout << endl << "Runnning in progress : receive datas (-> " << tMemPDPM << " s)..." << endl;
-		t = Config.gettStartPhasemeters();
+		t = tOffset+Config.gettStartPhasemeters();
 		//cout << t << " " << tMemTDI << " " << tTDIShift << endl;
 		do{
 			//Display time
 			//cout << "* t = " << t << endl;
 			if(ttmpAff >= DisplayStep){
 				//cout << t << " s" << endl;
-				printf("%.0lf s     #0%03.0f %% \n", t, 100*t/tMax);
+				printf("%.0lf s     #0%03.0f %% \n", t, 100*(t-tOffset)/tDur);
 				fflush(stdout);
 				ttmpAff = 0.0;
 			}
@@ -487,7 +491,7 @@ int main (int argc, char * const argv[])
 			NDatPh1++;
 			
 		//}while(t<=tMemTDI+tTDIShift);
-		}while(t<tTDIShift-tMemTDI);
+		}while(t<tOffset+tTDIShift-tMemTDI);
 		
 		// Phase 2 : 
 		// ---------
@@ -498,7 +502,7 @@ int main (int argc, char * const argv[])
 			//cout << "* t = " << t << endl;
 			if(ttmpAff >= DisplayStep){
 				//cout << t << " s" << endl;
-				printf("%.0lf s     #0%03.0f %% \n", t, 100*t/tMax);
+				printf("%.0lf s     #0%03.0f %% \n", t, 100*(t-tOffset)/tDur);
 				fflush(stdout);
 				ttmpAff = 0.0;
 			}
@@ -541,7 +545,7 @@ int main (int argc, char * const argv[])
 			
 			NDatPh1++;
 			
-		}while(t<tTDIShift);
+		}while(t<tOffset+tTDIShift);
 		
 		// Phase 3 : 
 		// ---------
@@ -561,12 +565,12 @@ int main (int argc, char * const argv[])
 			if(ttmpAff >= DisplayStep){
 				time(&tcur);
 				//cout << t << " s" << endl;
-				EstimTStop = (tcur-tstart)*(tMax-t)/t;
+				EstimTStop = (tcur-tstart)*(tMax-t)/(t-tOffset);
 				hh = (int)(floor(EstimTStop/3600.0));
 				mm = (int)((EstimTStop - 3600.0*hh)/60);
 				ss = EstimTStop - 60*(mm+60*hh);
 				//cout << t << " s" << endl;
-				printf("%.0lf s    (remaining time : %02d:%02d:%02.0f) #0%03.0f %% \n", t, hh, mm, ss, 100*t/tMax);
+				printf("%.0lf s    (remaining time : %02d:%02d:%02.0f) #0%03.0f %% \n", t, hh, mm, ss, 100*(t-tOffset)/tDur);
 				fflush(stdout);
 				ttmpAff = 0.0;
 			}		 
@@ -631,6 +635,15 @@ int main (int argc, char * const argv[])
 				RecordTDI.write((char*) &ttmp, sizeof(double));
 			if(TDIQuickMod.getRapidOption())
 				TDIQuickMod.RefreshDelay(tTDIShift);
+			
+			
+			////if((t>34602000)&&(t<34603000)){
+			////	TDIGens[0].DEBUGWRITE = true;
+			////	cout << " ======================>>>>>>>>>>>>>>>>>>>>>>>> t = " << t << endl ;
+			////}else {
+			////	TDIGens[0].DEBUGWRITE = false;
+			////}
+			
 			for(int iGen=0; iGen<NbGenTDI; iGen++){
 				//cout << tTDIShift << endl;
 				ResultTDI[iGen] = TDIGens[iGen].RecordAndReturnResult(tTDIShift);
@@ -649,7 +662,7 @@ int main (int argc, char * const argv[])
 			
 			NDatPh2++;
 			
-		}while(t<=tMax+tTDIShift);
+		}while(t<tMax+tTDIShift);
 		
 		
 		// Read TDI result

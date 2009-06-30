@@ -22,6 +22,7 @@
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"
 #include "LISACODE-LISAConstants.h"
+#include "LISACODE-Tools.h"
 #include "LISACODE-Memory.h"
 #include "LISACODE-MemoryWriteDisk.h"
 #include "LISACODE-MemoryReadDisk.h"
@@ -54,12 +55,14 @@ int main (int argc, char * const argv[])
 			
 		}
 		// *********** Version *************
-		if(strcmp(argv[1],"--version")==0){
+		if(((argc>1)&&(strcmp(argv[1],"--version")==0))&&((argc>1)&&(strcmp(argv[1],"-v")==0))){
 			cout << " ----- VERSION -----" << endl;
 			cout << " TDIApply : executable of LISACode package - version " << LCVersion << " at " << DateOfLastUpdate << endl;
 			cout << " ----------------" << endl;
 			return 0;
 		}
+		
+		Tools MT;
 		
 		cout << endl << "   ************************* ";
 		cout << endl << "   *                       * ";
@@ -173,7 +176,7 @@ int main (int argc, char * const argv[])
 		// *** Declaration TDI generators
 		cout << "  - TDI... " << endl;
 		// ** Creation of Eta signals
-		TDI_InterData Eta(DelayTDI, & RecordPDPM, tMemTDI, tTDIShift/2.0, Config.getNoNoise(), Config.getTDIInterp(), Config.getTDIInterpUtilVal());
+		TDI_InterData Eta(DelayTDI, & RecordPDPM, tMemTDI, tTDIShift/2.0, Config.getNoNoise(), Config.getTDIInterp(), Config.getTDIInterpVal());
 		// ** Acceleration module of TDI
 		TDITools TDIQuickMod(DelayTDI, Config.getTDIDelayApprox());
 		// ** Creation of generators
@@ -181,7 +184,7 @@ int main (int argc, char * const argv[])
 		int NbGenTDI (Config.NbGenTDI());
 		for(int iGen=0; iGen<NbGenTDI; iGen++){
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " ...";
-			TDIGens.push_back(TDI(DelayTDI, & Eta, & RecordTDI, Config.getFileEncodingTDI(), iGen, Config.getGenTDIPacks(iGen), Config.getGenTDIPacksFact(iGen), & TDIQuickMod));
+			TDIGens.push_back(TDI(&MT, DelayTDI, & Eta, & RecordTDI, Config.getFileEncodingTDI(), iGen, Config.getGenTDIPacks(iGen), Config.getGenTDIPacksFact(iGen), & TDIQuickMod));
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " --> OK" << endl;
 		}		
 		// Ecart entre l'instant de lecture des donnees et l'instant d'application de TDI
@@ -392,7 +395,7 @@ int main (int argc, char * const argv[])
 			
 			NDatPh2++;
 			
-		}while(t<=tMax+tTDIShift);
+		}while(t<tMax+tTDIShift);
 		
 		// Read TDI result
 		cout.precision(15);

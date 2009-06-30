@@ -52,9 +52,9 @@ protected:
 	\brief Satellites phase sinus. */	
 	vector<double> rot, crot, srot;	
 	/*!\brief excentricity for MLDC orbits */
-	double e_mldc;
-	/*!\brief sqrt(3) for MLDC orbits */
-	double sqrt_3;	
+	double e_mldc, L0s;
+	/*!\brief Constants for MLDC orbits */
+	double sqrt_3, i32, r1532, pi3o2, pi2o3, pi4o3;
 	
 public:
 		// Constructor
@@ -79,6 +79,8 @@ public:
 	Vect position(int nb, double t);
 	// Returns the velocity of the spacecraft in the barycentric frame for the time t (s) as argument and spacecraft number (1, 2 or 3)
 	Vect velocity(int nb, double t);
+	/*! \brief  Returns delay compute specific formulation */
+	double tdelaySpecific(int em, int rec, int order, double trec);
 };
 
 /*!\} */ 

@@ -71,7 +71,7 @@ ConfigSim::~ConfigSim()
  * \arg tDisplay = 1000.0
  * \arg tDeltaTDIDelay = 0.0
  * \arg TDIInterp = LAG
- * \arg TDIInterpUtilVal = 20
+ * \arg TDIInterpVal = 20
  * \arg Armlength = #L0_m_default
  * \arg OrbStartTime = 0.0
  * \arg OrbInitRot = 0.0
@@ -105,7 +105,8 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
 	strcpy(XmlOutputFile,"None");
 	GlobalRandomSeed = -1;
     tStepPhy = 0.5;
-    tMax = 65736.0;
+	tOffset = 0.0;
+	settMax(65736.0);
     tStepMes = 1.0;
     tMemNoiseFirst = 5.0;
 	tMemNoiseLast = -30.0;
@@ -113,7 +114,7 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
 	tDisplay = -1.0;
 	tDeltaTDIDelay = 0.0;
 	TDIInterp = LAG;
-	TDIInterpUtilVal = 20;
+	TDIInterpVal = 20;
 	Armlength = L0_m_default;
 	OrbStartTime = 0.0;
 	OrbInitRot = 0.0;
@@ -151,6 +152,7 @@ void ConfigSim::DefaultConfig(char * NameConfigFile_n)
     ConfigFileName = NameConfigFile_n;
     Endian = 0 ;
 	Simulator = "LISACode";
+	strcpy(OrbFile, "Orbit_ESA.input.txt");
 	
 }
 
@@ -170,7 +172,7 @@ void ConfigSim::getGeometry(Geometry * & SCPos)
 			SCPos = new GeometryMLDC(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy);
 			break;
 		case 2:
-			SCPos = new GeometryFile(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy, "Orbit_ESA.input.txt");
+			SCPos = new GeometryFile(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy, OrbFile);
 			break;
 		default:
 			SCPos = new GeometryAnalytic(OrbStartTime, OrbInitRot, Armlength, OrbOrder, OrbApprox, tStepPhy);
@@ -276,6 +278,20 @@ vector<double> ConfigSim::getGenTDIPacksFact(int iGen)
     if((iGen<0)||(iGen>=TDIsPacksFact.size()))
         throw invalid_argument("ConfigSim::getGenTDIPacks : This TDI generator doesn't exist ! ");
     return(TDIsPacksFact[iGen]);
+}
+
+
+void ConfigSim::settMax(double tMax_n)
+{
+	tMax = tMax_n;
+	tDur = tMax - tOffset;
+}
+
+
+void ConfigSim::settDur(double tDur_n)
+{
+	tDur = tDur_n;
+	tMax = tOffset + tDur;
 }
 
 /*****************/
@@ -386,6 +402,10 @@ void ConfigSim::ReadASCIIFile()
 		if(scmp(Buf,"Time")){ 
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
+			if(scmp(Buf,"TimeOffset")){
+				ConfigFile >> tOffset;
+				//cout << " Pas en temps = " << tStepPhy << endl;
+			}
 			if(scmp(Buf,"StepPhysic")){
 				ConfigFile >> tStepPhy;
 				//cout << " Pas en temps = " << tStepPhy << endl;
@@ -396,6 +416,7 @@ void ConfigSim::ReadASCIIFile()
 			}
 			if(scmp(Buf,"Max")){
 				ConfigFile >> tMax;
+				settMax(tMax);
 				//cout << " Temps max = " << tMax << endl;
 			}
 			if(scmp(Buf,"NoiseStoreFirst")){
@@ -433,11 +454,11 @@ void ConfigSim::ReadASCIIFile()
 		/* Informations interpolation 
 		 ---------------------------*/
 		if(scmp(Buf,"Interpolation")){
-			TDIInterpUtilVal = 0.0;
+			TDIInterpVal = 0.0;
 			ConfigFile >> Buf; // Lecture de :
 			ConfigFile >> Buf;
 			if(scmp(Buf,"LAG")){
-				ConfigFile >> TDIInterpUtilVal;
+				ConfigFile >> TDIInterpVal;
 				TDIInterp = LAG;
 			}
 			ConfigFile >> Buf; // Verifie si la syntaxe est bonne c-a-d le ;
@@ -1468,7 +1489,7 @@ void ConfigSim::ReadASCIIFile()
 	cout << "  tDeltaTDIDelay = " << tDeltaTDIDelay << " s" << endl;
 	cout << "  tStepDisplay   = " << tDisplay << " s" << endl;
 	cout << "  NbMaxDelays    = " << NbMaxDelays << endl;
-	cout << "  InterpUtilVal  = " << TDIInterpUtilVal << endl;
+	cout << "  InterpUtilVal  = " << TDIInterpVal << endl;
 	cout << "  Orbits type    = " << OrbType << endl;
 	cout << "  Orbits approx  = " << OrbApprox << endl;
 	cout << "  Delay order    = " << OrbOrder << endl; 
@@ -1573,7 +1594,7 @@ void ConfigSim::ReadXMLFile()
 				for(param = ezxml_child(section,"Param"); param; param = param->next){
 					// Set time offset
 					if(strcmp(ezxml_attr(param,"Name"),"TimeOffset")==0){
-						TimeOffset = gXMLTime(param);
+						tOffset = gXMLTime(param);
 					}
 					// Set time step of measurement
 					if(strcmp(ezxml_attr(param,"Name"),"Cadence")==0){
@@ -1581,7 +1602,7 @@ void ConfigSim::ReadXMLFile()
 					}
 					// Set duration
 					if(strcmp(ezxml_attr(param,"Name"),"Duration")==0){
-						tMax = gXMLTime(param);
+						settDur(gXMLTime(param));
 					}
 					// **** Set used TDI generators ****
 					if(strcmp(ezxml_attr(param,"Name"),"Observables")==0){					
@@ -1828,8 +1849,8 @@ void ConfigSim::ReadXMLFile()
 								cout << "   x InterpType = " << TDIInterp << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"InterpValue")==0){
-								TDIInterpUtilVal = atoi(ezxml_txt(param));
-								cout << "   x InterpValue = " << TDIInterpUtilVal << endl;
+								TDIInterpVal = atoi(ezxml_txt(param));
+								cout << "   x InterpValue = " << TDIInterpVal << endl;
 							}
 							if(strcmp(ezxml_attr(param,"Name"),"DelayApprox")==0){
 								if(gXMLstring(param) == "On"){
@@ -1943,8 +1964,10 @@ void ConfigSim::ReadXMLFile()
 									OrbApprox = 0;
 								if(tmpStr == "Rigid")
 									OrbApprox = 1;
-								if(tmpStr == "Eccentric")
+								if(tmpStr == "Eccentric"){
 									OrbApprox = 2;
+									OrbOrder = -2;
+								}
 							}
 						}
 					}
@@ -2074,7 +2097,7 @@ void ConfigSim::ReadXMLFile()
 						
 						// *** Read Parameters for PostNewtonBinary
 						if(SourceType == "BlackHoleBinary"){
-							int PNtype;
+							int PNtype(2);
 							double M1, M2, tcoal, inc, dist; // Commun
 							double omega0(0.0), taud0(0.0), gw(1.0); // LISACode
 							double phase(0.0), phase0(0.0); // LISACode or MLDC 
@@ -2212,19 +2235,23 @@ void ConfigSim::ReadXMLFile()
 						// **** Read Parameters for Cusp
 						if(SourceType == "CosmicStringCusp"){
 							double Amplitude(1.0e-10), CentralTime(tMax/2.0), MaximumFrequency(0.1), TPad (900.0);
+							double ReqtDur(tDur);
 							for(param = ezxml_child(source,"Param"); param; param = param->next){
 								if(strcmp(ezxml_attr(param,"Name"),"Amplitude")==0)
 									Amplitude = atof(ezxml_txt(param));
 								if(strcmp(ezxml_attr(param,"Name"),"CentralTime")==0){
 									CentralTime = gXMLTime(param);
 								}
-								if(strcmp(ezxml_attr(param,"Name"),"Amplitude")==0)
+								if(strcmp(ezxml_attr(param,"Name"),"MaximumFrequency")==0)
 									MaximumFrequency = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"RequestDuration")==0)
+									ReqtDur = atof(ezxml_txt(param));
 							}
 							cout.precision(15);
+							TPad -= gettOffset(); 
 							cout << "  + GWCusp   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-							cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << endl;
-							GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, tMax, TPad));
+							cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << " RequestDuration=" << ReqtDur << " Tpad(+tOffset)=" << TPad << endl;
+							GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, ReqtDur, TPad));
 							NbSrc++;
 						}	
 						
@@ -2767,10 +2794,6 @@ void ConfigSim::ReadXMLFile()
 		
 		ezxml_free(tree);
 		
-		if(XmlOutputFile != "None"){
-			cout << endl << " ==========  Create XML Outputfile ==========" << endl << endl;
-			CreateXmlOutputFile();
-		}
 		
 		// Creation of tMemNoiseFirst and tMemNoiseLast
 		double OrderLagrangeNoise(7);
@@ -2791,24 +2814,31 @@ void ConfigSim::ReadXMLFile()
 			}
 			cout << endl;
 		}
+				
 		
 		// ** Default value for display time step
 		if(tDisplay<0.0)
-			tDisplay = tMax/200.0;
+			tDisplay = tDur/200.0;
 		
 		cout << "  ----------" << endl;
 		cout << "  Sources number = " << NbSrc << endl;
 		cout << "  tStepPhy       = " << tStepPhy << " s" << endl;
 		cout << "  tStepMes       = " << tStepMes << " s" << endl;
+		cout << "  tOffset        = " << tOffset << " s" << endl;
+		cout << "  tMax           = " << tMax << " s" << endl;
+		cout << "  tDuration      = " << tDur << " s" << endl;
 		cout << "  tDeltaTDIDelay = " << tDeltaTDIDelay << " s" << endl;
 		cout << "  tStepDisplay   = " << tDisplay << " s" << endl;
 		cout << "  NbMaxDelays    = " << NbMaxDelays << endl;
-		cout << "  InterpUtilVal  = " << TDIInterpUtilVal << endl;
+		cout << "  InterpUtilVal  = " << TDIInterpVal << endl;
 		cout << "  Orbits type    = " << OrbType << endl;
 		cout << "  Orbits approx  = " << OrbApprox << endl;
 		cout << "  Delay order    = " << OrbOrder << endl; 
 		
-		
+		if(XmlOutputFile != "None"){
+			cout << endl << " ==========  Create XML Outputfile ==========" << endl << endl;
+			CreateXmlOutputFile();
+		}
 	}
 	
 	catch( exception & e ) {       
@@ -2908,6 +2938,8 @@ void ConfigSim::AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string
 	string StreamType("<Stream Type=\""),Stream_end("</Stream>\n");
 	string xsil_end("</XSIL>\n");
 	
+	(*FichXML).precision(12);
+	
 	(*FichXML) << ind2 << "<XSIL Name=\"" << ObsDescr << "\" Type=\"TDIObservable\">"<< endl;
 	(*FichXML) << ind3 << ParamName <<"DataType\">"<<endl;
 	(*FichXML) << ind4 <<"FractionalFrequency"<< endl;
@@ -2920,11 +2952,11 @@ void ConfigSim::AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string
 	(*FichXML) << ind5 << gettStepMes() << endl;
 	(*FichXML) << ind4 << Param_end;
 	(*FichXML) << ind4 << ParamName << "Duration\" Unit=\"Second\">" << endl ;
-	(*FichXML) << ind5 << gettMax() << endl;
+	(*FichXML) << ind5 << tDur << endl;
 	(*FichXML) << ind4 << Param_end;
 	(*FichXML) << ind4 << ArrayName << ObsDescr << "\" Type=\"double\" Unit=\"Word\">" << endl;
 	(*FichXML) << ind5 << DimName <<"Length\">"<<endl;
-	(*FichXML) << ind6 << int((gettMax()-tOffset)/gettStepMes()+1) << endl;
+	(*FichXML) << ind6 << int(gettDur()/gettStepMes()) << endl;
 	(*FichXML) << ind5 << Dim_end;
 	(*FichXML) << ind5 << DimName <<"Records\">" << endl;
 	(*FichXML) << ind6 << NRec << endl;
@@ -3492,7 +3524,7 @@ double ConfigSim::tMinDelay()
  *
  * Memory time during which data must be saved for apply TDI interpolation is :
  * \f[ tMemNecInterpTDI =  \left\{ \begin{array}{ll}
- \big(2 + ceil(\frac{TDIInterpUtilVal}{2}) \big) \cdot tStepMes & \textrm{ if (TDIInterp = LAG)} \\
+ \big(2 + ceil(\frac{TDIInterpVal}{2}) \big) \cdot tStepMes & \textrm{ if (TDIInterp = LAG)} \\
  2 \cdot tStepMes & else  \end{array} \right. \f]
  *
  */
@@ -3500,7 +3532,7 @@ double ConfigSim::tMemNecInterpTDI()
 {
 	double tMemOtStep(2.0);
 	if(TDIInterp == LAG)
-		tMemOtStep += ceil(TDIInterpUtilVal/2.0);
+		tMemOtStep += ceil(TDIInterpVal/2.0);
 	return(tMemOtStep*tStepMes);
 }
 

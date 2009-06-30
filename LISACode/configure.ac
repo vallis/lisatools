@@ -1,10 +1,10 @@
 # $Id: configure.ac,v 1.6 2006/09/18 14:34:26 petiteau Exp $
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-AC_INIT(SLisa, 1.4.4, Antoine.Petiteau@aei.mpg.de)
+AC_INIT(SLisa, 1.4.5, Antoine.Petiteau@aei.mpg.de)
 AC_CONFIG_AUX_DIR([.])
 AC_CANONICAL_SYSTEM
-AM_INIT_AUTOMAKE(lisacode,1.4.4)
+AM_INIT_AUTOMAKE(lisacode,1.4.5)
 AC_CONFIG_HEADERS(config.h)
 
 # Checks for programs.

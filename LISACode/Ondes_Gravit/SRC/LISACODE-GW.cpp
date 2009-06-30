@@ -25,11 +25,15 @@
  */
 GW::GW()
 {
+	MT = new Tools;
 	DirProp.resize(3);
 	Beta = 0.0;
 	Lambda = 0.0;
 	AnglPol = 0.0;
 	CalculDirProp();
+	
+	FreqMin = -1.0;
+	FreqMax = -1.0;
 }
 
 /*! Inputs are checked:
@@ -43,6 +47,7 @@ GW::GW()
  */
 GW::GW(double Beta_n, double Lambda_n)
 {
+	MT = new Tools;
 	if ((Beta_n < -1*M_PI/2.0)||(Beta_n > 1.0*M_PI/2.0))
 		throw invalid_argument("GW: The Beta angle does not lie between - PI/2 and PI/2 !");
 	if ((Lambda_n<0.0)||(Lambda_n>2*M_PI))
@@ -52,6 +57,9 @@ GW::GW(double Beta_n, double Lambda_n)
 	Lambda = Lambda_n;
 	CalculDirProp();
 	AnglPol = 0.0;
+	
+	FreqMin = -1.0;
+	FreqMax = -1.0;
 }
 
 /*! Inputs are checked:
@@ -66,6 +74,7 @@ GW::GW(double Beta_n, double Lambda_n)
  */
 GW::GW(double Beta_n, double Lambda_n, double AnglPol_n)
 {
+	MT = new Tools;
 	if ((Beta_n < -1*M_PI/2.0)||(Beta_n > 1.0*M_PI/2.0))
 		throw invalid_argument("GW: The Beta angle does not lie between - PI/2 and PI/2 !");
 	if ((Lambda_n<0.0)||(Lambda_n>2*M_PI))
@@ -77,6 +86,9 @@ GW::GW(double Beta_n, double Lambda_n, double AnglPol_n)
 	Lambda = Lambda_n;
 	CalculDirProp();
 	AnglPol = AnglPol_n;
+	
+	FreqMin = -1.0;
+	FreqMax = -1.0;
 }
 
 
@@ -233,5 +245,6 @@ void GW::DispTempVal(double t, ostream * OutDisp)
 {
 	
 }
+
 
 // end of LISACODE-GW.cpp

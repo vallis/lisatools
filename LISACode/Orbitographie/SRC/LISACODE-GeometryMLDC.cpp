@@ -145,8 +145,18 @@ void GeometryMLDC::init(double t0_n, double rot0_n, double L0m_n, int order_defa
 		srot[nb-1]=sin(rot[nb-1]);
 	}
 	
-	sqrt_3 = sqrt(3.);
 	e_mldc = 0.00964838;
+	
+	L0s = L0m/c_SI;
+	
+	sqrt_3 = sqrt(3.0);
+	i32 = 1.0/32.0;
+	r1532 = 15.0/32.0;
+	pi3o2 = 3.0*M_PI/2.0;
+	pi2o3 = 2.0*M_PI/3.0;
+	pi4o3 = 4.0*M_PI/3.0;
+	
+	
 	
 	for(int i=1; i<4; i++){
 		SCposStore[i-1] = position(i,0.0);
@@ -159,7 +169,7 @@ void GeometryMLDC::init(double t0_n, double rot0_n, double L0m_n, int order_defa
 		//cout << " L" << i << i%3+1 << endl;
 	}
 	
-	cout << " --> OK" << endl;
+	//cout << " --> OK" << endl;
 }
 
 
@@ -195,16 +205,18 @@ Vect GeometryMLDC::position(int nb, double t)
 	s_beta=srot[nb-1];
 	sq_e_mldc=pow(e_mldc,2);
 	
+	// TO DO : IMPLEMENT Static(0) and Rigid(1) (see SyntheticLISA doc)
+	
 	if(Approx<=1){
 		//cout << "1st order in excentricity" << endl;
-		// ** 1st order in excentricity
+		// ** 1st order in excentricity  : Eccentric
 		
 		r.p[0] = au_m*(c_alpha+e_mldc*(s_alpha*c_alpha*s_beta-(1+s_alpha*s_alpha)*c_beta));
 		r.p[1] = au_m*(s_alpha+e_mldc*(s_alpha*c_alpha*c_beta-(1+c_alpha*c_alpha)*s_beta));
 		r.p[2] = -au_m*e_mldc*sqrt_3*cos(alpha-beta);
 		
 	}else{
-		// ** 2nd order in excentricity **
+		// ** 2nd order in excentricity  : Eccentric2
 		//cout << "2nd order in excentricity " << endl;		
 		
 		/*
@@ -220,16 +232,16 @@ Vect GeometryMLDC::position(int nb, double t)
 		 + sqrt_3 * au_m * sq_e_mldc * ( cos(alpha-beta)*cos(alpha-beta) + 2.0*sin(alpha-beta)*sin(alpha-beta) );
          */
 		
-		r.p[0] =   0.5 * au_m * e_mldc * ( cos(2.0*alpha-beta) - 3.0*c_beta )
-		+ 0.125 * au_m * sq_e_mldc * ( 3.0*cos(3.0*alpha-2.0*beta) - 5.0*( 2.0*c_alpha+cos(alpha-2.0*beta) ) )
-		+ au_m * c_alpha;
+		r.p[0] =  au_m * ( 0.5 * e_mldc * ( cos(2.0*alpha-beta) - 3.0*c_beta )
+		+ 0.125 * sq_e_mldc * ( 3.0*cos(3.0*alpha-2.0*beta) - 5.0*( 2.0*c_alpha+cos(alpha-2.0*beta) ) )
+		+  c_alpha ) ;
 		
-		r.p[1] =   0.5 * au_m * e_mldc * ( sin(2.0*alpha-beta) - 3.0*s_beta)
-		+ 0.125 * au_m * sq_e_mldc * ( 3.0*sin(3.0*alpha-2.0*beta) - 5.0*( 2.0*s_alpha-sin(alpha-2.0*beta) ) )
-		+ au_m * s_alpha;
+		r.p[1] =   au_m * ( 0.5 * e_mldc * ( sin(2.0*alpha-beta) - 3.0*s_beta)
+		+ 0.125 * sq_e_mldc * ( 3.0*sin(3.0*alpha-2.0*beta) - 5.0*( 2.0*s_alpha-sin(alpha-2.0*beta) ) )
+		+  s_alpha ) ;
 		
-		r.p[2] = - sqrt_3 * au_m * e_mldc * cos(alpha-beta) 
-		+ sqrt_3 * au_m * sq_e_mldc * ( cos(alpha-beta)*cos(alpha-beta) + 2.0*sin(alpha-beta)*sin(alpha-beta) );
+		r.p[2] = - au_m * ( sqrt_3 * e_mldc * cos(alpha-beta) 
+		+ sqrt_3 * sq_e_mldc * ( cos(alpha-beta)*cos(alpha-beta) + 2.0*sin(alpha-beta)*sin(alpha-beta) ) );
 	}
 
 	/*		cout << "Pos : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<r.p[0]<<"  "<<r.p[1]<<"  "<<r.p[2]<< "  "<<  endl;
@@ -262,16 +274,19 @@ Vect GeometryMLDC::velocity(int nb, double t)
 	c_beta=crot[nb-1] ; 
 	s_beta=srot[nb-1];
 	
+	// TO DO : IMPLEMENT Static(Approx=0, OriginalLISA()) and Rigid(Approx=1, CircularRotating(0.0,1.5*pi,-1)) (see SyntheticLISA doc)
+	
+	
 	if(Approx<=1){
 		//cout << "1st" << endl;
-		// ** 1st order in excentricity
+		// ** 1st order in excentricity : Eccentric
 	    v.p[0] = au_m*(-s_alpha+e_mldc*((c_alpha*c_alpha-s_alpha*s_alpha)*s_beta-2*s_alpha*c_alpha*c_beta))*d_alpha;
 	    v.p[1] = au_m*( c_alpha+e_mldc*((c_alpha*c_alpha-s_alpha*s_alpha)*c_beta+2*c_alpha*s_alpha*s_beta))*d_alpha;
 	    v.p[2] = au_m*e_mldc*sqrt_3*sin(alpha-beta)*d_alpha;
 	    //cout << "Vel old : t,nb,x,y,z =" << t << "  "<<nb<<"  "<<v.p[0]<<"  "<<v.p[1]<<"  "<<v.p[2]<< endl;
 	    //vx_old=v.p[0] ; vy_old=v.p[1] ; vz_old=v.p[2] ;
 	}else{
-		// ** 2nd order in excentricity **
+		// ** 2nd order in excentricity  : Eccentric2
 		//cout << "2nd" << endl;
 		v.p[0] = 0.5*au_m*e_mldc*(-2*sin(2.0*alpha-beta))
 	    +0.125*au_m*pow(e_mldc,2)*(-9.0*sin(3.0*alpha-2.0*beta)-5.0*(-2.0*sin(alpha)-sin(alpha-2.0*beta)))
@@ -297,6 +312,55 @@ Vect GeometryMLDC::velocity(int nb, double t)
 }
 
 
+double GeometryMLDC::tdelaySpecific(int em, int rec, int order, double trec)
+{
+	double xi0(rot0+pi3o2+t0/omega);
+	double omegat(omega*trec);
+	int signArm;
+	double deltaArm(xi0);
+	
+	// THERE IS STILL A DIFFERENCE WITH SYNTHETICLISA : NEED TO UNDERSTAND IT
+	
+	if(em == 1){
+		if(rec == 2){
+			deltaArm += pi4o3;
+			signArm = 1.0;
+		}
+		if(rec == 3){
+			deltaArm += pi2o3;
+			signArm = -1.0;
+		}
+	}
+	if(em == 2){
+		if(rec == 3){
+			signArm = 1.0;
+		}
+		if(rec == 1){
+			deltaArm += pi4o3;
+			signArm = -1.0;
+		}
+	}
+	if(em == 3){
+		if(rec == 1){
+			deltaArm += pi2o3;
+			signArm = 1.0;
+		}
+		if(rec == 2){
+			signArm = -1.0;
+		}
+	}		
+	
+	if(order == -1){
+		// ** Rigid
+		//cout << signArm << " " << signArm*omega*Rgc/c_SI << " " << omegat - deltaArm  << " " << -L0s * (1.0 + (signArm*omega*Rgc/c_SI) * sin(omegat - deltaArm)) << endl;
+		return ( -L0s * (1.0 + (signArm*omega*Rgc/c_SI) * sin(omegat - deltaArm) )  );
+	}else{
+		// ** Eccentric
+		//if((trec>-335)&&(trec<-295))
+		//	cout << trec << " " << em << "->" << rec << " : " << signArm << " " << signArm*omega*Rgc/c_SI << " " << omegat - deltaArm  << " " << L0s << " " << i32*e_mldc*sin(3.0*(omegat-xi0)) << " " << (signArm*omega*Rgc/c_SI - r1532*e_mldc) << " " << -L0s * (1.0 + i32*e_mldc*sin(3.0*(omegat-xi0)) + (signArm*omega*Rgc/c_SI - r1532*e_mldc) * sin(omegat - deltaArm) )  << endl;
+		return ( -L0s * (1.0 + i32*e_mldc*sin(3.0*(omegat-xi0)) + (signArm*omega*Rgc/c_SI - r1532*e_mldc) * sin(omegat - deltaArm) )  );
+	}
+}
 
 //end of LISACODE-GeometryMLDC.cpp
 

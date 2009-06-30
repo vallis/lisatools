@@ -29,7 +29,7 @@
 //Version
 /*!\brief Simulator Version */
 const char LCVersion[] = "1.4.5"; // Version du simulateur
-const char DateOfLastUpdate[] = "14/05/2009"; // Version du simulateur
+const char DateOfLastUpdate[] = "16/06/2009"; // Version du simulateur
 
 //Geometrie
 /*!\brief Arms length (distance between every pair of satellites) in meters.*/
@@ -52,8 +52,6 @@ const double la0Laser_m = 1.064e-6; // Longueur d'onde nominale des lasers en m
 const double nu0Laser_Hz = c_SI/la0Laser_m; // Frequence nominale des lasers en Hz
 /*!\brief Lasers power in Watts.*/
 const double LaserPower_W_default = 1 ; // Puissance du laser en Watt
-
-
 
 #endif // __LISACONSTANTS_H
 

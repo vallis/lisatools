@@ -83,6 +83,8 @@ public:
 	Vect position(int nb, double t);
 	// Returns the velocity of the spacecraft in the barycentric frame for the time t (s) as argument and spacecraft number (1, 2 or 3)
 	Vect velocity(int nb, double t);
+	/*! \brief  Returns delay compute specific formulation */
+	double tdelaySpecific(int em, int rec, int order, double trec);
 };
 
 /*!\} */ 

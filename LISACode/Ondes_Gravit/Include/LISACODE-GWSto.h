@@ -106,7 +106,7 @@ class GWSto : public GW
 		 * \arg   Fac_Hp_n       : In Multiplicatif parameter on the amplitude of Hp.
 		 * \arg   Fac_Hc_n       : In Multiplicatif parameter on the amplitude of Hc.
 		 */
-		GWSto( 	double Beta_n,
+		GWSto(double Beta_n,
 			  double Lambda_n,
 			  double tStep_n,
 			  double tDurAdd_n,

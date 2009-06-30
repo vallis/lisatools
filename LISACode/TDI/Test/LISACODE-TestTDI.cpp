@@ -35,6 +35,8 @@ using namespace std;
 int main (int argc, char * const argv[])
 {
 	try {
+		Tools MT;
+		
 		cout << endl << "   *********************";
 		cout << endl << "   *                   *";
 		cout << endl << "   *     Test TDI      *";
@@ -106,7 +108,7 @@ int main (int argc, char * const argv[])
 		//Declaration des generateurs TDI
 		cout << "  - TDI... " << endl;
 		// Creation of Eta signals
-		TDI_InterData Eta(DelayTDI, & RecordPDPM, tMemTDI, tTDIShift/2.0, false, Config.getTDIInterp(), Config.getTDIInterpUtilVal());
+		TDI_InterData Eta(DelayTDI, & RecordPDPM, tMemTDI, tTDIShift/2.0, false, Config.getTDIInterp(), Config.getTDIInterpVal());
 		// Acceleration module of TDI
 		TDITools TDIQuickMod(DelayTDI, false);
 		// Creation of generators
@@ -114,7 +116,7 @@ int main (int argc, char * const argv[])
 		int NbGenTDI (Config.NbGenTDI());
 		for(int iGen=0; iGen<NbGenTDI; iGen++){
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " ...";
-			TDIGens.push_back(TDI(DelayTDI, & Eta, & RecordTDI, 0, iGen, Config.getGenTDIPacks(iGen), & TDIQuickMod));
+			TDIGens.push_back(TDI(&MT, DelayTDI, & Eta, & RecordTDI, 0, iGen, Config.getGenTDIPacks(iGen), & TDIQuickMod));
 			cout << "    Creation of " << Config.getNameGenTDI(iGen) << " --> OK" << endl;
 		}
 		// Ecart entre l'instant de lecture des donnees et l'instant d'application de TDI

@@ -79,7 +79,7 @@ GWFastSpinBBH::GWFastSpinBBH(double Toffset_n, double Tobs_n)
 	setParam(12, 3.1710410372); // phic
 	setParam(13, 2.02230588043); // InitialPolarAngleL
 	setParam(14, 4.74885787067); // InitialAzimuthalAngleL
-
+	
 	TaperApplied = 7.0;
 	AmplPNorder = 0.0;
 	Tobs = Tobs_n;
@@ -97,26 +97,26 @@ GWFastSpinBBH::GWFastSpinBBH(double Toffset_n, double Tobs_n)
 }
 
 GWFastSpinBBH::GWFastSpinBBH (double Beta_n,
-					  double Lambda_n, 
-					  double Mass1_n,                
-					  double Mass2_n,                 
-					  double CoalescenceTime_n,
-					  double Distance_n,
-					  double Spin1_n,
-					  double Spin2_n,
-					  double PolarAngleOfSpin1_n,
-					  double PolarAngleOfSpin2_n,    
-					  double AzimuthalAngleOfSpin1_n,
-					  double AzimuthalAngleOfSpin2_n,
-					  double PhaseAtCoalescence_n,
-					  double InitialPolarAngleL_n,
-					  double InitialAzimuthalAngleL_n,
-					  double AmplPNorder_n,
-					  double Toffset_n,
-					  double Tobs_n,
-					  double TaperApplied_n,
-					  double TaperSteepness_n,
-					  double Rmin_n) 
+							  double Lambda_n, 
+							  double Mass1_n,                
+							  double Mass2_n,                 
+							  double CoalescenceTime_n,
+							  double Distance_n,
+							  double Spin1_n,
+							  double Spin2_n,
+							  double PolarAngleOfSpin1_n,
+							  double PolarAngleOfSpin2_n,    
+							  double AzimuthalAngleOfSpin1_n,
+							  double AzimuthalAngleOfSpin2_n,
+							  double PhaseAtCoalescence_n,
+							  double InitialPolarAngleL_n,
+							  double InitialAzimuthalAngleL_n,
+							  double AmplPNorder_n,
+							  double Toffset_n,
+							  double Tobs_n,
+							  double TaperApplied_n,
+							  double TaperSteepness_n,
+							  double Rmin_n) 
 : GW(Beta_n, Lambda_n, 0.0)
 {
 	initNULL();
@@ -184,7 +184,6 @@ GWFastSpinBBH::~GWFastSpinBBH ()
 // **********************
 // **  Access methods  **
 // **********************
-
 void GWFastSpinBBH::setParam(int iP, double Param_n){
 	switch (iP) {
 		case 0:
@@ -395,6 +394,8 @@ void GWFastSpinBBH::initNULL()
 	sigmay2 = NULL;
 	thomasy2 = NULL;
 	uspline = NULL;
+	
+	tLastCompute = -1.0e30;
 }
 
 
@@ -523,8 +524,32 @@ void GWFastSpinBBH::init()
 	bool laststep;
 	int NbVecLength(1);
 	
-	cout.precision(13);
-	cout << "   --> Initialisation of FastBBH (compute precession for " << Tobs << " s starting at " << Toffset << " s ) ... ";
+	//if(MT->DispScreen()){
+	//	cout.precision(13);
+	//	cout << "   --> Initialisation of FastBBH (compute precession for " << Tobs << " s starting at " << Toffset << " s ) ... ";
+	//}
+	
+	/*
+	cout << endl;
+	cout <<  "  + Beta    = " << Beta << endl;
+	cout <<  "  + Lambda  = " << Lambda << endl;
+	cout <<  "  + m1      = " << m1 << endl;
+	cout <<  "  + m2    = " << m2 << endl;
+	cout <<  "  + tc    = " << tc << endl;
+	cout <<  "  + DL    = " << DL << endl;
+	cout <<  "  + chi1  = " << chi1 << endl;
+	cout <<  "  + chi2  = " << chi2 << endl;
+	cout <<  "  + PolarAngleOfSpin1      = " << PolarAngleOfSpin1 << endl;
+	cout <<  "  + PolarAngleOfSpin2      = " << PolarAngleOfSpin2 << endl;
+	cout <<  "  + AzimuthalAngleOfSpin1  = " << AzimuthalAngleOfSpin1 << endl;
+	cout <<  "  + AzimuthalAngleOfSpin2  = " << AzimuthalAngleOfSpin2 << endl;
+	cout <<  "  + phic                   = " << phic << endl;
+	cout <<  "  + InitialPolarAngleL      = " << InitialPolarAngleL << endl;
+	cout <<  "  + InitialAzimuthalAngleL  = " << InitialAzimuthalAngleL << endl;
+	cout <<  "  + Mchirp  = " << Mchirp << endl;
+	cout <<  "  + mu      = " << mu << endl;
+	cout <<  "  + eta     = " << eta << endl;
+	*/
 	
 	
 	xmax = 1.0/Rmin;
@@ -550,9 +575,9 @@ void GWFastSpinBBH::init()
 	p20 = -pow(fac,0.125);		// - fac^(1/8)
 	p200 = p20*(9275495./7225344.+284875./129024.*eta+1855./1024.*eta*eta); // - (9275495/7225344 + 284875/129024 eta + 1855/1024 eta^2) fac^(1/8)
 	
-	printf("\nm1 = %.12e   m2 = %.12e    tc = %.12e   DL =  %.12e   x1 = %.12e    x2 = %.12e \n",	m1, m2, tc, DL, chi1, chi2);
-	printf("theta = %.12e   thetaL = %.12e  thS1 = %.12e  thS2  = %.12e \n", M_PI - Beta, InitialPolarAngleL, PolarAngleOfSpin1, PolarAngleOfSpin2);
-	printf("phi = %.12e   phiL = %.12e  phiS1 = %.12e   phiS2 = %.12e  phic = %.12e \n", phi, phiL0, phiS10, phiS20, phic);
+	//printf("\nm1 = %.12e   m2 = %.12e    tc = %.12e   DL =  %.12e   x1 = %.12e    x2 = %.12e \n",	m1, m2, tc, DL, chi1, chi2);
+	//printf("theta = %.12e   thetaL = %.12e  thS1 = %.12e  thS2  = %.12e \n", M_PI - Beta, InitialPolarAngleL, PolarAngleOfSpin1, PolarAngleOfSpin2);
+	//printf("phi = %.12e   phiL = %.12e  phiS1 = %.12e   phiS2 = %.12e  phic = %.12e \n", phi, phiL0, phiS10, phiS20, phic);
 	
 	// Sky position:
 	
@@ -600,6 +625,7 @@ void GWFastSpinBBH::init()
 	tfinal = tmax/TSUN;
 	
 	f = Freq(0.0, Mtot, Mchirp, eta, beta, sigma, tc);
+	FreqMin = f;
 	
 	// Initial orbital radius
 	r = pow(Mtot,1./3.)/pow(M_PI*f*TSUN,2./3.);
@@ -725,7 +751,6 @@ void GWFastSpinBBH::init()
 				tcurrent += oldh;
 			
 			index++;
-			
 			timevec[index] = tcurrent*TSUN;
 			
 			LdotS1 = calcLdotS1(LSvals);
@@ -771,8 +796,9 @@ void GWFastSpinBBH::init()
 			throw invalid_argument("GWFastSpinBBH::init : Size of data vectors is too much small : change RK_VECLENGTH");
 		}
     }
-	// ** End of integration
 	
+	// ** End of integration
+	FreqMax = f;
 	
 	idxm = index;
 	
@@ -787,18 +813,21 @@ void GWFastSpinBBH::init()
 	// End precession. 
 	
 	/*
-	FILE * TestOutFile;
-	TestOutFile = fopen("TestOutGWFastSpinBBH.txt", "w");
-	for(int i = 0; i<idxm; i++){
-		fprintf(TestOutFile, "%d %e %e %e %e %e %e %e %e %e %e %e %e\n", i,timevec[i],mulvec[i],sphilvec[i],cphilvec[i],betavec[i],sigmavec[i],thomasvec[i],muly2[i],sphily2[i],cphily2[i],betay2[i],sigmay2[i],thomasy2[i]);
-	}
-	fclose(TestOutFile);
-	*/
-	 
+	 FILE * TestOutFile;
+	 TestOutFile = fopen("TestOutGWFastSpinBBH.txt", "w");
+	 for(int i = 0; i<idxm; i++){
+	 fprintf(TestOutFile, "%d %e %e %e %e %e %e %e %e %e %e %e %e\n", i,timevec[i],mulvec[i],sphilvec[i],cphilvec[i],betavec[i],sigmavec[i],thomasvec[i],muly2[i],sphily2[i],cphily2[i],betay2[i],sigmay2[i],thomasy2[i]);
+	 }
+	 fclose(TestOutFile);
+	 */
+	
 	timeCur = -1.0e30;
 	idxcur = 0;
 	xold = 0.0;
-	cout << " --> OK" << endl;
+	//if(MT->DispScreen())
+	//	cout << " --> OK" << endl;
+	NAmpShared = 0;
+	
 }
 
 
@@ -827,7 +856,6 @@ void GWFastSpinBBH::AmpShared(double t)
 		if (t <= tmax) // Make sure we have data for the point.
 		{
 			// ** Interpolation
-			
 			while(t> timevec[idxcur+1]){
 				idxcur++;
 			}
@@ -835,7 +863,7 @@ void GWFastSpinBBH::AmpShared(double t)
 				idxcur--;
 				if(idxcur<0){
 					cerr << "Required time is " << t << " s and first time of precession data is " << timevec[0] << " s." << endl;
-					throw invalid_argument("GWFastSpinBBH::AmpShared : The required time is os small !");
+					throw invalid_argument("GWFastSpinBBH::AmpShared : The required time is too small !");
 				}
 			}
 			
@@ -914,46 +942,46 @@ void GWFastSpinBBH::AmpShared(double t)
 				{
 					/* 1 PN correction */
 					shp += -sx*Ax*(cPhi[2]*((19.0+9.0*ci2-2.0*ci4)-eta*(19.0-11.0*ci2-6.0*ci4))/6.0
-								  -4.0*cPhi[4]*si2*(1.0+ci2)*(1.0-3.0*eta)/3.0);
+								   -4.0*cPhi[4]*si2*(1.0+ci2)*(1.0-3.0*eta)/3.0);
 					shc += sx*Ax*(sPhi[2]*ci*((17.0-4.0*ci2)-eta*(13.0-12.0*ci2))/3.0
-								 -8.0*sPhi[4]*(1.0-3.0*eta)*ci*si2/3.0);
+								  -8.0*sPhi[4]*(1.0-3.0*eta)*ci*si2/3.0);
 				}
 				
 				if(AmplPNorder > 1.0)
 				{
 					/* 1.5 PN correction */
 					shp += -xrt*sx*Ax*((dm*si/192.0)*(cPhi[1]*((57.0+60.0*ci2-ci4)-2.0*eta*(49.0-12.0*ci2-ci4))
-													 -27.0*cPhi[3]*((73.0+40.0*ci2-9.0*ci4)-2.0*eta*(25.0-8.0*ci2-9.0*ci4))/2.0
-													 +625.0*cPhi[5]*(1.0-2.0*eta)*si2*(1.0+ci2)/2.0)
-									  -TPI*(1.0+ci2)*cPhi[2]);
+													  -27.0*cPhi[3]*((73.0+40.0*ci2-9.0*ci4)-2.0*eta*(25.0-8.0*ci2-9.0*ci4))/2.0
+													  +625.0*cPhi[5]*(1.0-2.0*eta)*si2*(1.0+ci2)/2.0)
+									   -TPI*(1.0+ci2)*cPhi[2]);
 					shc += xrt*sx*Ax*((dm*si*ci/96.0)*(sPhi[1]*((63.0-5.0*ci2)-2.0*eta*(23.0-5.0*ci2))
-													  -27.0*sPhi[3]*((67.0-15.0*ci2)-2.0*eta*(19.0-15.0*ci2))/2.0
-													  +625.0*sPhi[5]*(1.0-2.0*eta)*si2/2.0)
-									 -4.0*M_PI*ci*sPhi[2]);
+													   -27.0*sPhi[3]*((67.0-15.0*ci2)-2.0*eta*(19.0-15.0*ci2))/2.0
+													   +625.0*sPhi[5]*(1.0-2.0*eta)*si2/2.0)
+									  -4.0*M_PI*ci*sPhi[2]);
 				}
 				
 				if(AmplPNorder > 1.5)
 				{
 					/* 2 PN correction */
 					shp += -sx*sx*Ax*(cPhi[2]*((22.0 + (396.0 * ci2) + (145.0 * ci4) - (5.0 * ci6))
-											 +5.0*eta*(706.0 - (216.0 * ci2) - (251.0 * ci4) + (15.0 * ci6))/3.0
-											 -5.0*eta*eta*(98.0 - (108.0 * ci2) + (7.0 * ci4) + (5.0 * ci6)))/120.0
-									+cPhi[4]*2.0*si2*((59.0 + (35.0 * ci2) - (8.0 * ci4)) 
-													  -5.0*eta*(131.0 + (59.0 * ci2) - (24.0 * ci4))/3.0
-													  +5.0*eta*eta*(21.0 - (3.0 * ci2) - (8.0 * ci4)))/15.0
-									-cPhi[6]*81.0*si4*(1.0+ci2)*(1.0-5.0*eta+5.0*eta*eta)/40.0
-									+(dm*si/40.0)*(sPhi[1]*(11.0 + (7.0 * ci2) + (10.0 * (5.0+ci2)*ln2))
-												   -cPhi[1]*5.0*M_PI*(5.0+ci2)
-												   -sPhi[3]*27.0*(7.0-10.0*ln32)*(1.0+ci2)
-												   +cPhi[3]*135.0*M_PI*(1.0+ci2)));
+											   +5.0*eta*(706.0 - (216.0 * ci2) - (251.0 * ci4) + (15.0 * ci6))/3.0
+											   -5.0*eta*eta*(98.0 - (108.0 * ci2) + (7.0 * ci4) + (5.0 * ci6)))/120.0
+									  +cPhi[4]*2.0*si2*((59.0 + (35.0 * ci2) - (8.0 * ci4)) 
+														-5.0*eta*(131.0 + (59.0 * ci2) - (24.0 * ci4))/3.0
+														+5.0*eta*eta*(21.0 - (3.0 * ci2) - (8.0 * ci4)))/15.0
+									  -cPhi[6]*81.0*si4*(1.0+ci2)*(1.0-5.0*eta+5.0*eta*eta)/40.0
+									  +(dm*si/40.0)*(sPhi[1]*(11.0 + (7.0 * ci2) + (10.0 * (5.0+ci2)*ln2))
+													 -cPhi[1]*5.0*M_PI*(5.0+ci2)
+													 -sPhi[3]*27.0*(7.0-10.0*ln32)*(1.0+ci2)
+													 +cPhi[3]*135.0*M_PI*(1.0+ci2)));
 					shc += sx*sx*Ax*(sPhi[2]*ci*(68.0 + (226.0 * ci2) - (15.0 * ci4)
-											   +5.0*eta*(572.0 - (490.0 * ci2) + (45.0 * ci4))/3.0
-											   -5.0*eta*eta*(56.0 - (70.0 * ci2) + (15.0 * ci4)))/60.0
-								   +sPhi[4]*4.0*ci*si2*((55.0-12.0*ci2)-5.0*eta*(119.0-36.0*ci2)/3.0
-														+5.0*eta*eta*(17.0-12.0*ci2))/15.0
-								   -sPhi[6]*81.0*ci*si4*(1.0-5.0*eta+5.0*eta*eta)/20.0
-								   -(dm*3.0*si*ci/20.0)*(cPhi[1]*(3.0+10.0*ln2)+sPhi[1]*5.0*M_PI
-														 -cPhi[3]*9.0*(7.0-10.0*ln32)-sPhi[3]*45.0*M_PI));        
+												 +5.0*eta*(572.0 - (490.0 * ci2) + (45.0 * ci4))/3.0
+												 -5.0*eta*eta*(56.0 - (70.0 * ci2) + (15.0 * ci4)))/60.0
+									 +sPhi[4]*4.0*ci*si2*((55.0-12.0*ci2)-5.0*eta*(119.0-36.0*ci2)/3.0
+														  +5.0*eta*eta*(17.0-12.0*ci2))/15.0
+									 -sPhi[6]*81.0*ci*si4*(1.0-5.0*eta+5.0*eta*eta)/20.0
+									 -(dm*3.0*si*ci/20.0)*(cPhi[1]*(3.0+10.0*ln2)+sPhi[1]*5.0*M_PI
+														   -cPhi[3]*9.0*(7.0-10.0*ln32)-sPhi[3]*45.0*M_PI));        
 				}
 				
 				
@@ -967,25 +995,41 @@ void GWFastSpinBBH::AmpShared(double t)
 				//cout << psi << " " << shp << " " << shc;
 				//cout << endl;
 			}
+			/*
+			else{
+				//cout << "t  = " << t << " : shp = " << shp << " , shc = " << shc << endl;
+				shp = 0.0;
+				shc = 0.0;
+			}
+			*/
 			
 		}else{
 			shp = 0.0;
 			shc = 0.0;
 		}
 	}
+	//cout << "At t = " << t << " : NAmpShared = " << NAmpShared++;
 }
 
 
 double GWFastSpinBBH::hp(double t)
 {
-	AmpShared(t);
+	if(fabs(t-tLastCompute) > PRECISION){
+		AmpShared(t);
+		//cout << " -> hp" << endl; 
+		tLastCompute = t;
+	}
 	return (-shp*c2psi - shc*s2psi) ;
 }
 
 
 double GWFastSpinBBH::hc(double t)
 {
-	AmpShared(t);
+	if(fabs(t-tLastCompute) > PRECISION){
+		AmpShared(t);
+		//cout << " -> hc" << endl;
+		tLastCompute = t;
+	}
 	return (shp*s2psi - shc*c2psi);
 }
 
@@ -997,14 +1041,14 @@ void GWFastSpinBBH::DispTempVal(double t, ostream * OutDisp)
 
 
 /*Couple GWFastSpinBBH::hbin(double t)
-{
-	Couple hbin;
-	AmpShared(t);
-	hbin.x = -shp*c2psi - shc*s2psi;
-	hbin.y = shp*s2psi - shc*c2psi;
-	return hbin;
-}
-*/
+ {
+ Couple hbin;
+ AmpShared(t);
+ hbin.x = -shp*c2psi - shc*s2psi;
+ hbin.y = shp*s2psi - shc*c2psi;
+ return hbin;
+ }
+ */
 
 double GWFastSpinBBH::Freq(double t, double Mtot, double Mchirp, double eta, double beta, double sigma, double tc)  
 {

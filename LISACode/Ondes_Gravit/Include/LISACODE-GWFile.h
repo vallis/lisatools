@@ -100,7 +100,7 @@ public:
 	/*! \brief Return \f$ h_{\times}(t) \f$ */
 	double hc(double t);
 	/*! \brief Display ...  [for specific use or debug]\f$ */
-	virtual void DispTempVal(double t, ostream * OutDisp);
+	void DispTempVal(double t, ostream * OutDisp);
 	
 };
 

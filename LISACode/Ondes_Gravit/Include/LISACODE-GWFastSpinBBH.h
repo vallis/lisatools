@@ -31,6 +31,8 @@ using namespace std;
  */
 /*! \brief Gravitational Waves parameters for a spinning black holes binary system are defined in this class.
  */
+	
+
 
 class GWFastSpinBBH : public GW
 	{
@@ -139,6 +141,10 @@ class GWFastSpinBBH : public GW
 		double D1, D2, D3, D4, D5, D6;
 		double RK_H, RK_EPS;
 		
+		int NAmpShared;
+		
+		double tLastCompute;
+		
 	public:
 		// ** Constructor **
 		/*! \brief Constructs an instance and initializes it with default values.*/
@@ -149,26 +155,26 @@ class GWFastSpinBBH : public GW
 		
 		/*! \brief Constructs an instance and initializes it with values in arguments.*/
 		GWFastSpinBBH (double Beta_n,
-				   double Lambda_n, 
-				   double Mass1_n,                
-				   double Mass2_n,                 
-				   double CoalescenceTime_n,
-				   double Distance_n,
-				   double Spin1_n,
-				   double Spin2_n,
-				   double PolarAngleOfSpin1_n,
-				   double PolarAngleOfSpin2_n,    
-				   double AzimuthalAngleOfSpin1_n,
-				   double AzimuthalAngleOfSpin2_n,
-				   double PhaseAtCoalescence_n,
-				   double InitialPolarAngleL_n,
-				   double InitialAzimuthalAngleL_n,
-				   double AmplPNorder_n,
-				   double Toffset_n,
-				   double Tobs_n,
-				   double TaperApplied_n,
-				   double TaperSteepness_n,
-				   double Rmin_n); 
+					   double Lambda_n, 
+					   double Mass1_n,                
+					   double Mass2_n,                 
+					   double CoalescenceTime_n,
+					   double Distance_n,
+					   double Spin1_n,
+					   double Spin2_n,
+					   double PolarAngleOfSpin1_n,
+					   double PolarAngleOfSpin2_n,    
+					   double AzimuthalAngleOfSpin1_n,
+					   double AzimuthalAngleOfSpin2_n,
+					   double PhaseAtCoalescence_n,
+					   double InitialPolarAngleL_n,
+					   double InitialAzimuthalAngleL_n,
+					   double AmplPNorder_n,
+					   double Toffset_n,
+					   double Tobs_n,
+					   double TaperApplied_n,
+					   double TaperSteepness_n,
+					   double Rmin_n); 
 		
 		// ** Destructor **
 		~GWFastSpinBBH (); 

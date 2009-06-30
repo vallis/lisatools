@@ -36,31 +36,35 @@ using namespace std;
  */
 
 class  TDITools
-{
-protected:
-  /*!\brief Pointer to the list of delay's lengths. */
-  Memory * TDelay;
-  /*! \brief Memory of the 3 delays for the current time. */
-  double DelayMem[3];
-  /*! \brief If it's TRUE, approximations are done in order to compute delays more quickly. */
-  bool RapidOption; //If it's true, the compute of the delays is approximated to accelerate compute
-	
-public:
-	/* Constructor */
-	TDITools();
-	TDITools(Memory * TDelay_n, bool RapidOption_n);
-	virtual ~TDITools();
-	
-	/* Access methods */
-	double getDelay(int IndexDelay); // Return delay value for the specified index
-
-	/*! \brief Returns RapidOption attribute. */
-	bool getRapidOption(){return(RapidOption);};
-	
-	/*  Others methods */
-	void  RefreshDelay(double tComputeDelay); // Obtain delays for the current time
-	
-};
+	{
+	protected:
+		/*!\brief Pointer to the list of delay's lengths. */
+		Memory * TDelay;
+		/*! \brief Memory of the 3 delays for the current time. */
+		double DelayMem[3];
+		/*! \brief Delay interpolation : type */
+		INTERP DelayInterpType;
+		/*! \brief Delay interpolation : Number of value need  */
+		double DelayInterpVal;
+		/*! \brief If it's TRUE, approximations are done in order to compute delays more quickly. */
+		bool RapidOption; //If it's true, the compute of the delays is approximated to accelerate compute
+		
+	public:
+		/* Constructor */
+		TDITools();
+		TDITools(Memory * TDelay_n, bool RapidOption_n, INTERP DelayInterpType_n = TRU, double DelayInterpVal_n = 0);
+		virtual ~TDITools();
+		
+		/* Access methods */
+		double getDelay(int IndexDelay); // Return delay value for the specified index
+		
+		/*! \brief Returns RapidOption attribute. */
+		bool getRapidOption(){return(RapidOption);};
+		
+		/*  Others methods */
+		void  RefreshDelay(double tComputeDelay); // Obtain delays for the current time
+		
+	};
 
 /*!\}*/
 #endif // __TDITOOLS_H

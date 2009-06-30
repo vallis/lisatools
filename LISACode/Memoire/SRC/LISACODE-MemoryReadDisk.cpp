@@ -215,7 +215,7 @@ void MemoryReadDisk::AddSerieData(int SerieNumber, char * TypeName, int Indirect
 	
 	//Add series if there is not enough of it
 	while(SerieNumber >= int(ListTmpData.size())){
-		ListTmpData.push_back(Serie(0.0, tStepRecord)); //All series have the same time step
+		ListTmpData.push_back(Serie2(0.0, tStepRecord,(int)(floor(tStoreData/tStepRecord)))); //All series have the same time step
 		AlreadyRecDat.push_back(false);    
 		IndexInReadData.push_back(0);
 	}
@@ -265,11 +265,11 @@ void MemoryReadDisk::RecordAccData(double tStep, double t)
 		ReadData[IndexInReadData[i]].pop_back();
 	}
 	//cout << endl;
-	for(int i=0; i< int(ListTmpData.size()); i++){
-		ListTmpData[i].delLastData(tStoreData);
+	//for(int i=0; i< int(ListTmpData.size()); i++){
+	//	ListTmpData[i].delLastData(tStoreData);
 		//cout << " ListTmpData[i].getNbVal() = " << ListTmpData[i].getNbVal();
 		//cout << " , ReadData[IndexInReadData[i]].size() " << ReadData[IndexInReadData[i]].size() << endl;
-	}
+	//}
 	
 }
 

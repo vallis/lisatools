@@ -1,3 +1,25 @@
+Change in version 1.4.5.beta :
+------------------------------
+
+- AP : Add ForLISATools/makeTDI-LISACode.py coupled with template ForLISATools/LISACode2.xml for making the interface between lisatools sources waveform and LISACode.
+		This python script can be used in the same way than makeTDIsignal-syntheticlisa.py. See ForLISATools/makeTDI-LISACode.py -h for more details.
+		
+- AP : Read binary gravitational wave data described in and XML file.
+
+- AP : Update XML output file.
+
+- AP : Few minor update. 
+
+- AP : A lot of acceleration changes : see [AP : v145 : 05/06/2009] in NEWS of Outils_Math, Ondes_Gravit, Memoire, Detecteur, Main
+
+- AP : Big upgrade of LISACodeLightClass
+
+- AP : Change end condition for obtaining right number of data in output 
+
+
+
+
+
 Change between version 1.4.3 and 1.4.4 :
 ----------------------------------------
 

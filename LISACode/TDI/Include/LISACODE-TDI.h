@@ -34,6 +34,7 @@
 #include <vector.h>
 #include <stdlib.h>
 #include <math.h>
+#include "LISACODE-Tools.h"
 #include "LISACODE-Memory.h"
 #include "LISACODE-TDI_InterData.h"
 #include "LISACODE-TDITools.h"
@@ -46,6 +47,7 @@ using namespace std;
 class  TDI
 	{
 	protected:
+		Tools * MT;
 		/*!\brief Pointer to the list of delay's lengths.*/
 		Memory * TDelay;
 		/*!\brief Memory where the signals Eta are stored.*/
@@ -77,16 +79,19 @@ class  TDI
 		int tmpCountInterEta;
 		
 	public:
+		
 		/* Constructor */
 		TDI();
 		
-		TDI( Memory * TDelay_n,
+		TDI(Tools * MT_n,
+			Memory * TDelay_n,
 			TDI_InterData * Eta_n,
 			ofstream * OutFile_n,
 			int OutFileEncoding_n,
 			int iSerie_n);
 		
-		TDI( Memory * TDelay_n,
+		TDI(Tools * MT_n,
+			Memory * TDelay_n,
 			TDI_InterData * Eta_n,
 			ofstream * OutFile_n,
 			int OutFileEncoding_n,
@@ -99,7 +104,8 @@ class  TDI
 			//double InterpUtilValue_n = 6
 			); //Constructeur avec implementation de packs decomposes
 		
-		TDI( Memory * TDelay_n,
+		TDI(Tools * MT_n,
+			Memory * TDelay_n,
 			TDI_InterData * Eta_n,
 			ofstream * OutFile_n,
 			int OutFileEncoding_n,
@@ -111,7 +117,8 @@ class  TDI
 			//double InterpUtilValue_n = 6
 			);
 		
-		TDI( Memory * TDelay_n,
+		TDI(Tools * MT_n,
+			Memory * TDelay_n,
 			TDI_InterData * Eta_n,
 			ofstream * OutFile_n,
 			int OutFileEncoding_n,
@@ -125,12 +132,13 @@ class  TDI
 			);
 		
 		/*! \brief Constructor for directly use spacecraft signal (no use of Eta) and no records in out file.*/
-		TDI( Memory * TDelay_n,
-				 Memory * SCSig_n,
-				 vector<int> SignEtaDelays,
-				 vector<double> Fact_n,
-				 TDITools * TDIQuickMod_n
-				 );
+		TDI(Tools * MT_n,
+			Memory * TDelay_n,
+			Memory * SCSig_n,
+			vector<int> SignEtaDelays,
+			vector<double> Fact_n,
+			TDITools * TDIQuickMod_n
+			);
 		
 		virtual ~TDI();
 		
@@ -148,7 +156,7 @@ class  TDI
 		/*! \brief Compute the result of generator in case where Eta is used. */
 		double Compute(double tComputeDelay);
 		/*! \brief Compute the result of generator in case where spacecraft signal are used. */
-		double ComputeNoEta(double tComputeDelay);
+		double ComputeNoEta(double tComputeDelay, INTERP InterpType, int InterpUtilValue);
 		//void RecordResult(double tComputeDelay); // Record the result of generator
 		/*! \brief Record the result of generator and return the result */
 		double RecordAndReturnResult(double tComputeDelay);

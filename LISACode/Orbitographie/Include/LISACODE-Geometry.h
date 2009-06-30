@@ -122,7 +122,9 @@ class Geometry
 		virtual Vect position(int nb, double t);
 		/*! \brief  Returns the position of the spacecraft in the barycentric frame for the time t (s) as argument and spacecraft number (1, 2 or 3) */
 		virtual Vect velocity(int nb, double t);
-		/*! \brief  Get delay for specified order (1/2 -> order=1 and 1 -> order=2) */
+		/*! \brief  Returns delay compute specific formulation define inderived function */
+		virtual double tdelaySpecific(int em, int rec, int order, double trec);
+		/*! \brief  Get delay for specified order (0 -> order=0, 1/2 -> order=1, 1 -> order=2 or order<0 --> use tdelaySpecific) */
 		double tdelay(int em, int rec, int order, double trec);
 		/*! \brief  Get contribution of specified order (1/2 -> order=1 and 1 -> order=2) in delay */
 		double tdelayOrderContribution(int em, int rec, int order, double trec);

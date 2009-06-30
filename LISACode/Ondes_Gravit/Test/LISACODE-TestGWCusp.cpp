@@ -37,7 +37,7 @@ int main (int argc, char * const argv[])
 			return 0;
 		}
 		// ***** Version *****
-		if((argc>1)&&(strcmp(argv[1],"--version")==0)){
+		if(((argc>1)&&(strcmp(argv[1],"--version")==0))&&((argc>1)&&(strcmp(argv[1],"-v")==0))){
 			cout << " TestGWCusp - version " << Version << endl;
 			return 0;
 		}

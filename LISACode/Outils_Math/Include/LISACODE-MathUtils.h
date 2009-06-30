@@ -24,11 +24,20 @@
 #include <vector.h>
 #include <time.h>
 #include <iostream>
+#include "LISACODE-PhysicConstants.h"
 
 #define SWAP(a,b) tempr=(a);(a)=(b);(b)=tempr
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+enum INTERP{TRU, /*!<Truncated interpolation*/
+	LIN,  /*!<Linear interpolation*/
+	CUB,  /*!<Cubic interpolation*/
+	LAG,  /*!<Lagrange interpolation*/
+	SIN /*!<Truncated sinc interpolation*/
+};
+
+const int ORDERMAXLAG = 30;
 
 /*!\brief Angle conversion class.
  * 
@@ -49,6 +58,16 @@ class MathUtils
 		{
 			return(angle_*180/M_PI);
 		}
+		
+		inline static int ifloor(double f)
+		{
+			return((int)(f));
+		}	
+		
+		inline static int iceil(double f)
+		{
+			return((int)(f+1.0-PRECISION));
+		}	
 		
 		/*!\brief Return time in convention ISO-8601 */
 		static char * TimeISO8601()

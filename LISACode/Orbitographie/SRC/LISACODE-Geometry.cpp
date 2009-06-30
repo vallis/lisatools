@@ -1,6 +1,6 @@
 // $Id: $
 /*
-*  LISACODE-Geometry.cpp
+ *  LISACODE-Geometry.cpp
  *  V 1.4.1
  *  LISACode
  *
@@ -22,26 +22,16 @@
  * \arg	t0_n = 0.0
  * \arg	rot0_n = 0.0
  * \arg	L0m_n = #L0_m_default
- * \arg	order_default_n = -1
+ * \arg	order_default_n = -10
  * \arg	move_n = 1
  * \arg	tStep = 10.0
  */
 Geometry::Geometry()
 {
-	initGlobal(0.0, 0.0, L0_m_default, -1, 1, 10.0);
+	initGlobal(0.0, 0.0, L0_m_default, -10, 1, 10.0);
 	
 }
 
-/*! \brief Constructs an instance and initializes it with default values and t0_n and rot0_n inputs.
- *
- * #init is called with the following arguments :
- * \arg	t0_n = t0_n input
- * \arg	rot0_n = rot0_n input
- * \arg	L0m_n = #L0_m_default
- * \arg	order_default_n = -1
- * \arg	move_n = 1
- * \arg	tStep = 10.0
- */
 
 /*! \brief Constructs an instance and initializes it with t0_n, rot0_n, L0m_n,  order_default_n, move_n and tStep inputs.
  *
@@ -155,7 +145,7 @@ void Geometry::settRangeStorePos(double tRangeStorePos_n)
 {
 	tRangeStorePos = tRangeStorePos_n;
 }
-	
+
 void Geometry::settRangeStoreDelay(double tRangeStoreDelay_n)
 {
 	tRangeStoreDelay = tRangeStoreDelay_n;
@@ -220,6 +210,11 @@ Vect Geometry::velocity(int nb, double t)
 
 
 
+double Geometry::tdelaySpecific(int em, int rec, int order, double trec)
+{
+	return (L0m/c_SI);
+}
+
 /*! \brief Gets delay for specified order, depending on emitter em, receiver rec, reception time trec inputs.
  *
  * Inputs are checked:
@@ -227,7 +222,7 @@ Vect Geometry::velocity(int nb, double t)
  * \arg order expected values are 0, 1 (for 1/2) and 2 (for 1)
  *
  * Computation:\n
-  * \return
+ * \return
  * \f$ delay = \sum_{i=0}^{order} c_i \f$, \n
  * where : \n
  * ri is computed using #position method with rec and trec inputs, \n
@@ -246,56 +241,59 @@ Vect Geometry::velocity(int nb, double t)
  */
 double Geometry::tdelay(int em, int rec, int order, double trec)
 {
+	
 	double tij, c0, c1, c2, c21, c22, c23, num, denom;
-	Vect ri, rj, vi, vj, rij, nij, n;
 	
 	//cout << em << " - " << rec << endl; 
 	
 	if (((em!=1)&&(em!=2)&&(em!=3))||((rec!=1)&&(rec!=2)&&(rec!=3)))
 		throw invalid_argument ("error in Geometry::tdelay: Spacecraft number must be 1, 2 or 3 ! ");
 	
-	if(order_default != -1)
+	if(order != -10)
 		order = order_default;
-	if ((order!=0)&&(order!=1)&&(order!=2))
-		throw invalid_argument ("error in Geometry::tdelay: Order must be 0, 1(for 1/2) or 2 (for 1)");
+	if ((order<-2)||(order>2))
+		throw invalid_argument ("error in Geometry::tdelay: Order must be 0 (for 0), 1 (for 1/2), 2 (for 1) or -1 (for analytical MLDC eccentric formulation)");
 	
-	
-	ri = position(rec, trec);
-	vi = velocity(rec, trec);
-	vi= (1./c_SI)*vi;
-	
-	rj = position(em, trec);
-	vj = velocity(em, trec);
-	vj = (1./c_SI)*vj;
-	
-	rij = rj-ri;
-	nij = rij.unit();
-	n=(-1.)*nij;
-	
-	tij = rij.norme()/c_SI;
-	tij=-tij;  
-	c0= tij;
-	
-	if (order==0)
-	{return c0;}
-	else
-	{
-		// order 1/2
-		c1=tij*(n*vj);
-		if (order==1)
-		{return(c0+c1);}
-		else
-		{
-			// order 1
-			c21 = 0.5*tij*((vj*vj)+pow((n*vj),2.));
-			c22 = -0.5*tij*tij*c_SI*RSchw*(n*rj)/pow((rj*rj),1.5);
-			num=sqrt(pow(c_SI*tij+(n*ri),2.)+(ri*ri)-pow((ri*n),2.))+c_SI*tij+(n*ri);
-			denom=(n*ri)+sqrt((ri*ri));
-			c23 = (RSchw/c_SI)*(1.+gamma_u)*log(num/denom);
-			c2=c21+c22+c23;
-			return (c0+c1+c2);
+	if(order >= 0){
+		Vect ri, rj, vi, vj, rij, nij, n;
+		
+		ri = position(rec, trec);
+		vi = velocity(rec, trec);
+		vi= (1./c_SI)*vi;
+		
+		rj = position(em, trec);
+		vj = velocity(em, trec);
+		vj = (1./c_SI)*vj;
+		
+		rij = rj-ri;
+		nij = rij.unit();
+		n=(-1.)*nij;
+		
+		tij = rij.norme()/c_SI;
+		tij=-tij;  
+		c0= tij;
+		
+		if (order==0){
+			return c0;
+		}else{
+			// order 1/2
+			c1=tij*(n*vj);
+			if (order==1){
+				return(c0+c1);
+			}else{
+				// order 1
+				c21 = 0.5*tij*((vj*vj)+pow((n*vj),2.));
+				c22 = -0.5*tij*tij*c_SI*RSchw*(n*rj)/pow((rj*rj),1.5);
+				num=sqrt(pow(c_SI*tij+(n*ri),2.)+(ri*ri)-pow((ri*n),2.))+c_SI*tij+(n*ri);
+				denom=(n*ri)+sqrt((ri*ri));
+				c23 = (RSchw/c_SI)*(1.+gamma_u)*log(num/denom);
+				c2=c21+c22+c23;
+				return (c0+c1+c2);
+			}
 		}
-	} 
+	}else{
+		return( tdelaySpecific(em, rec, order, trec) );
+	}
 }
 
 /*! \brief Gets contribution of specified order, depending on emitter em, receiver rec, reception time trec inputs.
@@ -320,7 +318,7 @@ double Geometry::tdelay(int em, int rec, int order, double trec)
  * \f$ c_{22} = -\frac{{t_{ij}}^2}{2} \cdot C \cdot RSchw  \f$, \n
  * \f$ c_{23} = -\frac{RSchw}{C} \cdot (1+\gamma_u) \cdot log \big(\frac{\sqrt{(C \cdot t_{ij} \cdot \overrightarrow{n} \cdot  \overrightarrow{r_{ij}})^2+{r_i}^2+C \cdot t_{ij} + \overrightarrow{n} \cdot  \overrightarrow{r_i}}}{\overrightarrow{n} \cdot  \overrightarrow{r_i} + \big\| \overrightarrow{r_i} \big\|}\big)  \f$. \n
  * #c_SI and #gamma_u constants are used
-*/
+ */
 double Geometry::tdelayOrderContribution(int em, int rec, int order, double trec)
 {
 	double tij, c21, c22, c23, num, denom;
@@ -328,10 +326,10 @@ double Geometry::tdelayOrderContribution(int em, int rec, int order, double trec
 	
 	if ((em!=1)&&(em!=2)&&(em!=3)&&(rec!=1)&&(rec!=2)&&(rec!=3))
 		throw invalid_argument ("error in Geometry::tdelay: Spacecraft number must be 1, 2 or 3 ! ");
-
+	
 	if ((order!=1)&&(order!=2))
 		throw invalid_argument ("error in Geometry::tdelayOrderContribution: order must be 1(for 1/2) or 2 (for 1)");
-
+	
 	
 	ri = position(rec, trec);
 	vi = velocity(rec, trec);
@@ -411,7 +409,7 @@ double Geometry::ArmVelocity(int em, int rec, double trec)
  *
  * \return
  * \f$\frac{(\overrightarrow{position(2,t)}-\overrightarrow{position(3,t)}) \bigwedge (\overrightarrow{position(3,t)}-\overrightarrow{position(1,t)})}{\big\| (\overrightarrow{position(2,t)}-\overrightarrow{position(3,t)}) \bigwedge (\overrightarrow{position(3,t)}-\overrightarrow{position(1,t)}) \big\|} \f$
-*/
+ */
 Vect Geometry::VectNormal(double t)
 {
 	//double cpsi,spsi;
@@ -420,7 +418,7 @@ Vect Geometry::VectNormal(double t)
 	// Spacecraft 1
 	n1 = position(2,t)-position(3,t);
 	n2 = position(3,t)-position(1,t);
-
+	
 	r.p[0] = n1.p[1]*n2.p[2]-n1.p[2]*n2.p[1];
 	r.p[1] = n1.p[2]*n2.p[0]-n1.p[0]*n2.p[2];
 	r.p[2] = n1.p[0]*n2.p[1]-n1.p[1]*n2.p[0];

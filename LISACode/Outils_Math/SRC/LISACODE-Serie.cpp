@@ -11,7 +11,7 @@
  *
  *
  *  Created on 01/06/05 by Tania REGIMBAU  (ARTEMIS)
- *  Last modification on 15/12/05 by Tania REGIMBAU
+ *  Last modification on 27/05/09 by Antoine Petiteau (AEI)
  *
  */
 
@@ -29,6 +29,8 @@ Serie::Serie()
 {
 	x0 = 0.0;
 	dx = 1.0;
+	for(int i=0; i<ORDERMAXLAG; i++)
+		LagPolDen[i] = NULL;
 }
 
 /*! \brief Constructs an instance and initializes it with inputs and default values.
@@ -40,6 +42,8 @@ Serie::Serie(double start, double delta)
 {
 	x0 = start;
 	dx = delta;
+	for(int i=0; i<ORDERMAXLAG; i++)
+		LagPolDen[i] = NULL;
 }
 
 
@@ -56,6 +60,8 @@ Serie::Serie(double start, double delta, int length)
 	ys.resize(length);
 	for(int i=0; i<length; i++)
 		ys[i] = 0.0;
+	for(int i=0; i<ORDERMAXLAG; i++)
+		LagPolDen[i] = NULL;
 }
 
 
@@ -70,6 +76,8 @@ Serie::Serie(double start, double delta, vector<double> ys_n)
  	x0 = start;
 	dx = delta;
 	ys = ys_n;
+	for(int i=0; i<ORDERMAXLAG; i++)
+		LagPolDen[i] = NULL;
 }
 
 
@@ -104,6 +112,9 @@ Serie::Serie(char * fname)
 	}
 	
 	file.close();
+	
+	for(int i=0; i<ORDERMAXLAG; i++)
+		LagPolDen[i] = NULL;
 }
 
 
@@ -256,7 +267,7 @@ void Serie::rfile(char* fname)
  InterLagrange(x, int(InterpUtilValue)) & \textrm{if } InterpolType =  LAG
   \end{array} \right.\f]
  */
-double Serie::gData(double x, INTERP InterpolType, double InterpUtilValue) const
+double Serie::gData(double x, INTERP InterpolType, double InterpUtilValue)
 {
 	//cout << "Serie::gData :" << endl;
 	//cout << "  fmod((x-x0)/dx,1.0) = " << fmod((x-x0)/dx,1.0) << endl;
@@ -426,6 +437,19 @@ double Serie::InterHermite(double x, double tension, double bias) const
 	return(a0*y1+a1*m0+a2*m1+a3*y2); 
 }
 
+
+void Serie::InitLagPolDen(int order)
+{
+	LagPolDen[order] = (double*) malloc((order+1)*sizeof(double));
+	for(int k=0; k<=order; k++){
+		LagPolDen[order][k] = 1.0;
+		for(int j=0; j<=order; j++){
+			if(j!=k)
+				LagPolDen[order][k] *= 1.0/(k-j);
+		}
+	}
+}
+
 /*! \brief Returns Lagrange interpolation result.
  *
  * Indices are computed : \n
@@ -442,8 +466,9 @@ double Serie::InterHermite(double x, double tension, double bias) const
  \textrm{ , where }
  P_k=\prod_{j=kmin, j \ne k}^{kmax} \frac{x-x_0-j \cdot dx}{(k-j) \cdot dx} \f$
  */
-double Serie::InterLagrange(double x, int order) const
+double Serie::InterLagrange(double x, int order)
 {
+	double xr((x-x0)/dx);
 	//cout << "////\\\\Serie::InterLagrange : ordre = " << order << "  et x = " << x << endl;
 	double res(0.0), Pk(0.0);
 	int ordermin((int)(floor(double(order+1)/2.0)));
@@ -458,7 +483,8 @@ double Serie::InterLagrange(double x, int order) const
 		throw invalid_argument("Serie::InterLagrange : The required bin does not exist !");
 	//cout << "  InterLagrange : x0 = " << x0 << " , x = " << x;
 	//cout << " , bin = " << bin << " , kmin = " << kmin << " , kmax = " << kmax;
-	
+	/*
+	// Old Lagrange
 	for(int k=kmin; k<=kmax; k++){
 		Pk = 1.0;
 		for(int j=kmin; j<=kmax; j++){
@@ -467,7 +493,25 @@ double Serie::InterLagrange(double x, int order) const
 		}
 		res += ys[k]*Pk;
 	}
-	//cout << "  , res = " << res << endl;
+	
+	*/
+	
+	// ** New Lagrange with tabulation of polynome denominator
+	int RealOrder (kmax - kmin);
+	if(LagPolDen[RealOrder] == NULL)
+		InitLagPolDen(RealOrder);
+	
+	for(int k=kmin; k<=kmax; k++){
+		Pk = LagPolDen[RealOrder][k-kmin];
+		for(int j=kmin; j<=kmax; j++){
+			if(j!=k)
+				Pk *= xr-j ;
+		}
+		res += ys[k]*Pk;
+	}
+	
+	//cout << "Serie::InterLagrange : res = " << res << endl;
+	
 	return(res);
 }
 
@@ -499,6 +543,8 @@ double Serie::InterLagrange(double x, int order) const
 	return(res);
 }
 */
+
+
 
 
 /* Constructor */

@@ -295,10 +295,10 @@ void GWFile::ReadBinaryFile(char * FileName, double TimeOffset, double TimeStep,
  */
 double GWFile::Interpol(double t, int type)
 {
-	int order(3); // Order of lagrange interpolation
+	int order(4); // Order of lagrange interpolation
 	double res(0.0);
 	
-	//cout << "t = " << t << "  ,  t0 = " << TimeList[0] << "  ,  tn = " << TimeList[TimeList.size()-2] << endl;
+	//cout << "t = " << t << "  ,  t0 = " << TimeList[0] << "  ,  tn = " << TimeList[NbDat-2] << endl;
 	
 	// Find the good bin
 	if((t<TimeList[0])||(t>TimeList[NbDat-2])){
@@ -340,7 +340,7 @@ double GWFile::Interpol(double t, int type)
 		}
 	}
 	
-	//cout << " t = " << t << " Interp(" << type << ") = " << res << endl << endl; 
+	//cout << " t = " << t << " : " << res << endl; 
 	
 	return(res);
 	

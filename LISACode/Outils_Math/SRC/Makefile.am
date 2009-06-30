@@ -8,12 +8,14 @@ INCLUDES = \
 lib_LIBRARIES = liblisacodemathtools.a
 
 liblisacodemathtools_a_SOURCES = \
+	LISACODE-Tools.cpp \
 	LISACODE-Couple.cpp \
 	LISACODE-Filter.cpp \
 	LISACODE-Mat.cpp \
 	LISACODE-Serie.cpp \
 	LISACODE-Vect.cpp \
 	LISACODE-EllipticFilter.cpp \
+	LISACODE-Serie2.cpp \
 	com.c \
 	randlib.c \
 	linpack.c

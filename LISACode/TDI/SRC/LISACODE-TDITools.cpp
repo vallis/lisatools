@@ -27,6 +27,8 @@ TDITools::TDITools()
 	DelayMem[1] = 0.0;
 	DelayMem[2] = 0.0;
 	RapidOption = false;
+	DelayInterpType = TRU;
+	DelayInterpVal = 0;
 }
 
 /*! \brief Constructs an instance and initializes it with inputs default values.
@@ -36,13 +38,15 @@ TDITools::TDITools()
  * \arg #DelayMem = (0,0,0)
  * \arg #RapidOption = RapidOption_n input
  */
-TDITools::TDITools(Memory * TDelay_n, bool RapidOption_n)
+TDITools::TDITools(Memory * TDelay_n, bool RapidOption_n, INTERP DelayInterpType_n, double DelayInterpVal_n)
 {
 	TDelay = TDelay_n;
 	DelayMem[0] = 0.0;
 	DelayMem[1] = 0.0;
 	DelayMem[2] = 0.0;
 	RapidOption = RapidOption_n;
+	DelayInterpType = DelayInterpType_n;
+	DelayInterpVal = DelayInterpVal_n;
 }
 
 /*! \brief Destructor. */

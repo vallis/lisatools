@@ -23,8 +23,9 @@
 #include <stdlib.h>
 #include <fftw3.h>
 #include "LISACODE-PhysicConstants.h"
-#include "LISACODE-MathUtils.h"
 #include "LISACODE-LISAConstants.h"
+#include "LISACODE-MathUtils.h"
+#include "LISACODE-Tools.h"
 #include "LISACODE-GW.h"
 #include "LISACODE-GWMono.h"
 #include "LISACODE-GWBinary.h"
@@ -35,6 +36,7 @@
 #include "LISACODE-GWFastSpinBBH.h"
 #include "LISACODE-GWCusp.h"
 #include "LISACODE-GWNew.h"
+#include "LISACODE-GWBuffer.h"
 #include "LISACODE-Geometry.h"
 #include "LISACODE-GeometryAnalytic.h"
 #include "LISACODE-GeometryMLDC.h"
@@ -44,16 +46,49 @@
 #include "LISACODE-TDI_InterData.h"
 #include "LISACODE-TDITools.h"
 #include "LISACODE-TDI.h"
+#include "LISACODE-MemoryWriteDisk.h"
 
 class LISACodeLightClass
 	{
 	protected:
+		Tools * MT;
+		
 		/*! \brief Time step */
 		double dt;
 		/*! \brief Inital time  */
 		double t0;
 		/*! \brief Time of observation */
 		double Tobs; 
+		
+		bool TDIDelayApprox;
+		
+		double tStoreGeo;
+		
+		/*! \brief TDI interpolation : type */
+		INTERP TDIInterpType;
+		
+		/*! \brief TDI interpolation : Number of value need */
+		int TDIInterpVal;
+		
+		/*! \brief TDI interpolation : type */
+		INTERP TDIDelayInterpType;
+		
+		/*! \brief TDI interpolation : Number of value need */
+		int TDIDelayInterpVal;
+		
+		/*! \brief Time required for TDI interpolation */
+		double tMemInterpTDI;
+		
+		int iTEndGW;
+		
+		/*! \brief Type of waveform interpolation in GWBuffer*/
+		INTERP GWBufInterpType;
+		
+		/*! \brief Number of value need for making waveform interpolation in GWBuffer*/
+		int GWBufInterpVal;
+		
+		/*! \brief Time required for GW interpolation */
+		double tMemInterpGW;
 		
 		/*! \brief Table of GW sources */
 		vector< GW * > * GWs;
@@ -97,11 +132,9 @@ class LISACodeLightClass
 		
 		fftw_plan FwdPlan;
 		
-		/*! \brief Number of value need for make TDI interpolation */
-		int TDIInterpUtilVal;
+		bool TFUsed;
 		
-		/*! \brief Time required for TDI interpolation */
-		double tMemInterpTDI;
+		double FreqMin, FreqMax;
 		
 		/*! \brief Minimal limit for delay  */
 		double tMinDelay;
@@ -117,14 +150,18 @@ class LISACodeLightClass
 		
 		bool TDIAE;
 		
+		/*! \brief Time offset in GW computation */
+		double tGWExtra;
+		
+		
 		public :
 		// ** Constructor **
 		
 		LISACodeLightClass();
 		
-		LISACodeLightClass(double t0_n, double dt_n, double Tobs_n);
+		LISACodeLightClass(Tools * MT_n, double t0_n, double dt_n, double Tobs_n);
 		
-		LISACodeLightClass(double t0_n, double dt_n, double Tobs_n, vector <GW *> * GWs_n);
+		LISACodeLightClass(Tools * MT_n, double t0_n, double dt_n, double Tobs_n, vector <GW *> * GWs_n);
 		
 		/*! \brief Create an instance of LISACodeLigth with \NbGWSrc GWs which sources are descirbed 
 		 * by \GWSrcTypes using the following convention : 
@@ -134,7 +171,7 @@ class LISACodeLightClass
 		 * \arg	4 -> Spinning Black Holes binary
 		 * \arg	5 -> Cosmic String Cusp
 		 */
-		LISACodeLightClass(double t0_n, double dt_n, double Tobs_n, int * GWSrcTypes, int NbGWSrc);
+		LISACodeLightClass(Tools * MT_n, double t0_n, double dt_n, double Tobs_n, int * GWSrcTypes, int NbGWSrc);
 		
 		~LISACodeLightClass();
 		
@@ -143,8 +180,26 @@ class LISACodeLightClass
 		double getNbtDat(){ return(NbtDat);};
 		double getNbfDat(){ return(NbfDat);};
 		int getNbParams(){ return(NbParams);};
+		double gettExtra(){ return(tGWExtra);};
+		void setTDIInterpType(INTERP TDIInterpType_n) {TDIInterpType = TDIInterpType_n;};
+		void setTDIInterpVal(int TDIInterpVal_n) {TDIInterpVal = TDIInterpVal_n;};
+		void setTDIDelayInterpType(INTERP TDIDelayInterpType_n) {TDIDelayInterpType = TDIDelayInterpType_n;};
+		void setTDIDelayInterpVal(int TDIDelayInterpVal_n) {TDIDelayInterpVal = TDIDelayInterpVal_n;};
+		void setTDIDelayApprox() {TDIDelayApprox = true;};
+		void unsetTDIDelayApprox() {TDIDelayApprox = false;};
+		void settStoreGeo(double tStoreGeo_n) {tStoreGeo = tStoreGeo_n;};
+		void settEndGW(double TEndGW);
+		void settGWExtra(double tGWExtra_n) {tGWExtra = tGWExtra_n;};
+		void setGWBufInterpType(INTERP GWBufInterpType_n) {GWBufInterpType = GWBufInterpType_n;};
+		void setGWBufInterpVal(int GWBufInterpVal_n) {GWBufInterpVal = GWBufInterpVal_n;};
+		void setTF() {TFUsed = true;};
+		
+		double getFreqMin() {return(FreqMin);};
+		double getFreqMax() {return(FreqMax);};
+		
 		void ChangeParamsGWs(double * NewParams);
 		
+		void AddGW(GW * GW_n);
 		void AddGWMono();
 		void AddGWBinaryFixFreq();
 		void AddGWBinaryInspiralPN();
@@ -165,14 +220,19 @@ class LISACodeLightClass
 						   double PhaseAtCoalescence_n,
 						   double InitialPolarAngleL_n,
 						   double InitialAzimuthalAngleL_n,
-						   double t0, 
 						   double Tobs);
 		void AddGWCusp();
+		void BufferGW(int iGW);
+		
+		void DispConfig();
 		
 		// ** Others methods **
 		
-		/*! \brief Initialization */
+		/*! \brief Initialization of time data : To do one time after setting and before GW including */
+		void initTimeBase();
+		/*! \brief Initialization of memories and LISA structure (spacecraft and TDI)  : To do one time after setting and after GW including */
 		void initFirst();
+		/*! \brief Initialization of GW and LISA (running for compute data need by TDI) */
 		void init();
 		
 		/*! \brief Compute signal and delay of LISA */

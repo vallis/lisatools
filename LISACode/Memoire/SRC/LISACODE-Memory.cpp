@@ -20,8 +20,8 @@
  */
 Memory::Memory()
 {
-  tStoreData = 200.0;
-  tStepRecord = 1.0e-2;
+	tStoreData = 200.0;
+	tStepRecord = 1.0e-2;
 }
 
 
@@ -40,31 +40,33 @@ Memory::Memory(double tStoreData_n, double tStepRecord_n)
 /*! \brief Destructor */
 Memory::~Memory()
 {
-
+	
 }
 
 
 /* Access methods */
 /*! \brief Sets #tStoreData attribute using \a tStoreData_n input.
-*
-* \a tStoreData_n input is checked : it is expected to be positive or null.
-*/
+ *
+ * \a tStoreData_n input is checked : it is expected to be positive or null.
+ */
 void Memory::settStoreData(double tStoreData_n)
 {
- if ( tStoreData_n < 0.0 )
-    throw invalid_argument("Memory::settStoreData : The memorization time must be superior 0 !");
- tStoreData = tStoreData_n;
+	if ( tStoreData_n < 0.0 )
+		throw invalid_argument("Memory::settStoreData : The memorization time must be superior 0 !");
+	tStoreData = tStoreData_n;
+	for(int iS=0; iS<ListTmpData.size(); iS++)
+		ListTmpData[iS].setNmax((int)(floor(tStoreData/tStepRecord)));
 }
 
 /*! \brief Sets #tStepRecord attribute using \a tStepRecord_n input.
-*
-* \a tStepRecord_n input is checked : it is expected to be positive or null.
-*/
+ *
+ * \a tStepRecord_n input is checked : it is expected to be positive or null.
+ */
 void Memory::settStepRecord(double tStepRecord_n)
 {
- if ( tStepRecord_n < 0.0 )
-    throw invalid_argument("Memory::settStepRecord : The measurement's time must be superior 0 !");
- tStepRecord = tStepRecord_n;
+	if ( tStepRecord_n < 0.0 )
+		throw invalid_argument("Memory::settStepRecord : The measurement's time must be superior 0 !");
+	tStepRecord = tStepRecord_n;
 }
 
 /*! \brief Gets maximum time, #tStoreData attribute
@@ -84,12 +86,12 @@ double Memory::gettMax()
  * Additionnal series are initialized with 0.0 start value and #tStepRecord time step.
  * Only \a SerieNumber input is used (\a TypeName,\a IndirectDirName, \a iSCName are unused).\n
  * Virtual unused method.
-*/
+ */
 void Memory::AddSerieData(int SerieNumber, char * TypeName, int IndirectDirName, int iSCName)
 {
 	//Add series if there is not enough of it
 	while(SerieNumber >= int(ListTmpData.size())){
-		ListTmpData.push_back(Serie(0.0, tStepRecord)); //All series have the same time step
+		ListTmpData.push_back(Serie2(0.0, tStepRecord,(int)(floor(tStoreData/tStepRecord)))); //All series have the same time step
 		AlreadyRecDat.push_back(false);
 	}
 	
@@ -99,7 +101,7 @@ void Memory::AddSerieData(int SerieNumber, char * TypeName, int IndirectDirName,
 /*! \brief Empty method */
 void Memory::MakeTitles(char * FileNameHead)
 {
-
+	
 }
 
 
@@ -136,10 +138,10 @@ void Memory::RecordAccData(double tStep, double t)
 			throw invalid_argument("Memory: There is no data for one serie !");
 		AlreadyRecDat[i] = false;
 	}
-
-	for(int i=0; i< int(ListTmpData.size()); i++){
-		ListTmpData[i].delLastData(tStoreData);
-	}
+	
+	//for(int i=0; i< int(ListTmpData.size()); i++){
+	//	ListTmpData[i].delLastData(tStoreData);
+	//}
 }
 
 
@@ -149,19 +151,19 @@ void Memory::RecordAccData(double tStep, double t)
  * SerieNumber input is checked : it must be positive or null, and lower than #ListTmpData size
  *
  */
-double Memory::gData(int SerieNumber, double tDelay) const
+double Memory::gData(int SerieNumber, double tDelay)
 {
 	try{/*
-		cout << endl;
-		cout << " tDelay = " << tDelay << endl;
-		cout << " ListTmpData[" << SerieNumber << "] :" << endl;
-		cout << "   - NbVal = " << ListTmpData[SerieNumber].getNbVal() << endl;
-		cout << "   - 0 : Ref = " << ListTmpData[SerieNumber].getRef(0);
-		cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(0) << endl;
-		cout << "   - end : Ref = " << ListTmpData[SerieNumber].getRef(ListTmpData[SerieNumber].getNbVal()-1);
-		cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(ListTmpData[SerieNumber].getNbVal()-1) << endl;
-		cout << endl;
-		*/
+	 cout << endl;
+	 cout << " tDelay = " << tDelay << endl;
+	 cout << " ListTmpData[" << SerieNumber << "] :" << endl;
+	 cout << "   - NbVal = " << ListTmpData[SerieNumber].getNbVal() << endl;
+	 cout << "   - 0 : Ref = " << ListTmpData[SerieNumber].getRef(0);
+	 cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(0) << endl;
+	 cout << "   - end : Ref = " << ListTmpData[SerieNumber].getRef(ListTmpData[SerieNumber].getNbVal()-1);
+	 cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(ListTmpData[SerieNumber].getNbVal()-1) << endl;
+	 cout << endl;
+	 */
 		if((SerieNumber<0)||(SerieNumber>=ListTmpData.size()))
 			throw invalid_argument("Memory: This serie's number does not exist !");
 		return(ListTmpData[SerieNumber].gData(tDelay, LAG, 6));
@@ -178,19 +180,19 @@ double Memory::gData(int SerieNumber, double tDelay) const
  * Calls Serie::gData with \a tDelay, \a InterpolType and \a InterpUtilValue inputs.
  *
  */
-double Memory::gData(int SerieNumber, double tDelay, INTERP InterpolType, double InterpUtilValue) const
+double Memory::gData(int SerieNumber, double tDelay, INTERP InterpolType, double InterpUtilValue)
 {
 	try{/*
-		cout << endl;
-		cout << " tDelay = " << tDelay << endl;
-		cout << " ListTmpData[" << SerieNumber << "] :" << endl;
-		cout << "   - NbVal = " << ListTmpData[SerieNumber].getNbVal() << endl;
-		cout << "   - 0 : Ref = " << ListTmpData[SerieNumber].getRef(0);
-		cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(0) << endl;
-		cout << "   - end : Ref = " << ListTmpData[SerieNumber].getRef(ListTmpData[SerieNumber].getNbVal()-1);
-		cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(ListTmpData[SerieNumber].getNbVal()-1) << endl;
-		cout << endl;
-		*/
+	 cout << endl;
+	 cout << " tDelay = " << tDelay << endl;
+	 cout << " ListTmpData[" << SerieNumber << "] :" << endl;
+	 cout << "   - NbVal = " << ListTmpData[SerieNumber].getNbVal() << endl;
+	 cout << "   - 0 : Ref = " << ListTmpData[SerieNumber].getRef(0);
+	 cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(0) << endl;
+	 cout << "   - end : Ref = " << ListTmpData[SerieNumber].getRef(ListTmpData[SerieNumber].getNbVal()-1);
+	 cout << " , Val = " << ListTmpData[SerieNumber].getBinValue(ListTmpData[SerieNumber].getNbVal()-1) << endl;
+	 cout << endl;
+	 */
 		if((SerieNumber<0)||(SerieNumber>=ListTmpData.size()))
 			throw invalid_argument("Memory: This serie's number does not exist !");
 		return(ListTmpData[SerieNumber].gData(tDelay, InterpolType, InterpUtilValue));
@@ -208,10 +210,10 @@ double Memory::gData(int SerieNumber, double tDelay, INTERP InterpolType, double
  */
 int Memory::unusable(double tSinceFirstReception) const
 {
- if (tSinceFirstReception > tStoreData)
-	return(0);
- else
-	return(1);
+	if (tSinceFirstReception > tStoreData)
+		return(0);
+	else
+		return(1);
 }
 
 // end of LISACODE-Memory.cpp

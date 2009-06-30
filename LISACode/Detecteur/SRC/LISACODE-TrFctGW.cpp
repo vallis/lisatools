@@ -196,14 +196,11 @@ double TrFctGW::deltanu(int rec, int em, int order, double trec)
 			//cout << "tr=" << tr << " " << "te=" << te << endl;
 			
 			hpr = (*GWSources)[iGW]->hp(tr); 
-			hpe = (*GWSources)[iGW]->hp(te); 
-			hcr = (*GWSources)[iGW]->hc(tr); 
-			hce = (*GWSources)[iGW]->hc(te);  
-			//cout << "deltanu :: trec,tem,hp_rec,hp_emm = " << tr << "  " << te << "  " << hpr << "  " << hpe << " " << endl;
-			//cout <<trec<< "  " << tr << "  " << hpr << "  " << rec<< "   order " << order <<endl ;
-			//cout << te << "  " << hpe << "  " << em << "   order " << order << endl ;
-
+			hcr = (*GWSources)[iGW]->hc(tr);  
+			hpe = (*GWSources)[iGW]->hp(te);
+			hce = (*GWSources)[iGW]->hc(te);
 			
+			/*
 			//faiT une boucle autour de tr en fraction de secondes
 			test_eric = 0 ;
 			if((test_eric ==1) && (trec > 20000.)){
@@ -241,7 +238,7 @@ double TrFctGW::deltanu(int rec, int em, int order, double trec)
 			  cout << "stopped in TrFctGW::deltanu: " << endl;			  
 			  throw ;
 			}
-			//*/
+			*/
 
 			//hr = hpr*ksip+hcr*ksic;
 			//he = hpe*ksip+hce*ksic;
@@ -250,21 +247,24 @@ double TrFctGW::deltanu(int rec, int em, int order, double trec)
 			//cout << "deltanu :: hp_em=" << hpe << " " << "hc_em=" << hce << " " << "h_em=" << he << endl;
 			
 			//delta += ((hpe-hpr)*ksip+(hce-hcr)*ksic)/(1.-(krrec-krem)/ndr);
-			/*delta_tmp = ((hpe-hpr)*ksip+(hce-hcr)*ksic)/(1.-(krrec-krem)/ndr);
+			/*delta_tmp = ((hpe-hpr)*ksip+(hce-hcr)*ksic)/(1.-(krrec-krem) /ndr);
 			if(isnan(delta_tmp))
 				throw invalid_argument("TrFctGW::deltanu : Gravitational wave signal is not a number !");
 			*/
 			delta += ((hpe-hpr)*ksip+(hce-hcr)*ksic)/(1.-(krrec-krem)/ndr);
-			//cout << "Delta : Num = " << ((hpe-hpr)*ksip+(hce-hcr)*ksic) << "  , Den = " << 1.-(krrec-krem)/ndr ;
-			//cout << " , Delta_tmp = " << delta_tmp ;
-			//cout << " , Delta = " << delta << endl;
-			//cout << endl << endl << endl;
+			
+			//if((tr>34400000)&&(tr<34600000)){
+			//	cout.precision(13);
+			//	cout << tr << "  " << te << "  " << hpr << "  " << hcr << "  " << hpe << "  " << hce << " " << ksip << " " << ksic  << " " << krrec << " " << krem << " " << ndr << " " << delta << endl;
+			//}
+			
 		}
 		/*
 		if((rec == 1) && (em == 2)){
 		cout << "TrFctGW : t,delta_nu = "<< trec << "  " << delta << " rec,em =  "<< rec << "   " << em << endl ; 
 		}
 		*/
+		
 		return delta;
 	}
 	

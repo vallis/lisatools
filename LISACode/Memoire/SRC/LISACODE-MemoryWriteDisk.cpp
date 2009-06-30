@@ -134,7 +134,7 @@ void MemoryWriteDisk::AddSerieData(int SerieNumber, char * TypeName, int Indirec
 	//Add series if there is not enough of it
 	
 	while(SerieNumber >= int(ListTmpData.size())){
-		ListTmpData.push_back(Serie(0.0, tStepRecord)); //All series have the same time step
+		ListTmpData.push_back(Serie2(0.0, tStepRecord,(int)(floor(tStoreData/tStepRecord)))); //All series have the same time step
 		TitleSerie.push_back(" ");
 		SCSerie.push_back(0);
 		AlreadyRecDat.push_back(false);
@@ -197,7 +197,7 @@ void MemoryWriteDisk::MakeTitles(char * FileNameHead)
 			for(int i=0; i<(int)(TitleSerie.size()); i++)
 				FichMem << "," << TitleSerie[i] << SCSerie[i];
 			FichMem << endl; 
-			FichMem << "#RECORD " << (int)(ListTmpData.size())+1<< " " << (int)ceil((TimeEnd-TimeOffset)/tStepRecord+1) <<  endl;
+			FichMem << "#RECORD " << (int)(ListTmpData.size())+1<< " " << (int)ceil((TimeEnd-TimeOffset)/tStepRecord) <<  endl;
 			FichMem << "#TIME " << TimeOffset << " " << tStepRecord << " " << TimeEnd << endl;
 		}
 	}
@@ -238,9 +238,9 @@ void MemoryWriteDisk::RecordAccData(double tStep, double t)
 		FichMem << endl;
 	}
 	// Delete last data
-	for(int i=0; i< int(ListTmpData.size()); i++){
-		ListTmpData[i].delLastData(tStoreData);
-	}
+	//for(int i=0; i< int(ListTmpData.size()); i++){
+	//	ListTmpData[i].delLastData(tStoreData);
+	//}
 }
 
 /*! \brief Closes #FichMem

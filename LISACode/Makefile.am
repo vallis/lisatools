@@ -48,6 +48,7 @@ EXTRA_DIST = \
 			Example_Input/SC2.bin \
 			Example_Input/SC3.bin \
 			Example_Input/Delay.txt
+			ForLISATools
 			
 			
 

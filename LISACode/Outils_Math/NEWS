@@ -1,0 +1,7 @@
+AP : v145 : 05/06/2009 
+----------------------
+- Introduce new Serie class Serie2 using pointer table instead of vector (==> acceleration)
+- Store Lagrange polynome denominator (==> acceleration)
+- Add specific function ifloor and iceil in MathUtils (==> acceleration)
+- Accelerations of interpolation function : Truncation, linear & Lagrange (==> acceleration)
+- Add Tools for global managing : memory, display, ... but not really used at the moment (==> useful)

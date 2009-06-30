@@ -19,6 +19,7 @@ liblisacodegravwaves_a_SOURCES = \
 	LISACODE-GWSto.cpp \
 	LISACODE-GWFastSpinBBH.cpp \
 	LISACODE-GWCusp.cpp \
-	LISACODE-GWNew.cpp
+	LISACODE-GWNew.cpp \
+	LISACODE-GWBuffer.cpp
 
 # end of Makefile.am

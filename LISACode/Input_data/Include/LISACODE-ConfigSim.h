@@ -27,6 +27,7 @@
 #include <iomanip.h>
 #include "ezxml.h"
 #include "LISACODE-LISAConstants.h"
+#include "LISACODE-Tools.h"
 #include "LISACODE-Serie.h"
 #include "LISACODE-GW.h"
 #include "LISACODE-GWMono.h"
@@ -94,6 +95,7 @@ struct NoiseSpec{
 class ConfigSim
 	{
 	private:
+		Tools * MT;
 		/*! \brief File name of simulation parameters. It is called 
 		 *	configuration file.
 		 */
@@ -102,7 +104,6 @@ class ConfigSim
 		int SystemEncoding_int;
 		string Author,GenerationDate,GenerationType,TDIParamName,TDIParamNameType;
 		string SC1ParamName,SC2ParamName,SC3ParamName,Simulator;
-		double TimeOffset;
 		char XmlOutputFile[256] ;
 		ofstream FichXML;
 		// All the next variables represents a time parameter.*/ 
@@ -141,15 +142,22 @@ class ConfigSim
 		 *
 		 * It is an error added to the exact time propagation before to its use by TDI.  
 		 */
+		
+		double tStepPhy, tStepMes;
+		double tOffset, tMax, tDur;
+		double tMemNoiseFirst, tMemNoiseLast, tMemSig;
+		double tDeltaTDIDelay;
+		double tDisplay;
+		
+		
 		int GlobalRandomSeed;
 		int Endian ;
-		double tStepPhy, tMax, tStepMes, tMemNoiseFirst, tMemNoiseLast, tMemSig, tDisplay, tDeltaTDIDelay;
 		bool BigEndian ;
 		
 		/*!\brief TDI interpolator type */
 		INTERP TDIInterp;
 		/*!\brief Value used for TDI interpolation */
-		double TDIInterpUtilVal;
+		double TDIInterpVal;
 		//double Slope_ep,Tsample_ep,Fknee_ep,Fmin_ep;
 		
 		/*!\brief Nominal LISA arm length. */
@@ -183,10 +191,13 @@ class ConfigSim
 		 * It indicates the type of orbits :
 		 * \arg 0  : Analytical LISACode standard orbits (from gr-qc_0410093).
 		 * \arg 1  : MLDC orbits (from PRD_71_022001).
-		 * \arg 2  : ESA orbits read in file 'Orbit_ESA.input.txt'.
+		 * \arg 2  : ESA orbits read in file (default 'Orbit_ESA.input.txt').
 		 
 		 */
 		int OrbType;
+		
+		/*!\brief File describing satellite motion */
+		char OrbFile[512];
 		
 		/*! \brief  Order for time propagation computing.
 		 *
@@ -325,8 +336,12 @@ class ConfigSim
 		int getGlobalRandomSeed() {return(GlobalRandomSeed);};
 		/*! \brief It returns physical time step, that is the value of #tStepPhy attribute.*/
 		double gettStepPhy() {return(tStepPhy);};
-		/*! \brief It returns maximal simulation duration, that is the value of #tMax attribute.*/
+		/*! \brief It returns maximal time, that is the value of #tMax attribute.*/
 		double gettMax() {return(tMax);};
+		/*! \brief Return tie offset.*/
+		double gettOffset() {return(tOffset);};
+		/*! \brief It returns duration.*/
+		double gettDur() {return(tDur);};
 		/*! \brief It returns  #tStepMes attribute.*/
 		double gettStepMes() {return(tStepMes);};
 		/*! \brief It returns  #tMemNoiseFirst attribute.*/
@@ -341,8 +356,8 @@ class ConfigSim
 		double gettDeltaTDIDelay() {return(tDeltaTDIDelay);};
 		/*! \brief It returns  #TDIInterp attribute.*/
 		INTERP getTDIInterp() {return(TDIInterp);};
-		/*! \brief It returns  #TDIInterpUtilVal attribute.*/
-		double getTDIInterpUtilVal() {return(TDIInterpUtilVal);};
+		/*! \brief It returns  #TDIInterpVal attribute.*/
+		double getTDIInterpVal() {return(TDIInterpVal);};
 		/*! \brief It returns the value of #Armlength attribute.*/
 		double getArmlength() {return(Armlength);};
 		/*! \brief It returns  #OrbStartTime attribute.*/
@@ -416,12 +431,14 @@ class ConfigSim
 		string getSC2ParamName() {return(SC2ParamName);};
 		string getSC3ParamName() {return(SC3ParamName);};
 		string getSimulator() {return(Simulator);};
-		double getTimeOffset() {return(TimeOffset);};
 		char * getFileNameSigSC1() {return(FileNameSigSC1);};
 		char * getFileNameSigSC2() {return(FileNameSigSC2);};
 		char * getFileNameSigSC3() {return(FileNameSigSC3);};
 		
-		
+		/*! \brief Set maximal time #tMax and duration #tDur according to offset time (should be define BEFORE) */
+		void settMax(double tMax_n);
+		/*! \brief Set duration #tDur andmaximal time #tMax according to offset time (should be define BEFORE) */
+		void settDur(double tDur_n);
 		
 		// **  Others methods ** //	
 		/*! \brief Read the configuration file. */

@@ -20,6 +20,7 @@
 #include <fstream.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-LISAConstants.h"
+#include "LISACODE-Tools.h"
 #include "LISACODE-MathUtils.h"
 #include "LISACODE-GWMono.h"
 #include "LISACODE-GWFile.h"
@@ -57,12 +58,14 @@ int main (int argc, char * const argv[])
 			
 		}
 		// *********** Version *************
-		if(strcmp(argv[1],"--version")==0){
+		if(((argc>1)&&(strcmp(argv[1],"--version")==0))&&((argc>1)&&(strcmp(argv[1],"-v")==0))){
 			cout << " ----- VERSION -----" << endl;
 			cout << " DnonGW : executable of LISACode package - version " << LCVersion << " at " << DateOfLastUpdate << endl;
 			cout << " ----------------" << endl;
 			return 0;
 		}
+		
+		Tools MT;
 		
 		cout << endl << "   **************************** ";
 		cout << endl << "   *                          * ";

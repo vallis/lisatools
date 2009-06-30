@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "LISACODE-PhysicConstants.h"
+#include "LISACODE-Tools.h"
 //#include "LISACODE-Couple.h"
 
 using namespace std;
@@ -39,6 +40,7 @@ using namespace std;
 class GW 
 	{
 	protected:
+		Tools * MT;
 		/*! \var Beta
 		 \brief Ecliptic latitude Source direction angle (in the heliocentric reference frame) in radians. */
 		double Beta;
@@ -51,6 +53,8 @@ class GW
 		double AnglPol;
 		/*! \brief Number of parameters */
 		int NParam;
+		/*! \brief Minimal and maximal frequency of GW (-1.0 --> undefined) */
+		double FreqMin, FreqMax;
 		
 	public:
 		// ** Constructor **
@@ -83,6 +87,9 @@ class GW
 		double getAnglPol() {return(AnglPol);}; //Return polarisation angle
 		void setAnglPol(double AnglPol_n);
 		
+		double getFreqMin() {return(FreqMin);};
+		double getFreqMax() {return(FreqMax);};
+		
 		// ** Others methods **
 		/*! \brief Initialization : ... */
 		virtual void init();
@@ -94,6 +101,8 @@ class GW
 		virtual void DispTempVal(double t, ostream * OutDisp);
 		/*! \brief Computes components of the unit vectors #DirProp from the angles #Lambda and #Beta */
 		void CalculDirProp();
+		
+		void setTools(Tools * MT_n) {delete MT; MT = MT_n;};
 		
 	};
 

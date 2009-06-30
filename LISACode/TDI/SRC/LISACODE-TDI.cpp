@@ -28,6 +28,7 @@
  */
 TDI::TDI()
 {
+	MT = new Tools;
 	TDelay = new Memory;
 	Eta = new TDI_InterData;
 	SCSig = NULL;
@@ -42,6 +43,7 @@ TDI::TDI()
 	//InterpType = LAG;
 	//InterpUtilValue = 6;
 	TDIQuickMod = new TDITools;
+	////DEBUGWRITE = false;
 }
 
 
@@ -58,12 +60,14 @@ TDI::TDI()
  * \arg	#IndexDelay = empty
  * \arg	#TDIQuickMod = empty
  */
-TDI::TDI(   Memory * TDelay_n,
+TDI::TDI(Tools * MT_n,
+		 Memory * TDelay_n,
 		 TDI_InterData * Eta_n,
 		 ofstream * OutFile_n,
 		 int OutFileEncoding_n,
 		 int iSerie_n)
 {
+	MT = MT_n;
 	TDelay = TDelay_n;
 	Eta = Eta_n;
 	SCSig = NULL;
@@ -78,6 +82,7 @@ TDI::TDI(   Memory * TDelay_n,
 	//InterpType = LAG;
 	//InterpUtilValue = 6;
 	TDIQuickMod = new TDITools;
+	////DEBUGWRITE = false;
 }
 
 
@@ -96,7 +101,8 @@ TDI::TDI(   Memory * TDelay_n,
  * \arg #tmpCountInterEta = 0
  */
 
-TDI::TDI( Memory * TDelay_n,
+TDI::TDI(Tools * MT_n,
+		 Memory * TDelay_n,
 		 TDI_InterData * Eta_n,
 		 ofstream * OutFile_n,
 		 int OutFileEncoding_n,
@@ -109,6 +115,7 @@ TDI::TDI( Memory * TDelay_n,
 		 //double InterpUtilValue_n
 		 )
 {
+	MT = MT_n;
 	TDelay = TDelay_n;
 	Eta = Eta_n;
 	SCSig = NULL;
@@ -126,6 +133,7 @@ TDI::TDI( Memory * TDelay_n,
 	TDIQuickMod = TDIQuickMod_n;
 	tmpCountInterDelay = 0;
 	tmpCountInterEta = 0;
+	////DEBUGWRITE = false;
 	
 }
 
@@ -143,7 +151,8 @@ TDI::TDI( Memory * TDelay_n,
  * \arg #tmpCountInterDelay = 0
  * \arg #tmpCountInterEta = 0
  */
-TDI::TDI( Memory * TDelay_n,
+TDI::TDI(Tools * MT_n,
+		 Memory * TDelay_n,
 		 TDI_InterData * Eta_n,
 		 ofstream * OutFile_n,
 		 int OutFileEncoding_n,
@@ -154,6 +163,7 @@ TDI::TDI( Memory * TDelay_n,
 		 //double InterpUtilValue_n
 		 )
 {
+	MT = MT_n;
 	TDelay = TDelay_n;
 	Eta = Eta_n;
 	SCSig = NULL;
@@ -172,6 +182,7 @@ TDI::TDI( Memory * TDelay_n,
 	TDIQuickMod = TDIQuickMod_n;
 	tmpCountInterDelay = 0;
 	tmpCountInterEta = 0;
+	////DEBUGWRITE = false;
 }
 
 /*! \brief Constructs an instance and initializes it using TDelay_n, Eta_n, OutFile_n, iSerie_n, SignEtaDelays , Fact_n and TDIQuickMod_n inputs.
@@ -187,7 +198,8 @@ TDI::TDI( Memory * TDelay_n,
  * \arg #tmpCountInterDelay = 0
  * \arg #tmpCountInterEta = 0
  */
-TDI::TDI( Memory * TDelay_n,
+TDI::TDI(Tools * MT_n,
+		 Memory * TDelay_n,
 		 TDI_InterData * Eta_n,
 		 ofstream * OutFile_n,
 		 int OutFileEncoding_n,
@@ -199,6 +211,7 @@ TDI::TDI( Memory * TDelay_n,
 		 //double InterpUtilValue_n
 		 )
 {
+	MT = MT_n;
 	TDelay = TDelay_n;
 	Eta = Eta_n;
 	SCSig = NULL;
@@ -217,16 +230,19 @@ TDI::TDI( Memory * TDelay_n,
 	TDIQuickMod = TDIQuickMod_n;
 	tmpCountInterDelay = 0;
 	tmpCountInterEta = 0;
+	////DEBUGWRITE = false;
 }
 
 
-TDI::TDI(Memory * TDelay_n,
+TDI::TDI(Tools * MT_n,
+		 Memory * TDelay_n,
 		 Memory * SCSig_n,
 		 vector<int> SignEtaDelays,
 		 vector<double> Fact_n,
 		 TDITools * TDIQuickMod_n
 		 )
 {
+	MT = MT_n;
 	TDelay = TDelay_n;
 	Eta = NULL;
 	SCSig = SCSig_n;
@@ -240,6 +256,7 @@ TDI::TDI(Memory * TDelay_n,
 	TDIQuickMod = TDIQuickMod_n;
 	tmpCountInterDelay = 0;
 	tmpCountInterEta = 0;
+	////DEBUGWRITE = false;
 }
 
 
@@ -276,7 +293,8 @@ TDI::~TDI()
  */
 void TDI::ReadSignEtaDelays (vector<int> SignEtaDelays)
 {
-	cout << endl <<  "     Read TDI combinaisons ... " << endl;
+	if(MT->DispScreen())
+		cout << endl <<  "     Read TDI combinaisons ... " << endl;
 	Sign.resize(0);
 	IndexEta.resize(0);
 	IndexDelay.resize(0);
@@ -318,13 +336,15 @@ void TDI::ReadSignEtaDelays (vector<int> SignEtaDelays)
 		IndexDelay.push_back(TmpListIndexDelay);
 	}
 	
-	for(int i=0; i<IndexEta.size(); i++){
-		cout << "       Pack " << i << " :  Sign = " << Sign[i] <<  " , Eta = " << IndexEta[i] << " , Fact = " << Fact[i] << " , Delays = ";
-		for(int j=0; j<IndexDelay[i].size(); j++)
-			cout << (IndexDelay[i])[j] << " ";
-		cout << endl;
+	if(MT->DispScreen()){
+		for(int i=0; i<IndexEta.size(); i++){
+			cout << "       Pack " << i << " :  Sign = " << Sign[i] <<  " , Eta = " << IndexEta[i] << " , Fact = " << Fact[i] << " , Delays = ";
+			for(int j=0; j<IndexDelay[i].size(); j++)
+				cout << (IndexDelay[i])[j] << " ";
+			cout << endl;
+		}
+		cout << "     Read TDI combinaisons --> OK " << endl;
 	}
-	cout << "     Read TDI combinaisons --> OK " << endl;
 }
 
 
@@ -359,7 +379,8 @@ double TDI::Compute(double tComputeDelay)
 		for(int iPack=0; iPack<(int)(IndexEta.size()); iPack++){
 			TotalDelay = tComputeDelay;
 			InterResult = 0.0;
-			//cout << "Pack " << iPack << " (NbDelay = " << IndexDelay[iPack].size() << "):" << endl;
+			////if(DEBUGWRITE)
+			////	cout << "Pack " << iPack << " (NbDelay = " << IndexDelay[iPack].size() << "):" << endl;
 			if(TDIQuickMod->getRapidOption()){
 				for(int iDelay=0; iDelay< IndexDelay[iPack].size(); iDelay++){
 					TotalDelay += TDIQuickMod->getDelay((IndexDelay[iPack])[iDelay]);
@@ -370,18 +391,22 @@ double TDI::Compute(double tComputeDelay)
 					//tmpCountInterDelay++;
 				}
 			}
-			//cout << "Total Delay = " << TotalDelay << " on Eta " << IndexEta[iPack] <<  endl;
+			
+			////if(DEBUGWRITE)
+			////	cout << "Total Delay = " << TotalDelay << " on Eta " << IndexEta[iPack] <<  endl;
 			if(Eta->getUsable()){
 				InterResult = Sign[iPack]* Fact[iPack] * Eta->gData(IndexEta[iPack], TotalDelay);
 				//cout << "  Base -> Eta(D" << (IndexDelay[iPack])[0] << ",Eta" << IndexEta[iPack] ;
 				//cout << ") :\n    Retard de " << TotalDelay << " sur " << Eta << endl;
-				//cout << "   - TmpRes = " << Eta->gData(IndexEta[iPack], TotalDelay) << endl;
+				////if(DEBUGWRITE)
+				////	cout << "   - TmpRes = " << Eta->gData(IndexEta[iPack], TotalDelay) << endl;
 				//tmpCountInterEta++;
 				//cout << " " <<  Eta->gData(IndexEta[iPack], TotalDelay) ;
 			}else{
 				usable = false;
 			}
-			//cout << " Result Pack tmp = " << InterResult<< endl;
+			////if(DEBUGWRITE)
+			////	cout << " Result Pack tmp = " << InterResult<< endl;
 			Result += InterResult;
 			//cout << " Pack " << iPack << " usable = " << usable <<endl;
 		}
@@ -398,24 +423,39 @@ double TDI::Compute(double tComputeDelay)
 	
 }
 
-double TDI::ComputeNoEta(double tComputeDelay)
+double TDI::ComputeNoEta(double tComputeDelay, INTERP InterpType, int InterpUtilValue)
 {
 	double Result(0.0);
 	double TotalDelay, InterResult(0.0);
 	for(int iPack=0; iPack<(int)(IndexEta.size()); iPack++){
 		TotalDelay = tComputeDelay;
-		////cout << "Pack " << iPack << " (NbDelay = " << IndexDelay[iPack].size() << "):" << endl;
+		
+		////if(DEBUGWRITE)
+		////	cout << "Pack " << iPack << " (NbDelay = " << IndexDelay[iPack].size() << "):" << endl;
 		// ** Compute delay
-		for(int iDelay=0; iDelay< IndexDelay[iPack].size(); iDelay++){
-			TotalDelay += TDIQuickMod->getDelay((IndexDelay[iPack])[iDelay]);
+		if(TDIQuickMod->getRapidOption()){
+			for(int iDelay=0; iDelay< IndexDelay[iPack].size(); iDelay++){
+				TotalDelay += TDIQuickMod->getDelay((IndexDelay[iPack])[iDelay]);
+			}				
+		}else{
+			for(int iDelay=0; iDelay< IndexDelay[iPack].size(); iDelay++){
+				TotalDelay += TDelay->gData((IndexDelay[iPack])[iDelay]-1, TotalDelay, LAG, 6);
+				//tmpCountInterDelay++;
+			}
 		}
+		//for(int iDelay=0; iDelay< IndexDelay[iPack].size(); iDelay++){
+		//	TotalDelay += TDIQuickMod->getDelay((IndexDelay[iPack])[iDelay]);
+		//}
 		// ** Compute pack value
-		InterResult = Sign[iPack]* Fact[iPack] * SCSig->gData(IndexEta[iPack]-1, TotalDelay, LIN, 2);
+		//InterResult = Sign[iPack]* Fact[iPack] * SCSig->gData(IndexEta[iPack]-1, TotalDelay, LIN, 2);
+		InterResult = Sign[iPack]* Fact[iPack] * SCSig->gData(IndexEta[iPack]-1, TotalDelay, InterpType, InterpUtilValue);
 		//InterResult = Sign[iPack]* Fact[iPack] * SCSig->gData(IndexEta[iPack]-1, TotalDelay, TRU, 1);
 		//cout << " " << SCSig->gData(IndexEta[iPack]-1, TotalDelay) ;
-		//cout << "Total Delay = " << TotalDelay << " on Eta " << IndexEta[iPack] <<  endl;
-		//cout << "   - TmpRes = " << SCSig->gData(IndexEta[iPack], TotalDelay) << endl;
-		//cout << " Result Pack tmp = " << InterResult<< endl;
+		////if(DEBUGWRITE){
+		////	cout << "Total Delay = " << TotalDelay << " on Eta " << IndexEta[iPack] <<  endl;
+		////	cout << "   - TmpRes = " << SCSig->gData(IndexEta[iPack]-1, TotalDelay, InterpType, InterpUtilValue) << endl;
+		////	cout << " Result Pack tmp = " << InterResult << endl;
+		////}
 		Result += InterResult;
 		//tmpCountInterEta++;
 	}

@@ -301,6 +301,10 @@ Vect GeometryAnalytic::velocity(int nb, double t)
 }
 
 
+double GeometryAnalytic::tdelaySpecific(int em, int rec, int order, double trec)
+{
+	return (L0m/c_SI);
+}
 
 //end of LISACODE-GeometryAnalytic.cpp
 

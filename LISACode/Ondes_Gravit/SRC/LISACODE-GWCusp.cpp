@@ -194,30 +194,36 @@ void GWCusp::init()
 			FTh *= exp(1.0 - f/MaximumFrequency);
 		fh[i][0] = -FTh * cos(mTPI*f*Ts);
 		fh[i][1] = -FTh * sin(mTPI*f*Ts);
+		//printf("%d : %e %e %e\n", i , FTh, fh[i][0], fh[i][1]);
 	}
 	
 	// ** Imaginary part of the last frequency value at 0 
 	fh[NfDat-1][1] = 0.0;
 	
 	// ** Output of FFT for checking
-	//FILE * Outfile;
-	/*Outfile = fopen("/Users/petiteau/Applications/src/GWSrc/CosmicCusp/build/Debug/FTDataLC.txt","w");
+	FILE * Outfile;
+	Outfile = fopen("FTDataLC.txt","w");
 	for(int i=0; i<NfDat; i++){
 		f = (double)(i)/Tburst;
-		fprintf(Outfile, "%lf %e %e\n", f, sqrt(fh[i][0]*fh[i][0]+fh[i][1]*fh[i][1]), atan2(fh[i][1], fh[i][0]));
+		fprintf(Outfile, "%e %e %e\n", f, sqrt(fh[i][0]*fh[i][0]+fh[i][1]*fh[i][1]), atan2(fh[i][1], fh[i][0]));
 	}
 	fclose(Outfile);
-	*/
+	
 	
 	// ** Compute inverse of Fourier transform
 	fftw_execute(FTRevPlan);
 	
-	/*Outfile = fopen("tDataLC.txt","w");
+	Outfile = fopen("tDataLC.txt","w");
 	for(int i=0; i<NtDat; i++){
 		fprintf(Outfile, "%d %e\n", i, th[i]);
 	}
 	fclose(Outfile);
-	 */
+	
+	// ** Normalization
+	for(int i=0; i<NtDat; i++){
+		th[i] /= Tstep;
+	}
+	
 	 
 	//cout << " --> OK" << endl;
 }
@@ -228,8 +234,9 @@ void GWCusp::init()
  */
 double GWCusp::hp(double t)
 {
-	//double tcur(Tback+t);
-	double tcur(T0+t);
+	double tcur(Tback+t);
+	//double tcur(T0+t);
+	//cout << tcur << endl;
 	if((tcur>=0.0)&&(tcur<Tburst)){
 		int i((int)(floor(tcur/Tstep)));
 		return( ((th[i+1]-th[i]) * (tcur/Tstep-i) + th[i]) / (double)(NtDat) );
