@@ -279,10 +279,10 @@ class TimeSeries(XMLobject):
         if encoding == 'Binary':
             import zlib
             
-            checksum = zlib.crc32(buffer)
+            checksum = zlib.crc32(buffer)            
             
             bfile = open(filename,'w')
-            bfile.write(buffer.tostring())
+            buffer.tofile(bfile) # previously bfile.write(buffer.tostring())
             bfile.close()
             
             Stream = ('Stream',
@@ -1167,7 +1167,7 @@ class readXML(object):
             if node2.tagName == 'Array':
                 for node3 in node2:
                     if node3.tagName == 'Dim':
-                        dim[node3.Name] = int(str(node3))
+                        dim[node3.Name] = int(float(str(node3)))
                     elif node3.tagName == 'Stream':
                         encoding = node3.Encoding
                         stype    = node3.Type
@@ -1199,7 +1199,8 @@ class readXML(object):
                     # try relative to the working directory
                     binaryfile = open(content,'r')
         
-            readbuffer = numpy.fromstring(binaryfile.read(readlength),'double')
+            readbuffer = numpy.fromfile(binaryfile,'double',readlength)
+            # previously readbuffer = numpy.fromstring(binaryfile.read(readlength),'double')
             binaryfile.close()
             
             if checksum != None:
@@ -1211,7 +1212,7 @@ class readXML(object):
             
             if ( ('BigEndian' in encoding and sys.byteorder == 'little') or
                  ('LittleEndian' in encoding and sys.byteorder == 'big') ):
-                readbuffer = readbuffer.byteswap()
+                readbuffer.byteswap(True)
         elif stype == 'Local' and 'Text' in encoding: 
             delimiter = node3.Delimiter
             
@@ -1332,9 +1333,9 @@ class readXML(object):
                 for node3 in node2:
                     if node3.tagName == 'Dim':
                         if node3.Name == 'Length':
-                            streamlength = int(str(node3))
+                            streamlength = int(float(str(node3)))
                         elif node3.Name == 'Records':
-                            tabledim = int(str(node3))
+                            tabledim = int(float(str(node3)))
                     elif node3.tagName == 'Stream':
                         streamname = os.path.abspath(self.directory) + '/' + str(node3)
                         

@@ -431,7 +431,8 @@ class Stream(object):
                     loadfile = open(content,'r')
             
             if 'Binary' in node.Encoding:
-                data = numpy.fromstring(loadfile.read(readlength),'double')
+                data = numpy.fromfile(loadfile,'double',readlength)
+                # previously data = numpy.fromstring(loadfile.read(readlength),'double')
                 
                 if hasattr(node,'Checksum'):
                     import zlib
@@ -443,7 +444,7 @@ class Stream(object):
                 # change endianness if needed
                 if ( ('BigEndian' in node.Encoding and sys.byteorder == 'little') or
                      ('LittleEndian' in node.Encoding and sys.byteorder == 'big') ):
-                    data = data.byteswap()
+                    data.byteswap(True)
             elif 'Text' in node.Encoding:
                 content = loadfile.read()
             else:
@@ -476,12 +477,12 @@ class Stream(object):
                 filename = xmlfile.nextbinfile()
             
                 if type(self.Data) == numpy.ndarray:
-                    writebuffer = self.Data.tostring()
-                    
                     import zlib
-                    checksum = zlib.crc32(writebuffer)
+                    checksum = zlib.crc32(self.Data)
                     
-                    open(filename,'w').write(writebuffer)
+                    bfile = open(filename,'w')
+                    self.Data.tofile(bfile) # previously open(filename,'w').write(writebuffer)
+                    bfile.close()
                 elif type(self.Data) == str:
                     if os.path.abspath(self.Data) != os.path.abspath(filename):
                         if os.path.isfile(filename):
@@ -664,7 +665,7 @@ class Table(XMLobject):
         
         for node2 in node:
             if node2.tagName == 'Dim':
-                dimensions[node2.Name] = int(str(node2))
+                dimensions[node2.Name] = int(float(str(node2)))
         
         # now look for the stream
         for node2 in node:
@@ -755,7 +756,7 @@ class Array(object):
         
         for node2 in node:
             if node2.tagName == 'Dim':
-                dimensions[node2.Name] = int(str(node2))
+                dimensions[node2.Name] = int(float(str(node2)))
         
         for node2 in node:  
             if node2.tagName == 'Stream':
