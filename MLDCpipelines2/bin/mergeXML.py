@@ -42,7 +42,7 @@ def upsample(tdi,mincadence):
             print "Cannot upsample cadence %s to noncommensurable cadence %s." % (ts.Cadence,mincadence)
             sys.exit(1)
         
-        newlength = ts.Length * (ts.Cadence / mincadence)
+        newlength = int(ts.Length * (ts.Cadence / mincadence))
         
         if newlength % 2 != 0 or ts.Length % 2 != 0:
             print "Sorry, I don't know how to deal with odd-point FFTs."
