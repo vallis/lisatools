@@ -11,9 +11,10 @@ lib_LIBRARIES = liblisacodegravwaves.a
 
 liblisacodegravwaves_a_SOURCES = \
 	LISACODE-GW.cpp \
+	LISACODE-GWFile.cpp \
+	LISACODE-GWFile2.cpp \
 	LISACODE-GWMono.cpp \
 	LISACODE-GWBinary.cpp \
-	LISACODE-GWFile.cpp \
 	LISACODE-GWPeriGate.cpp \
 	LISACODE-GWNewton2.cpp \
 	LISACODE-GWSto.cpp \

@@ -57,7 +57,7 @@ class GWCusp : public GW
 		
 		// *************** Time parameters ***************
 		/*! \brief Time offset */
-		//double Toffset;
+		double Toffset;
 		/*!  \brief Duration of observation */
 		double Tobs;
 		/*!  \brief Time step */
@@ -86,7 +86,7 @@ class GWCusp : public GW
 	public:
 		// ** Constructor **
 		GWCusp();
-		GWCusp(double TStep_n, double Tobs_n, double Tpad_n);
+		GWCusp(double TStep_n, double Tobs_n, double Tpad_n, double Toffset_n);
 		GWCusp(double Beta_n, 
 			   double Lambda_n, 
 			   double AnglPol_n,
@@ -95,7 +95,8 @@ class GWCusp : public GW
 			   double MaximumFrequency_n,
 			   double TStep_n,
 			   double Tobs_n,
-			   double Tpad_n);
+			   double Tpad_n,
+			   double Toffset_n);
 		~GWCusp();
 		
 		// ** Access methods **

@@ -54,16 +54,35 @@ parser.add_option("-d", "--timeStep",
 
 parser.add_option("-s", "--seed",
                   type="int", dest="seed", default=None,
-                  help="seed for random number generator (int); None time based seed [default None]")
+                  help="seed for random number generator (int) [required]")
 
 parser.add_option("-r", "--rawMeasurements",
                   action="store_true", dest="rawMeasurements", default=False,
-                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z [default False]")
+                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
 
-parser.add_option("-I", "--LISA",
+parser.add_option("-L", "--LISA",
                   type="string", dest="LISAmodel", default='Eccentric',
-                  help="LISA model: Static, Rigid, Eccentric [default Eccentric]")
+                  help="LISA model: Static, Rigid, Eccentric [default]")
 
+parser.add_option("-O", "--observables",
+                  type="string", dest="observables", default='1.5',
+                  help="TDI observables: 1.5 [default], 2.0, Sagnac (experimental; not compatible with -r) : Not use by LISACode at the moment")
+
+parser.add_option("-n", "--noiseOnly",
+                  action="store_true", dest="noiseOnly", default=False,
+                  help="compute SNR using instrumental noise only [off by default] : Not use by LISACode at the moment")
+
+parser.add_option("-D", "--debugSNR",
+                  action="store_true", dest="debugSNR", default=False,
+                  help="show more SNR data [off by default] : Not use by LISACode at the moment")
+
+parser.add_option("-c", "--combinedSNR",
+                  action="store_true", dest="combinedSNR", default=False,
+                  help="use combined snr = sqrt(2)*max{SNR_x, SNR_y, SNR_z} as SNR constrain [off by default] : Not use by LISACode at the moment")
+
+parser.add_option("-v", "--verbose",
+                  action="store_true", dest="verbose", default=False,
+                  help="display parameter values [off by default] : Not use by LISACode at the moment")
 
 (options, args) = parser.parse_args()
 

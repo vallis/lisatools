@@ -27,6 +27,7 @@ GWCusp::GWCusp() : GW()
 	//Toffset = 0.0;
 	Tobs = Tstep*pow(2.0,22.0);
 	Tpad = 900.0;
+	Toffset = 0.0;
 	
 	NParam = 6;
 	
@@ -36,7 +37,7 @@ GWCusp::GWCusp() : GW()
 }
 
 
-GWCusp::GWCusp(double TStep_n, double Tobs_n, double Tpad_n) : GW()
+GWCusp::GWCusp(double TStep_n, double Tobs_n, double Tpad_n, double Toffset_n) : GW()
 {
 	Amplitude = 10.0e-10;
 	CentralTime = 1.0e-6;
@@ -45,6 +46,7 @@ GWCusp::GWCusp(double TStep_n, double Tobs_n, double Tpad_n) : GW()
 	//Toffset = Toffset_n;
 	Tobs = Tobs_n;
 	Tpad = Tpad_n;
+	Toffset = Toffset_n;
 	
 	NParam = 6;
 	
@@ -61,7 +63,8 @@ GWCusp::GWCusp(double Beta_n,
 			   double MaximumFrequency_n,
 			   double TStep_n,
 			   double Tobs_n,
-			   double Tpad_n) :
+			   double Tpad_n,
+			   double Toffset_n) :
 GW(Beta_n, Lambda_n, AnglPol_n)
 {
 	Amplitude = Amplitude_n;
@@ -71,6 +74,7 @@ GW(Beta_n, Lambda_n, AnglPol_n)
 	//Toffset = Toffset_n;
 	Tobs = Tobs_n;
 	Tpad = Tpad_n;
+	Toffset = Toffset_n;
 	
 	NParam = 6;
 	
@@ -177,13 +181,15 @@ void GWCusp::init()
 	// **
 	T0 = Tburst/4.0;
 	// ** 
-	Ts = T0 + CentralTime;
+	Ts = T0 + CentralTime - Toffset;
 	// ** 
 	Tback = T0 - Tpad;
 	
 	// ** Initialisation of the first frequency value at 0
 	fh[0][0] = 0.0;
 	fh[0][1] = 0.0;
+	
+	//cout << "NtDat = " << NtDat << " ,  Tburst = " << Tburst <<  " ,  CentralTime = " << CentralTime << " ,  T0 = " << T0 << " ,  Ts = " << Ts << " , Tback = " << Tback << endl;
 	
 	// ** Loop on frequency
 	for(int i=1; i<NfDat; i++){
@@ -200,7 +206,9 @@ void GWCusp::init()
 	// ** Imaginary part of the last frequency value at 0 
 	fh[NfDat-1][1] = 0.0;
 	
+	
 	// ** Output of FFT for checking
+	/*
 	FILE * Outfile;
 	Outfile = fopen("FTDataLC.txt","w");
 	for(int i=0; i<NfDat; i++){
@@ -208,16 +216,18 @@ void GWCusp::init()
 		fprintf(Outfile, "%e %e %e\n", f, sqrt(fh[i][0]*fh[i][0]+fh[i][1]*fh[i][1]), atan2(fh[i][1], fh[i][0]));
 	}
 	fclose(Outfile);
-	
+	*/
 	
 	// ** Compute inverse of Fourier transform
 	fftw_execute(FTRevPlan);
 	
+	/*
 	Outfile = fopen("tDataLC.txt","w");
 	for(int i=0; i<NtDat; i++){
 		fprintf(Outfile, "%d %e\n", i, th[i]);
 	}
 	fclose(Outfile);
+	*/
 	
 	// ** Normalization
 	for(int i=0; i<NtDat; i++){
@@ -234,8 +244,8 @@ void GWCusp::init()
  */
 double GWCusp::hp(double t)
 {
-	double tcur(Tback+t);
-	//double tcur(T0+t);
+	//double tcur(Tback+t);
+	double tcur(T0+t-Toffset);
 	//cout << tcur << endl;
 	if((tcur>=0.0)&&(tcur<Tburst)){
 		int i((int)(floor(tcur/Tstep)));

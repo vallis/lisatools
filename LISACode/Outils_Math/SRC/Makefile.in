@@ -62,11 +62,12 @@ AR = ar
 ARFLAGS = cru
 liblisacodemathtools_a_AR = $(AR) $(ARFLAGS)
 liblisacodemathtools_a_LIBADD =
-am_liblisacodemathtools_a_OBJECTS = LISACODE-Couple.$(OBJEXT) \
-	LISACODE-Filter.$(OBJEXT) LISACODE-Mat.$(OBJEXT) \
-	LISACODE-Serie.$(OBJEXT) LISACODE-Vect.$(OBJEXT) \
-	LISACODE-EllipticFilter.$(OBJEXT) com.$(OBJEXT) \
-	randlib.$(OBJEXT) linpack.$(OBJEXT)
+am_liblisacodemathtools_a_OBJECTS = LISACODE-Tools.$(OBJEXT) \
+	LISACODE-Couple.$(OBJEXT) LISACODE-Filter.$(OBJEXT) \
+	LISACODE-Mat.$(OBJEXT) LISACODE-Serie.$(OBJEXT) \
+	LISACODE-Vect.$(OBJEXT) LISACODE-EllipticFilter.$(OBJEXT) \
+	LISACODE-Serie2.$(OBJEXT) com.$(OBJEXT) randlib.$(OBJEXT) \
+	linpack.$(OBJEXT)
 liblisacodemathtools_a_OBJECTS = $(am_liblisacodemathtools_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -239,12 +240,14 @@ INCLUDES = \
 
 lib_LIBRARIES = liblisacodemathtools.a
 liblisacodemathtools_a_SOURCES = \
+	LISACODE-Tools.cpp \
 	LISACODE-Couple.cpp \
 	LISACODE-Filter.cpp \
 	LISACODE-Mat.cpp \
 	LISACODE-Serie.cpp \
 	LISACODE-Vect.cpp \
 	LISACODE-EllipticFilter.cpp \
+	LISACODE-Serie2.cpp \
 	com.c \
 	randlib.c \
 	linpack.c
@@ -327,6 +330,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-Filter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-Mat.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-Serie.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-Serie2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-Tools.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-Vect.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/com.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linpack.Po@am__quote@

@@ -79,7 +79,6 @@ class Serie2
 		double getBinValue(int bin) const;
 		void setBinValue(int bin, double x);
 		
-		
 		// **  Others methods **
 		/*! \brief Add data at the begining and remove the last one if the maximal number of data is reached */ 
 		void addData(double y);

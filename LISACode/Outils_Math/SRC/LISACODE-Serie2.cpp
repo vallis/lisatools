@@ -98,7 +98,7 @@ Serie2::Serie2(double start, double delta, double ** ys_n, int N_n, int Nmax_n)
 /*! \brief Destructor. */
 Serie2::~Serie2()
 {
-	//for(int i=0; i<Nmax; i++)
+	//for(int i=0; i<N; i++)
 	//	delete ys[i];
 	//free(ys);
 }
@@ -166,7 +166,6 @@ void Serie2::setBinValue(int bin, double x)
 		throw invalid_argument("Serie2: The required bin does not exist !");  
 	(*ys[bin]) = x;
 }
-
 
 
 /* Other methods */

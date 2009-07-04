@@ -820,7 +820,7 @@ void ConfigSim::ReadASCIIFile()
 				cout.precision(15);
 				cout << "  + GWCusp   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
 				cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << endl;
-				GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, tMax, Tpad));
+				GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, tMax, Tpad, tOffset));
 				NbSrc++;
 			}
 			if(scmp(Buf,"Mono")){
@@ -1192,7 +1192,7 @@ void ConfigSim::ReadASCIIFile()
 					cout << ", ASCII,  Offset = " << GWTimeOffset << " , TimeStep = " << GWTimeStep;
 				}
 				cout << " : Load file ..."; fflush(stdout);
-				GWs.push_back(new GWFile(Beta, Lambda, Psi, GWFileName, GWFileEncoding, GWTimeOffset, GWTimeStep, GWLength, GWRecords));
+				GWs.push_back(new GWFile2(Beta, Lambda, Psi, GWFileName, GWFileEncoding, GWTimeOffset, GWTimeStep, GWLength, GWRecords));
 				cout << " --> OK" << endl;
 				NbSrc++;				
 			}
@@ -2251,7 +2251,7 @@ void ConfigSim::ReadXMLFile()
 							TPad -= gettOffset(); 
 							cout << "  + GWCusp   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
 							cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << " RequestDuration=" << ReqtDur << " Tpad(+tOffset)=" << TPad << endl;
-							GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, ReqtDur, TPad));
+							GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, ReqtDur, TPad, tOffset));
 							NbSrc++;
 						}	
 						
@@ -2354,7 +2354,7 @@ void ConfigSim::ReadXMLFile()
 							cout << ", ASCII,  Offset = " << GWTimeOffset << " , TimeStep = " << GWTimeStep;
 						}
 						cout << " : Load file ..."; fflush(stdout);
-						GWs.push_back(new GWFile(Beta, Lambda, Psi, GWFileName, GWFileEncoding, GWTimeOffset, GWTimeStep, GWLength, GWRecords));
+						GWs.push_back(new GWFile2(Beta, Lambda, Psi, GWFileName, GWFileEncoding, GWTimeOffset, GWTimeStep, GWLength, GWRecords));
 						cout << " --> OK" << endl;
 						NbSrc++;
 					}
@@ -2372,19 +2372,20 @@ void ConfigSim::ReadXMLFile()
 				for (noisedata = ezxml_child(section, "XSIL"); noisedata; noisedata = noisedata->next) {
 					ezxml_t param;
 					const char * instrument;
-					string str_xml,instrument_eric,SourceType,SpectralType;
+					string str_xml,instrument_possible,SourceType,SpectralType;
 					//eric_nul = " \n";
 					int iSC(-1), IndDir(-1), InstrumentIndex ;
-					double PSD ;
+					double PSD(0.0), fknee(0.0) ;
 					// Noise localisation in LISA : instrument and spacecraft
 					instrument = ezxml_attr(noisedata,"Name");
 					cout << "  Noisy Instrument = " << instrument << endl;
+					// *** Read all the parameters
 					for(param = ezxml_child(noisedata,"Param"); param; param = param->next){
 						if(strcmp(ezxml_attr(param,"Name"),"PowerSpectralDensity")==0){
 							PSD = gXMLdouble(param);
 						}else{
 							if(strcmp(ezxml_attr(param,"Name"),"Fknee")==0){
-								val = gXMLdouble(param);
+								fknee = gXMLdouble(param);
 							}else{
 								if(strcmp(ezxml_attr(param,"Name"),"GenerationTimeStep")==0){
 									val = gXMLint(param);
@@ -2411,8 +2412,13 @@ void ConfigSim::ReadXMLFile()
 								}
 							}
 						}
-					} // all parameters are read
-					if(SpectralType == "PinkAcceleration"){
+					}
+					
+					
+					
+					
+					// *** Analyse for MLDC noise
+					if(strncmp(instrument,"pm",2)==0){
 						//cout << "instrument 11 :" << instrument << endl ;
 						InstrumentIndex = 12; // a verifier
 						if(strcmp(instrument,"pm1")==0){
@@ -2442,7 +2448,7 @@ void ConfigSim::ReadXMLFile()
 							}
 						}
 					}
-					if(SpectralType == "WhitePhase"){
+					if(strncmp(instrument,"pd",2)==0){
 						//cout << "instrument 21 :" << instrument << endl ;
 						InstrumentIndex = 6; // (shot noise) a verifier
 						if(strcmp(instrument,"pd1")==0){
@@ -2473,7 +2479,7 @@ void ConfigSim::ReadXMLFile()
 							}
 						}
 					}
-					if(SpectralType == "WhiteFrequency"){
+					if(strncmp(instrument,"c",1)==0){
 						//cout << "instrument 31 :" << instrument << endl ;
 						InstrumentIndex = 0; // (laser) a verifier
 						if(strcmp(instrument,"c1")==0){
@@ -2504,20 +2510,18 @@ void ConfigSim::ReadXMLFile()
 							}
 						}
 					}
-					//throw ;
-					//cout << " - Instrument = " << instrument << endl;
-					string nom_eric[] = {"pm1", "pm2", "pm3", "pm1s", "pm2s", "pm3s","pd1", "pd2", "pd3", "pd1s", "pd2s", "pd3s","c1", "c2", "c3", "c1s", "c2s", "c3s" } ;
-					int test_eric ;
-					instrument_eric = instrument ;
-					//instrument_eric = instrument_eric.substr(0,2);
-					test_eric=1 ;
+					// ** Test if instrument is known
+					string nom_possible[] = {"pm1", "pm2", "pm3", "pm1s", "pm2s", "pm3s","pd1", "pd2", "pd3", "pd1s", "pd2s", "pd3s","c1", "c2", "c3", "c1s", "c2s", "c3s" } ;
+					int test_possible ;
+					instrument_possible = instrument ;
+					test_possible = true ;
 					for ( int j=0 ; j<18 ; j++){
-						test_eric=test_eric*instrument_eric.compare(nom_eric[j]) ;
-						//cout << "<" << instrument_eric<< "<" << nom_eric[j] << "<" << test_eric <<endl ;
+						test_possible = test_possible*instrument_possible.compare(nom_possible[j]) ;
 					}
-					if(test_eric != 0)
+					if(test_possible)
 						throw invalid_argument("ConfigSim::ReadXMLFile : The instrument for noise isn't known  !");
 					
+					// *** Analyse for LISACode std noise
 					if((iSC<1)&&(iSC>3))
 						throw invalid_argument("ConfigSim::ReadXMLFile : The spacecraft for noise isn't known (only 1, 2 or 3) !");
 					if((IndDir!=0)&&(IndDir!=1)&&(IndDir!=4))
@@ -2578,26 +2582,6 @@ void ConfigSim::ReadXMLFile()
 							cout << "  --> Filter_1of : " << level << endl;
 							NoisePlace(tmp_noise, iSC, IndDir, InstrumentIndex);
 						}
-						// modif e.p.
-						if(strcmp(noisetype,"Filter_MLDC_IM")==0){
-							tmp_noise.NType = 7;
-							tmp_noise.NVal0=level;
-							cout << "  --> Filter_MLDC_IM : " << level << endl;
-							NoisePlace(tmp_noise, iSC, IndDir, InstrumentIndex);
-							throw invalid_argument("ConfigSim::ReadXMLFile : One parameter is missing in xml file for Filter_MLDC_IM !");	
-						}	
-						// end of modif e.p.
-						// modif e.p.
-						if(SpectralType == "PinkAcceleration"){
-							tmp_noise.NType = 7;
-							tmp_noise.NVal0=pow(PSD,0.5);
-							tmp_noise.NVal01=1e-4; // frequency of ankle
-							//tmp_noise.NVal01=1e-8; // frequency of ankle
-							cout << "  --> PinkAcceleration : ISC, IndDir, Level = " << iSC << " " << IndDir << "  " <<tmp_noise.NVal0 << endl;
-							NoisePlace(tmp_noise, iSC, IndDir, InstrumentIndex);
-							//throw invalid_argument("ConfigSim::ReadXMLFile : One parameter is missing in xml file for Filter_MLDC_IM !");		
-						}
-						// end of modif e.p.
 						if(strcmp(noisetype,"Filter_f")==0){
 							tmp_noise.NType = 5;
 							tmp_noise.NVal0=level;
@@ -2609,6 +2593,22 @@ void ConfigSim::ReadXMLFile()
 							tmp_noise.NVal0=level;
 							cout << "  --> Filter_fLosP : " << level << endl;
 							NoisePlace(tmp_noise, iSC, IndDir, InstrumentIndex);
+						}
+						if(strcmp(noisetype,"Filter_MLDC_IM")==0){
+							tmp_noise.NType = 7;
+							tmp_noise.NVal0=level;
+							cout << "  --> Filter_MLDC_IM : " << level << endl;
+							NoisePlace(tmp_noise, iSC, IndDir, InstrumentIndex);
+							throw invalid_argument("ConfigSim::ReadXMLFile : One parameter is missing in xml file for Filter_MLDC_IM !");	
+						}	
+						if(SpectralType == "PinkAcceleration"){
+							tmp_noise.NType = 7;
+							tmp_noise.NVal0 = pow(PSD,0.5);
+							tmp_noise.NVal01 = fknee; // frequency of ankle
+							//tmp_noise.NVal01=1e-8; // frequency of ankle
+							cout << "  --> PinkAcceleration : ISC, IndDir, Level, fknee = " << iSC << " " << IndDir << " " << tmp_noise.NVal0  << " " << tmp_noise.NVal01 << endl;
+							NoisePlace(tmp_noise, iSC, IndDir, InstrumentIndex);
+							//throw invalid_argument("ConfigSim::ReadXMLFile : One parameter is missing in xml file for Filter_MLDC_IM !");		
 						}
 					}						
 					if(strcmp(noisetype,"FilterCoef")==0){

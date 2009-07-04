@@ -42,8 +42,8 @@ EXTRA_DIST = \
 			Documentation/latex/refman.pdf \
 			Example_Input/ConfigRefBase \
 			Example_Input/ConfigRefBase.xml \
-			Example_Input/Log_ConfigRefBase_v144.txt \
-			Example_Input/Log_ConfigRefBase_xml_v144.txt \
+			Example_Input/Log_ConfigRefBase_v145.txt \
+			Example_Input/Log_ConfigRefBase_xml_v145.txt \
 			Example_Input/SC1.txt \
 			Example_Input/SC2.bin \
 			Example_Input/SC3.bin \

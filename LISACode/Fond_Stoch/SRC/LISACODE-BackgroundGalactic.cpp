@@ -176,7 +176,6 @@ double BackgroundGalactic::deltanu(int iSC, int IndirSens, double t)
 	// Find the good bin
 	if((tGeo<TimeList[0])||(tGeo>TimeList[TimeList.size()-2])){
 		result = 0.0;
-		// throw invalid_argument("GWFile::Interpol : The value for this time cannot be evaluated !");
 	}else {
 		if(fabs(tGeo-tmp_t)>PRECISION){
 			double invdt;

@@ -88,7 +88,8 @@ int main (int argc, char * const argv[])
 					0.1,		// MaximumFrequency (Hz)
 					dt,			// Time step (in seconds)
 					tObs,		// Observation time (in seconds)
-					900.0		// Tpad (in seconds)
+					900.0,		// Tpad (in seconds)
+					0.0			// Offset time
 					);
 		
 		

@@ -34,6 +34,7 @@
 #include "LISACODE-GWBinary.h"
 #include "LISACODE-GWNewton2.h"
 #include "LISACODE-GWFile.h"
+#include "LISACODE-GWFile2.h"
 #include "LISACODE-GWPeriGate.h"
 #include "LISACODE-GWSto.h"
 #include "LISACODE-GWFastSpinBBH.h"

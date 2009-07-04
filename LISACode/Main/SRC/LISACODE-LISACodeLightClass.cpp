@@ -148,7 +148,19 @@ LISACodeLightClass::LISACodeLightClass(Tools * MT_n, double t0_n, double dt_n, d
 
 LISACodeLightClass::~LISACodeLightClass()
 {
+	delete GWs;
+	delete LISAGeo;
+	delete SigGWs;
+	delete SCSig;
+	delete DelayTDI;
+	delete TDIQuick;
 	
+	if(TFUsed){
+		for(int i=0; i<NbTDI; i++)
+			free(tDat[i]);
+		free(tmptDat);
+		free(tmpfDat);
+	}
 }
 
 
@@ -171,6 +183,7 @@ void LISACodeLightClass::ChangeParamsGWs(double * NewParams)
 		//cout << "Nb parameters of src " << iGW << " = " << (*GWs)[iGW]->getNParam() << endl;
 		for(int iPGW=0; iPGW<(*GWs)[iGW]->getNParam(); iPGW++){
 			(*GWs)[iGW]->setParam(iPGW, NewParams[iP]);
+			//cout << " - Param " << iP << " (iPGW=" << iPGW << ") = " << (*GWs)[iGW]->getParam(iPGW) << endl;
 			iP++;
 		}
 	}
@@ -243,7 +256,7 @@ void LISACodeLightClass::AddGWSpinBBH (double Beta_n,
 
 void LISACodeLightClass::AddGWCusp()
 {
-	GWs->push_back(new GWCusp(dt, Tobs, 900.0)); // ?? 900.0 equivalent to -tGWExtra ?
+	GWs->push_back(new GWCusp(dt, Tobs, 900.0, t0)); // ?? 900.0 equivalent to -tGWExtra ?
 	NbParams += (*GWs)[GWs->size()-1]->getNParam();
 	(*GWs)[GWs->size()-1]->setTools(MT);
 }

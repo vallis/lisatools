@@ -1,6 +1,6 @@
-// $Id: LISACODE-GWFile.cpp,v 1.6 2007/04/20 12:28:41 ruiloba Exp $
+// $Id: $
 /*
- *  LISACODE-GWFile.cpp
+ *  LISACODE-GWBuffer.cpp
  *  V 1.4
  *  LISACode
  *
@@ -200,6 +200,7 @@ void GWBuffer::init()
 double GWBuffer::hp(double t)
 {	
 	//return(SrcGW->hp(t));
+	//cout << t << " 1.0 "<< hps->gData(t, InterpType, InterpVal) << endl;
 	return(hps->gData(t, InterpType, InterpVal));
 }
 
@@ -211,6 +212,7 @@ double GWBuffer::hp(double t)
 double GWBuffer::hc(double t)
 {
 	//return(SrcGW->hc(t));
+	//cout << t << " -1.0 "<< hps->gData(t, InterpType, InterpVal) << endl;
 	return(hcs->gData(t, InterpType, InterpVal));
 }
 
