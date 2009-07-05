@@ -37,7 +37,7 @@ numpy.random.seed(seed)
 
 # --- the galaxy!
 
-#run('%(mydir)s/makesource-Galaxy3.py --seed=%(seed)s -v Galaxy/TheGalaxy.xml' % globals())
+run('%(mydir)s/makesource-Galaxy3.py --seed=%(seed)s -v Galaxy/TheGalaxy.xml' % globals())
 
 seed = seed + 1
 
@@ -46,7 +46,7 @@ seed = seed + 1
 # 1 - A loud (SNR ~ 2000) signal (with in-spiral "in band", that is from f = 0.1 mHz, lasting about 1 week) and coalescing 3 months +/- 1 month after the beginning of the observations
 run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=2000 --coalescTime=90  --coalescRange=30 --massRatioRange=10 --sourceName="SMBH-1" Source/BH-1.xml' % globals())
 seed = seed + 1
-exit()
+
 # 2 - A moderate-to-low SNR (~ 20) signal with coalescence between 25 and 26 months from the beginning of the observations
 run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=20   --coalescTime=765 --coalescRange=15 --massRatioRange=10 --sourceName="SMBH-2" Source/BH-2.xml' % globals())
 seed = seed + 1
