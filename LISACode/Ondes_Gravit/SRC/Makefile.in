@@ -63,11 +63,12 @@ ARFLAGS = cru
 liblisacodegravwaves_a_AR = $(AR) $(ARFLAGS)
 liblisacodegravwaves_a_LIBADD =
 am_liblisacodegravwaves_a_OBJECTS = LISACODE-GW.$(OBJEXT) \
+	LISACODE-GWFile.$(OBJEXT) LISACODE-GWFile2.$(OBJEXT) \
 	LISACODE-GWMono.$(OBJEXT) LISACODE-GWBinary.$(OBJEXT) \
-	LISACODE-GWFile.$(OBJEXT) LISACODE-GWPeriGate.$(OBJEXT) \
-	LISACODE-GWNewton2.$(OBJEXT) LISACODE-GWSto.$(OBJEXT) \
-	LISACODE-GWFastSpinBBH.$(OBJEXT) LISACODE-GWCusp.$(OBJEXT) \
-	LISACODE-GWNew.$(OBJEXT) LISACODE-GWBuffer.$(OBJEXT)
+	LISACODE-GWPeriGate.$(OBJEXT) LISACODE-GWNewton2.$(OBJEXT) \
+	LISACODE-GWSto.$(OBJEXT) LISACODE-GWFastSpinBBH.$(OBJEXT) \
+	LISACODE-GWCusp.$(OBJEXT) LISACODE-GWNew.$(OBJEXT) \
+	LISACODE-GWBuffer.$(OBJEXT)
 liblisacodegravwaves_a_OBJECTS = $(am_liblisacodegravwaves_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -239,9 +240,10 @@ INCLUDES = \
 lib_LIBRARIES = liblisacodegravwaves.a
 liblisacodegravwaves_a_SOURCES = \
 	LISACODE-GW.cpp \
+	LISACODE-GWFile.cpp \
+	LISACODE-GWFile2.cpp \
 	LISACODE-GWMono.cpp \
 	LISACODE-GWBinary.cpp \
-	LISACODE-GWFile.cpp \
 	LISACODE-GWPeriGate.cpp \
 	LISACODE-GWNewton2.cpp \
 	LISACODE-GWSto.cpp \
@@ -329,6 +331,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-GWCusp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-GWFastSpinBBH.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-GWFile.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-GWFile2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-GWMono.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-GWNew.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LISACODE-GWNewton2.Po@am__quote@

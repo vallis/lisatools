@@ -66,6 +66,8 @@ if 'ls' in options.simulators:
 if 'lc' in options.simulators:
     options4 += ' --lisacode'
 
+print options4
+
 if not options.trainingOnly:                                                                  
     run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s            --seed=%(seed4)s  --combinedSNR challenge4.0' % globals())
 if not options.blindOnly:
