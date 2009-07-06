@@ -35,9 +35,9 @@ double Freq(double t, double Mtot, double Mchirp, double eta, double beta, doubl
 
 void spline(double *x, double *y, int n, double yp1, double ypn, double *y2);
 
-void rkckstep(double outputvals[], double fourthorderoutputvals[], double *outputthomas, double h, double currentvals[], double currentthomas, double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc);
+void rkckstep(double outputvals[], double fourthorderoutputvals[], double h, double currentvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc);
 
-void update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k, double kthomas[]);
+void update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k);
 
 void calcderivvals(double derivvals[], double inputs[], double r, double m1, double m2, double Mtot, double mu, double chi1, double chi2);
 
