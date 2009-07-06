@@ -23,18 +23,17 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double costhetaL, sinthetaL, phiL, thomas;
   double tcurrent, tfinal, hcurrent;
   double cphil, sphil;
-  double N[3], LSvals[9], updatedvals[9], fourthordervals[9], updatedthomas;
-  double derivvals[9];
-  double thomasderiv;
+  double N[3], LSvals[10], updatedvals[10], fourthordervals[10];
+  double derivvals[10];
   double LcrossN[3];
   double JcrossL[3];
   double Jtot[3];
   double cPhi[7], sPhi[7];
-  double thomasval, maxerr, oldh, finalthomas;
+  double maxerr, oldh;
   double A, B, C, D, deltat;
   double Ax, ci, si, ci2, si2, ci4, si4, ci6, OPhase;
   double x, xrt, taper, xold, xmax;
-  double tmax, fmax, VAmp, r;
+  double tmax, VAmp, r;
   double shp, shc, c2psi, s2psi;
 
   int i, j, n, idxm;
@@ -150,6 +149,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   LSvals[7] = sinthetaS20*sin(phiS20);
   LSvals[8] = costhetaS20;
 
+
+  LSvals[9] = 0.0;  // used to hold Thomas phase
+
   LdotS1 = calcLdotS1(LSvals);
   LdotS2 = calcLdotS2(LSvals);
   S1dotS2 = calcSdotS(LSvals);
@@ -194,7 +196,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   calcderivvals(derivvals, LSvals, r, m1, m2, Mtot, mu, chi1, chi2);
   LdotN = calcLdotN(LSvals, N);
   calcLcrossN(LcrossN, LSvals, N);
-  thomasderiv = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
+  derivvals[9] = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
 
   x = calcLdotN(JcrossL, LcrossN);
   
@@ -211,8 +213,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   // printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0);
 
-  for(i = 0; i < 9; i++) LSvals[i] -= SBH.Tpad*derivvals[i];  // back up the initial values to time -Tpad
-  thomasval = -SBH.Tpad*thomasderiv;
+  for(i = 0; i <= 9; i++) LSvals[i] -= SBH.Tpad*derivvals[i];  // back up the initial values to time -Tpad
 
   index = 0;  // index for the various storage vectors
   hcurrent = RK_H;
@@ -233,7 +234,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   cphilvec[index] = LSvals[0]; 
   betavec[index] = beta;
   sigmavec[index] = sigma;
-  thomasvec[index] = thomasval; 
+  thomasvec[index] = LSvals[9]; 
   
   fold = 0.0;
 
@@ -255,11 +256,11 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	
 	do
 	  {	    
-	    rkckstep(updatedvals, fourthordervals, &updatedthomas, hcurrent, LSvals, thomasval, tcurrent, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc);
+	    rkckstep(updatedvals, fourthordervals, hcurrent, LSvals, tcurrent, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc);
 	  
 	    maxerr = 0.0;
 	  
-	    for(i = 0; i <= 8; i++)
+	    for(i = 0; i <= 9; i++)
 	      {
 		double errori = fabs((updatedvals[i]-fourthordervals[i])/RK_EPS);
 		maxerr = (errori > maxerr) ? errori : maxerr;
@@ -279,10 +280,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  }
 	while(maxerr > 1.);
 	
-	for (i = 0; i <= 8; i++)
-	  LSvals[i] = updatedvals[i];
-      
-	thomasval = updatedthomas;
+	for (i = 0; i <= 9; i++) LSvals[i] = updatedvals[i];
 	
 	if (laststep == ENDYES)
 	  tcurrent = tfinal;
@@ -305,9 +303,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	
 	sigmavec[index] = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
 	
-	thomasvec[index] = thomasval;
-
-        // printf("%d %e %e %e %f %f %f %f\n", index, timevec[index], betavec[index], sigmavec[index], LdotS1, LdotS2, S1dotS2, thomasval);
+	thomasvec[index] = LSvals[9];
 
         fold = f;
        
@@ -318,17 +314,27 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	tmax = tcurrent*TSUN;  
 	// At tmax, we've just barely gone beyond xmax
 
-	tcurrent = tfinal;
-	timevec[index] = tcurrent*TSUN;
+	timevec[index] = tmax;
 	mulvec[index] = mulvec[index-1];
 	sphilvec[index] = sphilvec[index-1];
 	cphilvec[index] = cphilvec[index-1];
 	betavec[index] = betavec[index-1];
 	sigmavec[index] = sigmavec[index-1];
-	
-	thomasval = thomasvec[index-1];
-	thomasvec[index] = thomasval;
-        // printf("%d %e %e %e %f %f\n", index, timevec[index], betavec[index], sigmavec[index], thomasval);
+	thomasvec[index] = thomasvec[index-1];
+
+	for(i = 0; i < 10; i++)  // pad the array for safe interpolation
+	 {
+        index++;
+	timevec[index] = timevec[index-1]+1000.0;
+	mulvec[index] = mulvec[index-1];
+	sphilvec[index] = sphilvec[index-1];
+	cphilvec[index] = cphilvec[index-1];
+	betavec[index] = betavec[index-1];
+	sigmavec[index] = sigmavec[index-1];
+	thomasvec[index] = thomasvec[index-1];
+	 }
+
+
 
       }
     }
@@ -561,93 +567,88 @@ double Freq(double t, double Mtot, double Mchirp, double eta, double beta, doubl
   return(f);
 }
 
-void rkckstep(double outputvals[], double fourthorderoutputvals[], double *outputthomas, double h, double currentvals[], double currentthomas, double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc)
+
+void rkckstep(double outputvals[], double fourthorderoutputvals[], double h, double currentvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc)
 {
   int i;
   
   double **k;
-  double intvals[9];
+  double *intvals;
+ 
+  intvals = dvector(0,9);
+  k = dmatrix(0,9,0,5);
+  
+  update(0, 0.0, h, currentvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
+  
+  for(i = 0; i <= 9; i++) intvals[i] = currentvals[i] + B21*k[i][0];
+  
+  update(1, A2, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
+  
+  for(i = 0; i <= 9; i++) intvals[i] = currentvals[i] + B31*k[i][0] + B32*k[i][1];
+  
+  update(2, A3, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
+  
+  for(i = 0; i <= 9; i++) intvals[i] = currentvals[i] + B41*k[i][0] + B42*k[i][1] + B43*k[i][2];
+  
+  update(3, A4, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
+  
+  for(i = 0; i <= 9; i++) intvals[i] = currentvals[i] + B51*k[i][0] + B52*k[i][1] + B53*k[i][2] + B54*k[i][3];
 
-  double kthomas[6];
-
-  k = dmatrix(0,8,0,5);
+  update(4, A5, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
   
-  update(0, 0.0, h, currentvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k, kthomas);
+  for(i = 0; i <= 9; i++) intvals[i] = currentvals[i] + B61*k[i][0] + B62*k[i][1] + B63*k[i][2] + B64*k[i][3] + B65*k[i][4];
   
-  for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B21*k[i][0];
+  update(5, A6, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
   
-  update(1, A2, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k, kthomas);
+  for(i = 0; i <= 9; i++) 
+    {
+      outputvals[i] = currentvals[i] + C1*k[i][0] + C2*k[i][1] + C3*k[i][2] + C4*k[i][3] + C5*k[i][4] + C6*k[i][5];
+      fourthorderoutputvals[i] = currentvals[i] + D1*k[i][0] + D2*k[i][1] + D3*k[i][2] + D4*k[i][3] + D5*k[i][4] + D6*k[i][5];
+    }
   
-  for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B31*k[i][0] + B32*k[i][1];
-  
-  update(2, A3, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k, kthomas);
-  
-  for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B41*k[i][0] + B42*k[i][1] + B43*k[i][2];
-  
-  update(3, A4, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k, kthomas);
-  
-  for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B51*k[i][0] + B52*k[i][1] + B53*k[i][2] + B54*k[i][3];
-
-  update(4, A5, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k, kthomas);
-  
-  for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B61*k[i][0] + B62*k[i][1] + B63*k[i][2] + B64*k[i][3] + B65*k[i][4];
-  
-  update(5, A6, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k, kthomas);
-  
-  for(i = 0; i < 9; i++) {
-    outputvals[i] = currentvals[i] + C1*k[i][0] + C2*k[i][1] + C3*k[i][2] + C4*k[i][3] + C5*k[i][4] + C6*k[i][5];
-    fourthorderoutputvals[i] = currentvals[i] + D1*k[i][0] + D2*k[i][1] + D3*k[i][2] + D4*k[i][3] + D5*k[i][4] + D6*k[i][5];
-  }
-  
-  *outputthomas = currentthomas + C1*kthomas[0] + C2*kthomas[1] + C3*kthomas[2] + C4*kthomas[3] + C5*kthomas[4] + C6*kthomas[5]; 
-  
-  free_dmatrix(k,0,8,0,5);
+  free_dmatrix(k,0,9,0,5);
+  free_dvector(intvals,0,9);
 }
 
-void update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k, double kthomas[])
+void update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k)
 {
   
   double r;
   int i;
-  double derivvals[9];
+  double *derivvals;
   double LcrossN[3];
   double LdotS1;
   double LdotS2;
   double S1dotS2;
   double LdotN;
-  double thomasderiv;
   double beta;
   double sigma;
 
+  derivvals = dvector(0,9);
   LdotS1 = calcLdotS1(intvals);
   LdotS2 = calcLdotS2(intvals);
   S1dotS2 = calcSdotS(intvals);
   
   beta =  (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);
   sigma = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
- 
+  
   r = pow(Mtot,1./3.)/pow(PI*Freq((t+A*h)*TSUN, Mtot, Mchirp, eta, beta, sigma, tc)*TSUN,2./3.);
-
-  if (r == r) // catches NaNs
-  {
+  
   calcderivvals(derivvals, intvals, r, m1, m2, Mtot, mu, chi1, chi2);
-  }
-  else
-  {
-    for(i = 0; i < 9; i++) derivvals[i] = 0.0;
-  }
   
   LdotN = calcLdotN(intvals, N);
   
   calcLcrossN(LcrossN, intvals, N);
   
-  thomasderiv = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
+  derivvals[9] = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
     
-  for(i = 0; i < 9; i++) 
-    k[i][j] = h*derivvals[i];
+  for(i = 0; i <= 9; i++) k[i][j] = h*derivvals[i];
   
-  kthomas[j] = h*thomasderiv; 
+  free_dvector(derivvals,0,9);
+ 
 }
+
+
 
 void calcderivvals(double derivvals[], double inputs[], double r, double m1, double m2, double Mtot, double mu, double chi1, double chi2)
   // Calculates the L and S derivatives
@@ -947,9 +948,6 @@ void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
   
   for (k = n-2; k >= 0; k--)
     y2[k] = y2[k]*y2[k+1]+u[k];
-	
-  // Add A. Petiteau
-  y2[n] = 0.0;
   
   free_dvector(u, 0, n-2);
 }
