@@ -191,7 +191,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   JdotL = calcLdotN(Jtot, LSvals);
   calcLcrossN(JcrossL, Jtot, LSvals);
 
- /* printf("L %e S1 %e S2 %e J %e\n", Lmag, S1mag, S2mag, Jmag);*/
+  // printf("L %e S1 %e S2 %e J %e\n", Lmag, S1mag, S2mag, Jmag);
 
   calcderivvals(derivvals, LSvals, r, m1, m2, Mtot, mu, chi1, chi2);
   LdotN = calcLdotN(LSvals, N);
@@ -305,15 +305,17 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	
 	thomasvec[index] = LSvals[9];
 
+        // printf("%d %e %e\n", index, timevec[index], thomasvec[index]);
+
         fold = f;
        
       }
       else {
 	// If PN gone bad go to tfinal and keep everything the same.
 	
+        tcurrent = tfinal;
 	tmax = tcurrent*TSUN;  
 	// At tmax, we've just barely gone beyond xmax
-
 	timevec[index] = tmax;
 	mulvec[index] = mulvec[index-1];
 	sphilvec[index] = sphilvec[index-1];
@@ -397,7 +399,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
       t += dt;
 
 
-      // if((t> 1.5e7) && (t < 1.7e7)) printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);
+      // printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);
     }
   
   // Now calculate the waveform:
@@ -557,6 +559,8 @@ double Freq(double t, double Mtot, double Mchirp, double eta, double beta, doubl
   double fac, f10, f15, f20, f;
 
   fac = eta*(tc-t)/(5.*Mtot*TSUN);
+
+  // printf("%e %e %e %e %e\n", fac, eta, tc, t, Mtot*TSUN);
 
   f10 = 743./2688.+11./32.*eta;
   f15 = -3.*(4.*PI-beta)/40.;
