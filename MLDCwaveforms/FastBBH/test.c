@@ -21,7 +21,7 @@ int main(int argc,char *argv)
 
 
   SBH.Mass1 = 2906387.81661;
-  SBH.Mass1 = 1056812.14434;
+  SBH.Mass2 = 1056812.14434;
   SBH.CoalescenceTime = 19395657.1969;
   SBH.Distance = 1000000000.0;
   SBH.Spin1 = 0.76622880068;
