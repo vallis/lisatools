@@ -41,8 +41,8 @@ parser.add_option("-S", "--simulators",
 
 (options, args) = parser.parse_args()
 
-if 'ls' in options.simulators or 'lc' in options.simulators:
-    print 'Warning: currently only the synthlisa dataset can be produced'
+if 'ls' in options.simulators :
+    print 'Warning: currently only the synthlisa or LISACode dataset can be produced'
     options.simulators = 'sl'
 
 nproc = options.nproc

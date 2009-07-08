@@ -184,6 +184,7 @@ for inputfile in inputfiles:
                 newmergedtdifile.SourceData(source)
     
     if not options.keyonly:
+        ## Problem is here
         alltdi = inputtdifile.getTDIObservables()
 
         for thistdi in alltdi:

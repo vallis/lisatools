@@ -396,6 +396,17 @@ if options.rawMeasurements == True:
 if options.LISAmodel != 'Eccentric':
     noiseoptions += '--LISA=%s ' % options.LISAmodel
 
+runoptions = ''    
+if options.rawMeasurements == True:
+    runoptions += '--rawMeasurements '
+if options.combinedSNR == True:
+    runoptions += '--combinedSNR '
+if options.LISAmodel != 'Eccentric':
+    runoptions += '--LISA=%s ' % options.LISAmodel
+if not glob.glob('Galaxy/*.xml'):
+    # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
+    runoptions += '--noiseOnly '
+
 if dosynthlisa:
     # then run makeTDI-synthlisa over all the barycentric files in the Barycentric directory
     # the results are files of TDI time series that include the source info
@@ -407,17 +418,6 @@ if dosynthlisa:
         runfile = 'makeTDIsignal-synthlisa2.py'
     else:
         runfile = 'makeTDIsignal-synthlisa.py'
-
-    runoptions = ''    
-    if options.rawMeasurements == True:
-        runoptions += '--rawMeasurements '
-    if options.combinedSNR == True:
-        runoptions += '--combinedSNR '
-    if options.LISAmodel != 'Eccentric':
-        runoptions += '--LISA=%s ' % options.LISAmodel
-    if not glob.glob('Galaxy/*.xml'):
-        # if we are not generating a Galaxy, don't include its confusion noise in the evaluation of SNR
-        runoptions += '--noiseOnly '
     
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
         if 'barycentric.xml' in xmlfile:
@@ -478,43 +478,84 @@ step4btime = time.time()
 # STEP 4b: run LISAcode
 # ---------------------
 
-if dolisacode and glob.glob('LISACode/source-*.xml'):
-    # make the standard lisacode instruction set
-    cname = outputfile
-    
-    if istraining:  cname += '-training'
-    if not donoise: cname += '-nonoise'
-    
-    # (use same seed as synthlisa if we're training)
-    lcseednoise = istraining and seednoise or (seednoise + 1)
-    
-    makefromtemplate('LISACode/%s-lisacode-input.xml' % cname,'%s/../Template/LISACode.xml' % execdir,
-                     challengename=cname,
-                     cadence=timestep,
-                     duration=duration,
-                     randomseed=lcseednoise,
-                     orbit=options.LISAmodel)
-    
-    if donoise:
-        # make lisacode noise (note that the random seed is really set above in the standard instruction set)
-        run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
-    
-        # merge with source data into a single lisacode input file
-        run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/noise.xml LISACode/source-*.xml')
-        run('rm LISACode/noise.xml')
+if dolisacode:
+    # Use new lisacode pipeline for challenge4
+    if 'challenge4' in challengename:
+        # Make TDI for sources
+        
+        os.chdir('LISACode')
+        
+        #runfile = 'makeTDIsignal-lisacode.py'
+        runfile = 'makeTDI-lisacode.py'
+        lcsrcfile = ''
+        dosmallstep = False
+        for xmlfile in glob.glob('../Barycentric/*-barycentric.xml'):
+            lcsrcfile = ' ' + xmlfile
+            if 'challenge4' in challengename and 'Burst' in xmlfile:
+                dosmallstep = True
+            #if 'barycentric.xml' in xmlfile:
+            #    tdifile = re.sub('barycentric\.xml$','tdi-lisacode.xml',os.path.basename(xmlfile))
+            #else:
+            #    tdifile = re.sub('\.xml$','-tdi-lisacode.xml',os.path.basename(xmlfile))
+            #if (not makemode) or newer(xmlfile,tdifile):
+            #    # TO DO - more kludging... would be better to do RequestTimeStep
+            #    if 'challenge4' in challengename and 'Burst' in xmlfile:
+            #        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
+            #    else:
+            #        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+        if dosmallstep:
+            prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=1.875 -e Signals-tdi-lisacode.xml %(lcsrcfile)s')
+        else:
+            prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            
+        # Make TDI for noises
+        runfile = 'makeTDInoise-lisacode.py'
+        noisefile = 'tdi-lisacode-noise.xml'
+        prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=1.875 %(noiseoptions)s %(noisefile)s')
+
+        os.chdir('..')
+ 
     else:
-        run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/source-*.xml')
-    
-    run('rm LISACode/source-*.xml')
-    
-    os.chdir('LISACode')
-    
-    import lisacode    
-    run('%s %s-lisacode-input.xml' % (lisacode.lisacode,cname))
-    
-    os.chdir('..')
+        # Use of LISACode before challenge4 : challenge3.5
+        if dolisacode and glob.glob('LISACode/source-*.xml'):
+
+            # make the standard lisacode instruction set
+            cname = outputfile
+
+            if istraining:  cname += '-training'
+            if not donoise: cname += '-nonoise'
+
+            # (use same seed as synthlisa if we're training)
+            lcseednoise = istraining and seednoise or (seednoise + 1)
+
+            makefromtemplate('LISACode/%s-lisacode-input.xml' % cname,'%s/../Template/LISACode.xml' % execdir,
+                             challengename=cname,
+                             cadence=timestep,
+                             duration=duration,
+                             randomseed=lcseednoise,
+                             orbit=options.LISAmodel)
+
+            if donoise:
+                # make lisacode noise (note that the random seed is really set above in the standard instruction set)
+                run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
+
+                # merge with source data into a single lisacode input file
+                run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/noise.xml LISACode/source-*.xml')
+                run('rm LISACode/noise.xml')
+            else:
+                run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/source-*.xml')
+
+            run('rm LISACode/source-*.xml')
+
+            os.chdir('LISACode')
+
+            import lisacode    
+            run('%s %s-lisacode-input.xml' % (lisacode.lisacode,cname))
+
+            os.chdir('..')
 
 step5time = time.time()
+
 
 # -----------------------
 # STEP 5: run Fast Galaxy
