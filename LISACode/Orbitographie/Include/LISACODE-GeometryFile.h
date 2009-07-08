@@ -20,10 +20,11 @@
 
 
 #include <stdexcept>
-#include <iostream.h>
+#include <iostream>
 #include <math.h>
-#include <vector.h>
-#include <fstream.h>
+#include <vector>
+#include <fstream>
+#include <stdlib.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-Couple.h"

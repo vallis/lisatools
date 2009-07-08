@@ -30,8 +30,8 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream.h>
-#include <vector.h>
+#include <fstream>
+#include <vector>
 #include <stdlib.h>
 #include <math.h>
 #include "LISACODE-Tools.h"

@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream.h>
+#include <fstream>
 #include "LISACODE-Memory.h"
 #include "LISACODE-MemoryReadDisk.h"
 #include "LISACODE-MemoryWriteDisk.h"

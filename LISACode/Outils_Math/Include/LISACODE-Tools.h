@@ -21,8 +21,10 @@
 #define __TOOLS_H
 
 #include <stdexcept>
-#include <iostream.h>
+#include <iostream>
 #include <math.h>
+#include <stdlib.h>
+
 using namespace std;
 
 

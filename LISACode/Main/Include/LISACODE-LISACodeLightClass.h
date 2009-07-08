@@ -19,7 +19,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream.h>
+#include <fstream>
 #include <stdlib.h>
 #include <fftw3.h>
 #include "LISACODE-PhysicConstants.h"

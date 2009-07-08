@@ -21,7 +21,7 @@
 #define __MATHUTILS_H
 
 #include <math.h>
-#include <vector.h>
+#include <vector>
 #include <time.h>
 #include <iostream>
 #include "LISACODE-PhysicConstants.h"

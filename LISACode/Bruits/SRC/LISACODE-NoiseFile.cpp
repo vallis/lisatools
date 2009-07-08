@@ -33,7 +33,7 @@ NoiseFile::NoiseFile()
     tLast = -20.0;
     /*! \todo Make a function to compute a int from a double. Is there a reason to no call rint ?*/
 	NbData = (int)((tFirst-tLast)/tStep+100*PRECISION);
-    FileName = "DefaultNoise";
+    strcpy(FileName,"DefaultNoise");
     /* Set size of vector to store read data to 0. 
        It deletes all eventual elements*/
     loadNoise();

@@ -23,9 +23,10 @@
 
 
 #include <stdexcept>
-#include <fstream.h>
+#include <fstream>
 #include <math.h>
 #include <complex>
+#include <stdlib.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"
 

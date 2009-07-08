@@ -22,10 +22,10 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <vector.h>
+#include <vector>
 #include <stdlib.h>
 #include <math.h>
-#include <fstream.h>
+#include <fstream>
 #include "randlib.h"
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"

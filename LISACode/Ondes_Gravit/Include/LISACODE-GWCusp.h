@@ -23,7 +23,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <vector.h>
+#include <vector>
 #include <stdlib.h>
 #include <math.h>
 #include "fftw3.h"

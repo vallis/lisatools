@@ -16,9 +16,10 @@
  */
 
 #include <stdexcept>
-#include <iostream.h>
+#include <iostream>
 #include <fstream>
 #include <math.h>
+#include <stdlib.h>
 #include "LISACODE-Geometry.h"
 #include "LISACODE-GeometryAnalytic.h"
 #include "LISACODE-GeometryMLDC.h"

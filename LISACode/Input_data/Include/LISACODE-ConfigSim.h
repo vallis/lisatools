@@ -18,13 +18,13 @@
 #define __CONFIGSIM_H
 
 
-#include <iostream.h>
+#include <iostream>
 #include <stdexcept>
 #include <math.h>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <iomanip.h>
+#include <iomanip>
 #include "ezxml.h"
 #include "LISACODE-LISAConstants.h"
 #include "LISACODE-Tools.h"

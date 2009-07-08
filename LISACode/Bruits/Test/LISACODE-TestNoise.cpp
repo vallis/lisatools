@@ -12,7 +12,7 @@
 
 #include <stdexcept>
 #include <iostream>
-#include <fstream.h>
+#include <fstream>
 #include <math.h>
 #include "LISACODE-PhysicConstants.h"
 #include "LISACODE-MathUtils.h"

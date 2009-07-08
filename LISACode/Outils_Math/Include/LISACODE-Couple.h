@@ -21,7 +21,7 @@
 #define __COUPLE_H
 
 #include <stdexcept>
-#include <iostream.h>
+#include <iostream>
 #include <math.h>
 using namespace std;
 
