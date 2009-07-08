@@ -419,7 +419,7 @@ void GWFastSpinBBH::AllocMemory()
 		
 		free(uspline);
 		
-		for(int iR = 0; iR < 9; iR++){
+		for(int iR = 0; iR < 10; iR++){
 			free(krk[iR]);
 		}
 		free(krk);
@@ -427,8 +427,8 @@ void GWFastSpinBBH::AllocMemory()
 		
 	}
 	
-	krk = (double**) malloc(9*sizeof(double*));
-	for(int iR = 0; iR < 9; iR++){
+	krk = (double**) malloc(10*sizeof(double*));
+	for(int iR = 0; iR < 10; iR++){
 		krk[iR] = (double*) malloc(6*sizeof(double));
 	}
 	
@@ -504,13 +504,13 @@ void GWFastSpinBBH::initRK()
 
 void GWFastSpinBBH::init()
 {	
-	double N[3], LSvals[9], updatedvals[9], fourthordervals[9], updatedthomas;
-	double derivvals[9];
+	double N[3], LSvals[10], updatedvals[10], fourthordervals[10], updatedthomas;
+	double derivvals[10];
 	double thomasderiv;
 	double LcrossN[3];
 	double JcrossL[3];
 	double Jtot[3];
-	double thomasval, maxerr, oldh;
+	double maxerr, oldh;
 	double LdotS1, LdotS2, LdotN, S1dotS2;
 	double costhetaL0, sinthetaL0, costhetaS10, sinthetaS10, costhetaS20, sinthetaS20;
 	double phiL0, phiS10, phiS20;
@@ -605,6 +605,8 @@ void GWFastSpinBBH::init()
 	LSvals[7] = sinthetaS20*sin(phiS20);
 	LSvals[8] = costhetaS20;
 	
+	LSvals[9] = 0.0;  // used to hold Thomas phase
+	
 	// Compute scalar product L.S1 , L.S2 , S1.S2
 	LdotS1 = calcLdotS1(LSvals);
 	LdotS2 = calcLdotS2(LSvals);
@@ -653,7 +655,7 @@ void GWFastSpinBBH::init()
 	calcderivvals(derivvals, LSvals, r, m1, m2, Mtot, mu, chi1, chi2);
 	LdotN = calcLdotN(LSvals, N);
 	calcLcrossN(LcrossN, LSvals, N);
-	thomasderiv = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
+	derivvals[9] = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
 	
 	x = calcLdotN(JcrossL, LcrossN);
 	
@@ -670,9 +672,8 @@ void GWFastSpinBBH::init()
 	
 	// printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0);
 	
-	for(int i = 0; i < 9; i++) 
+	for(int i = 0; i < 10; i++) 
 		LSvals[i] += Toffset*derivvals[i];  // back up the initial values to time Toffset
-	thomasval = Toffset*thomasderiv;
 	
 	index = 0;  // index for the various storage vectors
 	hcurrent = RK_H;  // ?? : 100000
@@ -694,42 +695,37 @@ void GWFastSpinBBH::init()
 	cphilvec[index] = LSvals[0]; 
 	betavec[index] = beta;
 	sigmavec[index] = sigma;
-	thomasvec[index] = thomasval; 
+	thomasvec[index] = LSvals[9]; 
 	
 	fold = 0.0;
 	
 	// ** Start the integration:
 	
-	while(tcurrent < tfinal)
-    {	
+	while(tcurrent < tfinal){	
 		
 		f = Freq(tcurrent*TSUN, Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
 		x = pow(M_PI*Mtot*f*TSUN,2./3.);
 		
 		if ((f >= fold) && (x < xmax)) {  // Check to make sure we're chirping and PN valid
 			
-			if (tcurrent+hcurrent-tfinal > 0.) // tcurrent + hcurrent > tfinal
-			{
+			if (tcurrent+hcurrent-tfinal > 0.){ // tcurrent + hcurrent > tfinal
 				hcurrent = tfinal-tcurrent;
 				laststep = true;
 			}
 			
-			do
-			{	    
-				rkckstep(updatedvals, fourthordervals, &updatedthomas, hcurrent, LSvals, thomasval, tcurrent, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc);
+			do{	    
+				rkckstep(updatedvals, fourthordervals, hcurrent, LSvals,  tcurrent, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc);
 				
 				maxerr = 0.0;
 				
-				for(int i = 0; i <= 8; i++)
-				{
+				for(int i = 0; i < 10; i++){
 					double errori = fabs((updatedvals[i]-fourthordervals[i])/RK_EPS);
 					maxerr = (errori > maxerr) ? errori : maxerr;
 				}
 				
 				oldh = hcurrent;
 				
-				if (maxerr > 1.) 
-				{
+				if (maxerr > 1.){
 					hcurrent *= 0.9*pow(maxerr,-0.25);
 					laststep = false;
 				}
@@ -737,13 +733,10 @@ void GWFastSpinBBH::init()
 					hcurrent *= 4.;
 				else
 					hcurrent *= 0.9*pow(maxerr,-0.2);
-			}
-			while(maxerr > 1.);
+			}while(maxerr > 1.);
 			
-			for (int i = 0; i <= 8; i++)
+			for (int i = 0; i < 10; i++)
 				LSvals[i] = updatedvals[i];
-			
-			thomasval = updatedthomas;
 			
 			if (laststep)
 				tcurrent = tfinal;
@@ -766,29 +759,45 @@ void GWFastSpinBBH::init()
 			
 			sigmavec[index] = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
 			
-			thomasvec[index] = thomasval;
+			thomasvec[index] = LSvals[9];
 			
-			// printf("%d %e %e %e %f %f %f %f\n", index, timevec[index], betavec[index], sigmavec[index], LdotS1, LdotS2, S1dotS2, thomasval);
+			//printf("%d %lf %e %e %e %f %f %f %f\n", index, tcurrent, timevec[index], betavec[index], sigmavec[index], LdotS1, LdotS2, S1dotS2, thomasvec[index]);
 			
 			fold = f;
 			
-		}else {
+		}else{
 			// If PN gone bad go to tfinal and keep everything the same.
 			
+			//printf("Stop 1 : - tcurrent ? tfinal : %lf ? %lf \n" ,  tcurrent , tfinal);
+			//printf("         - f ? fold : %lf ?>=? %lf \n" ,  f , fold);
+			//printf("         - x ? xmax : %lf ?<? %lf \n" ,  x , xmax);
+			
+			tcurrent = tfinal;
 			tmax = tcurrent*TSUN;  
 			// At tmax, we've just barely gone beyond xmax
 			
-			tcurrent = tfinal;
-			timevec[index] = tcurrent*TSUN;
+			timevec[index] = tmax;
 			mulvec[index] = mulvec[index-1];
 			sphilvec[index] = sphilvec[index-1];
 			cphilvec[index] = cphilvec[index-1];
 			betavec[index] = betavec[index-1];
 			sigmavec[index] = sigmavec[index-1];
+			thomasvec[index] = thomasvec[index-1];
 			
-			thomasval = thomasvec[index-1];
-			thomasvec[index] = thomasval;
+			//printf("Stop 2 : - tcurrent ? tfinal : %lf ? %lf  --> index = %d \n" ,  tcurrent , tfinal, index);
+			
 			// printf("%d %e %e %e %f %f\n", index, timevec[index], betavec[index], sigmavec[index], thomasval);
+			
+			for(int i = 0; i < 10; i++) { // pad the array for safe interpolation
+				index++;
+				timevec[index] = timevec[index-1]+1000.0;
+				mulvec[index] = mulvec[index-1];
+				sphilvec[index] = sphilvec[index-1];
+				cphilvec[index] = cphilvec[index-1];
+				betavec[index] = betavec[index-1];
+				sigmavec[index] = sigmavec[index-1];
+				thomasvec[index] = thomasvec[index-1];
+			}
 			
 		}
 		
@@ -1067,52 +1076,51 @@ double GWFastSpinBBH::Freq(double t, double Mtot, double Mchirp, double eta, dou
 
 
 
-void GWFastSpinBBH::rkckstep(double outputvals[], double fourthorderoutputvals[], double *outputthomas, double h, double currentvals[], double currentthomas, double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc)
+void GWFastSpinBBH::rkckstep(double outputvals[], double fourthorderoutputvals[], double h, double currentvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc)
 {
 	int i;
 	
-	double intvals[9];
+	double intvals[10];
 	
 	double kthomas[6];
 	
-	update(0, 0.0, h, currentvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk, kthomas);
+	update(0, 0.0, h, currentvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk);
 	
-	for(i = 0; i < 9; i++) 
+	for(i = 0; i < 10; i++) 
 		intvals[i] = currentvals[i] + B21*krk[i][0];
 	
-	update(1, A2, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk, kthomas);
+	update(1, A2, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk);
 	
-	for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B31*krk[i][0] + B32*krk[i][1];
+	for(i = 0; i < 10; i++) intvals[i] = currentvals[i] + B31*krk[i][0] + B32*krk[i][1];
 	
-	update(2, A3, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk, kthomas);
+	update(2, A3, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk);
 	
-	for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B41*krk[i][0] + B42*krk[i][1] + B43*krk[i][2];
+	for(i = 0; i < 10; i++) intvals[i] = currentvals[i] + B41*krk[i][0] + B42*krk[i][1] + B43*krk[i][2];
 	
-	update(3, A4, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk, kthomas);
+	update(3, A4, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk);
 	
-	for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B51*krk[i][0] + B52*krk[i][1] + B53*krk[i][2] + B54*krk[i][3];
+	for(i = 0; i < 10; i++) intvals[i] = currentvals[i] + B51*krk[i][0] + B52*krk[i][1] + B53*krk[i][2] + B54*krk[i][3];
 	
-	update(4, A5, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk, kthomas);
+	update(4, A5, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk);
 	
-	for(i = 0; i < 9; i++) intvals[i] = currentvals[i] + B61*krk[i][0] + B62*krk[i][1] + B63*krk[i][2] + B64*krk[i][3] + B65*krk[i][4];
+	for(i = 0; i < 10; i++) intvals[i] = currentvals[i] + B61*krk[i][0] + B62*krk[i][1] + B63*krk[i][2] + B64*krk[i][3] + B65*krk[i][4];
 	
-	update(5, A6, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk, kthomas);
+	update(5, A6, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, krk);
 	
-	for(i = 0; i < 9; i++) {
+	for(i = 0; i < 10; i++) {
 		outputvals[i] = currentvals[i] + C1*krk[i][0] + C2*krk[i][1] + C3*krk[i][2] + C4*krk[i][3] + C5*krk[i][4] + C6*krk[i][5];
 		fourthorderoutputvals[i] = currentvals[i] + D1*krk[i][0] + D2*krk[i][1] + D3*krk[i][2] + D4*krk[i][3] + D5*krk[i][4] + D6*krk[i][5];
 	}
 	
-	*outputthomas = currentthomas + C1*kthomas[0] + C2*kthomas[1] + C3*kthomas[2] + C4*kthomas[3] + C5*kthomas[4] + C6*kthomas[5]; 
 }
 
 
-void GWFastSpinBBH::update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k, double kthomas[])
+void GWFastSpinBBH::update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k)
 {
 	
 	double r;
 	int i;
-	double derivvals[9];
+	double derivvals[10];
 	double LcrossN[3];
 	double LdotS1;
 	double LdotS2;
@@ -1131,26 +1139,25 @@ void GWFastSpinBBH::update(int j, double A, double h, double intvals[], double t
 	
 	r = pow(Mtot,1./3.)/pow(M_PI*Freq((t+A*h)*TSUN, Mtot, Mchirp, eta, beta, sigma, tc)*TSUN,2./3.);
 	
-	if (r == r) // catches NaNs
-	{ // Compute derivs of L, S1 and S2
-		calcderivvals(derivvals, intvals, r, m1, m2, Mtot, mu, chi1, chi2);
-	}
-	else 
-	{ // If r is not a number, put derivs of L, S1 and S2 at 0
-		for(i = 0; i < 9; i++) 
-			derivvals[i] = 0.0;
-	}
+	//if (r == r){ // catches NaNs
+	// ** Compute derivs of L, S1 and S2
+	
+	calcderivvals(derivvals, intvals, r, m1, m2, Mtot, mu, chi1, chi2);
+	
+	//}else{ 
+	// ** If r is not a number, put derivs of L, S1 and S2 at 0
+	//	for(i = 0; i < 9; i++) 
+	//		derivvals[i] = 0.0;
+	//}
 	
 	LdotN = calcLdotN(intvals, N);
 	
 	calcLcrossN(LcrossN, intvals, N);
 	
-	thomasderiv = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
+	derivvals[9] = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
     
-	for(i = 0; i < 9; i++) 
+	for(i = 0; i < 10; i++) 
 		k[i][j] = h*derivvals[i];
-	
-	kthomas[j] = h*thomasderiv; 
 }
 
 

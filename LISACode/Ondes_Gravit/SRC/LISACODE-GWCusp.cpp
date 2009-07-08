@@ -189,7 +189,7 @@ void GWCusp::init()
 	fh[0][0] = 0.0;
 	fh[0][1] = 0.0;
 	
-	//cout << "NtDat = " << NtDat << " ,  Tburst = " << Tburst <<  " ,  CentralTime = " << CentralTime << " ,  T0 = " << T0 << " ,  Ts = " << Ts << " , Tback = " << Tback << endl;
+	cout << "( NtDat = " << NtDat << " ,  Tburst = " << Tburst <<  " ,  CentralTime = " << CentralTime << " ,  T0 = " << T0 << " ,  Ts = " << Ts << " , Tback = " << Tback << " )" << endl;
 	
 	// ** Loop on frequency
 	for(int i=1; i<NfDat; i++){
@@ -217,6 +217,7 @@ void GWCusp::init()
 	}
 	fclose(Outfile);
 	*/
+	
 	
 	// ** Compute inverse of Fourier transform
 	fftw_execute(FTRevPlan);
@@ -246,9 +247,9 @@ double GWCusp::hp(double t)
 {
 	//double tcur(Tback+t);
 	double tcur(T0+t-Toffset);
-	//cout << tcur << endl;
-	if((tcur>=0.0)&&(tcur<Tburst)){
+	if((tcur>=0.0)&&(tcur<Tburst-2.0*Tstep)){
 		int i((int)(floor(tcur/Tstep)));
+		//cout << t << " " << tcur << " " << th[i] << " " << th[i+1] << " " <<((th[i+1]-th[i]) * (tcur/Tstep-i) + th[i]) / (double)(NtDat) << endl;
 		return( ((th[i+1]-th[i]) * (tcur/Tstep-i) + th[i]) / (double)(NtDat) );
 		//return(th[i] / (double)(NtDat) );
 	}else{

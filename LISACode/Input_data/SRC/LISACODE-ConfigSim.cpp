@@ -2235,7 +2235,7 @@ void ConfigSim::ReadXMLFile()
 						// **** Read Parameters for Cusp
 						if(SourceType == "CosmicStringCusp"){
 							double Amplitude(1.0e-10), CentralTime(tMax/2.0), MaximumFrequency(0.1), TPad (900.0);
-							double ReqtDur(tDur);
+							double ReqtDur(tDur), ReqtOffset(tOffset);
 							for(param = ezxml_child(source,"Param"); param; param = param->next){
 								if(strcmp(ezxml_attr(param,"Name"),"Amplitude")==0)
 									Amplitude = atof(ezxml_txt(param));
@@ -2246,12 +2246,14 @@ void ConfigSim::ReadXMLFile()
 									MaximumFrequency = atof(ezxml_txt(param));
 								if(strcmp(ezxml_attr(param,"Name"),"RequestDuration")==0)
 									ReqtDur = atof(ezxml_txt(param));
+								if(strcmp(ezxml_attr(param,"Name"),"RequestTimeOffset")==0)
+									ReqtOffset = atof(ezxml_txt(param));
 							}
 							cout.precision(15);
 							TPad -= gettOffset(); 
 							cout << "  + GWCusp   : Beta=" << Beta << " Lambda=" << Lambda << " Psi=" << Psi;
-							cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << " RequestDuration=" << ReqtDur << " Tpad(+tOffset)=" << TPad << endl;
-							GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, ReqtDur, TPad, tOffset));
+							cout << " Amplitude=" << Amplitude << " CentralTime=" << CentralTime << " MaximumFrequency=" << MaximumFrequency << " RequestDuration=" << ReqtDur << " RequestOffset=" << ReqtOffset << " Tpad(+tOffset)=" << TPad << endl;
+							GWs.push_back(new GWCusp(Beta, Lambda, Psi, Amplitude, CentralTime, MaximumFrequency, tStepPhy, ReqtDur, TPad, ReqtOffset));
 							NbSrc++;
 						}	
 						

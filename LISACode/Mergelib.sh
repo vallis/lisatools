@@ -25,7 +25,7 @@ ranlib ../lib/liblisacode.a
 cd ..
 rm -r tmplib2
 rm "$InstallPath/lib/liblisacode.a"
-cp liblisacode.a "$InstallPath/lib/."
+cp lib/liblisacode.a "$InstallPath/lib/."
 ranlib "$InstallPath/lib/liblisacode.a"
 echo "--> Success of merging and installation in $InstallPath."
 

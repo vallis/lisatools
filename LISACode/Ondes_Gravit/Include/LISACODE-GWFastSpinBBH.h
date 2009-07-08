@@ -242,10 +242,10 @@ class GWFastSpinBBH : public GW
 		double Freq(double t, double Mtot, double Mchirp, double eta, double beta, double sigma, double tc);
 		
 		/*! \brief Compute one step in tegration using Runge Kutta method at order 6 */
-		void rkckstep(double outputvals[], double fourthorderoutputvals[], double *outputthomas, double h, double currentvals[], double currentthomas, double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc);
+		void rkckstep(double outputvals[], double fourthorderoutputvals[], double h, double currentvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc);
 		
 		/*! \brief Calculate derivatives for one step of the Runge-Kutta method */
-		void update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k, double kthomas[]);
+		void update(int j, double A, double h, double intvals[], double t, double m1, double m2, double Mtot, double Mchirp, double mu, double eta, double chi1, double chi2, double N[], double tc, double **k);
 		
 		/*! \brief Calculate derivatives of S1, S2 and L */
 		void calcderivvals(double derivvals[], double inputs[], double r, double m1, double m2, double Mtot, double mu, double chi1, double chi2);
