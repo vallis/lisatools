@@ -214,7 +214,7 @@ if not os.path.isfile(gsldir + '/bin/gsl-config') or installgsl:
         print "!!! I cannot find GSL on your system. If you have it, please specify"
         print "    its location with --gsl=GSLDIR (for instance, --gsl=/usr/local if"
         print "    the GSL libraries are in /usr/local/lib). Otherwise, I can install"
-        print "    v1.8 for you if you give me the --installgsl option."
+        print "    v1.10 for you if you give me the --installgsl option."
         sys.exit(1)
 
 fftw3package = 'fftw-3.2.1'
@@ -229,37 +229,14 @@ print "--> Checking FFTW"
 if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
     if installfftw == True:
         print "--> Installing FFTW"    
-        installpackage(fftwdownload,prefix=fftwdir,keepdownload=True)
+        installpackage(fftwdownload,prefix=fftwdir,keepdownload=True, configureflags='--enable-shared')
         # redo in single precision, get rid of tar.gz
-        installpackage(fftwdownload,prefix=fftwdir,keepdownload=False,configureflags='--enable-float')
-        
-        # os.chdir('Packages')
-        # if not os.path.isfile(fftw3tar):
-        #     print "---> Downloading from www.fftw.org (2.6M)..."
-        #     urllib.urlretrieve('http://www.fftw.org/' + fftw3tar,fftw3tar)
-        # print "---> Compiling FFTW (this may take a while...)"
-        # assert(0 == os.system('tar zxf %s' % fftw3tar))
-        # os.chdir(fftw3package)
-        # assert(0 == os.system('./configure --prefix=%s' % fftwdir))
-        # assert(0 == os.system('make'))
-        # assert(0 == os.system('make install'))
-        # os.chdir('..')
-        # assert(0 == os.system('rm -rf %s' % fftw3package))
-        # # redo in single precision
-        # assert(0 == os.system('tar zxf %s' % fftw3tar))
-        # os.chdir(fftw3package)
-        # assert(0 == os.system('./configure --prefix=%s --enable-float' % fftwdir))
-        # assert(0 == os.system('make'))
-        # assert(0 == os.system('make install'))
-        # os.chdir('..')
-        # assert(0 == os.system('rm -rf %s' % fftw3package))
-        # assert(0 == os.system('rm -rf %s' % fftw3tar))        
-        # os.chdir(here)
+        installpackage(fftwdownload,prefix=fftwdir,keepdownload=False,configureflags='--enable-shared --enable-float')
     else:
         print "!!! I cannot find FFTW3 on your system. If you have it, please specify"
         print "    its location with --fftw=FFTWDIR (for instance, --fftw=/usr/local if"
         print "    the FFTW3 libraries are in /usr/local/lib). Otherwise, I can install"
-        print "    v3.1.2 for you if you give me the --installfftw option."
+        print "    v3.2.1 for you if you give me the --installfftw option."
         sys.exit(1)
 
 # on Leopard, there's a problem with m4 (version 1.4.6) that breaks the LISACode compilation
