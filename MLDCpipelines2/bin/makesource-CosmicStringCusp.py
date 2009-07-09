@@ -32,7 +32,7 @@ parser.add_option("-s", "--seed",
 
 parser.add_option("-A", "--amplitude",
                   type="float", dest="Amplitude", default=1.0e-21,
-                  help="amplitude (adimensional) [default 1e-21]")
+                  help="amplitude (Hertz^1/3) [default 1e-21]")
 
 parser.add_option("-S", "--requestSN",
                   type="float", dest="RequestSN", default=None,

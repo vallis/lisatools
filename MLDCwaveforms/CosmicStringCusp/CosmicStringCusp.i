@@ -43,7 +43,7 @@ class CosmicStringCusp(lisaxml.Source):
     outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
                   ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
                   ('Polarization',                     'Radian',        None, 'standard source polarization'),
-                  ('Amplitude',                        '1',             None, 'overall signal amplitude'),
+                  ('Amplitude',                        'Hertz^1/3',     None, 'overall signal amplitude'),
                   ('CentralTime',                      'Second',        None, 'central time of the burst'),
                   ('MaximumFrequency',                 'Hertz',         None, 'maximum burst frequency'))
     

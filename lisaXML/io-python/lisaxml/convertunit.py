@@ -52,7 +52,11 @@ def convertUnit(param,unitin,unitout,paramname=''):
                     return ('-2.0','1')                
                 elif param == 'RedAcceleration':
                     return ('-4.0','1')
-
+    
+    if paramname == 'Amplitude' and unitout == 'Hertz^1/3' and unitin == '1':
+        print 'convertunit.convertUnit(): using Hertz^1/3 for legacy CosmicStringCusp source'
+        return (param,'Hertz^1/3')
+    
     raise NotImplementedError, "convertUnit(): cannot convert %s from %s to %s (parameter %s)" % (param,unitin,unitout,paramname)
 
 # conversion rules (a tuple consisting of a list of required parameters with their
