@@ -410,9 +410,6 @@ class Stream(object):
         
         # otherwise let's go on and parse the file
         
-        # assume length of doubles is 8 in written file
-        readlength = 8 * length * records 
-        
         # load data from file
         if node.Type == 'Remote':
             directory = os.path.dirname(xmlfile)
@@ -431,8 +428,8 @@ class Stream(object):
                     loadfile = open(content,'r')
             
             if 'Binary' in node.Encoding:
-                data = numpy.fromfile(loadfile,'double',readlength)
-                # previously data = numpy.fromstring(loadfile.read(readlength),'double')
+                data = numpy.fromfile(loadfile,'double',length * records)
+                # previously data = numpy.fromstring(loadfile.read(8 * length * records),'double')
                 
                 if hasattr(node,'Checksum'):
                     import zlib

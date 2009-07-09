@@ -1183,9 +1183,6 @@ class readXML(object):
         records = dim['Records']
         
         if stype == 'Remote' and 'Binary' in encoding:
-            # assume length of doubles is 8 (generic?)
-            readlength = 8 * length * records 
-        
             if 'http://' in self.directory:
                 binaryfile = urllib.urlopen(self.directory + '/' + content,'r')
             else:
@@ -1199,8 +1196,9 @@ class readXML(object):
                     # try relative to the working directory
                     binaryfile = open(content,'r')
         
-            readbuffer = numpy.fromfile(binaryfile,'double',readlength)
-            # previously readbuffer = numpy.fromstring(binaryfile.read(readlength),'double')
+            readbuffer = numpy.fromfile(binaryfile,'double',length * records)
+            # previously readbuffer = numpy.fromstring(binaryfile.read(8 * length * records),'double')
+            # assuming that length of doubles is 8
             binaryfile.close()
             
             if checksum != None:
