@@ -75,7 +75,7 @@ if 6 in chosen:
 
 # --- EMRIs!
 
-for srcind in range(numpy.random.poisson(3)):
+for srcind in range(numpy.random.poisson(2)):
     requestsn = random.randint(25,50)
     run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=1.e7 --minEccentricity=0.05 --sourceName="EMRI-1-%(srcind)s" Source/EMRI-1-%(srcind)s.xml' % globals())
     seed = seed + 1
@@ -85,7 +85,7 @@ for srcind in range(numpy.random.poisson(2)):
     run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=5.e6 --minEccentricity=0.05 --sourceName="EMRI-2-%(srcind)s" Source/EMRI-2-%(srcind)s.xml' % globals())
     seed = seed + 1
 
-for srcind in range(numpy.random.poisson(1)):
+for srcind in range(numpy.random.poisson(2)):
     requestsn = random.randint(25,50)
     run('%(mydir)s/makesource-EMRI.py -f --seed=%(seed)s --distance=1e9 --requestSN=%(requestsn)s --massSMBH=1.e6 --minEccentricity=0.05 --sourceName="EMRI-3-%(srcind)s" Source/EMRI-3-%(srcind)s.xml' % globals())
     seed = seed + 1
