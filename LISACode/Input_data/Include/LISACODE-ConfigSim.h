@@ -451,7 +451,7 @@ class ConfigSim
 		/*! \brief Creates Xml Output File as header of binary file */
 		void CreateXmlOutputFile();
 		/*! \brief Write in XML output file the bloc corresponding to an output data file */
-		void AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string ObsDescr, double tOffset, int NRec, int DataFileEncoding, char * DataFileName);
+		void AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string ObsDescr, double tOffsetTS, int NRec, int DataFileEncoding, char * DataFileName);
 		/*! \brief Return unit */
 		char * gXMLUnit(const char In[], double & Fact);
 		/*! \brief Return a time value read in XML file. Unit is Second. */

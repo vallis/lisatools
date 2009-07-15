@@ -2224,7 +2224,7 @@ void ConfigSim::ReadXMLFile()
 							Tsample_sto = tStepPhy ;
 							Beta = M_PI/2.-Beta ;  //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! a verifier modif_eric !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 							//cout << "creating stochastic" <<endl ;
-							cout << "  + GW Stochastic : " << NbSrc << " : Beta,Lambda,hp,hc,dt,Slope_sto,Fknee_sto,Fmin_sto =    " <<MathUtils::rad2deg(Beta)<< "  " <<MathUtils::rad2deg(Lambda)<< "  " << tStepPhy << "  " << hp_sto<< "  "<< hc_sto<< "  " <<Slope_sto<< "  " <<Fknee_sto<< "  " <<Fmin_sto<< endl ;
+							cout << "  + GW Stochastic : " << NbSrc << " : Beta = " << Beta << " ,  Lambda = " << Lambda << " , dt = " << tStepPhy << " , hp = " << hp_sto<< " , hc = "<< hc_sto << " , Slope = " << Slope_sto << " , Fknee = " << Fknee_sto << " , Fmin = " << Fmin_sto << endl ;
 							//GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));
 							GWs.push_back(new GWSto(Beta,Lambda,tStepMes,Slope_sto,Fknee_sto,Fmin_sto,hp_sto,hc_sto));						
 							//GWs.push_back(new GWSto(Beta,Lambda,tStepPhy,tDurAdd,tFirst,tLast,tder,Slope_sto,Tsample_sto,Fknee_sto,Fmin_sto,Nb_Ageing,hp_sto,hc_sto));
@@ -2900,30 +2900,30 @@ void ConfigSim::CreateXmlOutputFile()
 		TDIsGenName += ",";
 		TDIsGenName += TDIsName[iTDI];
 	}
-	AddTimeSeriesInXMLOutput(&FichXML, ind1, TDIsGenName, 0.0, 4, getFileEncodingTDI(), getFileNameTDI());
+	AddTimeSeriesInXMLOutput(&FichXML, ind1, TDIsGenName, tOffset, 4, getFileEncodingTDI(), getFileNameTDI());
 	
 	// ** SC1 Phasemeter data
 	if(strcmp(getFileNameSig(1),"None")!=0){
 		if(UseInternalPhasemeter())
-			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y231,y321,z231,z321", gettStartPhasemeters(), 5, getFileEncodingSig(1), getFileNameSig(1));
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y231,y321,z231,z321", tOffset+gettStartPhasemeters(), 5, getFileEncodingSig(1), getFileNameSig(1));
 		else
-			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y231,y321", gettStartPhasemeters(), 3, getFileEncodingSig(1), getFileNameSig(1));
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y231,y321", tOffset+gettStartPhasemeters(), 3, getFileEncodingSig(1), getFileNameSig(1));
 	}
 	
 	// ** SC2 Phasemeter data
 	if(strcmp(getFileNameSig(2),"None")!=0){
 		if(UseInternalPhasemeter())
-			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y312,y132,z312,z132", gettStartPhasemeters(), 5, getFileEncodingSig(2), getFileNameSig(2));
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y312,y132,z312,z132", tOffset+gettStartPhasemeters(), 5, getFileEncodingSig(2), getFileNameSig(2));
 		else
-			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y312,y132", gettStartPhasemeters(), 3, getFileEncodingSig(2), getFileNameSig(2));
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y312,y132", tOffset+gettStartPhasemeters(), 3, getFileEncodingSig(2), getFileNameSig(2));
 	}
 	
 	// ** SC3 Phasemeter data
 	if(strcmp(getFileNameSig(3),"None")!=0){
 		if(UseInternalPhasemeter())
-			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y123,y213,z123,z213", gettStartPhasemeters(), 5, getFileEncodingSig(3), getFileNameSig(3));
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y123,y213,z123,z213", tOffset+gettStartPhasemeters(), 5, getFileEncodingSig(3), getFileNameSig(3));
 		else
-			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y123,y213", gettStartPhasemeters(), 3, getFileEncodingSig(3), getFileNameSig(3));
+			AddTimeSeriesInXMLOutput(&FichXML, ind1, "t,y123,y213", tOffset+gettStartPhasemeters(), 3, getFileEncodingSig(3), getFileNameSig(3));
 	}
 	
 	FichXML << ind1 << xsil_end;
@@ -2931,7 +2931,7 @@ void ConfigSim::CreateXmlOutputFile()
 	FichXML.close();
 }
 
-void ConfigSim::AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string ObsDescr, double tOffset, int NRec, int DataFileEncoding, char * DataFileName)
+void ConfigSim::AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string ObsDescr, double tOffsetTS, int NRec, int DataFileEncoding, char * DataFileName)
 {
 	string ind2(ind1+ind1), ind3(ind2+ind1), ind4(ind3+ind1), ind5(ind4+ind1), ind6(ind5+ind1);
 	string ParamName("<Param Name=\""),Param_end("</Param>\n");
@@ -2948,7 +2948,7 @@ void ConfigSim::AddTimeSeriesInXMLOutput(ofstream * FichXML, string ind1, string
 	(*FichXML) << ind3 << Param_end;
 	(*FichXML) << ind3 << "<XSIL Name=\"" << ObsDescr << "\" Type=\"TimeSeries\">"<< endl;
 	(*FichXML) << ind4 << ParamName << "TimeOffset\" Unit=\"Second\">" << endl ;
-	(*FichXML) << ind5 << tOffset << endl;
+	(*FichXML) << ind5 << tOffsetTS << endl;
 	(*FichXML) << ind4 << Param_end;
 	(*FichXML) << ind4 << ParamName << "Cadence\" Unit=\"Second\">" << endl ;
 	(*FichXML) << ind5 << gettStepMes() << endl;

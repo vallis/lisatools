@@ -12,6 +12,8 @@ import math
 import lisaxml
 import numpy
 
+import lisacode
+
 def makefromtemplate(output,template,**kwargs):
     fi = open(template,'r')
     fo = open(output,'w')
@@ -182,5 +184,7 @@ for sec in extrasecs:
     newbasefile.ExtraSection(sec)
 newbasefile.close()
 
-run('LISACode %s-input.xml' % (cname))
-#run('LISACode %s-input.xml > Log-%s.txt' % (cname, cname) )
+if options.verbose:
+    run('%s %s-input.xml' % (lisacode.lisacode,cname))
+else:
+    run('%s %s-input.xml > LogLC-%s' % (lisacode.lisacode,cname,cname))

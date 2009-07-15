@@ -12,6 +12,7 @@ import numpy
 
 import FastBBH
 import CosmicStringCusp
+import lisacode
 
 def makefromtemplate(output,template,**kwargs):
     fi = open(template,'r')
@@ -262,6 +263,6 @@ for sec in extrasecs:
 newbasefile.close()
 
 if options.verbose:
-    run('LISACode %s-input.xml' % (cname))
+    run('%s %s-input.xml' % (lisacode.lisacode,cname))
 else:
-    run('LISACode %s-input.xml > LogLC-%s' % (cname,cname))
+    run('%s %s-input.xml > LogLC-%s' % (lisacode.lisacode,cname,cname))

@@ -12,6 +12,8 @@ import math
 import lisaxml
 import numpy
 
+import lisacode
+
 def makefromtemplate(output,template,**kwargs):
     fi = open(template,'r')
     fo = open(output,'w')
@@ -146,7 +148,7 @@ timestep = options.timestep
 duration = options.duration
 lcseed = options.seed
 LISAmodel = options.LISAmodel
-PhasemF = "Off"
+PhasemF = "On"
 
 
 ### Define phasemeters' output 
@@ -166,4 +168,7 @@ run('makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=123456 --duratio
 run('mergeXML.py %(cname)s-input.xml noise.xml')
 run('rm noise.xml')
 
-run('LISACode %s-input.xml' % (cname))
+if options.verbose:
+    run('%s %s-input.xml' % (lisacode.lisacode,cname))
+else:
+    run('%s %s-input.xml > LogLC-%s' % (lisacode.lisacode,cname,cname))

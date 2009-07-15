@@ -28,10 +28,10 @@
         <XSIL Type="Detector">
             <Param Name="LaserPower" Unit="Watt">1</Param>
             <Param Name="PhaMetFilter" Unit="None">{phasemeterfilter}</Param>
-            <Param Name="PMFAttenuation" Unit="dB">180</Param>
+            <Param Name="PMFAttenuation" Unit="dB">100</Param>
             <Param Name="PMFOscillation" Unit="dB">0.1</Param>
-            <Param Name="PMFLowFreqFact" Unit="None">0.1</Param>
-            <Param Name="PMFHighFreqFact" Unit="None">0.3</Param>
+            <Param Name="PMFLowFreqFact" Unit="None">0.4</Param>
+            <Param Name="PMFHighFreqFact" Unit="None">0.48</Param>
         </XSIL>
 
         <XSIL Type="OutputFiles">

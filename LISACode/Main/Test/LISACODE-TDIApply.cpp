@@ -112,7 +112,9 @@ int main (int argc, char * const argv[])
 		//Declaration des variables qui parametrisent la Simulation
 		double tStepMes(Config.gettStepMes());
 		double tMax(Config.gettMax());
-		double DisplayStep(Config.gettDisplay());
+		double tDur(Config.gettDur());
+		double tOffset(Config.gettOffset());
+		double DisplayStep(Config.gettDisplay());		
 		//Declaration des variables temporaires
 		double t(0.0), ttmpAff(0.0), tSinceFirstReception(0.0);
 		// Critere sur la moyenne d'un generateur TDI pour qu'il soit declare efficace
@@ -251,14 +253,14 @@ int main (int argc, char * const argv[])
 		//  d'une utilisation dans TDI. Le nombre de donnees qu'il est necessaire d'enregistrer
 		//  avant de lancer TDI est choisi par rapport au retard maximal present dans les generateurs.
 		cout << endl << "Runnning in progress : receive datas (-> " << tMemPDPM << " s)..." << endl;
-		t = Config.gettStartPhasemeters();
+		t = tOffset+Config.gettStartPhasemeters();
 		//cout << t << " " << tMemTDI << " " << tTDIShift << endl;
 		do{
 			//Display time
 			//cout << "* t = " << t << endl;
 			if(ttmpAff >= DisplayStep){
 				//cout << t << " s" << endl;
-				printf("%.0lf s     #0%03.0f %% \n", t, 100*t/tMax);
+				printf("%.0lf s     #0%03.0f %% \n", t, 100*(t-tOffset)/tDur);
 				fflush(stdout);
 				ttmpAff = 0.0;
 			}
@@ -278,7 +280,7 @@ int main (int argc, char * const argv[])
 			NDatPh1++;
 			
 			//}while(t<=tMemTDI+tTDIShift);
-		}while(t<tTDIShift-tMemTDI);
+		}while(t<tOffset+tTDIShift-tMemTDI);
 		
 		// Phase 2 : 
 		// ---------
@@ -289,7 +291,7 @@ int main (int argc, char * const argv[])
 			//cout << "* t = " << t << endl;
 			if(ttmpAff >= DisplayStep){
 				//cout << t << " s" << endl;
-				printf("%.0lf s     #0%03.0f %% \n", t, 100*t/tMax);
+				printf("%.0lf s     #0%03.0f %% \n", t, 100*(t-tOffset)/tDur);
 				fflush(stdout);
 				ttmpAff = 0.0;
 			}
@@ -309,7 +311,7 @@ int main (int argc, char * const argv[])
 			NDatPh1++;
 			
 			//}while(t<=tMemTDI+tTDIShift);
-		}while(t<tTDIShift);
+		}while(t<tOffset+tTDIShift);
 		
 		
 		// Phase 3 : 
@@ -329,12 +331,12 @@ int main (int argc, char * const argv[])
 			if(ttmpAff >= DisplayStep){
 				time(&tcur);
 				//cout << t << " s" << endl;
-				EstimTStop = (tcur-tstart)*(tMax-t)/t;
+				EstimTStop = (tcur-tstart)*(tMax-t)/(t-tOffset);
 				hh = (int)(floor(EstimTStop/3600.0));
 				mm = (int)((EstimTStop - 3600.0*hh)/60);
 				ss = EstimTStop - 60*(mm+60*hh);
 				//cout << t << " s" << endl;
-				printf("%.0lf s    (remaining time : %02d:%02d:%02.0f) #0%03.0f %% \n", t, hh, mm, ss, 100*t/tMax);
+				printf("%.0lf s    (remaining time : %02d:%02d:%02.0f) #0%03.0f %% \n", t, hh, mm, ss, 100*(t-tOffset)/tDur);
 				fflush(stdout);
 				ttmpAff = 0.0;
 			}		 

@@ -319,19 +319,19 @@ if (not makemode) and (not sourcekeyfile):
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
     run('rm -f Immediate/*.xml')
     run('rm -f LISACode/*.xml LISACode/*.bin')
-    
+
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
     # if makesource-Galaxy.py is called, it must be with the UNALTERED seed, which is used
     # later to call makeTDIsignals-Galaxy.py
-    
+
     # look for the script relative to challenge.py
-    
+
     sourcescript = execdir + '/' + challengename + '.py'
     if 'challenge1C' in challengename and not os.path.isfile(sourcescript):
         sourcescript = re.sub('challenge1C','challenge1B',sourcescript)
         print "--> I'm using script %s for %s" % (sourcescript,challengename)
-    
+
     if not os.path.isfile(sourcescript):
         parser.error("I need the challenge script %s!" % sourcescript)
     else:
@@ -339,12 +339,12 @@ if (not makemode) and (not sourcekeyfile):
 elif (not makemode) and sourcekeyfile:
     # convoluted logic, to make sure that the keyfile given is not in Source/ and therefore deleted
     # TO DO: improve
-    
+
     run('mv %s %s-backup' % (sourcekeyfile,sourcekeyfile))
     run('rm -f Source/*.xml')
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
     run('mv %s-backup %s' % (sourcekeyfile,sourcekeyfile))
-    
+
     run('cp %s Source/%s' % (sourcekeyfile,os.path.basename(sourcekeyfile)))
 
 step2time = time.time()
@@ -477,42 +477,68 @@ step4btime = time.time()
 # ---------------------
 # STEP 4b: run LISAcode
 # ---------------------
-
+dolcsigseparate = True
 if dolisacode:
     # Use new lisacode pipeline for challenge4
     if 'challenge4' in challengename:
-        # Make TDI for sources
-        
-        os.chdir('LISACode')
-        
-        #runfile = 'makeTDIsignal-lisacode.py'
-        runfile = 'makeTDI-lisacode.py'
-        lcsrcfile = ''
-        dosmallstep = False
-        for xmlfile in glob.glob('../Barycentric/*-barycentric.xml'):
-            lcsrcfile = ' ' + xmlfile
-            if 'challenge4' in challengename and 'Burst' in xmlfile:
-                dosmallstep = True
-            #if 'barycentric.xml' in xmlfile:
-            #    tdifile = re.sub('barycentric\.xml$','tdi-lisacode.xml',os.path.basename(xmlfile))
-            #else:
-            #    tdifile = re.sub('\.xml$','-tdi-lisacode.xml',os.path.basename(xmlfile))
-            #if (not makemode) or newer(xmlfile,tdifile):
-            #    # TO DO - more kludging... would be better to do RequestTimeStep
-            #    if 'challenge4' in challengename and 'Burst' in xmlfile:
-            #        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
-            #    else:
-            #        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
-        if dosmallstep:
-            prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=1.875 -e Signals-tdi-lisacode.xml %(lcsrcfile)s')
-        else:
-            prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
-            
-        # Make TDI for noises
-        runfile = 'makeTDInoise-lisacode.py'
-        noisefile = 'tdi-lisacode-noise.xml'
-        prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=1.875 %(noiseoptions)s %(noisefile)s')
 
+        os.chdir('LISACode')
+
+        # Make TDI for sources
+
+        dosmallstep = False
+        if dolcsigseparate:
+            # Compute signals separately
+            runfile = 'makeTDIsignal-lisacode.py'
+            for xmlfile in glob.glob('../Barycentric/*-barycentric.xml') + glob.glob('*Background.xml'):
+                if 'barycentric.xml' in xmlfile:
+                    tdifile = re.sub('barycentric\.xml$','tdi-lisacode.xml',os.path.basename(xmlfile))
+                else:
+                    tdifile = re.sub('\.xml$','-tdi-lisacode.xml',os.path.basename(xmlfile))
+                if (not makemode) or newer(xmlfile,tdifile):
+                    if 'challenge4' in challengename and 'Burst' in xmlfile:
+                        dosmallstep = True
+                        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
+                    else:
+                        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')            
+        else:
+            # Compute signal all at once
+            runfile = 'makeTDI-lisacode.py'
+            lcsigfileinput = ''
+            lcsigfile = 'Signals-tdi-lisacode.xml'
+            dosignal = False
+            for xmlfile in glob.glob('../Barycentric/*-barycentric.xml'):
+                dosignal = True
+                lcsigfileinput = lcsigfileinput + ' ' + xmlfile
+                if 'challenge4' in challengename and ('Burst' in xmlfile):
+                    dosmallstep = True
+            if dosignal:
+                if dosmallstep:
+                    prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=1.875 -e %(lcsigfile)s %(lcsigfileinput)s')
+                else:
+                    prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=15.0 -e %(lcsigfile)s %(lcsigfileinput)s')
+            # Compute stochastic-background separatly
+            dosignal = False
+            lcsigfileinput = ''
+            lcsigfile = 'SignalsBack-tdi-lisacode.xml'
+            for xmlfile in glob.glob('*Background.xml'):
+                dosignal = True
+                lcsigfileinput = lcsigfileinput + ' ' + xmlfile
+            if dosignal:
+                prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=15.0 -e %(lcsigfile)s %(lcsigfileinput)s')
+                
+
+        # Make TDI for noises
+
+        runfile = 'makeTDInoise-lisacode.py'
+        lcnoisefile = 'tdi-lisacode-noise.xml'
+        if dosmallstep:
+            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=1.875 %(noiseoptions)s %(lcnoisefile)s')
+        else:
+            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=15.0 %(noiseoptions)s %(lcnoisefile)s')
+        
+        pwait()
+        
         os.chdir('..')
  
     else:
@@ -564,14 +590,24 @@ step5time = time.time()
 # should avoid running both SL and LS if only one is requested...
 
 if glob.glob('Galaxy/*.xml'):
-    for xmlfile in glob.glob('Galaxy/*.xml'):
-        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
-        lstdifile = 'TDI/' + re.sub('.xml','-tdi-strain.xml',os.path.basename(xmlfile))
-
-        if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
-            prun('%s/makeTDIsignals-Galaxy3.py %s %s %s' % (execdir,xmlfile,sltdifile,lstdifile))
+#    for xmlfile in glob.glob('Galaxy/*.xml'):
+#        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
+#        lstdifile = 'TDI/' + re.sub('.xml','-tdi-strain.xml',os.path.basename(xmlfile))
+#
+#        if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
+#            prun('%s/makeTDIsignals-Galaxy3.py %s %s %s' % (execdir,xmlfile,sltdifile,lstdifile))
     
     pwait()
+
+    for xmlfile in glob.glob('Galaxy/*.xml'):
+        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
+        lctdifile = 'LISACode/' + re.sub('.xml','-tdi-lisacode.xml',os.path.basename(xmlfile))
+        if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
+            lisaxml.lisaXML(lctdifile,
+                        author="MLDC Task Force",
+                        comments='Galaxy dataset for %s (lisacode version)' % (challengename)).close()
+            run('%(execdir)s/mergeXML.py  %(lctdifile)s %(sltdifile)s')
+            
 
 # in challenge 3.2, the Galaxy is noise, so merge it with the instrument noise
 # this is a hack that should be later changed with something more systematic
@@ -615,6 +651,7 @@ globalseed += lisatoolsrev
 run('cp Template/lisa-xml.xsl Dataset/.')
 run('cp Template/lisa-xml.css Dataset/.')
 
+#dosynthlisa = False
 if dosynthlisa:
     # set filenames
 
@@ -696,35 +733,115 @@ if dosynthlisa:
 # next do LISACode
 
 if dolisacode:
-    for xmlfile in glob.glob('LISACode/*-lisacode.xml'):
-        basefile = re.sub('LISACode/','',re.sub('\.xml','',xmlfile))
+
+    if 'challenge3' in challengename:
+        for xmlfile in glob.glob('LISACode/*-lisacode.xml'):
+            basefile = re.sub('LISACode/','',re.sub('\.xml','',xmlfile))
         
-        withnoisefile = 'Dataset/' + basefile + '.xml'
-        inputfile = 'LISACode/' + basefile + '-input.xml'
+            withnoisefile = 'Dataset/' + basefile + '.xml'
+            inputfile = 'LISACode/' + basefile + '-input.xml'
         
-        # prepare empty file
+            # prepare empty file
+            lisaxml.lisaXML(withnoisefile,
+                            author="MLDC Task Force",
+                            comments='Full dataset for %s (lisacode version)%s' % (challengename,globalseed)).close()
+        
+            # merge dataset with key (if training), otherwise copy dataset, renaming binaries
+            if istraining:
+                run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s %(inputfile)s')
+            else:
+                run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s')
+                
+            # also, get key file
+            run('cp %s %s' % (inputfile,'Dataset/' + basefile + '-key-lisacode.xml'))
+        
+            # make tar
+            os.chdir('Dataset')
+        
+            withnoisefile = os.path.basename(withnoisefile)
+            withnoisetar = re.sub('.xml','.tar.gz',withnoisefile)
+            
+            run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))
+            
+            os.chdir('..')
+    else:
+        ## At the moment for challenge4
+
+        # set filenames
+        if istraining:
+            nonoisefile   = 'Dataset/' + outputfile + '-training-nonoise-lisacode.xml'
+            withnoisefile = 'Dataset/' + outputfile + '-training-lisacode.xml'
+
+            nonoisetar    = outputfile + '-training-nonoise-lisacode.tar.gz'
+            withnoisetar  = outputfile + '-training-lisacode.tar.gz'
+
+            keyfile       = 'Dataset/' + outputfile + '-training-key-lisacode.xml'
+        else:
+            nonoisefile   = 'Dataset/' + outputfile + '-nonoise-lisacode.xml'
+            withnoisefile = 'Dataset/' + outputfile + '-lisacode.xml'
+
+            nonoisetar    = outputfile + '-nonoise-lisacode.tar.gz'
+            withnoisetar  = outputfile + '-lisacode.tar.gz'
+            
+            keyfile       = 'Dataset/' + outputfile + '-key-lisacode.xml'
+
+        # create empty files
+
+        lisaxml.lisaXML(nonoisefile,
+                        author="MLDC Task Force",
+                        comments='No-noise dataset for %s (lisacode version)%s' % (challengename,globalseed)).close()
+
         lisaxml.lisaXML(withnoisefile,
                         author="MLDC Task Force",
                         comments='Full dataset for %s (lisacode version)%s' % (challengename,globalseed)).close()
-        
-        # merge dataset with key (if training), otherwise copy dataset, renaming binaries
+
+        lisaxml.lisaXML(keyfile,
+                        author="MLDC Task Force",
+                        comments='XML key for %s%s' % (challengename,secretseed)).close()
+
+        # add signals and noise to the no-noise and with-noise files
+        # omit keys if we're not doing training
+
         if istraining:
-            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s %(inputfile)s')
+            if glob.glob('LISACode/*-tdi-lisacode.xml'):
+                run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(nonoisefile)s LISACode/*-tdi-lisacode.xml')
+
+            if donoise:
+                run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s LISACode/%(lcnoisefile)s')
         else:
-            run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s')
+            if glob.glob('LISACode/*-lisacode.xml'):
+                run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(nonoisefile)s LISACode/*-tdi-lisacode.xml')
+
+            if donoise:
+                run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s LISACode/%(noisefile)s')
+            
+        # make key
+        # add info from noise file
+        if donoise:
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s LISACode/%(lcnoisefile)s')
+
+        # create the key with all source info
+        if glob.glob('LISACode/*-tdi-lisacode.xml'):
+            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s LISACode/*-tdi-lisacode.xml')
+
         
-        # also, get key file
-        run('cp %s %s' % (inputfile,'Dataset/' + basefile + '-key-lisacode.xml'))
+        # now do some tarring up, including XSL and CSS files from Template
         
-        # make tar
         os.chdir('Dataset')
-        
+
+        nonoisefile   = os.path.basename(nonoisefile)
         withnoisefile = os.path.basename(withnoisefile)
-        withnoisetar = re.sub('.xml','.tar.gz',withnoisefile)
-        
-        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))
-        
+
+        if istraining:
+            run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
+        else:
+            run('%(execdir)s/rmXML.py %(nonoisefile)s')
+            
+        if donoise:
+            run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
+
         os.chdir('..')
+
 
 # next do LISA Simulator
 

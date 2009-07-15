@@ -49,7 +49,7 @@ GW(Beta_n, Lambda_n, 0.0)
 	double tmax = 10000.;
 	
 	tFirst = tStep*ceil(2+OrderLa/2.0);
-	tLast = -1.0*(tmax+tStep*ceil(2+OrderLa/2.0));
+	tLast = -1.0*(tStep*ceil(2+OrderLa/2.0+tmax/tStep));
 	
 	tDurAdd    = 40*tStep;
 	Nb_Ageing  = 10000;
