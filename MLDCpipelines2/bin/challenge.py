@@ -590,12 +590,12 @@ step5time = time.time()
 # should avoid running both SL and LS if only one is requested...
 
 if glob.glob('Galaxy/*.xml'):
-#    for xmlfile in glob.glob('Galaxy/*.xml'):
-#        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
-#        lstdifile = 'TDI/' + re.sub('.xml','-tdi-strain.xml',os.path.basename(xmlfile))
-#
-#        if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
-#            prun('%s/makeTDIsignals-Galaxy3.py %s %s %s' % (execdir,xmlfile,sltdifile,lstdifile))
+    for xmlfile in glob.glob('Galaxy/*.xml'):
+        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
+        lstdifile = 'TDI/' + re.sub('.xml','-tdi-strain.xml',os.path.basename(xmlfile))
+
+        if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
+            prun('%s/makeTDIsignals-Galaxy3.py %s %s %s' % (execdir,xmlfile,sltdifile,lstdifile))
     
     pwait()
 
@@ -651,7 +651,6 @@ globalseed += lisatoolsrev
 run('cp Template/lisa-xml.xsl Dataset/.')
 run('cp Template/lisa-xml.css Dataset/.')
 
-#dosynthlisa = False
 if dosynthlisa:
     # set filenames
 
