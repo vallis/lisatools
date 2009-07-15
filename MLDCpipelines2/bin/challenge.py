@@ -428,7 +428,7 @@ if dosynthlisa:
         if (not makemode) or newer(xmlfile,tdifile):
             # TO DO - more kludging... would be better to do RequestTimeStep
             if 'challenge4' in challengename and 'Burst' in xmlfile:
-                prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
+                prun('%(execdir)s/makeTDIsignal-synthlisa2.py %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
             else:
                 prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
@@ -442,7 +442,7 @@ if dosynthlisa:
         
     if donoise and ((not makemode) or (not os.path.isfile(noisefile))):        
         if 'challenge4' in challengename:
-            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=1.875 %(noiseoptions)s %(noisefile)s')        
+            prun('%(execdir)s/makeTDInoise-synthlisa2.py --seed=%(seednoise)s --duration=%(duration)s --timeStep=1.875 %(noiseoptions)s %(noisefile)s')        
         else:
             prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s %(noisefile)s')
 
