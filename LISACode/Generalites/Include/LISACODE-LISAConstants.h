@@ -29,7 +29,7 @@
 //Version
 /*!\brief Simulator Version */
 const char LCVersion[] = "1.4.5"; // Version du simulateur
-const char DateOfLastUpdate[] = "08/07/2009"; // Version du simulateur
+const char DateOfLastUpdate[] = "15/07/2009"; // Version du simulateur
 
 //Geometrie
 /*!\brief Arms length (distance between every pair of satellites) in meters.*/
