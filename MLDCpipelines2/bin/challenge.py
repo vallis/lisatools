@@ -633,118 +633,96 @@ step6time = time.time()
 
 # do synthlisa first
 
-secretseed = ', source seed = %s, noise seed = %s' % (seed,seednoise)
-
-if istraining:
-    globalseed = secretseed
-else:
-    globalseed = ''
-
-# add SVN revision number
-
-import lisatoolsrevision
-lisatoolsrev = ', LISAtools SVN revision %s' % lisatoolsrevision.lisatoolsrevision
-
-secretseed += lisatoolsrev
-globalseed += lisatoolsrev
-
 run('cp Template/lisa-xml.xsl Dataset/.')
 run('cp Template/lisa-xml.css Dataset/.')
 
-if dosynthlisa:
-    # set filenames
+import lisatoolsrevision
 
+def makedataset(simulator,dokey=True,hifreq=False):
+    outputfile = 'Dataset/' + outputfile
+    comment = '%s (%s)' % (challengename,simulator)
+    
+    if hifreq:
+        outputfile += '-hifreq'
+        comment += ', high-frequency version'
+    
     if istraining:
-        nonoisefile   = 'Dataset/' + outputfile + '-training-nonoise-frequency.xml'
-        withnoisefile = 'Dataset/' + outputfile + '-training-frequency.xml'
-
-        nonoisetar    = outputfile + '-training-nonoise-frequency.tar.gz'
-        withnoisetar  = outputfile + '-training-frequency.tar.gz'
-
-        keyfile       = 'Dataset/' + outputfile + '-training-key.xml'
-    else:
-        nonoisefile   = 'Dataset/' + outputfile + '-nonoise-frequency.xml'
-        withnoisefile = 'Dataset/' + outputfile + '-frequency.xml'
-
-        nonoisetar    = outputfile + '-nonoise-frequency.tar.gz'
-        withnoisetar  = outputfile + '-frequency.tar.gz'
-
-        keyfile       = 'Dataset/' + outputfile + '-key.xml'
-
-    # create empty files
-
-    lisaxml.lisaXML(nonoisefile,
-                    author="MLDC Task Force",
-                    comments='No-noise dataset for %s (synthlisa version)%s' % (challengename,globalseed)).close()
-
-    lisaxml.lisaXML(withnoisefile,
-                    author="MLDC Task Force",
-                    comments='Full dataset for %s (synthlisa version)%s' % (challengename,globalseed)).close()
-
-    lisaxml.lisaXML(keyfile,
-                    author="MLDC Task Force",
-                    comments='XML key for %s%s' % (challengename,secretseed)).close()
-
-    # add signals and noise to the no-noise and with-noise files
-    # omit keys if we're not doing training
-
-    if istraining:
-        if glob.glob('TDI/*-tdi-frequency.xml'):
-            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-frequency.xml')
-
-        if donoise:
-            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
-    else:
-        if glob.glob('TDI/*-tdi-frequency.xml'):
-            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-frequency.xml')
-
-        if donoise:
-            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(noisefile)s')
-
-    if 'challenge3.2' in challengename:
-        run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml %(noisefile)s')
-    else:
-        # add info from noise file
-        if os.path.isfile(noisefile):
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(noisefile)s')
-
-        # create the key with all source info
-        if glob.glob('TDI/*-tdi-frequency.xml'):
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-frequency.xml')
-
-    # now do some tarring up, including XSL and CSS files from Template
-
-    os.chdir('Dataset')
-
-    nonoisefile   = os.path.basename(nonoisefile)
-    withnoisefile = os.path.basename(withnoisefile)
-
-    if istraining:
-        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
-    else:
-        run('%(execdir)s/rmXML.py %(nonoisefile)s')
-
+        outputfile += '-training'   # include seeds only if we're training
+        comment += ', source seed = %s, noise seed = %s' % (seed,seednoise)
+    
+    comment += ', LISAtools SVN revision %s' % lisatoolsrevision.lisatoolsrevision
+    
+    merger = execdir + '/mergeXML.py'
+    if not istraining:
+        merger += ' --noKey'    # include keys only if we're training
+    if hifreq:
+        merger += ' --upsample' # instruct mergeXML.py to upsample for hi-freq dataset
+    
+    thenoisefile = 'TDI/tdi-' + simulator + '-noise.xml'
+    tdifiles = 'TDI/*-tdi-' + simulator + '.xml'
+    
+    # make the noiseless dataset
+    noiselessdataset = outputfile + '-nonoise-' + simulator + '.xml'
+    lisaxml.lisaXML(noiselessdataset,author="MLDC Task Force",comments=comment).close()
+    if glob.glob(tdifiles):
+        run('%s --tdiName=%s %s %s' % (merger,challengename,noiselessdataset,tdifiles))
+    
+    # make the noisy dataset
     if donoise:
-        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
+        noisydataset = outputfile + '-' + simulator + '.xml'
+        lisaxml.lisaXML(noisydataset,author="MLDC Task Force",comments=comment).close()
+        run('%s --tdiName=%s %s %s %s' % (merger,challengename,noisydataset,noiselessdataset,thenoisefile))
+    
+    # make the key
+    if dokey:
+        keyfile = outputfile + 'key-' + simulator + '.xml'
+        lisaxml.lisaXML(keyfile,author="MLDC Task Force",comments=comment).close()
+        # is there something strange here with the 3.2 key, which used to be done in one step, TDI + noise?
+        # yes, I think the point was that the source info would be only picked up from the first file?
+        run('%s/mergeXML.py --keyOnly %s %s' % (execdir,keyfile,thenoisefile))
+        if glob.glob(tdifiles):
+            run('%s/mergeXML.py --keyOnly %s %s' % (execdir,keyfile,tdifiles))
+        
+    # tar up the noiseless dataset (or destroy if not training)
+    if istraining:
+        run('tar zcf %s %s %s Dataset/lisa-xml.*' % (re.sub('\.xml','.tar.gz',noiselessdataset),
+                                                     noiselessdataset,
+                                                     re.sub('\.xml','-[0-9].bin',noiselessdataset)))
+    else:
+        run('%s/rmXML.py' % (execdir,noiselessdataset))
+    
+    # tar up the noisy dataset
+    if donoise:
+        run('tar zcf %s %s %s Dataset/lisa-xml.*' % (re.sub('\.xml','.tar.gz',noisydataset),
+                                                     noisydataset,
+                                                     re.sub('\.xml','-[0-9].bin',noisydataset)))
 
-    os.chdir('..')
+if dosynthlisa:
+    makedataset('frequency')
+    if 'challenge4' in challengename:
+        makedataset('frequency',dokey=False,hifreq=True)
 
-# next do LISACode
+if dolisasim:
+    makedataset('strain')
+    if 'challenge4' in challengename:
+        makedataset('strain',dokey=False,hifreq=True)
 
 if dolisacode:
-
     if 'challenge3' in challengename:
+        # would it be possible to refactor this special case within makedataset?
         for xmlfile in glob.glob('LISACode/*-lisacode.xml'):
             basefile = re.sub('LISACode/','',re.sub('\.xml','',xmlfile))
-        
+            
             withnoisefile = 'Dataset/' + basefile + '.xml'
             inputfile = 'LISACode/' + basefile + '-input.xml'
-        
+            
+            comment = 'Full dataset for %s (lisacode)' % challengename
+            if istraining:
+                comment += ', source seed = %s, noise seed = %s' % (seed,seednoise)
+            
             # prepare empty file
-            lisaxml.lisaXML(withnoisefile,
-                            author="MLDC Task Force",
-                            comments='Full dataset for %s (lisacode version)%s' % (challengename,globalseed)).close()
-        
+            lisaxml.lisaXML(withnoisefile,author="MLDC Task Force",comments=comment).close()
+            
             # merge dataset with key (if training), otherwise copy dataset, renaming binaries
             if istraining:
                 run('%(execdir)s/mergeXML.py %(withnoisefile)s %(xmlfile)s %(inputfile)s')
@@ -753,10 +731,10 @@ if dolisacode:
                 
             # also, get key file
             run('cp %s %s' % (inputfile,'Dataset/' + basefile + '-key-lisacode.xml'))
-        
+            
             # make tar
             os.chdir('Dataset')
-        
+            
             withnoisefile = os.path.basename(withnoisefile)
             withnoisetar = re.sub('.xml','.tar.gz',withnoisefile)
             
@@ -764,163 +742,9 @@ if dolisacode:
             
             os.chdir('..')
     else:
-        ## At the moment for challenge4
-
-        # set filenames
-        if istraining:
-            nonoisefile   = 'Dataset/' + outputfile + '-training-nonoise-lisacode.xml'
-            withnoisefile = 'Dataset/' + outputfile + '-training-lisacode.xml'
-
-            nonoisetar    = outputfile + '-training-nonoise-lisacode.tar.gz'
-            withnoisetar  = outputfile + '-training-lisacode.tar.gz'
-
-            keyfile       = 'Dataset/' + outputfile + '-training-key-lisacode.xml'
-        else:
-            nonoisefile   = 'Dataset/' + outputfile + '-nonoise-lisacode.xml'
-            withnoisefile = 'Dataset/' + outputfile + '-lisacode.xml'
-
-            nonoisetar    = outputfile + '-nonoise-lisacode.tar.gz'
-            withnoisetar  = outputfile + '-lisacode.tar.gz'
-            
-            keyfile       = 'Dataset/' + outputfile + '-key-lisacode.xml'
-
-        # create empty files
-
-        lisaxml.lisaXML(nonoisefile,
-                        author="MLDC Task Force",
-                        comments='No-noise dataset for %s (lisacode version)%s' % (challengename,globalseed)).close()
-
-        lisaxml.lisaXML(withnoisefile,
-                        author="MLDC Task Force",
-                        comments='Full dataset for %s (lisacode version)%s' % (challengename,globalseed)).close()
-
-        lisaxml.lisaXML(keyfile,
-                        author="MLDC Task Force",
-                        comments='XML key for %s%s' % (challengename,secretseed)).close()
-
-        # add signals and noise to the no-noise and with-noise files
-        # omit keys if we're not doing training
-
-        if istraining:
-            if glob.glob('LISACode/*-tdi-lisacode.xml'):
-                run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(nonoisefile)s LISACode/*-tdi-lisacode.xml')
-
-            if donoise:
-                run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s LISACode/%(lcnoisefile)s')
-        else:
-            if glob.glob('LISACode/*-lisacode.xml'):
-                run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(nonoisefile)s LISACode/*-tdi-lisacode.xml')
-
-            if donoise:
-                run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s LISACode/%(noisefile)s')
-            
-        # make key
-        # add info from noise file
-        if donoise:
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s LISACode/%(lcnoisefile)s')
-
-        # create the key with all source info
-        if glob.glob('LISACode/*-tdi-lisacode.xml'):
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s LISACode/*-tdi-lisacode.xml')
-
-        
-        # now do some tarring up, including XSL and CSS files from Template
-        
-        os.chdir('Dataset')
-
-        nonoisefile   = os.path.basename(nonoisefile)
-        withnoisefile = os.path.basename(withnoisefile)
-
-        if istraining:
-            run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
-        else:
-            run('%(execdir)s/rmXML.py %(nonoisefile)s')
-            
-        if donoise:
-            run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
-
-        os.chdir('..')
-
-
-# next do LISA Simulator
-
-if dolisasim:
-    # set filenames
-
-    if istraining:
-        nonoisefile   = 'Dataset/' + outputfile + '-training-nonoise-strain.xml'
-        withnoisefile = 'Dataset/' + outputfile + '-training-strain.xml'
-
-        nonoisetar    = outputfile + '-training-nonoise-strain.tar.gz'
-        withnoisetar  = outputfile + '-training-strain.tar.gz'
-
-        keyfile       = 'Dataset/' + outputfile + '-training-key.xml'
-    else:
-        nonoisefile   = 'Dataset/' + outputfile + '-nonoise-strain.xml'
-        withnoisefile = 'Dataset/' + outputfile + '-strain.xml'
-
-        nonoisetar    = outputfile + '-nonoise-strain.tar.gz'
-        withnoisetar  = outputfile + '-strain.tar.gz'
-
-        keyfile       = 'Dataset/' + outputfile + '-key.xml'
-    
-    # create empty files
-    
-    lisaxml.lisaXML(nonoisefile,
-                    author = 'MLDC task force',
-                    comments='No-noise dataset for %s (lisasim version)%s' % (challengename,globalseed)).close()
-
-    lisaxml.lisaXML(withnoisefile,
-                    author = 'MLDC task force',
-                    comments='Full dataset for %s (lisasim version)%s' % (challengename,globalseed)).close()
-
-    # add signals and noise
-
-    if istraining:
-        if glob.glob('TDI/*-tdi-strain.xml'):
-            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-strain.xml')
-
-        if donoise:
-            run('%(execdir)s/mergeXML.py --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
-    else:
-        if glob.glob('TDI/*-tdi-strain.xml'):
-            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(nonoisefile)s TDI/*-tdi-strain.xml')
-        
-        if donoise:
-            run('%(execdir)s/mergeXML.py --noKey --tdiName=%(challengename)s %(withnoisefile)s %(nonoisefile)s %(slnoisefile)s')
-
-    # do key file, but only if synthlisa has not run, otherwise it will be erased
-
-    if not dosynthlisa:
-        lisaxml.lisaXML(keyfile,comments='XML key for %s%s' % (challengename,secretseed)).close()
-        
-        if 'challenge3.2' in challengename:
-            run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml %(slnoisefile)s')
-        else:
-            # add info from noise file
-            if os.path.isfile(slnoisefile):
-                run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s %(slnoisefile)s')
-            
-            # create the key with all source info
-            if glob.glob('TDI/*-tdi-strain.xml'):
-                run('%(execdir)s/mergeXML.py --keyOnly %(keyfile)s TDI/*-tdi-strain.xml')
-            
-    # now do some tarring up, including XSL and CSS files from Template
-
-    os.chdir('Dataset')
-
-    nonoisefile   = os.path.basename(nonoisefile)
-    withnoisefile = os.path.basename(withnoisefile)
-
-    if istraining:
-        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (nonoisetar,  nonoisefile,  re.sub('\.xml','-[0-9].bin',nonoisefile  )))
-    else:
-        run('%(execdir)s/rmXML.py %(nonoisefile)s')
-
-    if donoise:
-        run('tar zcf %s %s %s lisa-xml.xsl lisa-xml.css' % (withnoisetar,withnoisefile,re.sub('\.xml','-[0-9].bin',withnoisefile)))    
-
-    os.chdir('..')
+        makedataset('lisacode')
+        if 'challenge4' in challengename:
+            makedataset('lisacode',dokey=False,hifreq=True)
 
 # make sure the keys point to real Table txt files, not symlinks
 # build symlinks from training dataset tables to their key 
