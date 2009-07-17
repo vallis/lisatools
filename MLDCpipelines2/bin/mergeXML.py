@@ -57,7 +57,7 @@ def upsample(tdi,mincadence):
                 
                 # FFT upsample
                 newfft[0:(ts.Length/2 + 1)] = numpy.fft.rfft(getattr(ts,obs))
-                newfft[ts.Length/2 + 1] *= 0.5
+                newfft[ts.Length/2] *= 0.5
                 newobs = numpy.fft.irfft(newfft) * (ts.Cadence / mincadence)
             
             # the following is appropriate for lisaxml (not lisaxml2)
@@ -66,6 +66,42 @@ def upsample(tdi,mincadence):
             ts.Arrays.append(newobs)
         
         ts.Cadence = mincadence
+        ts.Length = newlength
+        ts.Duration = ts.Length * ts.Cadence
+
+def downsample(tdi,maxcadence):
+    ts = tdi.TimeSeries
+    
+    if ts.Cadence > maxcadence:
+        if maxcadence % ts.Cadence != 0:
+            print "Cannot downsample cadence %s to noncommensurable cadence %s." % (ts.Cadence,maxcadence)
+            sys.exit(1)
+        
+        newlength = int(ts.Length / (ts.Cadence / maxcadence))
+        
+        if newlength % 2 != 0 or ts.Length % 2 != 0:
+            print "Sorry, I don't know how to deal with odd-point FFTs."
+            sys.exit(1)
+        
+        ts.Arrays = []
+        for obs in map(string.strip,ts.name.split(',')):
+            if obs == 't':
+                newobs = numpy.linspace(ts.TimeOffset,ts.TimeOffset + ts.Duration - maxcadence,newlength)
+            else:
+                newfft = numpy.zeros(newlength/2 + 1,'complex128')
+                
+                # FFT downsample
+                rfft = numpy.fft.rfft(getattr(ts,obs))
+                newfft[:] = rfft[0:(newlength/2 + 1)]
+                newfft[-1] *= 2.0
+                newobs = numpy.fft.irfft(newfft) / (ts.Cadence / maxcadence)
+            
+            # the following is appropriate for lisaxml (not lisaxml2)
+            setattr(tdi,obs,newobs)
+            setattr(ts,obs,newobs)
+            ts.Arrays.append(newobs)
+        
+        ts.Cadence = maxcadence
         ts.Length = newlength
         ts.Duration = ts.Length * ts.Cadence
 
@@ -103,6 +139,10 @@ parser.add_option("-C", "--cadence",
 parser.add_option("-o", "--outputfile",
                   type="string", dest="outputfile", default=None,
                   help="outputfile [normally just the same as MERGED.xml]")
+
+parser.add_option("-U", "--upsample",
+                  type="store_true", dest="upsample", default=False,
+                  help="upsample all time series to the fastest one [default is to downsample to the slowest]")
 
 (options, args) = parser.parse_args()
 
@@ -205,12 +245,18 @@ for inputfile in inputfiles:
                     print "Script %s finds mismatched observables in file %s." % (sys.argv[0],inputfile)
                     sys.exit(1)
                 
-                # upsample all datasets to the fastest one
+                # upsample or downsample
                 
-                mincadence = min(thistdi.TimeSeries.Cadence,tdi.TimeSeries.Cadence)
-                
-                upsample(tdi,    mincadence)
-                upsample(thistdi,mincadence)                
+                if options.upsample:
+                    mincadence = min(thistdi.TimeSeries.Cadence,tdi.TimeSeries.Cadence)
+                    
+                    upsample(tdi,    mincadence)
+                    upsample(thistdi,mincadence)
+                else:
+                    maxcadence = max(thistdi.TimeSeries.Cadence,tdi.TimeSeries.Cadence)
+                    
+                    downsample(tdi,    maxcadence)
+                    downsample(thistdi,maxcadence)    
                 
                 # extend datasets as needed to sum them properly
                 
