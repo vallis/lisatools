@@ -638,16 +638,17 @@ run('cp Template/lisa-xml.css Dataset/.')
 
 import lisatoolsrevision
 
+# global variables used: outputfile, challengename, istraining, execdir
 def makedataset(simulator,dokey=True,hifreq=False):
-    outputfile = 'Dataset/' + outputfile
+    theoutputfile = 'Dataset/' + outputfile
     comment = '%s (%s)' % (challengename,simulator)
     
     if hifreq:
-        outputfile += '-hifreq'
+        theoutputfile += '-hifreq'
         comment += ', high-frequency version'
     
     if istraining:
-        outputfile += '-training'   # include seeds only if we're training
+        theoutputfile += '-training'   # include seeds only if we're training
         comment += ', source seed = %s, noise seed = %s' % (seed,seednoise)
     
     comment += ', LISAtools SVN revision %s' % lisatoolsrevision.lisatoolsrevision
@@ -662,20 +663,20 @@ def makedataset(simulator,dokey=True,hifreq=False):
     tdifiles = 'TDI/*-tdi-' + simulator + '.xml'
     
     # make the noiseless dataset
-    noiselessdataset = outputfile + '-nonoise-' + simulator + '.xml'
+    noiselessdataset = theoutputfile + '-nonoise-' + simulator + '.xml'
     lisaxml.lisaXML(noiselessdataset,author="MLDC Task Force",comments=comment).close()
     if glob.glob(tdifiles):
         run('%s --tdiName=%s %s %s' % (merger,challengename,noiselessdataset,tdifiles))
     
     # make the noisy dataset
     if donoise:
-        noisydataset = outputfile + '-' + simulator + '.xml'
+        noisydataset = theoutputfile + '-' + simulator + '.xml'
         lisaxml.lisaXML(noisydataset,author="MLDC Task Force",comments=comment).close()
         run('%s --tdiName=%s %s %s %s' % (merger,challengename,noisydataset,noiselessdataset,thenoisefile))
     
     # make the key
     if dokey:
-        keyfile = outputfile + 'key-' + simulator + '.xml'
+        keyfile = theoutputfile + '-key-' + simulator + '.xml'
         lisaxml.lisaXML(keyfile,author="MLDC Task Force",comments=comment).close()
         # is there something strange here with the 3.2 key, which used to be done in one step, TDI + noise?
         # yes, I think the point was that the source info would be only picked up from the first file?
