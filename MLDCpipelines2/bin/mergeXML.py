@@ -141,7 +141,7 @@ parser.add_option("-o", "--outputfile",
                   help="outputfile [normally just the same as MERGED.xml]")
 
 parser.add_option("-U", "--upsample",
-                  type="store_true", dest="upsample", default=False,
+                  action="store_true", dest="upsample", default=False,
                   help="upsample all time series to the fastest one [default is to downsample to the slowest]")
 
 (options, args) = parser.parse_args()
