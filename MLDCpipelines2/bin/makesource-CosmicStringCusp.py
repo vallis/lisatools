@@ -46,6 +46,10 @@ parser.add_option("-r", "--centralTimeRange",
                   type="float", dest="deltaTc", default=None,
                   help="dispersion of the central time (seconds) [+- uniform range, required]")
 
+parser.add_option("-m", "--minimumFrequency",
+                  type="float", dest="MinimumFrequency", default=0,
+                  help="low-frequency cutoff (Hz) [default is None]")
+
 parser.add_option("-f", "--maximumFrequency",
                   type="float", dest="MaximumFrequency", default=None,
                   help="maximum burst frequency (Hz) [default random log-uniform 1e-3--10 Hz]")
@@ -101,6 +105,8 @@ if options.MaximumFrequency != None:
     mysystem.MaximumFrequency = options.MaximumFrequency
 else:
     mysystem.MaximumFrequency = 10**random.uniform(-3.0,-1.0)
+
+mysystem.MinimumFrequency = options.MinimumFrequency
 
 if options.RequestSN:
     mysystem.RequestSN = options.RequestSN

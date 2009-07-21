@@ -10,6 +10,7 @@ typedef struct
   double Polarization;       // rotation done inside this code
   double EclipticLatitude;
   double EclipticLongitude;
+  double MinimumFrequency;
   double MaximumFrequency;   // fine if above the LISA band, but some should be inside 1e-4--10 Hz, uniformly in log
   int Samples;
   double Cadence;

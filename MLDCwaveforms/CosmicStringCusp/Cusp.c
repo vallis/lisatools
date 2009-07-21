@@ -68,14 +68,22 @@ void Cusp_Barycenter(Cusp_structure Cusp, double *hp, double *hc, int n)
   out[0][0] = 0.0;
   out[0][1] = 0.0;
  
-  for(i=1; i<= (nc-1); i++) 
-    { 
+  for (i=1; i <= (nc-1); i++) { 
       f = (double)(i)/Tburst; 
-      B = Cusp.Amplitude*pow((1+pow((FLOW/f),2.0)),-4.0) * pow(f,-4.0/3.0);
-      if(f >= Cusp.MaximumFrequency) B *= exp(1.0-f/Cusp.MaximumFrequency);
-      out[i][0] = -B*cos(-TPI*f*ts);
-      out[i][1] = -B*sin(-TPI*f*ts);
-    } 
+
+      if (f < Cusp.MinimumFrequency) {
+          out[i][0] = out[i][1] = 0.0;
+      } else {
+          B = Cusp.Amplitude*pow((1+pow((FLOW/f),2.0)),-4.0) * pow(f,-4.0/3.0);
+          
+          if (f >= Cusp.MaximumFrequency) {
+              B *= exp(1.0-f/Cusp.MaximumFrequency);
+          }
+          
+          out[i][0] = -B*cos(-TPI*f*ts);
+          out[i][1] = -B*sin(-TPI*f*ts); 
+      }
+    }
 
   out[nc-1][1] = 0.0;
  

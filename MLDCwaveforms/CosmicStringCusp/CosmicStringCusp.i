@@ -40,12 +40,13 @@ class CosmicStringCusp(lisaxml.Source):
     # this is the list of parameters that will be recorded in the lisaXML SourceData sections
     # give ParameterName, DefaultUnit, DefaultValue (a string), Description
 
-    outputlist = (('EclipticLatitude',                 'Radian',        None, 'standard ecliptic latitude'),
-                  ('EclipticLongitude',                'Radian',        None, 'standard ecliptic longitude'),
-                  ('Polarization',                     'Radian',        None, 'standard source polarization'),
-                  ('Amplitude',                        'Hertz^1/3',     None, 'overall signal amplitude'),
-                  ('CentralTime',                      'Second',        None, 'central time of the burst'),
-                  ('MaximumFrequency',                 'Hertz',         None, 'maximum burst frequency'))
+    outputlist = (('EclipticLatitude',                 'Radian',        None,  'standard ecliptic latitude'),
+                  ('EclipticLongitude',                'Radian',        None,  'standard ecliptic longitude'),
+                  ('Polarization',                     'Radian',        None,  'standard source polarization'),
+                  ('Amplitude',                        'Hertz^1/3',     None,  'overall signal amplitude'),
+                  ('CentralTime',                      'Second',        None,  'central time of the burst'),
+                  ('MaximumFrequency',                 'Hertz',         None,  'maximum burst frequency'),
+                  ('MinimumFrequency',                 'Hertz',         '0.0', 'minimum burst frequency'))
     
     dopolarization = True
     
@@ -61,6 +62,7 @@ class CosmicStringCusp(lisaxml.Source):
         Cusp.CentralTime        = self.CentralTime
         Cusp.Polarization       = self.Polarization
         Cusp.MaximumFrequency   = self.MaximumFrequency
+        Cusp.MinimumFrequency   = self.MinimumFrequency
         
         # not needed for generation, but we'll leave them
         Cusp.EclipticLatitude   = self.EclipticLatitude

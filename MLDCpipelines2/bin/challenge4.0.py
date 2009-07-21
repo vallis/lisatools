@@ -94,7 +94,7 @@ for srcind in range(numpy.random.poisson(2)):
 
 for srcind in range(numpy.random.poisson(20)):
     requestsn = random.randint(10,100)
-    run('%(mydir)s/makesource-CosmicStringCusp.py --seed=%(seed)s -t 31457280 -r 31457280 -T 1966080 -S %(requestsn)s -n "CosmicString-%(srcind)02d" Source/Burst-%(srcind)02d' % globals())
+    run('%(mydir)s/makesource-CosmicStringCusp.py --seed=%(seed)s -t 31457280 -r 31457280 -T 1966080 -m 1e-5 -S %(requestsn)s -n "CosmicString-%(srcind)02d" Source/Burst-%(srcind)02d' % globals())
     seed = seed + 1
 
 # --- GWDB
