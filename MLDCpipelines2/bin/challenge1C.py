@@ -59,12 +59,9 @@ for subchallenge in subchallenges:
     seeds, seedt = twoseeds()
     
     if subchallenge in runonly:
-        if subchallenge in ('3.1','3.2','3.3','3.4','3.5'):
-            duration = 62914560
-        else:
-            duration = 31457280
+        duration = 31457280
         
         if not options.trainingOnly:
             run('%(mydir)s/challenge.py -P %(nproc)s            --duration=%(duration)s --seed=%(seeds)s  challenge1C.%(subchallenge)s' % globals())
-        if not options.blindOnly:
+        if not options.blindOnly:                    
             run('%(mydir)s/challenge.py -P %(nproc)s --training --duration=%(duration)s --seed=%(seedt)s  challenge1C.%(subchallenge)s' % globals())
