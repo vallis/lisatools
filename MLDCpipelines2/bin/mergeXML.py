@@ -72,12 +72,13 @@ def upsample(tdi,mincadence):
 def downsample(tdi,maxcadence):
     ts = tdi.TimeSeries
     
-    if ts.Cadence > maxcadence:
+    if ts.Cadence < maxcadence:
         if maxcadence % ts.Cadence != 0:
             print "Cannot downsample cadence %s to noncommensurable cadence %s." % (ts.Cadence,maxcadence)
             sys.exit(1)
         
-        newlength = int(ts.Length / (ts.Cadence / maxcadence))
+        # maxcadence is larger, so we're reducing the length
+        newlength = int(ts.Length / (maxcadence / ts.Cadence))
         
         if newlength % 2 != 0 or ts.Length % 2 != 0:
             print "Sorry, I don't know how to deal with odd-point FFTs."
@@ -94,7 +95,8 @@ def downsample(tdi,maxcadence):
                 rfft = numpy.fft.rfft(getattr(ts,obs))
                 newfft[:] = rfft[0:(newlength/2 + 1)]
                 newfft[-1] *= 2.0
-                newobs = numpy.fft.irfft(newfft) / (ts.Cadence / maxcadence)
+                # the normalization always follows from multiplying by the Delta t
+                newobs = numpy.fft.irfft(newfft) / (maxcadence / ts.Cadence)
             
             # the following is appropriate for lisaxml (not lisaxml2)
             setattr(tdi,obs,newobs)
