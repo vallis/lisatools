@@ -250,19 +250,19 @@ if dolisasim:
     # see if the duration is allowed by lisasim
     import lisasimulator
     
-    if options.duration == 31457280:
-        lisasimdir = lisasimulator.lisasim1yr
-    elif options.duration == 62914560:
-        lisasimdir = lisasimulator.lisasim2yr
+    if options.duration == 31457280 and options.timestep == 15.0:
+        pass
+    elif options.duration == 62914560 and (options.timestep == 15.0 or options.timestep == 1.875):
+        pass
     else:
-        parser.error("I can only run the LISA Simulator for one or two years (2^21 or 2^22 s)!")
+        parser.error("I can only run the LISA Simulator for one year at 15 s, or two years at 15 or 1.875 s!")
     
     if options.randomizeNoise > 0.0:
-        parser.error("Option --randomizeNoise is not supported with the LISA Simulator. Run with --synthlisa.")
+        parser.error("Option --randomizeNoise is not supported with the LISA Simulator.")
     if options.laserNoise != 'None':
-        parser.error("Option --laserNoise is not supported with the LISA Simulator. Run with --synthlisa.")
+        parser.error("Option --laserNoise is not supported with the LISA Simulator.")
     if options.rawMeasurements == True:
-        parser.error("Option --rawMeasurement is not supported with The LISA Simulator. Run with --synthlisa.")
+        parser.error("Option --rawMeasurement is not supported with The LISA Simulator.")
 
 seed = options.seed
 
@@ -455,6 +455,8 @@ step4time = time.time()
 # --------------------------
 
 if dolisasim:
+    # TO DO: deal with stochastic source files here, by making temporary barycentric and then deleting?
+    #        a separate command-line utility may be needed
     for xmlfile in glob.glob('Immediate/*.xml'):
         print "--> !!! Ignoring immediate synthlisa file %s" % xmlfile
 
@@ -463,12 +465,14 @@ if dolisasim:
 
         if (not makemode) or newer(xmlfile,tdifile):
             # remember that we're not doing any SNR adjusting here...
-            prun('%(execdir)s/makeTDIsignal-lisasim.py --lisasimDir=%(lisasimdir)s %(xmlfile)s %(tdifile)s')
+            # TO DO: adjust the timestep for MLDC4; deal with files that must be extended...
+            prun('%(execdir)s/makeTDIsignal-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
     
     slnoisefile = 'TDI/tdi-strain-noise.xml'
 
     if donoise and ((not makemode) or (not os.path.isfile(slnoisefile))):
-        prun('%(execdir)s/makeTDInoise-lisasim.py --lisasimDir=%(lisasimdir)s --seedNoise=%(seednoise)s %(slnoisefile)s')
+        # TO DO: adjust the timestep for MLDC4
+        prun('%(execdir)s/makeTDInoise-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s --seedNoise=%(seednoise)s %(slnoisefile)s')
     
     pwait()
 

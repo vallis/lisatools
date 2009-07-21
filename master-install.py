@@ -522,69 +522,52 @@ lisasimdir = packagedir
 
 # still will not upgrade automatically, need to save the version number somewhere...
 # could compact into a single installation section, iterating over '1year', '2year'
-if (not os.path.isdir(libdir + '/share/lisasimulator-1year') or newlisasim) and (not nolisasim):
-    print "--> Installing LISA Simulator (1-year version) from %s" % package
 
-    if not os.path.isdir(libdir + '/share'):
-        os.mkdir(libdir + '/share')
+def makelisasim(path,include):
+    sharepath = libdir + '/share/' + path
+    
+    if (not os.path.isdir(sharepath) or newlisasim) and (not nolisasim):
+        print "--> Installing LISA Simulator from %s into %s" % (package,path)
+        
+        if not os.path.isdir(libdir + '/share'):
+            os.mkdir(libdir + '/share')
+        
+        if newlisasim and os.path.isdir(sharepath):
+            assert(0 == os.system('rm -rf %s' % sharepath))
+        
+        # untar
+        os.chdir(libdir + '/share')
+        assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
+        assert(0 == os.system('mv %s %s' % (lisasimdir,path)))
+        
+        # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
+        assert(0 == os.system('cp %s %s/LISAconstants.h' % (here + '/Packages/LISASimulator/' + include,       path)))
+        assert(0 == os.system('cp %s %s/.'               % (here + '/Packages/LISASimulator/NoiseParameters.h',path)))
+        assert(0 == os.system('cp %s %s/.'               % (here + '/Packages/LISASimulator/InstrumentNoise.c',path)))
+        assert(0 == os.system('cp %s %s/.'               % (here + '/Packages/LISASimulator/Compile',          path)))
+        
+        # patch IO on cygwin
+        if 'CYGWIN' in platform.system():
+            assert(0 == os.system('patch %s/IO/ezxml.c %s' % (path,here + '/Packages/Patch-cygwin/io-C-ezxml.c')))
+        
+        # compile and setup
+        os.chdir(path)
+        assert(0 == os.system('./Compile --gsl=' + gsldir))
+        assert(0 == os.system('./Setup'))
+        os.chdir('../..')
 
-    if newlisasim and os.path.isdir(libdir + '/share/lisasimulator-1year'):
-        assert(0 == os.system('rm -rf %s' % libdir + '/share/lisasimulator-1year'))
-
-    # untar
-    os.chdir(libdir + '/share')
-    assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
-    assert(0 == os.system('mv %s lisasimulator-1year' % lisasimdir))
-
-    # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
-    assert(0 == os.system('cp %s lisasimulator-1year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-1year.h')))
-    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/NoiseParameters.h')))
-    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/InstrumentNoise.c')))
-    assert(0 == os.system('cp %s lisasimulator-1year/.' % (here + '/Packages/LISASimulator/Compile')))
-
-    # patch IO on cygwin
-    if 'CYGWIN' in platform.system():
-        assert(0 == os.system('patch lisasimulator-1year/IO/ezxml.c %s' % (here + '/Packages/Patch-cygwin/io-C-ezxml.c')))
-
-    # compile and setup
-    os.chdir('lisasimulator-1year')
-    assert(0 == os.system('./Compile --gsl=' + gsldir))
-    assert(0 == os.system('./Setup'))
-    os.chdir('../..')
-
-if (not os.path.isdir(libdir + '/share/lisasimulator-2year') or newlisasim) and (not nolisasim):
-    print "--> Installing LISA Simulator (2-year version) from %s" % package
-
-    if not os.path.isdir(libdir + '/share'):
-        os.mkdir(libdir + '/share')
-
-    if newlisasim and os.path.isdir(libdir + '/share/lisasimulator-2year'):
-        assert(0 == os.system('rm -rf %s' % libdir + '/share/lisasimulator-2year'))
-
-    # untar
-    os.chdir(libdir + '/share')
-    assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
-    assert(0 == os.system('mv %s lisasimulator-2year' % lisasimdir))
-
-    # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
-    assert(0 == os.system('cp %s lisasimulator-2year/LISAconstants.h' % (here + '/Packages/LISASimulator/LISAconstants-2year.h')))
-    assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/NoiseParameters.h')))
-    assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/InstrumentNoise.c')))
-    assert(0 == os.system('cp %s lisasimulator-2year/.' % (here + '/Packages/LISASimulator/Compile')))
-
-    # patch IO on cygwin
-    if 'CYGWIN' in platform.system():
-        assert(0 == os.system('patch lisasimulator-2year/IO/ezxml.c %s' % (here + '/Packages/Patch-cygwin/io-C-ezxml.c')))
-
-    # compile and setup
-    os.chdir('lisasimulator-2year')
-    assert(0 == os.system('./Compile --gsl=' + gsldir))
-    assert(0 == os.system('./Setup'))
-    os.chdir('../..')
+makelisasim('lisasimulator-1year','LISAconstants-1year.h')
+# makelisasim('lisasimulator-2year','LISAconstants-2year.h')
+makelisasim('lisasimulator-2year-high','LISAconstants-2year-high.h')
 
 os.chdir(here)
-print >> open('MLDCpipelines2/bin/lisasimulator.py','w'), "lisasim1yr = '%s'; lisasim2yr = '%s'" % (libdir + '/share/lisasimulator-1year',
-                                                                                                    libdir + '/share/lisasimulator-2year')
+
+lisasimpy = open('MLDCpipelines2/bin/lisasimulator.py','w')
+print >> lisasimpy, "lisasim1yr = '%s'" % (libdir + '/share/lisasimulator-1year')
+print >> lisasimpy, "lisasim2yr = '%s'" % (libdir + '/share/lisasimulator-2year')
+print >> lisasimpy, "lisasim2yrhigh = '%s'" % (libdir + '/share/lisasimulator-2year-high')
+lisasimpy.close()
+
 # install/check install for traits
 
 if dotraits:

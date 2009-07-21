@@ -36,13 +36,17 @@ from optparse import OptionParser
 parser = OptionParser(usage="usage: %prog [options] BARYCENTRIC.xml OUTPUT.xml",
                       version="$Id: $")
 
-parser.add_option("-d", "--lisasimDir",
+parser.add_option("-D", "--lisasimDir",
                   type="string", dest="lisasimdir", default=None,
                   help="location of the LISA Simulator executable for the correct signal length [will try to guess]")
 
 parser.add_option("-T", "--duration",
                   type="float", dest="duration", default=62914560,
                   help="total time for TDI observables (s), will be overridden by LISA Simulator installation if given [default 62914560 = 2^22 * 15]")
+
+parser.add_option("-d", "--timeStep",
+                  type="float", dest="timestep", default=15.0,
+                  help="timestep for TDI observable sampling (s), will be overridden by LISA Simulator installation if given [default 15]")
 
 (options, args) = parser.parse_args()
 
@@ -56,10 +60,12 @@ if options.lisasimdir == None:
     
     if options.duration == 31457280:
         lisasimdir = lisasimulator.lisasim1yr
-    elif options.duration == 62914560:
+    elif options.duration == 62914560 and options.timestep == 15.0:
         lisasimdir = lisasimulator.lisasim2yr
+    elif options.duration == 62914560 and options.timestep == 1.875:
+        lisasimdir = lisasimulator.lisasim2yrhigh
     else:
-        parser.error("I can only run the LISA Simulator for one or two years (2^21 or 2^22 s)!")
+        parser.error("I can only run the LISA Simulator for one year at 15 s, or two years at 15 or 1.875 s!")
     
     if not os.path.isdir(lisasimdir):
         parser.error("You must provide the location of the LISA Simulator!")
