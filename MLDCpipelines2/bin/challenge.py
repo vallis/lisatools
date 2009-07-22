@@ -10,6 +10,7 @@ import shutil
 import glob
 import re
 import time
+import subprocess
 from distutils.dep_util import newer, newer_group
 
 import lisaxml
@@ -35,90 +36,92 @@ def timestring(lapse):
     return "%sh%sm%ss" % (hrs,mins,secs)
 
 def run(command,quiet = False):
+    # if "run" is moved to a module, can use sys.modules['__main__'].__dict__ instead of globals()
     commandline = command % globals()
     
-    try:
-        if not quiet:
-            print "--> %s" % commandline
-            assert(os.system(commandline) == 0)
-        else:
-            assert(os.system(commandline + ' > /dev/null') == 0)
-    except:
-        print 'Script %s failed at command "%s".' % (sys.argv[0],commandline)
-        sys.exit(1)
+    if not quiet:
+        print "--> %s" % commandline
+    
+    exe = subprocess.Popen(commandline,shell=True,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    ret = exe.wait()
+    out = exe.communicate()
+    
+    if ret != 0:
+        print 'Script %s failed at command "%s" with errorcode %s.' % (sys.argv[0],commandline,ret)
+        
+        print '---- Standard output: ----'; print out[0]
+        print '---- Standard error:  ----'; print out[1]
+        
+        sys.exit(ret)
 
-try:
-    import subprocess
+
+class parallelrun(object):
+    def __init__(self,np=1):
+        self.nproc = np
+        
+        self.queue = []
+        self.slots = [None] * self.nproc
     
-    class parallelrun(object):
-        def __init__(self,np=1):
-            self.nproc = np
-            
-            self.queue = []
-            self.slots = [None] * 4
+    def submit(self,command,quiet=True):
+        self.queue.append((command % globals(),quiet))
+        pass
+    
+    def run(self):
+        jobs = len(self.queue)
+        fail = 0
         
-        def submit(self,command,quiet=True):
-            self.queue.append((command % globals(),quiet))
-            pass
-        
-        def run(self):
-            jobs = len(self.queue)
-            fail = 0
+        while True:
+            idle = 0
             
-            while True:
-                idle = 0
-                
-                for cpu in range(self.nproc):
-                    # first clear up ended processes if any
-                    if self.slots[cpu]:
-                        proc, quiet, command = self.slots[cpu]
-                        ret = proc.poll()
-                        
-                        if ret != None:
-                            if ret == 0:
-                                if not quiet:
-                                    print "--:> CPU [%d] finished." % cpu
-                            else:
-                                print 'Script %s failed on return from parallel command "%s".' % (sys.argv[0],command)
-                                fail += 1
-                            
-                            self.slots[cpu] = None
+            for cpu in range(self.nproc):
+                # first clear up ended processes if any
+                if self.slots[cpu]:
+                    proc, quiet, command = self.slots[cpu]
+                    ret = proc.poll()
                     
-                    # now run another process if we have a free slot        
-                    if not self.slots[cpu]:
-                        if self.queue:
-                            command, quiet = self.queue[0]
-                            
-                            try:
-                                # stdout=subprocess.PIPE
-                                if quiet:
-                                    self.slots[cpu] = (subprocess.Popen(command,stdin=None,stdout=open('/dev/null','w'),stderr=subprocess.STDOUT,shell=True),quiet,command)    
-                                else:
-                                    self.slots[cpu] = (subprocess.Popen(command,stdin=None,stdout=None,stderr=subprocess.STDOUT,shell=True),quiet,command)
-                            except:
-                                print 'Script %s failed running parallel command "%s".' % (sys.argv[0],command)
-                                fail += 1
-                            else:
-                                print "--:> CPU [%d]: %s" % (cpu,command)
-                            
-                            del self.queue[0]
+                    if ret != None:
+                        if ret == 0:
+                            if not quiet:
+                                print "--:> CPU [%d] finished." % cpu
                         else:
-                            idle += 1
+                            print 'Script %s failed at command "%s" with errorcode %s.' % (sys.argv[0],command,ret)
+                            
+                            out = proc.communicate()
+                            print '---- Standard output: ----'; print out[0]
+                            print '---- Standard error:  ----'; print out[1]
+                            
+                            fail += 1
+                        
+                        self.slots[cpu] = None
                 
-                if idle == self.nproc:
-                    if fail == 0:
-                        print "--:> Parallel run completed (%d jobs)." % jobs
-                        return
+                # now run another process if we have a free slot        
+                if not self.slots[cpu]:
+                    if self.queue:
+                        command, quiet = self.queue[0]
+                        
+                        try:
+                            self.slots[cpu] = (subprocess.Popen(command,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True),quiet,command)
+                        except:
+                            print 'Script %s failed spawning parallel command "%s".' % (sys.argv[0],command)
+                            fail += 1
+                        else:
+                            print "--:> CPU [%d]: %s" % (cpu,command)
+                        
+                        del self.queue[0]
                     else:
-                        print "--:> Parallel run reported %d/%d failures!" % (fail,jobs)
-                        sys.exit(1)
+                        idle += 1
+            
+            if idle == self.nproc:
+                if fail == 0:
+                    print "--:> Parallel run completed (%d jobs)." % jobs
+                    return
                 else:
-                    time.sleep(1.0)
-        
+                    print "--:> Parallel run reported %d/%d failures!" % (fail,jobs)
+                    sys.exit(1)
+            else:
+                time.sleep(1.0)
     
-    candopar = True
-except:
-    candopar = False
+
 
 step0time = time.time()
 
@@ -273,7 +276,7 @@ else:
 
 # setup for parallel run
 
-if options.nproc > 1 and candopar:
+if options.nproc > 1:
     pengine = parallelrun(options.nproc)
     prun  = pengine.submit
     pwait = pengine.run
