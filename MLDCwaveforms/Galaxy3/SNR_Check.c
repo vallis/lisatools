@@ -61,7 +61,10 @@ double SNR_Check(double f, double fdot, double theta, double phi, double A, doub
        M = (long)(pow(2.0,(rint(log(Acut)/log(2.0))+1.0)));
 
        if(M < N) M = N;
+       if(N < M) N = M;
        if(M > 8192) M = 8192;
+
+       N = M;
 
        XLS = dvector(1,2*M);  YLS = dvector(1,2*M);  ZLS = dvector(1,2*M);
        XSL = dvector(1,2*M);  YSL = dvector(1,2*M);  ZSL = dvector(1,2*M);
