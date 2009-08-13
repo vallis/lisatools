@@ -459,7 +459,7 @@ class Stream(object):
             if hasattr(node,'Delimiter'):
                 for delchar in node.Delimiter:
                     content = string.join(content.split(delchar),' ')
-                
+            
             data = numpy.array(map(float,content.split()),'d')
             
         # reshape the data array
@@ -474,12 +474,12 @@ class Stream(object):
                 filename = xmlfile.nextbinfile()
             
                 if type(self.Data) == numpy.ndarray:
-                    import zlib
-                    checksum = zlib.crc32(self.Data)
-                    
                     bfile = open(filename,'w')
                     self.Data.tofile(bfile) # previously open(filename,'w').write(writebuffer)
                     bfile.close()
+                    
+                    import zlib
+                    checksum = zlib.crc32(numpy.fromfile(filename))
                 elif type(self.Data) == str:
                     if os.path.abspath(self.Data) != os.path.abspath(filename):
                         if os.path.isfile(filename):
