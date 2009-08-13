@@ -262,15 +262,15 @@ for noise in lasernoises:
 
 if tdiobs:
     tdiobs.DataType = 'FractionalFrequency'
-    tdiobs.TimeSeries.Cadence = options.timestep
-    tdiobs.TimeSeries.TimeOffset = options.inittime
+    tdiobs.TimeSeries.Cadence = options.timestep;    tdiobs.TimeSeries.Cadence_Unit = 'Second'
+    tdiobs.TimeSeries.TimeOffset = options.inittime; tdiobs.TimeSeries.TimeOffset_Unit = 'Second'
     
     outputXML.TDIData(tdiobs)
     
 if tdiobsraw:
     tdiobsraw.DataType = 'FractionalFrequency'
-    tdiobsraw.TimeSeries.Cadence = options.timestep
-    tdiobsraw.TimeSeries.TimeOffset = options.inittime
+    tdiobsraw.TimeSeries.Cadence = options.timestep;    tdiobsraw.TimeSeries.Cadence_Unit = 'Second'
+    tdiobsraw.TimeSeries.TimeOffset = options.inittime; tdiobsraw.TimeSeries.TimeOffset_Unit = 'Second'
     
     outputXML.TDIData(tdiobsraw)
 
