@@ -468,8 +468,11 @@ if dolisasim:
 
         if (not makemode) or newer(xmlfile,tdifile):
             # remember that we're not doing any SNR adjusting here...
-            # TO DO: adjust the timestep for MLDC4; deal with files that must be extended...
-            prun('%(execdir)s/makeTDIsignal-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            
+            if 'challenge4' in challengename and 'Burst' in xmlfile:
+                prun('%(execdir)s/makeTDIsignal-lisasim.py --duration=%(duration)s --timeStep=1.875 --extend %(xmlfile)s %(tdifile)s')
+            else:
+                prun('%(execdir)s/makeTDIsignal-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
     
     slnoisefile = 'TDI/tdi-strain-noise.xml'
 
