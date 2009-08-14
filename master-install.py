@@ -558,7 +558,7 @@ def makelisasim(path,include):
 
 makelisasim('lisasimulator-1year','LISAconstants-1year.h')
 makelisasim('lisasimulator-2year','LISAconstants-2year.h')
-makelisasim('lisasimulator-2year-high','LISAconstants-2year-high.h')
+# makelisasim('lisasimulator-2year-high','LISAconstants-2year-high.h')
 # the high-frequency installation takes 90 mins and 12 GB
 # a high frequency signal run takes 55 mins and 5 GB storage
 
