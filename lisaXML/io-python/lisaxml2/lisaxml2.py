@@ -478,8 +478,15 @@ class Stream(object):
                     self.Data.tofile(bfile) # previously open(filename,'w').write(writebuffer)
                     bfile.close()
                     
+                    # compute the CRC-32 from the file just written, in batches, to avoid MemoryErrors
+                    # (and let's hope it was written correctly)
                     import zlib
-                    checksum = zlib.crc32(numpy.fromfile(filename))
+                    bfile = open(filename,'r'); checksum = 0
+                    while True:
+                        data = bfile.read(65536)
+                        if data == '': break
+                        checksum = zlib.crc32(data,checksum)
+                    bfile.close()
                 elif type(self.Data) == str:
                     if os.path.abspath(self.Data) != os.path.abspath(filename):
                         if os.path.isfile(filename):
