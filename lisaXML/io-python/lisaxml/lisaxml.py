@@ -271,18 +271,27 @@ class TimeSeries(XMLobject):
     def XML(self,filename,encoding='Binary'):
         """Returns a nested-tuple representation of a TimeSeries object."""
         
-        buffer = numpy.zeros([self.Length,self.Records],'d')
-        
-        for i in range(self.Records):
-            buffer[:,i] = self.Arrays[i]
+        # buffer = numpy.zeros([self.Length,self.Records],'d')
+        # for i in range(self.Records):
+        #     buffer[:,i] = self.Arrays[i]
+        # use a view, rather than a copy, to save memory
+        buffer = numpy.array(self.Arrays).transpose()
         
         if encoding == 'Binary':
-            import zlib
-            
-            checksum = zlib.crc32(buffer)            
+            # import zlib
+            # checksum = zlib.crc32(buffer)            
             
             bfile = open(filename,'w')
             buffer.tofile(bfile) # previously bfile.write(buffer.tostring())
+            bfile.close()
+            
+            # from lisaxml2, do the CRC on the file to save memory
+            import zlib
+            bfile = open(filename,'r'); checksum = 0
+            while True:
+                data = bfile.read(65536)
+                if data == '': break
+                checksum = zlib.crc32(data,checksum)
             bfile.close()
             
             Stream = ('Stream',
