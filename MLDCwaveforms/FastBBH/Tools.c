@@ -35,6 +35,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double x, xrt, taper, xold, xmax;
   double tmax, VAmp, r;
   double shp, shc, c2psi, s2psi;
+  double tend = 0.0,taper1,taper2; // tend stores final time where hp and hc are non-zero...
 
   int i, j, n, idxm;
   int index, laststep;
@@ -308,6 +309,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
         // printf("%d %e %e\n", index, timevec[index], thomasvec[index]);
 
         fold = f;
+		xold = x; // When the integration is done, will contain largest x reached...
        
       }
       else {
@@ -402,10 +404,12 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
       // printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);
     }
   
-  // Now calculate the waveform:
+  // Now calculate hp and hc, starting with the final time and working backwards. 
+  // This makes calculating the taper slightly easier, since otherwise we would have 
+  // to find out what the final time (tend) would be prior to actually reaching it.
 
-  xold = 0.0;
-  for(i = 0; i < n; i++)
+  tend = tdvals[n-1];
+  for(i = n-1; i >= 0; i--)
     { 
       td = tdvals[i];
       if (td <= tmax) // Make sure we have data for the point.
@@ -421,10 +425,15 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	    
 	    x = pow(PI*Mtot*f*TSUN,2./3.);
 
-	    if((x < xmax) && (x > xold) )
+		// Since we are working backwards in time, x (which scales with f) should
+		// decrease with each succesive iteration of the loop (successive decreasing
+		// values of i). If x increased from one iteration to the next, it would
+		// imply that f had decreased with time (i.e. going from the current iteration
+		// to the previous one), casting into doubt the validity of the Post-Newtonian
+		// expansion.
+	    if((x < xmax) && (x < xold) )
 	      {
 	    
-	    xold = x;
 	    Phi15 = p150 - p15*beta;
 	    Phi20 = p200 - p20*(15./32.*sigma);
 	    
@@ -432,7 +441,12 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	    
 	    LdotN = costhetaL*costheta + sinthetaL*sintheta*cos(phiL - phi);
 	  
-	    taper = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
+		// 1/2 Hann window taper which is zero for t > tend and 1 for 
+		// t < tend-3/fold (the width can be varied, but should be at least 2.0/fold):
+		taper1 = halfhann(td,tend,tend-3.0/fold);
+		taper2 = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
+						
+		taper = taper2*taper1;
 
             Ax = 2.*Amp*pow(PI*f,2./3.)*taper;
          
@@ -529,13 +543,18 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
         	hp[i] = 0.;
 	        hc[i] = 0.;
+			tend = td; // If we didn't evaluate hp and hc at this step, update tend
+
               }
+
+			xold = x; // Done with this step - set xold to the current value
 
 	}
       else {  // t > tmax
 	
 	 hp[i] = 0.;
 	 hc[i] = 0.;
+	 tend = td; // If we didn't evaluate hp and hc at this step, update tend
       }
 
     }
@@ -914,6 +933,26 @@ double ran2(long *idum)
     if (iy < 1) iy += IMM1;
     if ((temp=AM*iy) > RNMX) return RNMX;
     else return temp;
+}
+
+// Evaluate the half of a Hann window which is zero at t0 and one at t1. If t falls
+// outside of the range t0...t1, set the value of the window to either zero or one,
+// depending on whether it's on the zero side of the window or the one side.
+double halfhann(double t, double t0, double t1){
+	
+	double w;
+	
+	if(t > t0 && t > t1){
+		if(t0 > t1) return 0;
+		else return 1;
+	} else if(t < t0 && t < t1){
+		if(t0 < t1) return 0;
+		else return 1;
+	} else {
+		w = cos(PI*(t-t1)/(2.0*(t0-t1)));
+		return w*w;
+	}
+	
 }
 
 void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
