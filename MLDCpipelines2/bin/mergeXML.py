@@ -1,39 +1,47 @@
 #!/usr/bin/env python
 
+# note that correct management of the Id string requires issuing the command
+# svn propset svn:keywords Id FILENAME
+
 __version__='$Id$'
 
-import lisaxml
+import lisaxml2 as lisaxml
 import sys, string
 import numpy
 
+from optparse import OptionParser
+
+# TO DO: keep in mind that the alignment may be off if mod(ts.TimeOffset - begtime,ts.Cadence) != 0
 def extend(tdi,begtime,endtime):
     ts = tdi.TimeSeries
     
-    # TO DO: keep in mind that the alignment maybe off if mod(ts.TimeOffset - begtime,ts.Cadence) != 0
-    #        should warn about this?
-    if ts.TimeOffset > begtime or endtime > ts.TimeOffset + ts.Cadence * ts.Length:
+    if ts.TimeOffset > begtime or endtime > ts.TimeOffset + ts.Cadence * ts.Array.Length:
+        # figure out the new length, and its boundaries in the old array
         newlength = int( (endtime - begtime) / ts.Cadence )
         
         begindex  = int( (ts.TimeOffset - begtime) / ts.Cadence )
-        endindex  = int( (ts.TimeOffset + ts.Cadence * ts.Length - begtime) / ts.Cadence )
+        endindex  = int( (ts.TimeOffset + ts.Cadence * ts.Array.Length - begtime) / ts.Cadence )
         
-        ts.Arrays = []
-        for obs in map(string.strip,ts.name.split(',')):            
+        # allocate new arrays
+        obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
+        
+        # loop over observables, redo time axis, copy other observables
+        for ind,obs in enumerate(map(string.strip,ts.name.split(','))):
             if obs == 't':
-                newobs = numpy.linspace(begtime,endtime-ts.Cadence,newlength)
+                obsarray[:,ind] = numpy.linspace(begtime,endtime-ts.Cadence,newlength)
             else:
-                newobs = numpy.zeros(newlength,'d')
-                newobs[begindex:endindex] = getattr(ts,obs)
-            
-            # the following is appropriate for lisaxml (not lisaxml2)
-            setattr(tdi,obs,newobs)
-            setattr(ts,obs,newobs)
-            ts.Arrays.append(newobs)
+                obsarray[:,begindex:endindex] = getattr(ts,obs)
         
-        ts.TimeOffset = begtime
-        ts.Length = newlength
-        ts.Duration = ts.Length * ts.Cadence
+        # create a new TimeSeries with the extended observables, and replace it in the Observable
+        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=ts.Cadence,TimeOffset=begtime)    
+        
+        tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
+        
+        assert sys.getrefcount(ts) == 2
+        del ts
 
+
+# TO DO: is keeping the same TimeOffset appropriate for lisasim datasets?
 def upsample(tdi,mincadence):
     ts = tdi.TimeSeries
     
@@ -42,33 +50,38 @@ def upsample(tdi,mincadence):
             print "Cannot upsample cadence %s to noncommensurable cadence %s." % (ts.Cadence,mincadence)
             sys.exit(1)
         
-        newlength = int(ts.Length * (ts.Cadence / mincadence))
+        # figure out the new length (and it better be even)
+        newlength = int(ts.Array.Length * (ts.Cadence / mincadence))
         
-        if newlength % 2 != 0 or ts.Length % 2 != 0:
+        if newlength % 2 != 0 or ts.Array.Length % 2 != 0:
             print "Sorry, I don't know how to deal with odd-point FFTs."
             sys.exit(1)
         
-        ts.Arrays = []
-        for obs in map(string.strip,ts.name.split(',')):
-            if obs == 't':
-                newobs = numpy.linspace(ts.TimeOffset,ts.TimeOffset + ts.Duration - mincadence,newlength)
-            else:
-                newfft = numpy.zeros(newlength/2 + 1,'complex128')
-                
-                # FFT upsample
-                newfft[0:(ts.Length/2 + 1)] = numpy.fft.rfft(getattr(ts,obs))
-                newfft[ts.Length/2] *= 0.5
-                newobs = numpy.fft.irfft(newfft) * (ts.Cadence / mincadence)
-            
-            # the following is appropriate for lisaxml (not lisaxml2)
-            setattr(tdi,obs,newobs)
-            setattr(ts,obs,newobs)
-            ts.Arrays.append(newobs)
+        # allocate new arrays
+        obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
         
-        ts.Cadence = mincadence
-        ts.Length = newlength
-        ts.Duration = ts.Length * ts.Cadence
+        # loop over observables, redo time axis, upsample other observables   
+        for ind,obs in enumerate(map(string.strip,ts.name.split(','))):
+            if obs == 't':
+                obsarray[:,ind] = numpy.linspace(ts.TimeOffset,ts.TimeOffset + ts.Duration - mincadence,newlength)
+            else:
+                # FFT upsample
+                newfft = numpy.zeros(newlength/2 + 1,'complex128')
+                newfft[0:(ts.Array.Length/2 + 1)] = numpy.fft.rfft(getattr(ts,obs))
+                newfft[ts.Array.Length/2] *= 0.5
+                
+                obsarray[:,ind] = numpy.fft.irfft(newfft) * (ts.Cadence / mincadence)
+        
+        # create a new TimeSeries with the upsampled observables, and replace it in the Observable
+        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=mincadence,TimeOffset=begtime)    
+        
+        tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
+        
+        assert sys.getrefcount(ts) == 2
+        del ts
 
+
+# TO DO: why not merge the code with upsample?
 def downsample(tdi,maxcadence):
     ts = tdi.TimeSeries
     
@@ -77,42 +90,39 @@ def downsample(tdi,maxcadence):
             print "Cannot downsample cadence %s to noncommensurable cadence %s." % (ts.Cadence,maxcadence)
             sys.exit(1)
         
-        # maxcadence is larger, so we're reducing the length
-        newlength = int(ts.Length / (maxcadence / ts.Cadence))
+        # figure out the new length (maxcadence is larger, so we're reducing it)
+        newlength = int(ts.Array.Length / (maxcadence / ts.Cadence))
         
-        if newlength % 2 != 0 or ts.Length % 2 != 0:
+        if newlength % 2 != 0 or ts.Array.Length % 2 != 0:
             print "Sorry, I don't know how to deal with odd-point FFTs."
             sys.exit(1)
         
-        ts.Arrays = []
-        for obs in map(string.strip,ts.name.split(',')):
+        # allocate new arrays
+        obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
+        
+        for ind,obs in enumerate(map(string.strip,ts.name.split(','))):
             if obs == 't':
-                newobs = numpy.linspace(ts.TimeOffset,ts.TimeOffset + ts.Duration - maxcadence,newlength)
+                obsarray[:,ind] = numpy.linspace(ts.TimeOffset,ts.TimeOffset + ts.Duration - maxcadence,newlength)
             else:
-                newfft = numpy.zeros(newlength/2 + 1,'complex128')
-                
                 # FFT downsample
+                newfft = numpy.zeros(newlength/2 + 1,'complex128')                
                 rfft = numpy.fft.rfft(getattr(ts,obs))
                 newfft[:] = rfft[0:(newlength/2 + 1)]
                 newfft[-1] *= 2.0
+                
                 # the normalization always follows from multiplying by the Delta t
-                newobs = numpy.fft.irfft(newfft) / (maxcadence / ts.Cadence)
+                obsarray[:,ind] = numpy.fft.irfft(newfft) / (maxcadence / ts.Cadence)
             
-            # the following is appropriate for lisaxml (not lisaxml2)
-            setattr(tdi,obs,newobs)
-            setattr(ts,obs,newobs)
-            ts.Arrays.append(newobs)
+        # create a new TimeSeries with the upsampled observables, and replace it in the Observable
+        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=maxcadence,TimeOffset=begtime)    
         
-        ts.Cadence = maxcadence
-        ts.Length = newlength
-        ts.Duration = ts.Length * ts.Cadence
+        tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
+        
+        assert sys.getrefcount(ts) == 2
+        del ts
 
-# set ourselves up to parse command-line options
 
-from optparse import OptionParser
-
-# note that correct management of the Id string requires issuing the command
-# svn propset svn:keywords Id FILENAME
+# set up command-line options
 
 parser = OptionParser(usage="usage: %prog [options] MERGED.xml TDIFILE-1.xml TDIFILE-2.xml ...",
                       version="$Id$")
@@ -148,7 +158,7 @@ parser.add_option("-U", "--upsample",
 
 (options, args) = parser.parse_args()
 
-# currently we support only a single source parameter file
+# TO DO: is this true? Currently we support only a single source parameter file
 
 if len(args) < 2:
     parser.error("You must specify at least one output file and one input file!")
@@ -181,12 +191,13 @@ for thistdi in alltdi:
 
 extrasecs = []
 for sec in ['NoiseData','Simulate','LISACode']:
+    break
     if mergedtdifile.getExtraSection(sec):
         extrasecs.append(mergedtdifile.getExtraSection(sec))
 
 # take author and comments, if any, from MERGED.xml
 
-author = mergedtdifile.Author
+author = getattr(mergedtdifile,'Author',None)
 if not author:
     author = 'Michele Vallisneri (through mergeXML.py)'
 
@@ -264,8 +275,8 @@ for inputfile in inputfiles:
                 
                 minoffset = min(thistdi.TimeSeries.TimeOffset,
                                 tdi.TimeSeries.TimeOffset)
-                maxend    = max(thistdi.TimeSeries.TimeOffset + thistdi.TimeSeries.Cadence * thistdi.TimeSeries.Length,
-                                tdi.TimeSeries.TimeOffset + tdi.TimeSeries.Cadence * tdi.TimeSeries.Length)
+                maxend    = max(thistdi.TimeSeries.TimeOffset + thistdi.TimeSeries.Cadence * thistdi.TimeSeries.Array.Length,
+                                tdi.TimeSeries.TimeOffset + tdi.TimeSeries.Cadence * tdi.TimeSeries.Array.Length)
                 
                 extend(tdi,    minoffset,maxend)
                 extend(thistdi,minoffset,maxend)
@@ -285,6 +296,7 @@ for inputfile in inputfiles:
                             tdio += thistdio
     
     for sec in ['Simulate','LISACode','NoiseData']:
+        break
         if inputtdifile.getExtraSection(sec):
             extrasecs.append(inputtdifile.getExtraSection(sec))
     
