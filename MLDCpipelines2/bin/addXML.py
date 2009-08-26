@@ -217,7 +217,7 @@ for i,filename in enumerate(inputfiles):
     
     for sec in xml:
         if len(sec) > 0:
-            if sec.Type == 'TDIData':
+            if sec.Type == 'TDIData' and not (options.keyonly and i > 0):
                 for obs in sec:
                     obsname = obs.TimeSeries.name
                     if obsname not in obslist:      # collect the first instance of every observable set
@@ -225,7 +225,7 @@ for i,filename in enumerate(inputfiles):
                         obslist.append(obsname)
                     else:
                         addobservables(observables[obsname],obs,filename)       # and add subsequent instances
-            elif sec.Type == 'SourceData' and not (options.keyonly and i > 0):
+            elif sec.Type == 'SourceData':
                 for src in sec:
                     if hasattr(src,'TimeSeries'):
                         del source.TimeSeries
@@ -240,16 +240,18 @@ for i,filename in enumerate(inputfiles):
 out = lisaxml2.lisaXML(outputfile,'w',author='addXML.py',comments=comments)
 
 # note/TODO: Comment fields within the sections but outside the section children are lost for LISA, Noise, Source, TDI Data
+# note/TODO: Could use better handling of the --noKey censored data
 
 # add unique sections
-seclist.reverse()
-for sectype in seclist:
-    if sectype in ('LISAData','NoiseData'):     # not ideal, but lisaxml2 always begins with empty
-        outsec = getattr(out,sectype)           # LISAData and NoiseData, so we fill them out with content
-        outsec += uniquesecs[sectype][:]
-    else:
-        out.insert(0,uniquesecs[sectype])       # otherwise we prepend the sections in the XSIL file
-                                                # because of the reverse() above, they end up in the order of appearance
+if not options.nokey:
+    seclist.reverse()
+    for sectype in seclist:
+        if sectype in ('LISAData','NoiseData'):     # not ideal, but lisaxml2 always begins with empty
+            outsec = getattr(out,sectype)           # LISAData and NoiseData, so we fill them out with content
+            outsec += uniquesecs[sectype][:]
+        else:
+            out.insert(0,uniquesecs[sectype])       # otherwise we prepend the sections in the XSIL file
+                                                    # because of the reverse() above, they end up in the order of appearance
 
 # add sources
 if not options.nokey:
