@@ -40,7 +40,7 @@ parser.add_option("-s", "--seed",
                   help="seed for random number generator (int) [required]")
 
 parser.add_option("-r", "--rawMeasurements",
-                  action="store_true", dest="rawMeasurements", default=False,
+                  action="store_true", dest="raw", default=False,
                   help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
 
 parser.add_option("-O", "--observables",
@@ -89,23 +89,23 @@ parser.add_option("-v", "--verbose",
 
 (options, args) = parser.parse_args()
 
-if options.duration < 10:
-    options.duration = options.duration * 31457280
-
-# for the moment, support a single input barycentric file
-
 if len(args) < 1:
     parser.error("You must specify an output file!")
 
-outputfile = args[0]
+if options.duration < 10:
+    options.duration = options.duration * 31457280
 
 if options.seed == None:
     parser.error("You must specify the seed!")
 
+# open the output file
+outputfile = args[0]
+outputXML = lisaxml.lisaXML(outputfile,'w')
+
 # set the noise seed
 random.seed(options.seed)
 
-# set LISA, add caching?
+# make LISA, add caching?
 if options.armlength == 'Standard':
     if options.LISAmodel == 'Eccentric':
         lisa = synthlisa.EccentricInclined(0.0,1.5*math.pi,-1)
@@ -126,6 +126,26 @@ else:
         lisa = synthlisa.CircularRotating(L,0.0,1.5*math.pi,-1,0)
     else:
         parser.error("I don't recognize this LISA model!")    
+
+# save LISA
+if not options.keyOmitsLISA:
+    lisadesc = lisaxml.LISA('Standard MLDC PseudoLISA')
+    lisadesc.TimeOffset      = 0; lisadesc.TimeOffset_Unit      = 'Second'
+    lisadesc.InitialPosition = 0; lisadesc.InitialPosition_Unit = 'Radian'
+    lisadesc.InitialRotation = 0; lisadesc.InitialRotation_Unit = 'Radian'
+    lisadesc.Armlength = 16.6782; lisadesc.Armlength_Unit       = 'Second'
+    lisadesc.OrbitApproximation = options.LISAmodel; lisadesc.OrbitApproximation_Unit = 'String'
+
+    # old call: outputXML.LISAData(lisadesc)
+    outputXML.LISAData.append(lisadesc)
+
+# make noises
+# 
+# pm1, pm2, pm3, pm1s, pm2s, pm3s for the two proof masses on each bench
+# pd1, pd2, pd3, pd1s, pd2s, pd3s for photodetector (i.e., shot) noise
+# c1, c1s, c2, c2s, c3, c3s for the laser noises
+# the synthlisa ordering is the same, except for shot noises, where it is
+# {132,231,213,312,321,123} = {pd2s, pd1, pd3s, pd2, pd3, pd1s}
 
 def randnoise():
     return random.uniform(1.00 - options.randomizeNoise, 1.0 + options.randomizeNoise)
@@ -188,71 +208,7 @@ for ind in ['pd1', 'pd1s', 'pd2', 'pd2s', 'pd3', 'pd3s']:
     
     shotnoises.append(noise)
 
-# pm1, pm2, pm3, pm1s, pm2s, pm3s for the two proof masses on each bench
-# pd1, pd2, pd3, pd1s, pd2s, pd3s for photodetector (i.e., shot) noise
-# c1, c1s, c2, c2s, c3, c3s for the laser noises
-
-# the synthlisa ordering is the same, except for shot noises, where it is
-# {132,231,213,312,321,123} = {pd2s, pd1, pd3s, pd2, pd3, pd1s}
-
-tdiobs = None
-tdiobsraw = None
-
-if not options.keyOnly:
-    proofnoise  = [n.synthesize() for n in proofnoises]
-    shotnoise   = [shotnoises[i].synthesize() for i in (3,0,5,2,1,4)]
-    lasernoise  = [n.synthesize() for n in lasernoises]
-    
-    tdi = synthlisa.TDInoise(lisa,proofnoise,shotnoise,lasernoise)
-
-    samples = int( options.duration / options.timestep + 0.1 )
-
-    if options.rawMeasurements:    
-        [t,X,Y,Z,
-           y123,y231,y312,y321,y132,y213,
-           z123,z231,z312,z321,z132,z213] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
-                                                                              [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm,
-                                                                                     tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
-                                                                                     tdi.z123,tdi.z231,tdi.z312,tdi.z321,tdi.z132,tdi.z213],
-                                                                              options.inittime))    
-
-        tdiobsraw = lisaxml.Observable('t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')     
-        tdiobsraw.TimeSeries = lisaxml.TimeSeries([t,y123,y231,y312,y321,y132,y213,
-                                                     z123,z231,z312,z321,z132,z213],'t,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f')
-        
-        obsstr = 't,Xf,Yf,Zf'
-    else:
-        if options.observables == '1.5':
-            obsset = [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm]
-            obsstr = 't,Xf,Yf,Zf'
-        elif options.observables == '2.0':
-            obsset = [tdi.t,tdi.X1,tdi.X2,tdi.X3]
-            obsstr = 't,X1f,X2f,X3f'
-        elif options.observables == 'Sagnac':
-            obsset = [tdi.alpham,tdi.betam,tdi.gammam,tdi.zetam]
-            obsstr = 'alphaf,betaf,gammaf,zetaf'
-        else:
-            parser.error("I don't recognize the set of TDI observables!")
-        
-        [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,obsset,options.inittime))
-
-    tdiobs = lisaxml.Observable(obsstr)
-    tdiobs.TimeSeries = lisaxml.TimeSeries([t,X,Y,Z],obsstr)
-
-outputXML = lisaxml.lisaXML(outputfile,'w')
-
-if not options.keyOmitsLISA:
-    # save the standard LISA...
-    lisa = lisaxml.LISA('Standard MLDC PseudoLISA')
-    lisa.TimeOffset      = 0; lisa.TimeOffset_Unit      = 'Second'
-    lisa.InitialPosition = 0; lisa.InitialPosition_Unit = 'Radian'
-    lisa.InitialRotation = 0; lisa.InitialRotation_Unit = 'Radian'
-    lisa.Armlength = 16.6782; lisa.Armlength_Unit       = 'Second'
-    lisa.OrbitApproximation = options.LISAmodel; lisa.OrbitApproximation_Unit = 'String'
-
-    # old call: outputXML.LISAData(lisa)
-    outputXML.LISAData.append(lisa)
-
+# save noises
 for noise in proofnoises:
     outputXML.NoiseData.append(noise)
 for noise in shotnoises:
@@ -260,19 +216,53 @@ for noise in shotnoises:
 for noise in lasernoises:
     outputXML.NoiseData.append(noise)
 
-if tdiobs:
-    tdiobs.DataType = 'FractionalFrequency'
-    tdiobs.TimeSeries.Cadence = options.timestep;    tdiobs.TimeSeries.Cadence_Unit = 'Second'
-    tdiobs.TimeSeries.TimeOffset = options.inittime; tdiobs.TimeSeries.TimeOffset_Unit = 'Second'
+# make observables
+if not options.keyOnly:
+    # synthesize the noises and make TDI object
     
-    outputXML.TDIData(tdiobs)
+    proofnoise  = [n.synthesize() for n in proofnoises]
+    shotnoise   = [shotnoises[i].synthesize() for i in (3,0,5,2,1,4)]
+    lasernoise  = [n.synthesize() for n in lasernoises]
     
-if tdiobsraw:
-    tdiobsraw.DataType = 'FractionalFrequency'
-    tdiobsraw.TimeSeries.Cadence = options.timestep;    tdiobsraw.TimeSeries.Cadence_Unit = 'Second'
-    tdiobsraw.TimeSeries.TimeOffset = options.inittime; tdiobsraw.TimeSeries.TimeOffset_Unit = 'Second'
+    tdi = synthlisa.TDInoise(lisa,proofnoise,shotnoise,lasernoise)
+
+    # choose observables
+    if options.observables == '1.5':
+        obsset = [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm]
+        obsstr = 't,Xf,Yf,Zf'
+    elif options.observables == '2.0':
+        obsset = [tdi.t,tdi.X1,tdi.X2,tdi.X3]
+        obsstr = 't,X1f,X2f,X3f'
+    elif options.observables == 'Sagnac':
+        obsset = [tdi.alpham,tdi.betam,tdi.gammam,tdi.zetam]
+        obsstr = 'alphaf,betaf,gammaf,zetaf'
+    else:
+        parser.error("I don't recognize the set of TDI observables!")
     
-    outputXML.TDIData(tdiobsraw)
+    # add phase measurements if requested
+    if options.raw:
+        obsset += [tdi.t,tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
+                         tdi.z123,tdi.z231,tdi.z312,tdi.z321,tdi.z132,tdi.z213]
+        
+        rawstr = 't,y123f,y231f,y312f,y321f,y132f,y213f,z123f,z231f,z312f,z321f,z132f,z213f'
+
+    # run synthlisa
+    samples = int( options.duration / options.timestep + 0.1 )
+    obsarray = synthlisa.getobs(samples,options.timestep,obsset,options.inittime,display=options.verbose)
+
+    # save to XML
+    if options.raw:
+        tdiobs = lisaxml.Observable(obsstr,datatype='FractionalFrequency')
+        tdiobs.TimeSeries = lisaxml.TimeSeries(obsarray[:,0:4],obsstr,Cadence=options.timestep,TimeOffset=options.inittime)
+        outputXML.TDIData(tdiobs)
+        
+        tdiraw = lisaxml.Observable(obsstr,datatype='FractionalFrequency')
+        tdiraw.TimeSeries = lisaxml.TimeSeries(obsarray[:,4: ],rawstr,Cadence=options.timestep,TimeOffset=options.inittime)
+        outputXML.TDIData(tdiraw)
+    else:
+        tdiobs = lisaxml.Observable(obsstr,datatype='FractionalFrequency')
+        tdiobs.TimeSeries = lisaxml.TimeSeries(obsarray,obsstr,Cadence=options.timestep,TimeOffset=options.inittime)
+        outputXML.TDIData(tdiobs)
 
 outputXML.close()
 
