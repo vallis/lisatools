@@ -878,7 +878,7 @@ class FrequencySeries(XSILobject):
     def __init__(self,data=None,name='',unit='',Cadence=None,FrequencyOffset=None):
         super(FrequencySeries,self).__init__('FrequencySeries',name)
         
-        if data:
+        if data != None:
             if type(data) in (tuple,list):
                 length, records = len(data[0]), len(data)
             elif type(data) == numpy.ndarray:
@@ -920,7 +920,7 @@ class TimeSeries(XSILobject):
     def __init__(self,data=None,name='',unit='',Cadence=None,TimeOffset=None):
         super(TimeSeries,self).__init__('TimeSeries',name)
         
-        if data:
+        if data != None:
             if type(data) in (tuple,list):
                 length, records = len(data[0]), len(data)
             elif type(data) == numpy.ndarray:
@@ -992,6 +992,10 @@ class Observable(XSILobject):
     
     def __setattr__(self,attr,value):
         if attr in ['TimeSeries','FrequencySeries']:
+            # setting TimeSeries or FrequencySeries directly removes the previous value from the list
+            if hasattr(self,attr):
+                self.remove(getattr(self,attr))
+            
             self.__dict__[attr] = value
             self.append(value)
         else:
