@@ -483,7 +483,7 @@ class Stream(object):
                     import zlib
                     bfile = open(filename,'r'); checksum = 0
                     while True:
-                        data = bfile.read(65536)
+                        data = bfile.read(262144)
                         if data == '': break
                         checksum = zlib.crc32(data,checksum)
                     bfile.close()
@@ -1185,7 +1185,7 @@ class LISA(XSILobject):
     geometry. LISA objects are read from and added to lisaXMLobj.LISAData, which
     behaves like a list.
     
-    It is also possible to use the legacy API,
+    It is also possible to use the legacy API, getLISAgeometry()
     
     # output
     >>> lisaXMLobj = lisaXML('test4.xml','w')
@@ -1683,13 +1683,7 @@ class lisaXML(XSILobject):
         """[Internal] The print-out representation for lisaXML files."""
         
         # enumerate non-empty sections
-        secs = ''
-        for child in self:
-            if child.Type in ('LISAData','SourceData','TDIData','NoiseData') and len(child) > 0:
-                secs += child.Type + ', '
-                
-        if secs:
-            secs = ' (' + secs[:-2] + ')'
+        secs = string.join([child.Type for child in self if len(child) > 0],', ')
         
         return "<lisaXML file '%s'%s>" % (self.filename,secs)    
     
