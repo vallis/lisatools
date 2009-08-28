@@ -11,6 +11,7 @@ import glob
 import re
 import time
 import subprocess
+import tempfile
 from distutils.dep_util import newer, newer_group
 
 import lisaxml
@@ -42,15 +43,34 @@ def run(command,quiet = False):
     if not quiet:
         print "--> %s" % commandline
     
-    exe = subprocess.Popen(commandline,shell=True,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    outfilename = tempfile.mktemp(suffix='.out',prefix='',dir=workdir+'/Log')
+    errfilename = tempfile.mktemp(suffix='.err',prefix='',dir=workdir+'/Log')
+    
+    outfile = open(outfilename,'w')
+    errfile = open(errfilename,'w')
+    
+    print >> outfile, "Command: " + commandline
+    print >> outfile, "Started on " + time.asctime(time.localtime()) + "."
+    print >> outfile, "---"
+    outfile.flush()
+    
+    exe = subprocess.Popen(commandline,shell=True,stdin=None,stdout=outfile,stderr=errfile)
     ret = exe.wait()
     out = exe.communicate()
     
+    outfile.flush()
+    print >> outfile, "---"
+    print >> outfile, "Finished on " + time.asctime(time.localtime()) + "."
+    
+    outfile.close()
+    errfile.close()
+    
     if ret != 0:
-        print 'Script %s failed at command "%s" with errorcode %s.' % (sys.argv[0],commandline,ret)
+        print '!!!! Script %s failed at command "%s" with errorcode %s.' % (sys.argv[0],commandline,ret)
+        print 'Out, err files:', outfilename, errfilename
         
-        print '---- Standard output: ----'; print out[0]
-        print '---- Standard error:  ----'; print out[1]
+        print '---- Standard output: ----'; print open(outfilename,'r').read()
+        print '---- Standard error:  ----'; print open(errfilename,'r').read()
         
         sys.exit(ret)
 
@@ -76,19 +96,31 @@ class parallelrun(object):
             for cpu in range(self.nproc):
                 # first clear up ended processes if any
                 if self.slots[cpu]:
-                    proc, quiet, command = self.slots[cpu]
+                    proc, quiet, command, outfile, errfile = self.slots[cpu]
                     ret = proc.poll()
                     
                     if ret != None:
+                        out = proc.communicate()
+                        
+                        outfile.flush()
+                        print >> outfile, "---"
+                        print >> outfile, "Finished on " + time.asctime(time.localtime()) + "."
+                        
+                        outfilename = outfile.name
+                        errfilename = errfile.name
+                        
+                        outfile.close()
+                        errfile.close()
+                        
                         if ret == 0:
                             if not quiet:
                                 print "--:> CPU [%d] finished." % cpu
                         else:
-                            print 'Script %s failed at command "%s" with errorcode %s.' % (sys.argv[0],command,ret)
+                            print '!!!! Script %s failed at command "%s" with errorcode %s.' % (sys.argv[0],command,ret)
+                            print 'Out, err files:', outfilename, errfilename
                             
-                            out = proc.communicate()
-                            print '---- Standard output: ----'; print out[0]
-                            print '---- Standard error:  ----'; print out[1]
+                            print '---- Standard output: ----'; print open(outfilename,'r').read()
+                            print '---- Standard error:  ----'; print open(errfilename,'r').read()
                             
                             fail += 1
                         
@@ -99,10 +131,23 @@ class parallelrun(object):
                     if self.queue:
                         command, quiet = self.queue[0]
                         
+                        outfilename = tempfile.mktemp(suffix='.out',prefix='',dir=workdir+'/Log')
+                        errfilename = tempfile.mktemp(suffix='.err',prefix='',dir=workdir+'/Log')
+                        
+                        outfile = open(outfilename,'w')
+                        errfile = open(errfilename,'w')
+                        
+                        print >> outfile, "Command: " + command
+                        print >> outfile, "Started on " + time.asctime(time.localtime()) + "."
+                        print >> outfile, "---"
+                        outfile.flush()
+                                            
                         try:
-                            self.slots[cpu] = (subprocess.Popen(command,stdin=None,stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True),quiet,command)
+                            self.slots[cpu] = (subprocess.Popen(command,stdin=None,stdout=outfile,stderr=errfile,shell=True),quiet,command,outfile,errfile)
                         except:
                             print 'Script %s failed spawning parallel command "%s".' % (sys.argv[0],command)
+                            outfile.close()
+                            errfile.close()
                             fail += 1
                         else:
                             print "--:> CPU [%d]: %s" % (cpu,command)
@@ -299,7 +344,7 @@ sourcekeyfile = options.sourcekeyfile
 execdir = os.path.dirname(os.path.abspath(sys.argv[0]))
 workdir = os.path.curdir
 
-for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template','Immediate','LISACode'):
+for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template','Immediate','LISACode','Log'):
     if not os.path.exists(folder):
         os.mkdir(folder)
 
@@ -322,6 +367,7 @@ if (not makemode) and (not sourcekeyfile):
     run('rm -f Galaxy/*.xml Galaxy/*.dat')
     run('rm -f Immediate/*.xml')
     run('rm -f LISACode/*.xml LISACode/*.bin')
+    run('rm -f Log/*.out Log/*.err')
 
     # to run CHALLENGE, a file source-parameter generation script CHALLENGE.py must sit in bin/
     # it must take a single argument (the seed) and put its results in the Source subdirectory
