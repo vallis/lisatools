@@ -17,9 +17,14 @@
 %include "AKWaveform.hh"
 
 %pythoncode %{
-import lisaxml
 import numpy
 import math
+
+import sys
+if 'lisaxml2' in sys.modules:
+	import lisaxml2 as lisaxml
+else:
+	import lisaxml
 
 lisaxml.SourceClassModules['ExtremeMassRatioInspiral'] = 'EMRI'
 

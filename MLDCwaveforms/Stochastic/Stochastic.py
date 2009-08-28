@@ -23,7 +23,11 @@ if not hasattr(synthlisa,'BandIntFilter'):
     
     synthlisa.BandIntFilter = BandIntFilter
 
-import lisaxml
+import sys
+if 'lisaxml2' in sys.modules:
+	import lisaxml2 as lisaxml
+else:
+	import lisaxml
 
 lisaxml.SourceClassModules['Stochastic'] = 'Stochastic'
 
