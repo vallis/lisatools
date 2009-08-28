@@ -110,9 +110,9 @@ tdi = synthlisa.TDIsignal(lisa,source)
 
 samples = int( options.duration / options.timestep + 0.1 )
 
-[t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
-                                              [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm],
-                                              options.inittime))
+[t,X,Y,Z] = numpy.transpose(synthlisa.getobs(samples,options.timestep,
+                                             [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm],
+                                             options.inittime,display=options.verbose))
 
 # Computing SNR....
 
