@@ -44,7 +44,7 @@ def run(command,quiet = False):
     errfilename = tempfile.mktemp(suffix='.err',prefix='',dir=workdir+'/Log')
     
     if not quiet:
-        print "--> %s (out,err: %s,%s)" % (commandline,outfilename,errfilename)
+        print "--> %s (out,err: %s,%s)" % (commandline,os.path.basename(outfilename),os.path.basename(errfilename))
     
     outfile = open(outfilename,'w')
     errfile = open(errfilename,'w')
@@ -148,7 +148,7 @@ class parallelrun(object):
                             errfile.close()
                             fail += 1
                         else:
-                            print "--:> CPU [%d]: %s (out,err: %s,%s)" % (cpu,command,outfile.name,errfile.name)
+                            print "--:> CPU [%d]: %s (out,err: %s,%s)" % (cpu,command,os.path.basename(outfile.name),os.path.basename(errfile.name))
                         
                         del self.queue[0]
                     else:
@@ -340,7 +340,7 @@ sourcekeyfile = options.sourcekeyfile
 # -----------------------------------------------------------------------------------
 
 execdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-workdir = os.path.curdir
+workdir = os.path.abspath(os.path.curdir)
 
 for folder in ('Barycentric','Dataset','Galaxy','Source','TDI','Template','Immediate','LISACode','Log'):
     if not os.path.exists(folder):
