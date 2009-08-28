@@ -6,6 +6,8 @@
 __version__='$Id$'
 
 import lisaxml2 as lisaxml
+lisaxml.Table.DisableRemoteTableLoad = True
+
 import sys, string
 import numpy
 
@@ -30,12 +32,14 @@ def extend(tdi,begtime,endtime):
             if obs == 't':
                 obsarray[:,ind] = numpy.linspace(begtime,endtime-ts.Cadence,newlength)
             else:
-                obsarray[:,begindex:endindex] = getattr(ts,obs)
+                obsarray[begindex:endindex,ind] = getattr(ts,obs)
         
         # create a new TimeSeries with the extended observables, and replace it in the Observable
         newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=ts.Cadence,TimeOffset=begtime)    
+        newts.checkContent()
         
         tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
+        tdi.checkContent()
         
         assert sys.getrefcount(ts) == 2
         del ts
@@ -73,10 +77,12 @@ def upsample(tdi,mincadence):
                 obsarray[:,ind] = numpy.fft.irfft(newfft) * (ts.Cadence / mincadence)
         
         # create a new TimeSeries with the upsampled observables, and replace it in the Observable
-        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=mincadence,TimeOffset=begtime)    
+        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=mincadence,TimeOffset=ts.TimeOffset)    
+        newts.checkContent()
         
         tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
-        
+        tdi.checkContent()
+                
         assert sys.getrefcount(ts) == 2
         del ts
 
@@ -114,9 +120,11 @@ def downsample(tdi,maxcadence):
                 obsarray[:,ind] = numpy.fft.irfft(newfft) / (maxcadence / ts.Cadence)
             
         # create a new TimeSeries with the upsampled observables, and replace it in the Observable
-        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=maxcadence,TimeOffset=begtime)    
+        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=maxcadence,TimeOffset=ts.TimeOffset)    
+        newts.checkContent()
         
         tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
+        tdi.checkContent()
         
         assert sys.getrefcount(ts) == 2
         del ts
@@ -144,9 +152,9 @@ parser.add_option("-N", "--tdiName",
                   type="string", dest="tdiName", default=None,
                   help="use this string as the name of TDIobservable sections [off by default]")
 
-parser.add_option("-C", "--cadence",
-                  type="float", dest="cadence", default=None,
-                  help="forced Cadence of final output [off by default]")
+# parser.add_option("-C", "--cadence",
+#                   type="float", dest="cadence", default=None,
+#                   help="forced Cadence of final output [off by default]")
 
 parser.add_option("-o", "--outputfile",
                   type="string", dest="outputfile", default=None,
@@ -190,10 +198,11 @@ for thistdi in alltdi:
         tdin.append(obsname)
 
 extrasecs = []
-for sec in ['NoiseData','Simulate','LISACode']:
-    break
-    if mergedtdifile.getExtraSection(sec):
-        extrasecs.append(mergedtdifile.getExtraSection(sec))
+types = []
+for sec in mergedtdifile:
+    if sec.Type in ['NoiseData','Simulate','LISACode'] and sec.Type not in types:
+        extrasecs.append(sec)
+        types.append(sec.Type)
 
 # take author and comments, if any, from MERGED.xml
 
@@ -280,7 +289,7 @@ for inputfile in inputfiles:
                 
                 extend(tdi,    minoffset,maxend)
                 extend(thistdi,minoffset,maxend)
-                
+                            
                 # add tdi observables to accumulator arrays
                 
                 for name in obsname.split(','):
@@ -294,11 +303,11 @@ for inputfile in inputfiles:
                             tdio -= thistdio
                         else:
                             tdio += thistdio
-    
-    for sec in ['Simulate','LISACode','NoiseData']:
-        break
-        if inputtdifile.getExtraSection(sec):
-            extrasecs.append(inputtdifile.getExtraSection(sec))
+
+    for sec in inputtdifile:
+        if sec.Type in ['NoiseData','Simulate','LISACode'] and sec.Type not in types:
+            extrasecs.append(sec)
+            types.append(sec.Type)
     
     inputtdifile.close()
 
@@ -313,11 +322,17 @@ for name in tdin:
     else:
         newmergedtdifile.TDIData(tdid[name])
 
+# add the first instance of every extra section
 if not options.nokey:
     for sec in extrasecs:
-        newmergedtdifile.ExtraSection(sec)
+        # TO DO: lisaxml2 is quirky, I know... this should be fixed
+        if sec.Type == 'NoiseData':
+            if len(sec) == 0:
+                continue
+            else:
+                newmergedtdifile.__dict__['NoiseData'] = sec
+        newmergedtdifile.append(sec)
 
 newmergedtdifile.close()
 
-sys.exit(0) 
-           
+sys.exit(0)
