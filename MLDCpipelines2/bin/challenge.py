@@ -40,11 +40,11 @@ def run(command,quiet = False):
     # if "run" is moved to a module, can use sys.modules['__main__'].__dict__ instead of globals()
     commandline = command % globals()
     
-    if not quiet:
-        print "--> %s" % commandline
-    
     outfilename = tempfile.mktemp(suffix='.out',prefix='',dir=workdir+'/Log')
     errfilename = tempfile.mktemp(suffix='.err',prefix='',dir=workdir+'/Log')
+    
+    if not quiet:
+        print "--> %s (out,err: %s,%s)" % (commandline,outfilename,errfilename)
     
     outfile = open(outfilename,'w')
     errfile = open(errfilename,'w')
@@ -75,6 +75,7 @@ def run(command,quiet = False):
         sys.exit(ret)
 
 
+# TO DO: "quiet" does not seem to be used anymore
 class parallelrun(object):
     def __init__(self,np=1):
         self.nproc = np
@@ -112,10 +113,7 @@ class parallelrun(object):
                         outfile.close()
                         errfile.close()
                         
-                        if ret == 0:
-                            if not quiet:
-                                print "--:> CPU [%d] finished." % cpu
-                        else:
+                        if ret != 0:
                             print '!!!! Script %s failed at command "%s" with errorcode %s.' % (sys.argv[0],command,ret)
                             print 'Out, err files:', outfilename, errfilename
                             
@@ -145,12 +143,12 @@ class parallelrun(object):
                         try:
                             self.slots[cpu] = (subprocess.Popen(command,stdin=None,stdout=outfile,stderr=errfile,shell=True),quiet,command,outfile,errfile)
                         except:
-                            print 'Script %s failed spawning parallel command "%s".' % (sys.argv[0],command)
+                            print '--:> Script %s failed spawning parallel command "%s".' % (sys.argv[0],command)
                             outfile.close()
                             errfile.close()
                             fail += 1
                         else:
-                            print "--:> CPU [%d]: %s" % (cpu,command)
+                            print "--:> CPU [%d]: %s (out,err: %s,%s)" % (cpu,command,outfile.name,errfile.name)
                         
                         del self.queue[0]
                     else:
