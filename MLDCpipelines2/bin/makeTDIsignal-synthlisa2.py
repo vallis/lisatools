@@ -8,17 +8,11 @@ from lisaxml.convertunit import convertUnit
 import synthlisa
 
 import numpy
-import numpy.oldnumeric as Numeric
-import sys
 
+import sys
 from math import pi, sin, cos, sqrt
 
-# set ourselves up to parse command-line options
-
 from optparse import OptionParser
-
-# note that correct management of the Id string requires issuing the command
-# svn propset svn:keywords Id FILENAME
 
 # this version supports "immediate" synthlisa sourcefiles
 
@@ -156,6 +150,7 @@ else:
 
 if len(sourceobjects) == 0:
     print "!!! Could not find any suitable sources..."
+    sys.exit(1)
 elif len(sourceobjects) == 1:
     tdi = synthlisa.TDIsignal(lisa,sourceobjects[0])
 else:
