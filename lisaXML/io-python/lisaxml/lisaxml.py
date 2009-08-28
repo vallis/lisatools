@@ -248,7 +248,7 @@ class TimeSeries(XMLobject):
         See also lisaxml.Observable."""
         
         super(TimeSeries,self).__init__()
-        
+                    
         # if we get only one array, make a tuple        
         if not isinstance(arrays,list) and not isinstance(arrays,tuple):
             self.Arrays = (arrays,)
@@ -289,7 +289,7 @@ class TimeSeries(XMLobject):
             import zlib
             bfile = open(filename,'r'); checksum = 0
             while True:
-                data = bfile.read(65536)
+                data = bfile.read(262144)
                 if data == '': break
                 checksum = zlib.crc32(data,checksum)
             bfile.close()

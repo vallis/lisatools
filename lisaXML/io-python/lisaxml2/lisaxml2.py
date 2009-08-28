@@ -1619,7 +1619,10 @@ class lisaXML(XSILobject):
         (16.6782, 'Second')
         """
         
-        return self.LISAData[0]
+        if len(self.LISAData) > 0:
+            return self.LISAData[0]
+        else:
+            return None
     
     def getLISASources(self):
         """Return a list of Source objects defined in the XML. It's better to access
