@@ -671,6 +671,9 @@ class Table(XMLobject):
             if node2.tagName == 'Dim':
                 dimensions[node2.Name] = int(float(str(node2)))
         
+        # if the number of records is not given (naughty you!), we'll count the columns:
+        dimensions['Records'] = len([True for node2 in node if node2.tagName == 'Column'])
+        
         # now look for the stream
         for node2 in node:
             if node2.tagName == 'Stream':
@@ -746,7 +749,8 @@ class Array(object):
             self.Stream = data
         else:
             raise NotImplementedError, 'Array: cannot process data as passed'
-            
+        
+        self.checkContent()
         # TO DO: more checks on data here!
     
     def makeArray(node,xmlfile):
@@ -770,15 +774,6 @@ class Array(object):
         
         self = Array(stream,dimensions['Length'],dimensions['Records'],name=arrayname,atype=arraytype,unit=arrayunit)
         
-        self.Arrays = [self.Stream.Data[:,col] for col in range(dimensions['Records'])]
-        
-        # see if we can parse the column names
-        columnnames = [s.strip(' ') for s in arrayname.split(',')]
-        if len(columnnames) == self.Records:
-            for col in range(len(columnnames)):
-                if not hasattr(self,columnnames[col]):
-                    self.__dict__[columnnames[col]] = self.Arrays[col]
-        
         # TO DO: currently we're not implementing Element
         
         return self
@@ -795,6 +790,16 @@ class Array(object):
                 [ ('Dim', {'Name': 'Length' }, [self.Length]),
                   ('Dim', {'Name': 'Records'}, [self.Records]),
                   self.Stream.XML(xmlfile) ] )
+    
+    def checkContent(self):
+        self.Arrays = [self.Stream.Data[:,col] for col in range(self.Records)]
+        
+        # see if we can parse the column names
+        columnnames = [s.strip(' ') for s in self.Name.split(',')]
+        if len(columnnames) == self.Records:
+            for col in range(len(columnnames)):
+                if not hasattr(self,columnnames[col]):
+                    self.__dict__[columnnames[col]] = self.Arrays[col]
     
 
 
@@ -1007,17 +1012,14 @@ class Observable(XSILobject):
             columnnames = [s.strip(' ') for s in ar.Name.split(',')]
             if len(columnnames) == ar.Records:
                 for col in range(len(columnnames)):
-                    if not hasattr(self,columnnames[col]):
-                        self.__dict__[columnnames[col]] = ar.Arrays[col]
+                    self.__dict__[columnnames[col]] = ar.Arrays[col]
         
-        # TODO: there may be collisions here
         if hasattr(self,'FrequencySeries') and hasattr(self.FrequencySeries,'Array'):
             ar = self.FrequencySeries.Array
             columnnames = [s.strip(' ') for s in ar.Name.split(',')]
             if len(columnnames) == ar.Records:
                 for col in range(len(columnnames)):
-                    if not hasattr(self,columnnames[col]):
-                        self.__dict__[columnnames[col]] = ar.Arrays[col]
+                    self.__dict__[columnnames[col]] = ar.Arrays[col]
     
 
 class Source(XSILobject):
