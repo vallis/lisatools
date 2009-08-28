@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-__version__='$Id: $'
+__version__='$Id$'
+
+# note that correct management of the Id string requires issuing the command
+# svn propset svn:keywords Id FILENAME
 
 import lisaxml2 as lisaxml
 import random
@@ -13,15 +16,10 @@ import numpy
 import sys
 import math
 
-# set ourselves up to parse command-line options
-
 from optparse import OptionParser
 
-# note that correct management of the Id string requires issuing the command
-# svn propset svn:keywords Id FILENAME
-
 parser = OptionParser(usage="usage: %prog [options] OUTPUT.xml",
-                      version="$Id: $")
+                      version="$Id$")
 
 parser.add_option("-t", "--initialTime",
                   type="float", dest="inittime", default=0.0,
