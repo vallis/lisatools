@@ -99,7 +99,8 @@ for waveforms in allsources:
         RequestInitTime = max(waveforms.RequestTimeOffset,options.inittime)
         RequestEndTime  = min(waveforms.RequestTimeOffset + waveforms.RequestDuration,options.inittime + options.duration)
 
-        RequestSamples  = int( (RequestEndTime - RequestInitTime) / options.timestep + 0.1 )
+        RequestSamples  = int( (RequestEndTime - RequestInitTime) / options.timestep)
+        RequestSamples += (RequestSamples % 2)  # want an even value
 
         if not settime:
             options.inittime = RequestInitTime
@@ -164,11 +165,11 @@ else:
 if options.rawMeasurements:
     [t,X,Y,Z,
        y123,y231,y312,y321,y132,y213,
-       z123,z231,z312,z321,z132,z213] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,
-                                                                          [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm,
-                                                                                 tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
-                                                                                 tdi.z123,tdi.z231,tdi.z312,tdi.z321,tdi.z132,tdi.z213],
-                                                                          options.inittime))
+       z123,z231,z312,z321,z132,z213] = numpy.transpose(synthlisa.getobs(samples,options.timestep,
+                                                                         [tdi.t,tdi.Xm,tdi.Ym,tdi.Zm,
+                                                                                tdi.y123,tdi.y231,tdi.y312,tdi.y321,tdi.y132,tdi.y213,
+                                                                                tdi.z123,tdi.z231,tdi.z312,tdi.z321,tdi.z132,tdi.z213],
+                                                                          options.inittime,display=options.verbose))
     obsstr = 't,Xf,Yf,Zf'
 else:
     # note that choices of options.observables other than 1.5 are not compatible with debugSNR and/or RequestSN
