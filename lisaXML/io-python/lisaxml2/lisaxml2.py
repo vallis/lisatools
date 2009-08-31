@@ -368,13 +368,15 @@ class XSILobject(XMLobject,list):
 
 
 class Stream(object):
+    MapStreamsFromDisk = False
+    
     def __init__(self,data,filetype='Remote',encoding='Binary'):        
         self.Data = data
         
         self.Type = filetype
         self.Encoding = encoding
         
-        if type(data) == numpy.ndarray:            
+        if isinstance(data,numpy.ndarray):            
             assert data.dtype == 'float64', 'Stream: currently support only arrays of double-precision floats'
         
             # get info about shape to format text output
@@ -428,7 +430,11 @@ class Stream(object):
                     loadfile = open(content,'r')
             
             if 'Binary' in node.Encoding:
-                data = numpy.fromfile(loadfile,'double',length * records)
+                if Stream.MapStreamsFromDisk == True:
+                    lfname = loadfile.name; loadfile.close()
+                    data = numpy.memmap(filename=lfname,dtype='d',mode='c',shape=(length,records))
+                else:
+                    data = numpy.fromfile(loadfile,'double',length * records)
                 # previously data = numpy.fromstring(loadfile.read(8 * length * records),'double')
                 
                 if hasattr(node,'Checksum'):
@@ -473,7 +479,7 @@ class Stream(object):
             if 'Binary' in self.Encoding:
                 filename = xmlfile.nextbinfile()
             
-                if type(self.Data) == numpy.ndarray:
+                if isinstance(self.Data,numpy.ndarray):
                     bfile = open(filename,'w')
                     self.Data.tofile(bfile) # previously open(filename,'w').write(writebuffer)
                     bfile.close()
@@ -617,7 +623,7 @@ class Table(XMLobject):
         
         self.__dict__['Stream'] = None
         
-        if type(data) == numpy.ndarray:
+        if isinstance(data,numpy.ndarray):
             self.Stream = Stream(data,filetype,encoding)
         elif type(data) == tuple or type(data) == list:
             self.Stream = Stream(numpy.array(data),filetype,encoding)
@@ -741,7 +747,7 @@ class Array(object):
         self.Length = length
         self.Records = records
         
-        if type(data) == numpy.ndarray:
+        if isinstance(data,numpy.ndarray):
             self.Stream = Stream(data,filetype,encoding)
         elif type(data) == tuple or type(data) == list:
             self.Stream = Stream(numpy.array(data).transpose(),filetype,encoding)
@@ -928,7 +934,7 @@ class TimeSeries(XSILobject):
         if data != None:
             if type(data) in (tuple,list):
                 length, records = len(data[0]), len(data)
-            elif type(data) == numpy.ndarray:
+            elif isinstance(data,numpy.ndarray):
                 if len(data.shape) == 1:
                     length, records = data.shape[0], 1
                 elif len(data.shape) == 2:
@@ -966,8 +972,8 @@ class Observable(XSILobject):
         """Creates an Observable object."""
         
         super(Observable,self).__init__('TDIObservable',name)
-            
-        if timeseries and type(timeseries) == TimeSeries:
+        
+        if timeseries != None and isinstance(timeseries,TimeSeries):
             self.__dict__['TimeSeries'] = timeseries
             self.append(timeseries)
             
@@ -975,7 +981,7 @@ class Observable(XSILobject):
                 # inherit the name of the TimeSeries, if given...
                 self.__dict__['Name'] = self.__dict__['name'] = self.TimeSeries.Name
         
-        if frequencyseries and type(frequencyseries) == FrequencySeries:
+        if frequencyseries != None and isinstance(frequencyseries,FrequencySeries):
             self.__dict__['FrequencySeries'] = frequencyseries
             self.append(frequencyseries)
             
@@ -983,7 +989,7 @@ class Observable(XSILobject):
                 # inherit the name of the TimeSeries, if given...
                 self.__dict__['Name'] = self.__dict__['name'] = self.FrequencySeries.Name
         
-        if datatype:
+        if datatype != None:
             self.DataType = datatype
         else:
             # try to guess it...
@@ -1124,8 +1130,8 @@ class Source(XSILobject):
             print 'Source.makeSource(): cannot import module %s for object type %s, I will make it a generic source' % (SourceClassModules[sourcetype],sourcetype)
             self = Source(sourcetype)
         
-        # erase list of attributes assigned in __init__
-        self.parameters = []
+        # here we used to erase the list of attributes assigned in __init__, but this obliterated SourceType, which ain't nice
+        # self.parameters = []
         
         return self
     
