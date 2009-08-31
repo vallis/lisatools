@@ -160,13 +160,54 @@ else:
 	outsignals = "t,Xf,Yf,Zf,y231,y321,z231,z321,y312,y132,z312,z132,y123,y213,z123,z213"
 
 ### Make base XML input file
-makefromtemplate('%s-input.xml' % cname, '%s/../Template/LISACode2.xml' % execdir, challengename=cname, rawchallengename=rawcname, outputsignals=outsignals, cadence=timestep, duration=duration , timeoffset= timeoffset, randomseed=lcseed, orbit=LISAmodel, phasemeterfilter=PhasemF)
+makefromtemplate('%s-LCbase.xml' % cname, '%s/../Template/LISACode2.xml' % execdir, challengename=cname, rawchallengename=rawcname, outputsignals=outsignals, cadence=timestep, duration=duration , timeoffset= timeoffset, randomseed=lcseed, orbit=LISAmodel, phasemeterfilter=PhasemF)
 
 
 ## Make lisacode noise (note that the random seed is really set above in the standard instruction set)
-run('makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=123456 --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s noise.xml')
-run('mergeXML.py %(cname)s-input.xml noise.xml')
-run('rm noise.xml')
+#run('makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=123456 --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s SLnoise.xml')
+#run('mergeXML.py %(cname)s-input.xml noise.xml')
+#run('rm noise.xml')
+
+
+
+#### Merge XML file
+## Extract informations from LISACode XML input file
+LCBaseXML = cname + '-LCbase.xml'
+LCbasefile = lisaxml.readXML(LCBaseXML)
+LClisa = LCbasefile.getLISAgeometry()
+LCsources = LCbasefile.getLISASources()    
+LCextrasecs = []
+for sec in ['Simulate','LISACode','NoiseData']:
+    if LCbasefile.getExtraSection(sec):
+        LCextrasecs.append(LCbasefile.getExtraSection(sec))
+author = "Antoine Petiteau and Michele Vallisneri"
+comments = LCbasefile.Comment
+LCbasefile.close()
+
+
+## Make lisacode noise (note that the random seed is really set above in the standard instruction set)
+run('makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=123456 --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s SLnoise.xml')
+## Extract informations from SyntheticLISA XML noise file
+SLinputXML = 'SLnoise.xml'
+SLbasefile = lisaxml.readXML(SLinputXML)
+SLlisa = SLbasefile.getLISAgeometry()
+SLsources = SLbasefile.getLISASources()    
+SLextrasecs = []
+for sec in ['Simulate','LISACode','NoiseData']:
+    if SLbasefile.getExtraSection(sec):
+        SLextrasecs.append(SLbasefile.getExtraSection(sec))
+author = "Antoine Petiteau and Michele Vallisneri"
+comments = SLbasefile.Comment
+SLbasefile.close()
+
+LCinputXML = cname + '-input.xml'
+newbasefile = lisaxml.lisaXML(LCinputXML,author=author,comments=comments)
+newbasefile.LISAData(LClisa)
+for sec in LCextrasecs:
+    newbasefile.ExtraSection(sec)
+for sec in SLextrasecs:
+    newbasefile.ExtraSection(sec)
+newbasefile.close()
 
 if options.verbose:
     run('%s %s-input.xml' % (lisacode.lisacode,cname))
