@@ -5,10 +5,11 @@
 
 __version__='$Id$'
 
-import lisaxml2 as lisaxml
-lisaxml.Table.DisableRemoteTableLoad = True
+import lisaxml2
+lisaxml2.Table.DisableRemoteTableLoad = True
+# lisaxml2.Stream.MapStreamsFromDisk = True
 
-import sys, string
+import sys, string, tempfile
 import numpy
 
 from optparse import OptionParser
@@ -25,7 +26,10 @@ def extend(tdi,begtime,endtime):
         endindex  = int( (ts.TimeOffset + ts.Cadence * ts.Array.Length - begtime) / ts.Cadence )
         
         # allocate new arrays
-        obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
+        if lisaxml2.Stream.MapStreamsFromDisk:
+            obsarray = numpy.memmap(filename=tempfile.TemporaryFile(),dtype='d',mode='w+',shape=(newlength,ts.Array.Records))
+        else:
+            obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
         
         # loop over observables, redo time axis, copy other observables
         for ind,obs in enumerate(map(string.strip,ts.name.split(','))):
@@ -35,7 +39,7 @@ def extend(tdi,begtime,endtime):
                 obsarray[begindex:endindex,ind] = getattr(ts,obs)
         
         # create a new TimeSeries with the extended observables, and replace it in the Observable
-        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=ts.Cadence,TimeOffset=begtime)    
+        newts = lisaxml2.TimeSeries(obsarray,ts.name,Cadence=ts.Cadence,TimeOffset=begtime)    
         newts.checkContent()
         
         tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
@@ -58,11 +62,14 @@ def upsample(tdi,mincadence):
         newlength = int(ts.Array.Length * (ts.Cadence / mincadence))
         
         if newlength % 2 != 0 or ts.Array.Length % 2 != 0:
-            print "Sorry, I don't know how to deal with odd-point FFTs."
+            print "mergeXML.py (upsample): Sorry, I don't know how to deal with odd-point FFTs."
             sys.exit(1)
         
         # allocate new arrays
-        obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
+        if lisaxml2.Stream.MapStreamsFromDisk:
+            obsarray = numpy.memmap(filename=tempfile.TemporaryFile(),dtype='d',mode='w+',shape=(newlength,ts.Array.Records))
+        else:
+            obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
         
         # loop over observables, redo time axis, upsample other observables   
         for ind,obs in enumerate(map(string.strip,ts.name.split(','))):
@@ -74,10 +81,11 @@ def upsample(tdi,mincadence):
                 newfft[0:(ts.Array.Length/2 + 1)] = numpy.fft.rfft(getattr(ts,obs))
                 newfft[ts.Array.Length/2] *= 0.5
                 
-                obsarray[:,ind] = numpy.fft.irfft(newfft) * (ts.Cadence / mincadence)
+                newfft[:] *= (ts.Cadence / mincadence)
+                obsarray[:,ind] = numpy.fft.irfft(newfft)
         
         # create a new TimeSeries with the upsampled observables, and replace it in the Observable
-        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=mincadence,TimeOffset=ts.TimeOffset)    
+        newts = lisaxml2.TimeSeries(obsarray,ts.name,Cadence=mincadence,TimeOffset=ts.TimeOffset)    
         newts.checkContent()
         
         tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
@@ -98,9 +106,10 @@ def downsample(tdi,maxcadence):
         
         # figure out the new length (maxcadence is larger, so we're reducing it)
         newlength = int(ts.Array.Length / (maxcadence / ts.Cadence))
+        newlength += (newlength % 2)    # force even number of points
         
-        if newlength % 2 != 0 or ts.Array.Length % 2 != 0:
-            print "Sorry, I don't know how to deal with odd-point FFTs."
+        if ts.Array.Length % 2 != 0:
+            print "mergeXML.py (downsample): Sorry, I don't know how to deal with odd-point FFTs."
             sys.exit(1)
         
         # allocate new arrays
@@ -120,7 +129,7 @@ def downsample(tdi,maxcadence):
                 obsarray[:,ind] = numpy.fft.irfft(newfft) / (maxcadence / ts.Cadence)
             
         # create a new TimeSeries with the upsampled observables, and replace it in the Observable
-        newts = lisaxml.TimeSeries(obsarray,ts.name,Cadence=maxcadence,TimeOffset=ts.TimeOffset)    
+        newts = lisaxml2.TimeSeries(obsarray,ts.name,Cadence=maxcadence,TimeOffset=ts.TimeOffset)    
         newts.checkContent()
         
         tdi.TimeSeries = newts  # this will also remove ts and add newts from/to tdi[]
@@ -179,7 +188,7 @@ inputfiles = args[1:]
 
 # note that currently mergedfile must already exist!
 
-mergedtdifile = lisaxml.readXML(mergedfile)
+mergedtdifile = lisaxml2.readXML(mergedfile)
 
 lisa = mergedtdifile.getLISAgeometry()
 
@@ -211,22 +220,23 @@ if not author:
     author = 'Michele Vallisneri (through mergeXML.py)'
 
 # it would be nice also to collect comments from the additional files...
-# but lisaxml.py does not currently support this!
+# but lisaxml2.py does not currently support this!
 comments = mergedtdifile.Comment
 
 mergedtdifile.close()
 
 if options.outputfile:
-    newmergedtdifile = lisaxml.lisaXML(options.outputfile,author=author,comments=comments)
+    newmergedtdifile = lisaxml2.lisaXML(options.outputfile,author=author,comments=comments)
 else:
-    newmergedtdifile = lisaxml.lisaXML(mergedfile,author=author,comments=comments)
+    newmergedtdifile = lisaxml2.lisaXML(mergedfile,author=author,comments=comments)
 
 if not options.nokey:
     for source in sources:
         newmergedtdifile.SourceData(source)
 
 for inputfile in inputfiles:
-    inputtdifile = lisaxml.readXML(inputfile)
+    # print "Dealing with", inputfile
+    inputtdifile = lisaxml2.readXML(inputfile)
 
     # will use the first LISA that it finds anywhere...
 
@@ -246,7 +256,6 @@ for inputfile in inputfiles:
                 newmergedtdifile.SourceData(source)
     
     if not options.keyonly:
-        ## Problem is here
         alltdi = inputtdifile.getTDIObservables()
 
         for thistdi in alltdi:
@@ -254,8 +263,7 @@ for inputfile in inputfiles:
             
             if not (obsname in tdin):
                 tdid[obsname] = thistdi
-                # to keep them in order...
-                tdin.append(obsname)
+                tdin.append(obsname)    # to keep them in order...
             else:
                 tdi = tdid[obsname]
                 
@@ -318,9 +326,9 @@ if lisa:
 
 for name in tdin:
     if options.tdiName:
-        newmergedtdifile.TDIData(tdid[name],name=options.tdiName)
-    else:
-        newmergedtdifile.TDIData(tdid[name])
+        tdid[name].Name = options.tdiName
+    
+    newmergedtdifile.TDIData(tdid[name])
 
 # add the first instance of every extra section
 if not options.nokey:
