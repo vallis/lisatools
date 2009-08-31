@@ -181,7 +181,7 @@ else:
     else:
         parser.error("I don't recognize the set of TDI observables!")
 
-    [t,X,Y,Z] = numpy.transpose(synthlisa.getobsc(samples,options.timestep,obsset,options.inittime))
+    [t,X,Y,Z] = numpy.transpose(synthlisa.getobs(samples,options.timestep,obsset,options.inittime,display=options.verbose))
 
 # Computing SNR....
 
