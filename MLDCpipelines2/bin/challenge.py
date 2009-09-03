@@ -744,7 +744,7 @@ def makedataset(simulator,dokey=True,hifreq=False):
                                                      noiselessdataset,
                                                      re.sub('\.xml','-[0-9].bin',noiselessdataset)))
     else:
-        run('%s/rmXML.py' % (execdir,noiselessdataset))
+        run('%s/rmXML.py %s' % (execdir,noiselessdataset))
     
     # tar up the noisy dataset
     if donoise:
