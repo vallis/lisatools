@@ -802,20 +802,22 @@ if dolisacode:
             makedataset('lisacode',dokey=False,hifreq=True)
 
 # make sure the keys point to real Table txt files, not symlinks
-# build symlinks from training dataset tables to their key 
+# build symlinks from training dataset tables to their key
 
 os.chdir('Dataset')
 
 for txtfile in glob.glob('*.txt'):
     if os.path.islink(txtfile):
         if 'key' in txtfile:
-            run('cp %s %s-tmp' % (txtfile,txtfile))
+            run('cp %s %s-tmp' % (txtfile,txtfile))     # this has the effect of converting a link to a real file...
             run('mv %s-tmp %s' % (txtfile,txtfile))
         else:
-            for filetype in ['training-frequency','training-strain','training-nonoise-frequency','training-nonoise-strain']:
-                if filetype in txtfile:
-                    run('rm %s' % txtfile)
-                    run('ln -s %s %s' % (re.sub(filetype,'training-key',txtfile),txtfile))
+            keyfile = re.sub('training','training-key',txtfile)
+            keyfile = re.sub('nonoise-','',            keyfile)
+            keyfile = re.sub('hifreq-', '',            keyfile)
+            
+            run('rm %s' % txtfile)
+            run('ln -s %s %s' % (keyfile,txtfile))
 
 os.chdir('..')
 
