@@ -495,16 +495,15 @@ class Stream(object):
                     bfile.close()
                 elif type(self.Data) == str:
                     if os.path.abspath(self.Data) != os.path.abspath(filename):
-                        if os.path.isfile(filename):
-                            os.unlink(filename)
+                        if os.path.isfile(filename):    # delete the target binary file if it exists already
+                            os.unlink(filename)         # will work also for symbolic links
                         
-                        if 'http://' in self.Data:
+                        if 'http://' in self.Data:                          # download remote file to the correct local filename
                             urllib.urlretrieve(self.Data,filename)
-                        elif os.stat(self.Data)[stat.ST_SIZE] < 50000000:
-                            # copy files below 50M, symlink otherwise
+                        elif os.stat(self.Data)[stat.ST_SIZE] < 50000000:   # copy files below 50M, symlink otherwise
                             shutil.copy(self.Data,filename)
                         else:
-                            os.symlink(self.Data,filename)
+                            os.symlink(os.path.abspath(self.Data),filename)
                     
                     if hasattr(self,'Checksum'):
                         checksum = self.Checksum
@@ -520,7 +519,7 @@ class Stream(object):
                     attrlist['Checksum'] = str(checksum)
                 
                 stream = ('Stream',attrlist,[os.path.basename(filename)])
-            elif 'Text' in self.Encoding:
+            elif 'Text' in self.Encoding:               # TO DO: remove repetitive code between 'Binary' and 'Text'...
                 filename = xmlfile.nexttxtfile()
                 
                 if type(self.Data) == numpy.ndarray:
@@ -536,18 +535,15 @@ class Stream(object):
                             fileobj.write(linepattern % tuple(self.Data[i,:]))
                 elif type(self.Data) == str:
                     if os.path.abspath(self.Data) != os.path.abspath(filename):
-                        if os.path.isfile(filename):
-                            os.unlink(filename)
+                        if os.path.isfile(filename):    # delete the target binary file if it exists already
+                            os.unlink(filename)         # will work also for symbolic links
                                                     
-                        if 'http://' in self.Data:
+                        if 'http://' in self.Data:                          # download remote file to the correct local filename
                             urllib.urlretrieve(self.Data,filename)
-                        elif os.stat(self.Data)[stat.ST_SIZE] < 50000000:
-                            # copy files below 50M, symlink otherwise
+                        elif os.stat(self.Data)[stat.ST_SIZE] < 50000000:   # copy files below 50M, symlink otherwise
                             shutil.copy(self.Data,filename)
                         else:
-                            if os.path.isfile(filename):
-                                os.unlink(filename)
-                            os.symlink(self.Data,filename)                
+                            os.symlink(os.path.abspath(self.Data),filename)
                 else:
                     raise NotImplementedError, 'Stream.XML(): I do not know how to handle these Stream data.'
                     
