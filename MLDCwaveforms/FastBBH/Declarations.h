@@ -27,6 +27,7 @@ typedef struct
   double TimeSample;
   double Rmin;
   double TaperSteepness;
+  double TaperQFactor; /* Added by Stas: if 0, the halfhann taper is not applied, default 3 */
 } SBH_structure;
 
 void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc);

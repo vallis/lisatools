@@ -35,12 +35,15 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double x, xrt, taper, xold, xmax;
   double tmax, VAmp, r;
   double shp, shc, c2psi, s2psi;
-  double tend = 0.0,taper1,taper2; // tend stores final time where hp and hc are non-zero...
+  double tend = 0.0,taper1,taper2; /* tend stores final time where hp and hc are non-zero...*/
+  double taperQFactor = 3.0; /* Added by Stas -> needed for the half-hann taper */
 
   int i, j, n, idxm;
   int index, laststep;
+  
+  double tTaper;
 
-  // Vectors for storing all the data.  We don't know how many points we need, so pick an arbitrary length.
+  /* Vectors for storing all the data.  We don't know how many points we need, so pick an arbitrary length.*/
 
   double timevec[VECLENGTH];
   double mulvec[VECLENGTH];
@@ -50,7 +53,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double sigmavec[VECLENGTH];
   double thomasvec[VECLENGTH];
 
-  // For the spline:
+  /* For the spline:*/
 
   double muly2[VECLENGTH];
   double sphily2[VECLENGTH];
@@ -80,7 +83,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   interpsigma = dvector(0, n-1);
   interpthomas = dvector(0, n-1);
 
-  // Double Kerr Parameters: m1/Msun, m2/Msun, tc/sec, DL/Gpc, chi1, chi2, cos(theta), cos(thetaL(0)), cos(thetaS1(0)), cos(thetaS2(0)), phi, phiL(0), phiS1(0), phiS2(0), phic.  These are arranged into those with fixed ranges, and those without. Note: I am using redshifted masses. 
+  /* Double Kerr Parameters: m1/Msun, m2/Msun, tc/sec, DL/Gpc, chi1, chi2, cos(theta), cos(thetaL(0)),
+   cos(thetaS1(0)), cos(thetaS2(0)), phi, phiL(0), phiS1(0), phiS2(0), phic.  
+   These are arranged into those with fixed ranges, and those without. Note: I am using redshifted masses. */
 
   m1 = SBH.Mass1;
   m2 = SBH.Mass2;
@@ -97,6 +102,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   phiS10 = SBH.AzimuthalAngleOfSpin1;
   phiS20 = SBH.AzimuthalAngleOfSpin2;
   phic = SBH.PhaseAtCoalescence;
+  taperQFactor = SBH.TaperQFactor;
+  
+ /* printf("Stas: The taper freq factor = %f\t%f\n", taperFreqFactor, SBH.TaperFreqFactor);*/
  
   /* printf("m1 = %.12e   m2 = %.12e    tc = %.12e   DL =  %.12e   x1 = %.12e    x2 = %.12e \n",	\
       m1, m2, tc, DL, chi1, chi2);
@@ -105,7 +113,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   printf("phi = %.12e   phiL = %.12e  phiS1 = %.12e   phiS2 = %.12e  phic = %.12e \n", 
   phi, phiL0, phiS10, phiS20, phic); */
 
-  // Useful functions of these parameters:
+  /* Useful functions of these parameters:*/
 
   Mtot = m1 + m2;
   dm = (m1-m2)/Mtot;
@@ -126,14 +134,14 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   p20 = -pow(fac,0.125);
   p200 = p20*(9275495./7225344.+284875./129024.*eta+1855./1024.*eta*eta);
 
-  // Sky position:
+  /* Sky position:*/
   
   sintheta = sqrt(1.0 - costheta*costheta);
   N[0] = sintheta*cos(phi);
   N[1] = sintheta*sin(phi);
   N[2] = costheta;
   
-  // LSvals: 0-2 are L, 3-5 S1, and 6-8 S2 (all unit vectors)
+  /* LSvals: 0-2 are L, 3-5 S1, and 6-8 S2 (all unit vectors)*/
 
   sinthetaL0 = sqrt(1.0-(costhetaL0*costhetaL0));
   LSvals[0] = sinthetaL0*cos(phiL0);
@@ -151,28 +159,28 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   LSvals[8] = costhetaS20;
 
 
-  LSvals[9] = 0.0;  // used to hold Thomas phase
+  LSvals[9] = 0.0;  /* used to hold Thomas phase*/
 
   LdotS1 = calcLdotS1(LSvals);
   LdotS2 = calcLdotS2(LSvals);
   S1dotS2 = calcSdotS(LSvals);
 
-  // Initial beta and sigma:
+  /* Initial beta and sigma:*/
 
   beta = (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);
       
   sigma = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
 
-  // Set up range of integration.  The extra Tpad=900 s is more than enough for the light travel time across the LISA orbit.
+  /* Set up range of integration.  The extra Tpad=900 s is more than enough for the light travel time across the LISA orbit.*/
 
   tcurrent = -SBH.Tpad/TSUN;
-  tmax = SBH.Tobs + SBH.Tpad;  // will decrease if xmax lies within integration range
+  tmax = SBH.Tobs + SBH.Tpad;  /* will decrease if xmax lies within integration range */
   if(tc > tmax) tmax = tc;
   tfinal = tmax/TSUN;
 
   f = Freq(0.0, Mtot, Mchirp, eta, beta, sigma, tc);
 
-  // Initial orbital radius
+  /* Initial orbital radius*/
   r = pow(Mtot,1./3.)/pow(PI*f*TSUN,2./3.);
 
   x = pow(PI*Mtot*f*TSUN,2./3.);
@@ -192,7 +200,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   JdotL = calcLdotN(Jtot, LSvals);
   calcLcrossN(JcrossL, Jtot, LSvals);
 
-  // printf("L %e S1 %e S2 %e J %e\n", Lmag, S1mag, S2mag, Jmag);
+  /* printf("L %e S1 %e S2 %e J %e\n", Lmag, S1mag, S2mag, Jmag); */
 
   calcderivvals(derivvals, LSvals, r, m1, m2, Mtot, mu, chi1, chi2);
   LdotN = calcLdotN(LSvals, N);
@@ -210,13 +218,13 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   gamma0 = acos(x);
 
 
-//-acos( (Lnz*Ldotn + cos(theta))/(sin(iota)*sqrt(1.-Ldotn*Ldotn)) );
+/*-acos( (Lnz*Ldotn + cos(theta))/(sin(iota)*sqrt(1.-Ldotn*Ldotn)) );*/
 
-  // printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0);
+  /* printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0);*/
 
-  for(i = 0; i <= 9; i++) LSvals[i] -= SBH.Tpad*derivvals[i];  // back up the initial values to time -Tpad
+  for(i = 0; i <= 9; i++) LSvals[i] -= SBH.Tpad*derivvals[i];  /* back up the initial values to time -Tpad */
 
-  index = 0;  // index for the various storage vectors
+  index = 0;  /* index for the various storage vectors */
   hcurrent = RK_H;
   laststep = ENDNO;
 
@@ -224,7 +232,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   LdotS2 = calcLdotS2(LSvals);
   S1dotS2 = calcSdotS(LSvals);
 
-  //  beta and sigma at time -Tpad
+  /*  beta and sigma at time -Tpad */
 
   beta = (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);     
   sigma = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
@@ -239,7 +247,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   
   fold = 0.0;
 
-  // Start the integration:
+  /* Start the integration: */
   
   while(tcurrent < tfinal)
     {	
@@ -247,7 +255,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
          f = Freq(tcurrent*TSUN, Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
          x = pow(PI*Mtot*f*TSUN,2./3.);
 
-      if ((f >= fold) && (x < xmax)) {  // Check to make sure we're chirping and PN valid
+      if ((f >= fold) && (x < xmax)) {  /* Check to make sure we're chirping and PN valid */
 	
 	if (tcurrent+hcurrent-tfinal > 0.)
 	  {
@@ -306,18 +314,18 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	
 	thomasvec[index] = LSvals[9];
 
-        // printf("%d %e %e\n", index, timevec[index], thomasvec[index]);
+        /* printf("%d %e %e\n", index, timevec[index], thomasvec[index]); */
 
         fold = f;
-		xold = x; // When the integration is done, will contain largest x reached...
+		xold = x; /* When the integration is done, will contain largest x reached... */
        
       }
       else {
-	// If PN gone bad go to tfinal and keep everything the same.
+	/* If PN gone bad go to tfinal and keep everything the same. */
 	
         tcurrent = tfinal;
 	tmax = tcurrent*TSUN;  
-	// At tmax, we've just barely gone beyond xmax
+	/* At tmax, we've just barely gone beyond xmax */
 	timevec[index] = tmax;
 	mulvec[index] = mulvec[index-1];
 	sphilvec[index] = sphilvec[index-1];
@@ -326,7 +334,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	sigmavec[index] = sigmavec[index-1];
 	thomasvec[index] = thomasvec[index-1];
 
-	for(i = 0; i < 10; i++)  // pad the array for safe interpolation
+	for(i = 0; i < 10; i++)  /* pad the array for safe interpolation */
 	 {
         index++;
 	timevec[index] = timevec[index-1]+1000.0;
@@ -357,21 +365,21 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   spline(timevec, sigmavec, index, 1.e30, 1.e30, sigmay2); 
   spline(timevec, thomasvec, index, 1.e30, 1.e30, thomasy2);
   
-  // End precession. 
+  /* End precession. */
   
   t = -SBH.Tpad;
   dt = (SBH.Tobs+2.0*SBH.Tpad)/(double)(n);
   
   index = 0;
 
-  // Now interpolate.
+  /* Now interpolate. */
 
   for(i = 0; i < n; i++)
     {   
 
       tdvals[i] = t;  
       
-      if (tdvals[i] <= tmax) // Make sure we have data for the point.
+      if (tdvals[i] <= tmax) /* Make sure we have data for the point. */
 	{
 	  while(tdvals[i] > timevec[index+1])
 	     index++;
@@ -401,18 +409,24 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
       t += dt;
 
 
-      // printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);
+      /* printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);*/
     }
   
-  // Now calculate hp and hc, starting with the final time and working backwards. 
-  // This makes calculating the taper slightly easier, since otherwise we would have 
-  // to find out what the final time (tend) would be prior to actually reaching it.
+  /* Now calculate hp and hc, starting with the final time and working backwards. 
+   This makes calculating the taper slightly easier, since otherwise we would have 
+   to find out what the final time (tend) would be prior to actually reaching it. */
 
   tend = tdvals[n-1];
+
+  tTaper = taperQFactor/fold;
+  if (tTaper > SBH.Tpad)
+       tTaper = SBH.Tpad;
+ /* FILE *fp1;
+  fp1 = fopen( "tmp/Taper.dat", "w" );       */
   for(i = n-1; i >= 0; i--)
     { 
       td = tdvals[i];
-      if (td <= tmax) // Make sure we have data for the point.
+      if (td <= tmax) /* Make sure we have data for the point. */
 	{
 	  costhetaL = interpmul[i];
 	  sinthetaL = sqrt(1.-costhetaL*costhetaL);
@@ -425,12 +439,12 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	    
 	    x = pow(PI*Mtot*f*TSUN,2./3.);
 
-		// Since we are working backwards in time, x (which scales with f) should
+		/* Since we are working backwards in time, x (which scales with f) should
 		// decrease with each succesive iteration of the loop (successive decreasing
 		// values of i). If x increased from one iteration to the next, it would
 		// imply that f had decreased with time (i.e. going from the current iteration
 		// to the previous one), casting into doubt the validity of the Post-Newtonian
-		// expansion.
+		// expansion.*/
 	    if((x < xmax) && (x < xold) )
 	      {
 	    
@@ -441,12 +455,17 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	    
 	    LdotN = costhetaL*costheta + sinthetaL*sintheta*cos(phiL - phi);
 	  
-		// 1/2 Hann window taper which is zero for t > tend and 1 for 
-		// t < tend-3/fold (the width can be varied, but should be at least 2.0/fold):
-		taper1 = halfhann(td,tend,tend-3.0/fold);
-		taper2 = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
+		/* 1/2 Hann window taper which is zero for t > tend and 1 for 
+		// t < tend-3/fold (the width can be varied, but should be at least 2.0/fold):*/
+		if (tTaper == 0.){
+         taper = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
+		}else{
+		   taper = halfhann(td,tend,tend-tTaper);
+		}   
+	/*	taper2 = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x))); */
 						
-		taper = taper2*taper1;
+	/*	taper = taper2*taper1; */
+    /*  fprintf( fp1, "%e\t%e\n",  td,  taper); */
 
             Ax = 2.*Amp*pow(PI*f,2./3.)*taper;
          
@@ -539,26 +558,27 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
             hc[i] = shp*s2psi - shc*c2psi;
 
 	      }
-           else {  // x > xmax or anti-chirping
+           else {  /* x > xmax or anti-chirping */
 
         	hp[i] = 0.;
 	        hc[i] = 0.;
-			tend = td; // If we didn't evaluate hp and hc at this step, update tend
+			tend = td; /* If we didn't evaluate hp and hc at this step, update tend */
 
               }
 
-			xold = x; // Done with this step - set xold to the current value
+			xold = x; /* Done with this step - set xold to the current value */
 
 	}
-      else {  // t > tmax
+
+      else {  /* t > tmax */
 	
 	 hp[i] = 0.;
 	 hc[i] = 0.;
-	 tend = td; // If we didn't evaluate hp and hc at this step, update tend
+	 tend = td; /* If we didn't evaluate hp and hc at this step, update tend */
       }
 
     }
-    
+  
  /*   for(i=90000; i<90010; i++){
         printf("%d    %.12e  %.12e \n", i, hp[i], hc[i]);
     }
@@ -579,7 +599,7 @@ double Freq(double t, double Mtot, double Mchirp, double eta, double beta, doubl
 
   fac = eta*(tc-t)/(5.*Mtot*TSUN);
 
-  // printf("%e %e %e %e %e\n", fac, eta, tc, t, Mtot*TSUN);
+  /* printf("%e %e %e %e %e\n", fac, eta, tc, t, Mtot*TSUN); */
 
   f10 = 743./2688.+11./32.*eta;
   f15 = -3.*(4.*PI-beta)/40.;
@@ -674,7 +694,7 @@ void update(int j, double A, double h, double intvals[], double t, double m1, do
 
 
 void calcderivvals(double derivvals[], double inputs[], double r, double m1, double m2, double Mtot, double mu, double chi1, double chi2)
-  // Calculates the L and S derivatives
+  /* Calculates the L and S derivatives */
 {
   derivvals[3] = S1xdot(inputs, r, m1, m2, Mtot, mu, chi1, chi2);
   derivvals[4] = S1ydot(inputs, r, m1, m2, Mtot, mu, chi1, chi2);
@@ -935,9 +955,9 @@ double ran2(long *idum)
     else return temp;
 }
 
-// Evaluate the half of a Hann window which is zero at t0 and one at t1. If t falls
+/* Evaluate the half of a Hann window which is zero at t0 and one at t1. If t falls
 // outside of the range t0...t1, set the value of the window to either zero or one,
-// depending on whether it's on the zero side of the window or the one side.
+// depending on whether it's on the zero side of the window or the one side. */
 double halfhann(double t, double t0, double t1){
 	
 	double w;
@@ -956,14 +976,14 @@ double halfhann(double t, double t0, double t1){
 }
 
 void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
-// Unlike NR version, assumes zero-offset arrays.  CHECK THAT THIS IS CORRECT.
+/* Unlike NR version, assumes zero-offset arrays.  CHECK THAT THIS IS CORRECT. */
 {
   int i, k;
   double p, qn, sig, un, *u;
 
   u = dvector(0, n-2);
   
-  // Boundary conditions: Check which is best.  
+  /* Boundary conditions: Check which is best.  */
   if (yp1 > 0.99e30)
     y2[0] = u[0] = 0.0;
   else {
@@ -979,7 +999,7 @@ void spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
     u[i] = (6.0*u[i]/(x[i+1]-x[i-1])-sig*u[i-1])/p;
   }
 
-  // More boundary conditions.
+  /* More boundary conditions. */
   if (ypn > 0.99e30)
     qn = un = 0.0;
   else {
