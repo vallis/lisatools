@@ -211,7 +211,8 @@ class SpinBlackHoleBinary(lisaxml.Source):
                   ('InitialAzimuthalAngleL',           'Radian',        None, 'initial azimuthal direction of L_N'),
                   ('Distance',                         'Parsec',        None, 'standard source distance'),
                   ('TaperApplied',                     'TotalMass',     '7',  'tapering parameter'),
-                  ('AmplPNorder',                      'Unit',          '0',  'Post-Newtonian order of the amplitude corrections, phase is hardcoded to 2PN'))
+                  ('AmplPNorder',                      'Unit',          '0',  'Post-Newtonian order of the amplitude corrections, phase is hardcoded to 2PN'),
+                  ('TaperQFactor', 				       'Unit',          '3.0', 'Factor regulating the length of the half-hann taper: Dt = TaperQFactor/f_end'))
     
     def  __init__(self,name=''):
         super(SpinBlackHoleBinary, self).__init__('SpinBlackHoleBinary',name)
@@ -227,7 +228,7 @@ class SpinBlackHoleBinary(lisaxml.Source):
                              self.InitialPolarAngleL,self.InitialAzimuthalAngleL,
                              self.PolarAngleOfSpin1,self.AzimuthalAngleOfSpin1,
                              self.PolarAngleOfSpin2,self.AzimuthalAngleOfSpin2,
-                             inittime + deltat*(samples-1))
+                             inittime + deltat*(samples-1), self.TaperQFactor)
         
 
         hp = numpy.empty(samples,'d')

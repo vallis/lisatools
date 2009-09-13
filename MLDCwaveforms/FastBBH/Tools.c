@@ -37,6 +37,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double shp, shc, c2psi, s2psi;
   double tend = 0.0,taper1,taper2; /* tend stores final time where hp and hc are non-zero...*/
   double taperQFactor = 3.0; /* Added by Stas -> needed for the half-hann taper */
+  int valid = 0;
 
   int i, j, n, idxm;
   int index, laststep;
@@ -216,7 +217,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 /*  printf("sin(i) = %e,  sin(kappa) =  %e \n", sqrt(1.0-JdotL*JdotL), sqrt(1.0-LdotN*LdotN));*/
 
   gamma0 = acos(x);
-
+  /*gamma0 = 0.0;   Stas Don't forget to change it back!!!! */
 
 /*-acos( (Lnz*Ldotn + cos(theta))/(sin(iota)*sqrt(1.-Ldotn*Ldotn)) );*/
 
@@ -246,6 +247,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   thomasvec[index] = LSvals[9]; 
   
   fold = 0.0;
+  
 
   /* Start the integration: */
   
@@ -254,16 +256,27 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
          f = Freq(tcurrent*TSUN, Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
          x = pow(PI*Mtot*f*TSUN,2./3.);
-
-      if ((f >= fold) && (x < xmax)) {  /* Check to make sure we're chirping and PN valid */
+      if (taperQFactor == 0){
+          if ((f >= fold) && (x < xmax))
+             valid = 1;
+          else
+             valid = 0;    
+      }else{
+          if (f >= fold)
+              valid = 1;
+           else
+              valid = 0;
+      }
+      
+   if (valid != 0) {  /* Check to make sure we're chirping and PN valid */
 	
-	if (tcurrent+hcurrent-tfinal > 0.)
-	  {
-	    hcurrent = tfinal-tcurrent;
-	    laststep = ENDYES;
-	  }
+	 if (tcurrent+hcurrent-tfinal > 0.)
+	   {
+	     hcurrent = tfinal-tcurrent;
+	     laststep = ENDYES;
+	   }
 	
-	do
+   do
 	  {	    
 	    rkckstep(updatedvals, fourthordervals, hcurrent, LSvals, tcurrent, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc);
 	  
@@ -322,9 +335,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
       }
       else {
 	/* If PN gone bad go to tfinal and keep everything the same. */
-	
         tcurrent = tfinal;
-	tmax = tcurrent*TSUN;  
+   	  tmax = tcurrent*TSUN;  
+	
 	/* At tmax, we've just barely gone beyond xmax */
 	timevec[index] = tmax;
 	mulvec[index] = mulvec[index-1];
@@ -419,15 +432,28 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   tend = tdvals[n-1];
 
   tTaper = taperQFactor/fold;
-  if (tTaper > SBH.Tpad)
-       tTaper = SBH.Tpad;
- /* FILE *fp1;
-  fp1 = fopen( "tmp/Taper.dat", "w" );       */
+/*  printf("Stas: check -> tTaper = %e \n ", tTaper);  
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      Stas:    NOTE
+      The below has to be changed once the integration is extended to 10^5 seconds!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   
+*/
+
+  if (tc >= tend){
+     tTaper = SBH.Tpad;
+  }
+ /* if (tTaper > SBH.Tpad)
+       tTaper = SBH.Tpad; */
+/*  FILE *fp1;
+  fp1 = fopen( "tmp/Taper.dat", "w" );  
+  printf("Stas: check -> tend = %f,  fend = %e, tTaper = %e , tmax-tend =  %e \n ", tend, fold, tTaper, tmax-tend);     */
   for(i = n-1; i >= 0; i--)
     { 
+      
       td = tdvals[i];
       if (td <= tmax) /* Make sure we have data for the point. */
 	{
+	    
 	  costhetaL = interpmul[i];
 	  sinthetaL = sqrt(1.-costhetaL*costhetaL);
 	  phiL = interpphil[i];
@@ -447,7 +473,6 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 		// expansion.*/
 	    if((x < xmax) && (x < xold) )
 	      {
-	    
 	    Phi15 = p150 - p15*beta;
 	    Phi20 = p200 - p20*(15./32.*sigma);
 	    
@@ -461,6 +486,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
          taper = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
 		}else{
 		   taper = halfhann(td,tend,tend-tTaper);
+		  /* taper = halfhann(td,tmax,tmax-tTaper);*/
 		}   
 	/*	taper2 = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x))); */
 						
@@ -589,6 +615,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   free_dvector(interpbeta, 0, n-1);
   free_dvector(interpsigma, 0, n-1);
   free_dvector(interpthomas, 0, n-1);
+  
+ /* fclose(fp1); */
 
 
 }

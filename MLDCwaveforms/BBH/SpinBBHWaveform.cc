@@ -54,13 +54,14 @@ SpinBBHWaveform::SpinBBHWaveform(double mass1, double mass2, double chi1, double
 
 void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double iota0, double alpha0, \
                                        double thetaS10, double phiS10,  double thetaS20, double phiS20, \
-                                       double maxDuration){
+                                       double maxDuration, double TaperQFactor){
 
   LISAWPAssert( S1z >= -1.0 && S1z <=1.0, "S1z is outside [-1,1]" );
   LISAWPAssert( S2z >= -1.0 && S2z <=1.0, "S2z is outside [-1,1]" );
   LISAWPAssert(observerSet, "you need to set position of the source");
   
   double  t = 0.0;
+  taperQ = TaperQFactor;
  
 
   // First we need to translate all directions from SSB to source frame
@@ -257,9 +258,9 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   newstep = dt;
   cumulstep = dt;  
   
-  if (om >= om_lso)
+ /* if (om >= om_lso)
            std::cout << "inital frequncy = " << om << "  lso frequency = " << om_lso << std::endl;
-  LISAWPAssert(om < om_lso, "LSO reached with initial conditions");
+  LISAWPAssert(om < om_lso, "LSO reached with initial conditions"); */
   MECO = CheckMECO();
   if(MECO){
         std::cerr << "MECO/LSO reached with initial conditioins" << std::endl;
@@ -512,11 +513,12 @@ bool SpinBBHWaveform::CheckMECO(){
 	   nonstab = true;
    }
    */
-   if(om >= om_lso){
-       nonstab = true;
-       std::cout << "LSO reached at omega = " << om << std::endl;
+   if (taperQ != 0.){
+     if(om >= om_lso){
+         nonstab = true;
+         std::cout << "LSO reached at omega = " << om << std::endl;
+     }
    }
-   
    if(om < om_prev){
        std::cout << "Instability condition is met at domega/dt = 0: orb. ang. freq. = " << om << std::endl;
        nonstab =  true;
@@ -727,6 +729,12 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
     double Ataper = 150;   // this parameter regulates steepness of the taper
     
     int kk;
+    double t;
+    double tend = time[size-1];
+    double tTaper = tend - LISAWP_PI*taperQ/freq[size-1];
+  /*  std::cout << "TaperQ = " << taperQ << "  freq_end = " << freq[size-1]/LISAWP_PI << std::endl;
+    std::cout << "tend = " << tend << "  tTaper =  " << LISAWP_PI*taperQ/freq[size-1] << std::endl;
+    std::ofstream foutTest("tmp/CheckTaperStas.dat"); */
     for(kk=0; kk<size; kk++){
         
 	    alpha = al[kk];
@@ -737,8 +745,9 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
         S2x = s2x[kk];
         S2y = s2y[kk];
         S2z = s2z[kk];
-	    Phi = Phase[kk];
+	     Phi = Phase[kk];
         om = freq[kk];
+        t = time[kk];
 	
 	    sa = sin(alpha);
 	    sa2 = sin(2.0*alpha);
@@ -748,8 +757,8 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
 	    ci = cos(iota);
  
         a = -sn*sa;
-   	    b = cs*si - sn*ci*ca;
-    	c = cs*ci*ca + si*sn;
+   	  b = cs*si - sn*ci*ca;
+    	  c = cs*ci*ca + si*sn;
 
         Dx = x2*(m2/M)*S2x - x1*(m1/M)*S1x; 
         Dy = x2*(m2/M)*S2y - x1*(m1/M)*S1y; 
@@ -810,8 +819,12 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
       
         Mom13 = pow(M*om, 1./3.);
         Mom23 = Mom13*Mom13;
-        wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
-      
+        if (taperQ == 0.){
+           wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
+        }else{
+           wk = halfhann(t, tend, tTaper);// need t, tend, tstart_taper
+        }     
+      //  foutTest << std::setprecision(15) << t << "   " << wk << std::endl;
         switch(order){
           case 0:
 	         hp = (mu/dist)*Mom23*Qp;
@@ -862,11 +875,28 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
         }*/
  
     }
+ //   foutTest.close();
    
     return((int)size);
 
 }
 
+double SpinBBHWaveform::halfhann(double t, double t0, double t1){
+
+ 	double w;
+
+ 	if(t > t0 && t > t1){
+ 		if(t0 > t1) return 0;
+ 		else return 1;
+ 	} else if(t < t0 && t < t1){
+ 		if(t0 < t1) return 0;
+ 		else return 1;
+ 	} else {
+ 		w = cos(LISAWP_PI*(t-t1)/(2.0*(t0-t1)));
+ 		return w*w;
+ 	}
+
+ }
 
 
 }// end of the namespace

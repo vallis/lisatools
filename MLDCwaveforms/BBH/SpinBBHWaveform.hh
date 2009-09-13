@@ -74,10 +74,12 @@ namespace LISAWP{
     * @param S2z z-component of \f[ \bf{\hat{S_2}} \f]
     * @param phiS2 azimuthal angle of the second spin in rad
     * @paaram maxDuration maximum duration from t=0 (needed if Tc outside observation time)
+    * @param TaperQFactor Q of the half-Hannig taper
     */
     
    void ComputeInspiral(double t0, double tc, double phiC, double iota0, double alpha0, \
-                     double thetaS10, double phiS10, double thetaS20, double phiS20, double maxDuration);
+                     double thetaS10, double phiS10, double thetaS20, double phiS20, double maxDuration,\
+                     double TaperQFactor);
 
    /** define direction to the detector/baricenter 
     * @param theta_s colatitude position of the source
@@ -142,6 +144,7 @@ namespace LISAWP{
    double dEdomega;
    double Tc, PhiOrbC;
    double psi;
+   double taperQ;
 
    //double t;
 
@@ -167,8 +170,13 @@ namespace LISAWP{
    /** Computes orbital phase using time domain expression */ 
 
    double ComputeOrbPhase(double t, double Tc, double phi_C);
+   
+   /** Computes the taper, currently we use half-Hanning window */
+   
+   double halfhann(double t, double t0, double t1);
 
  };
+
 
 
 } // end of namespace
