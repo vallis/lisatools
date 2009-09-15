@@ -594,6 +594,9 @@ if dolisacode:
         pwait()
         
         os.chdir('..')
+        run("mv LISACode/*.xml TDI/.")
+        run("mv LISACode/*.bin TDI/.")
+        run("mv LISACode/*.txt TDI/.")
  
     else:
         # Use of LISACode before challenge4 : challenge3.5
@@ -633,6 +636,7 @@ if dolisacode:
             run('%s %s-lisacode-input.xml' % (lisacode.lisacode,cname))
 
             os.chdir('..')
+
 
 step5time = time.time()
 
