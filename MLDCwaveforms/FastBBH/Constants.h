@@ -71,4 +71,4 @@
 #define ENDNO 2
 
 // Length of RK storage vectors:
-#define VECLENGTH 20000
+#define VECLENGTH 100000
