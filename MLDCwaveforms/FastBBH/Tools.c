@@ -36,7 +36,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double tmax, VAmp, r;
   double shp, shc, c2psi, s2psi;
   double tend = 0.0,taper1,taper2; /* tend stores final time where hp and hc are non-zero...*/
-  double taperQFactor = 3.0; /* Added by Stas -> needed for the half-hann taper */
+  double taperQFactor; /* Added by Stas -> needed for the half-hann taper */
   int valid = 0;
 
   int i, j, n, idxm;
@@ -46,22 +46,22 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   /* Vectors for storing all the data.  We don't know how many points we need, so pick an arbitrary length.*/
 
-  double timevec[VECLENGTH];
-  double mulvec[VECLENGTH];
-  double sphilvec[VECLENGTH];
-  double cphilvec[VECLENGTH];
-  double betavec[VECLENGTH];
-  double sigmavec[VECLENGTH];
-  double thomasvec[VECLENGTH];
+  double *timevec;
+  double *mulvec;
+  double *sphilvec;
+  double *cphilvec;
+  double *betavec;
+  double *sigmavec;
+  double *thomasvec;
 
   /* For the spline:*/
 
-  double muly2[VECLENGTH];
-  double sphily2[VECLENGTH];
-  double cphily2[VECLENGTH];
-  double betay2[VECLENGTH];
-  double sigmay2[VECLENGTH];
-  double thomasy2[VECLENGTH];
+  double *muly2;
+  double *sphily2;
+  double *cphily2;
+  double *betay2;
+  double *sigmay2;
+  double *thomasy2;
 
   double *tdvals;
   double *interpmul;
@@ -71,6 +71,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double *interpthomas;
   double stas1, stas2;
 
+  double T_endpad, dtx, bd, sd, tx, bx, sx, fx, tstop, fstop;
+  double t1, t2, f1, f2;
+
   FILE *Out;
 
   dt = SBH.TimeSample;
@@ -78,12 +81,33 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   VAmp = 2.0*SBH.AmplPNorder;
   xmax = 1.0/SBH.Rmin;
 
+  T_endpad = 1.0e5;  /* this is added to make sure we integrate far enough to find merger. ok for signals
+                        with merger frequencies greater than 1e-5. The barycenter waveform is still only
+                        produced out to SBH.Tobs+SBH.Tpad */
+
   tdvals = dvector(0, n-1);
   interpmul = dvector(0, n-1);
   interpphil = dvector(0, n-1);
   interpbeta = dvector(0, n-1);
   interpsigma = dvector(0, n-1);
   interpthomas = dvector(0, n-1);
+
+  timevec = dvector(0,VECLENGTH);
+  mulvec = dvector(0,VECLENGTH);
+  sphilvec = dvector(0,VECLENGTH);
+  cphilvec = dvector(0,VECLENGTH);
+  betavec = dvector(0,VECLENGTH);
+  sigmavec = dvector(0,VECLENGTH);
+  thomasvec = dvector(0,VECLENGTH);
+
+  /* For the spline:*/
+
+  muly2 = dvector(0,VECLENGTH);
+  sphily2 = dvector(0,VECLENGTH);
+  cphily2 = dvector(0,VECLENGTH);
+  betay2 = dvector(0,VECLENGTH);
+  sigmay2 = dvector(0,VECLENGTH);
+  thomasy2 = dvector(0,VECLENGTH);
 
   /* Double Kerr Parameters: m1/Msun, m2/Msun, tc/sec, DL/Gpc, chi1, chi2, cos(theta), cos(thetaL(0)),
    cos(thetaS1(0)), cos(thetaS2(0)), phi, phiL(0), phiS1(0), phiS2(0), phic.  
@@ -176,8 +200,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   /* Set up range of integration.  The extra Tpad=900 s is more than enough for the light travel time across the LISA orbit.*/
 
   tcurrent = -SBH.Tpad/TSUN;
-  tmax = SBH.Tobs + SBH.Tpad;  /* will decrease if xmax lies within integration range */
-  if(tc > tmax) tmax = tc;
+  tmax = SBH.Tobs + SBH.Tpad + T_endpad;  /* will decrease if xmax lies within integration range */
+  if(tc > tmax) tmax = tc+T_endpad;
   tfinal = tmax/TSUN;
 
   f = Freq(0.0, Mtot, Mchirp, eta, beta, sigma, tc);
@@ -259,10 +283,57 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   
   while(tcurrent < tfinal)
     {	
-
-         f = Freq(tcurrent*TSUN, Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
+ 
+         f = Freq(timevec[index], Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
          x = pow(PI*Mtot*f*TSUN,2./3.);
-      if (taperQFactor == 0){
+
+       if(f < fold) /* need to locate turn over point precisely */
+	{
+          dtx = timevec[index]-timevec[index-1];
+          bd = (betavec[index]-betavec[index-1])/dtx;
+          sd = (sigmavec[index]-sigmavec[index-1])/dtx;
+          tx = timevec[index-1];
+          dtx /= 2.0;
+          fx = fold;
+          t1 = tx + dtx;
+          bx = betavec[index-1]+bd*(t1-timevec[index-1]);
+          sx = sigmavec[index-1]+sd*(t1-timevec[index-1]);
+          f1 = Freq(t1, Mtot, Mchirp, eta, bx, sx, tc);
+          if(f1 > fx)
+	    {
+             fx = f1;
+             tx = t1;
+            }
+          for(i = 0; i < 10; i++)
+	    {
+	      /* printf("%.10e %.10e\n", tx, fx); */
+	      dtx /= 2.0;
+              t1 = tx +dtx;
+              bx = betavec[index-1]+bd*(t1-timevec[index-1]);
+              sx = sigmavec[index-1]+sd*(t1-timevec[index-1]);
+              f1 = Freq(t1, Mtot, Mchirp, eta, bx, sx, tc);
+              t2 = tx - dtx;
+              bx = betavec[index-1]+bd*(t2-timevec[index-1]);
+              sx = sigmavec[index-1]+sd*(t2-timevec[index-1]);
+              f2 = Freq(t2, Mtot, Mchirp, eta, bx, sx, tc);
+              if(f1 > fx)
+	       {
+                fx = f1;
+                tx = t1;
+               }
+              if(f2 > fx)
+	       {
+                fx = f2;
+                tx = t2;
+               }
+	    }
+          tstop = tx;
+          fstop = fx;
+
+        }
+
+
+       if (taperQFactor < 1.0e-6){
           if ((f >= fold) && (x < xmax))
              valid = 1;
           else
@@ -272,7 +343,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
               valid = 1;
            else
               valid = 0;
-      }
+	      } 
+
+       /* printf("%e %e %e %d\n", timevec[index], f, fold, valid); */
       
    if (valid != 0) {  /* Check to make sure we're chirping and PN valid */
 	
@@ -336,15 +409,15 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
         /* printf("%d %e %e\n", index, timevec[index], thomasvec[index]); */
 
         fold = f;
-		xold = x; /* When the integration is done, will contain largest x reached... */
+	xold = x; /* When the integration is done, will contain largest x reached... */
        
       }
       else {
 	/* If PN gone bad go to tfinal and keep everything the same. */
         tcurrent = tfinal;
-   	  tmax = tcurrent*TSUN;  
+   	tmax = tcurrent*TSUN;  
 	
-	/* At tmax, we've just barely gone beyond xmax */
+	/* At tmax, we've just barely gone beyond breakdown of PN */
 	timevec[index] = tmax;
 	mulvec[index] = mulvec[index-1];
 	sphilvec[index] = sphilvec[index-1];
@@ -437,7 +510,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   tend = tdvals[n-1];
 
-  tTaper = taperQFactor/fold;
+  tTaper = taperQFactor/fstop;
+
 /*  printf("Stas: check -> tTaper = %e \n ", tTaper);  
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       Stas:    NOTE
@@ -491,7 +565,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 		if (tTaper == 0.){
          taper = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x)));
 		}else{
-		   taper = halfhann(td,tend,tend-tTaper);
+		   taper = halfhann(td,tstop,tstop-tTaper);
 		  /* taper = halfhann(td,tmax,tmax-tTaper);*/
 		}   
 	/*	taper2 = 0.5*(1.+tanh(SBH.TaperSteepness*(1./SBH.TaperApplied-x))); */
@@ -626,6 +700,24 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   free_dvector(interpbeta, 0, n-1);
   free_dvector(interpsigma, 0, n-1);
   free_dvector(interpthomas, 0, n-1);
+
+  free_dvector(timevec, 0,VECLENGTH);
+  free_dvector(mulvec, 0,VECLENGTH);
+  free_dvector(sphilvec, 0,VECLENGTH);
+  free_dvector(cphilvec, 0,VECLENGTH);
+  free_dvector(betavec, 0,VECLENGTH);
+  free_dvector(sigmavec, 0,VECLENGTH);
+  free_dvector(thomasvec, 0,VECLENGTH);
+
+  /* For the spline:*/
+
+  free_dvector(muly2, 0,VECLENGTH);
+  free_dvector(sphily2, 0,VECLENGTH);
+  free_dvector(cphily2, 0,VECLENGTH);
+  free_dvector(betay2, 0,VECLENGTH);
+  free_dvector(sigmay2, 0,VECLENGTH);
+  free_dvector(thomasy2, 0,VECLENGTH);
+
   
  /* fclose(fp1); */
 
