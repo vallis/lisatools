@@ -42,6 +42,7 @@ int main(int argc,char *argv)
   SBH.Tpad = 900.0;
   SBH.Rmin = 6.0;
   SBH.TaperSteepness = 150.0;
+  SBH.TaperQFactor = 3.0;
 
   n = (int)((SBH.Tobs + 2.0*SBH.Tpad)/SBH.TimeSample);
 
