@@ -62,6 +62,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   
   double  t = 0.0;
   taperQ = TaperQFactor;
+  maxDur = maxDuration;
  
 
   // First we need to translate all directions from SSB to source frame
@@ -827,7 +828,10 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
         if (taperQ == 0.){
            wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
         }else{
-           wk = halfhann(t, tend, tTaper);// need t, tend, tstart_taper
+           if (tend < maxDur-dt){
+               wk = halfhann(t, tend, tTaper);// need t, tend, tstart_taper
+           }else
+               wk = 1.0;   
         }     
       //  foutTest << std::setprecision(15) << t << "   " << wk << std::endl;
         switch(order){

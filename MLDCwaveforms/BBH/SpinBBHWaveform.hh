@@ -130,6 +130,7 @@ namespace LISAWP{
    std::vector<double> s2z;
    double x1, x2;
    double eta, M;
+   double maxDur;
    bool spinSet, orbitSet, observerSet;
    bool nonspin, runDone;
    bool back;
