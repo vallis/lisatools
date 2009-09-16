@@ -69,6 +69,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double *interpbeta;
   double *interpsigma;
   double *interpthomas;
+  double stas1, stas2;
 
   FILE *Out;
 
@@ -210,18 +211,23 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 
   x = calcLdotN(JcrossL, LcrossN);
   
-  /*printf("Nom %e \n", x); */
+  stas1 = x;
+  stas2 = calcLdotN(Jtot,LcrossN);
+  gamma0 = -atan2(stas2, stas1);
+  /*printf("Stas: gamma =  %f \n", gamma0);
+  
+  printf("Nom %e \n", x); 
 
   x /= sqrt((1.0-JdotL*JdotL)*(1.0-LdotN*LdotN));
   
-/*  printf("sin(i) = %e,  sin(kappa) =  %e \n", sqrt(1.0-JdotL*JdotL), sqrt(1.0-LdotN*LdotN));*/
+  printf("sin(i) = %e,  sin(kappa) =  %e \n", sqrt(1.0-JdotL*JdotL), sqrt(1.0-LdotN*LdotN));
 
-  gamma0 = acos(x);
+  gamma0 = acos(x); */
   /*gamma0 = 0.0;   Stas Don't forget to change it back!!!! */
 
 /*-acos( (Lnz*Ldotn + cos(theta))/(sin(iota)*sqrt(1.-Ldotn*Ldotn)) );*/
 
-  /* printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0);*/
+  /* printf("Orbital phase rotation to match Kidder frame = %f\n", gamma0); */
 
   for(i = 0; i <= 9; i++) LSvals[i] -= SBH.Tpad*derivvals[i];  /* back up the initial values to time -Tpad */
 
@@ -505,6 +511,11 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
             xrt = sqrt(x);
    
             OPhase = (Phase+thomas)/2.0 + gamma0;
+            
+            /*if(td == 0.0){
+               printf("Stas: at t = %f, orb. phase = %f, thomas phase = %f, %f, %f, total phase = %f\n", td, 0.5*Phase, \
+               0.5*thomas+gamma0, 0.5*thomas, gamma0, OPhase);
+            }*/
 
             cPhi[1] = cos(OPhase);
             sPhi[1] = sin(OPhase);

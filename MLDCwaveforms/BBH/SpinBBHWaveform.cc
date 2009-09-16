@@ -87,8 +87,8 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   S1S2 = S1x*S2x + S1y*S2y + S1z*S2z;
   
 /*  std::cout << "Scalar products in SSb:" << std::endl;
-  std::cout << LS1 << "   " << LS2 << "   " << S1S2 << std::endl;
-*/  
+  std::cout << LS1 << "   " << LS2 << "   " << S1S2 << std::endl;*/
+  
   // PhiOrbC = 0.5*phiC;
     PhiOrbC = phiC;
     Tc = tc;
@@ -104,10 +104,11 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   double Jz = eta*M*M*pow(M*om, -1./3)*Lnz + x1*m1*m1*S1z + x2*m2*m2*S2z;
   double absJ = sqrt(Jx*Jx + Jy*Jy + Jz*Jz);
  
-/*  std::cout << "Stas check: " << eta*M*M*pow(M*om, -1./3)*Lnx << "   " << \
+/*  std::cout << "Stas check AMplitudes: " << eta*M*M*pow(M*om, -1./3)*Lnx << "   " << \
       x1*m1*m1*S1x << "   " << x2*m2*m2*S2x << std::endl;
-  std::cout << "Stas check: " << Lnx << "   " << \
+  std::cout << "Stas check x-components:  " << Lnx << "   " << \
           S1x << "   " << S2x << std::endl;
+  std::cout << "Stas here is S1: " << S1x << "  " << S1y << "   " << S1z << std::endl;          
  
   std::cout << "Stas check: |L| = " << eta*M*M*pow(M*om, -1./3) << "  |S1| =   " << \
             x1*m1*m1 << "   |S2| =   " << x2*m2*m2  << "  |J| = " << absJ << std::endl; */
@@ -134,11 +135,11 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   std::vector<double> n(3);
   
   n[0] = stS*cos(phiS); n[1] = stS*sin(phiS); n[2] = ctS;
-/*  
-  std::cout << "L.n = " << Lnx*n[0] + Lny*n[1] + Lnz*n[2] << std::endl;
+ 
+ /* std::cout << "L.n = " << Lnx*n[0] + Lny*n[1] + Lnz*n[2] << std::endl;
   std::cout << "S1.n = " << S1x*n[0] + S1y*n[1] + S1z*n[2] << std::endl;
-  std::cout << "S2.n = " << S2x*n[0] + S2y*n[1] + S2z*n[2] << std::endl;
-*/  
+  std::cout << "S2.n = " << S2x*n[0] + S2y*n[1] + S2z*n[2] << std::endl;  */
+  
   
   
   ez[0] = stJ*cos(phiJ);  ez[1] = stJ*sin(phiJ); ez[2] = ctJ;
@@ -153,11 +154,12 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   double nez = n[0]*ez[0] + n[1]*ez[1] + n[2]*ez[2];
 /*  std::cout << "check ey.ez = " << ez[0]*ey[0] + ez[1]*ey[1] + ez[2]*ey[2] << std::endl;
   std::cout << "check ey.n = " << n[0]*ey[0] + n[1]*ey[1] + n[2]*ey[2] << std::endl;
-  std::cout << "check theta = " << theta << "  " << LISAWP_PI - acos(nez) << std::endl;*/
+  std::cout << "check theta = " << theta << "  " << LISAWP_PI - acos(nez) << std::endl; */
   ex[0] = (ez[0]*nez - n[0])/stheta;
   ex[1] = (ez[1]*nez - n[1])/stheta;
   ex[2] = (ez[2]*nez - n[2])/stheta;
-  
+/*  std::cout << "check ex.ez = " << ez[0]*ex[0] + ez[1]*ex[1] + ez[2]*ex[2] << std::endl;
+  std::cout << "check ex.n = " << n[0]*ex[0] + n[1]*ex[1] + n[2]*ex[2] << "   ez.n  = " << nez  <<  std::endl;*/
   
   // Compute the angles in the source frame
   
@@ -191,15 +193,16 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
     
   iota = iotaIn;
   alpha = alphaIn;
-/*
+
+/*  std::cout << std::endl;
   std::cout << "iotaIN = " << iotaIn << std::endl;
   std::cout << "alphaIn = " << alphaIn << std::endl;
   std::cout << "thetaS1in =  " <<  thetaS1In << std::endl;
   std::cout << "phiS1in =  " << phiS1In << std::endl;
   std::cout << "thetaS2in  = " << thetaS2In  << std::endl;
   std::cout << "phiS2in =   " << phiS2In << std::endl;   
-  std::cout << "thetaD = " << theta << std::endl; 
-*/
+  std::cout << "thetaD = " << theta << std::endl; */
+
   Lnx = sin(iota)*cos(alpha);
   Lny = sin(iota)*sin(alpha);
   Lnz = cos(iota);
@@ -215,18 +218,17 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   S2z = cos(thetaS2In);
   S2x = sin(thetaS2In)*cos(phiS2In);
   S2y = sin(thetaS2In)*sin(phiS2In);
-/*  
+  
   LS1 = Lnx*S1x + Lny*S1y + Lnz*S1z;
   LS2 = Lnx*S2x + Lny*S2y + Lnz*S2z;
   S1S2 = S1x*S2x + S1y*S2y + S1z*S2z;
    
- std::cout << "Scalar products in source frame:" << std::endl;
+/* std::cout << "Scalar products in source frame:" << std::endl;
   std::cout << LS1 << "   " << LS2 << "   " << S1S2 << std::endl; 
   
   std::cout << "L.n = " << -Lnx*sin(theta) - Lnz*cos(theta) << std::endl;
   std::cout << "S1.n = " << -S1x*sin(theta) - S1z*cos(theta) << std::endl;
-  std::cout << "S2.n = " << -S2x*sin(theta) - S2z*cos(theta) << std::endl;
-*/
+  std::cout << "S2.n = " << -S2x*sin(theta) - S2z*cos(theta) << std::endl;*/
   
   // Ready to start integration
  
@@ -283,13 +285,16 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   double Ldotn = -Lnx*sin(theta) -Lnz*cos(theta); 
 //  std::cout << "Ldotn = " << Ldotn << std::endl;
  
-  double prec0 = -acos( (Lnz*Ldotn + cos(theta))/(sin(iota)*sqrt(1.-Ldotn*Ldotn)) );
-/*  std::cout << "sin(iota) = " << sin(iota) << "  sin(kappa) =  " << sqrt(1.-Ldotn*Ldotn) << std::endl;
+ // Stas !!!! redo it as arctan !!! ->> see the diff.
+ 
+  double prec0 = -acos( (Lnz*Ldotn + cos(theta))/(fabs(sin(iota))*sqrt(1.-Ldotn*Ldotn)) );
+  /*std::cout << "sin(iota) = " << sin(iota) << "  sin(kappa) =  " << sqrt(1.-Ldotn*Ldotn) << std::endl;
   std::cout << " Nom  = " <<  Lnz*Ldotn + cos(theta) << std::endl;
   std::cout << "initial precession angle = " << prec0 << std::endl; */
   prec0 = 0.0;
   coord0(11) = prec0;
-  
+ /* prec0 = atan2(-sin(alphaIn)*cos(theta), cos(iotaIn)*sin(theta)*cos(alphaIn) - cos(theta)*sin(iotaIn));
+  std::cout << "initial precession angle = " << prec0 << std::endl; */
   
      
      // ---------------------------------
@@ -301,7 +306,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   //coord0(12) = rhs(1)*sin(iota)*sin(iota)*cos(theta)*Ldotn/(1.-Ldotn*Ldotn);
   coord0(12) = 0.0;
   double ACSTin = coord0(12);
- 
+ // std::cout << "Intial orbital phase: = " << Phi+prec0 << "  " << 2.*(Phi+prec0) << std::endl;
   if (t0 < 0.0){
          back = true;
          while (t >= t0){
