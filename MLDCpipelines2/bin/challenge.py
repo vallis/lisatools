@@ -596,7 +596,6 @@ if dolisacode:
         os.chdir('..')
         run("mv LISACode/*.xml TDI/.")
         run("mv LISACode/*.bin TDI/.")
-        run("mv LISACode/*.txt TDI/.")
  
     else:
         # Use of LISACode before challenge4 : challenge3.5
@@ -659,7 +658,7 @@ if glob.glob('Galaxy/*.xml'):
 
     for xmlfile in glob.glob('Galaxy/*.xml'):
         sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
-        lctdifile = 'LISACode/' + re.sub('.xml','-tdi-lisacode.xml',os.path.basename(xmlfile))
+        lctdifile = 'TDI/' + re.sub('.xml','-tdi-lisacode.xml',os.path.basename(xmlfile))
         if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
             lisaxml.lisaXML(lctdifile,
                         author="MLDC Task Force",
