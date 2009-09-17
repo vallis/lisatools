@@ -46,6 +46,10 @@ parser.add_option("-t", "--coalescTime",
 parser.add_option("-m", "--massRatioRange",
                   type="float", dest="massRatioRange", default=4.0,
                   help="upper end of uniform range for m1/m2 [defaults to 4]")
+                  
+parser.add_option("-l", "--lowerMass",
+                  type="float", dest="lowerMass", default=1.0,
+                  help="lower bound on the mass1 in 10^6 M_sun [defaults to 1]")                  
 
 parser.add_option("-r", "--coalescRange",
                   type="float", dest="deltaTc", default=None,
@@ -107,7 +111,7 @@ mysystem.AzimuthalAngleOfSpin1	    = random.uniform(0.0, 2.0*math.pi)			# initia
 mysystem.AzimuthalAngleOfSpin2	    = random.uniform(0.0, 2.0*math.pi)			# initial azimuthal direction of second spin
 mysystem.Spin1                      = random.uniform(0.0, 1.0)				# magnitude of first spin in M^2
 mysystem.Spin2			            = random.uniform(0.0, 1.0)				# magnitude of second spin in M^2
-mysystem.Mass1                      = 1.0e6 * random.uniform(1.0,5.0)                   # m1 in SolarMass
+mysystem.Mass1                      = 1.0e6 * random.uniform(options.lowerMass,5.0)                   # m1 in SolarMass
 mysystem.Mass2                      = mysystem.Mass1 / random.uniform(1.0,options.massRatioRange)          # m2 in SolarMass
 mysystem.CoalescenceTime            = (options.Tc + random.uniform(-options.deltaTc,options.deltaTc)) * 24 * 3600     # coalescence time in Second (from command-line parameter)
 mysystem.PhaseAtCoalescence         = random.uniform(0.0,2.0*math.pi)                   # GW phase at coalescence (excluding modulation) in Radian

@@ -44,33 +44,33 @@ seed = seed + 1
 # --- black holes
 
 # 1 - A loud (SNR ~ 2000) signal (with in-spiral "in band", that is from f = 0.1 mHz, lasting about 1 week) and coalescing 3 months +/- 1 month after the beginning of the observations
-run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=2000 --coalescTime=90  --coalescRange=30 --massRatioRange=10 --sourceName="SMBH-1" Source/BH-1.xml' % globals())
+run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=2000 --coalescTime=90  --coalescRange=30 --massRatioRange=10 --lowerMass=0.5 --sourceName="SMBH-1" Source/BH-1.xml' % globals())
 seed = seed + 1
 
 # 2 - A moderate-to-low SNR (~ 20) signal with coalescence between 25 and 26 months from the beginning of the observations
-run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=20   --coalescTime=765 --coalescRange=15 --massRatioRange=10 --sourceName="SMBH-2" Source/BH-2.xml' % globals())
+run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=20   --coalescTime=765 --coalescRange=15 --massRatioRange=10 --lowerMass=0.5 --sourceName="SMBH-2" Source/BH-2.xml' % globals())
 seed = seed + 1
 
 chosen = random.sample([3,4,5,6],random.randint(2,4))
 
 # 3 - A loud (SNR ~ 1000) signal coalescing between 6 and 24 months from beginning of observations
 if 3 in chosen:
-    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=1000 --coalescTime=450 --coalescRange=270 --massRatioRange=10 --sourceName="SMBH-3" Source/BH-3.xml' % globals())
+    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=1000 --coalescTime=450 --coalescRange=270 --massRatioRange=10 --lowerMass=0.5 --sourceName="SMBH-3" Source/BH-3.xml' % globals())
     seed = seed + 1
     
 # 4 - A loud (SNR ~ 200) signaql coalescing between 6 and 24 months from beginning of observations
 if 4 in chosen:
-    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=200  --coalescTime=450 --coalescRange=270 --massRatioRange=10 --sourceName="SMBH-4" Source/BH-4.xml' % globals())
+    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=200  --coalescTime=450 --coalescRange=270 --massRatioRange=10 --lowerMass=0.5 --sourceName="SMBH-4" Source/BH-4.xml' % globals())
     seed = seed + 1
 
 # 5 - A loud (SNR ~ 100) signal with coalescence taking place between 18 and 21 months from the start of the observations
 if 5 in chosen:
-    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=100  --coalescTime=540 --coalescRange=45  --massRatioRange=10 --sourceName="SMBH-5" Source/BH-5.xml' % globals())
+    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=100  --coalescTime=540 --coalescRange=45  --massRatioRange=10 --lowerMass=0.5 --sourceName="SMBH-5" Source/BH-5.xml' % globals())
     seed = seed + 1
 
 # 6 - A low SNR (~ 10) signal with coalescence taking place between 27 and 28 months from the beginning of the observations
 if 6 in chosen:
-    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=10   --coalescTime=825 --coalescRange=15  --massRatioRange=10 --sourceName="SMBH-6" Source/BH-6.xml' % globals())
+    run('%(mydir)s/makesource-SpinBBH.py -F --seed=%(seed)s --distance=1e10 --requestSN=10   --coalescTime=825 --coalescRange=15  --massRatioRange=10 --lowerMass=0.5 --sourceName="SMBH-6" Source/BH-6.xml' % globals())
     seed = seed + 1
 
 # --- EMRIs!
