@@ -288,7 +288,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
          x = pow(PI*Mtot*f*TSUN,2./3.);
 
        if(f < fold) /* need to locate turn over point precisely */
-	{
+	    {
           dtx = timevec[index]-timevec[index-1];
           bd = (betavec[index]-betavec[index-1])/dtx;
           sd = (sigmavec[index]-sigmavec[index-1])/dtx;
@@ -300,14 +300,14 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
           sx = sigmavec[index-1]+sd*(t1-timevec[index-1]);
           f1 = Freq(t1, Mtot, Mchirp, eta, bx, sx, tc);
           if(f1 > fx)
-	    {
+	       {
              fx = f1;
              tx = t1;
-            }
+          }
           for(i = 0; i < 10; i++)
-	    {
-	      /* printf("%.10e %.10e\n", tx, fx); */
-	      dtx /= 2.0;
+	       {
+	        /* printf("%.10e %.10e\n", tx, fx); */
+	           dtx /= 2.0;
               t1 = tx +dtx;
               bx = betavec[index-1]+bd*(t1-timevec[index-1]);
               sx = sigmavec[index-1]+sd*(t1-timevec[index-1]);
@@ -317,20 +317,20 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
               sx = sigmavec[index-1]+sd*(t2-timevec[index-1]);
               f2 = Freq(t2, Mtot, Mchirp, eta, bx, sx, tc);
               if(f1 > fx)
-	       {
-                fx = f1;
-                tx = t1;
-               }
+	           {
+                  fx = f1;
+                  tx = t1;
+              }
               if(f2 > fx)
-	       {
+	           {
                 fx = f2;
                 tx = t2;
-               }
-	    }
+              }
+	       }
           tstop = tx;
           fstop = fx;
 
-        }
+       }
 
 
        if (taperQFactor < 1.0e-6){
@@ -517,16 +517,20 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
       Stas:    NOTE
       The below has to be changed once the integration is extended to 10^5 seconds!!!!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   
-*/
+
 
   if (tc >= tend){
      tTaper = SBH.Tpad;
-  }
+  }*/
  /* if (tTaper > SBH.Tpad)
        tTaper = SBH.Tpad; */
-/*  FILE *fp1;
-  fp1 = fopen( "tmp/Taper.dat", "w" );  
-  printf("Stas: check -> tend = %f,  fend = %e, tTaper = %e , tmax-tend =  %e \n ", tend, fold, tTaper, tmax-tend);     */
+ /* FILE *fp1;
+  fp1 = fopen( "tmp/Taper.dat", "w" ); 
+  FILE *fp2;
+  fp2 = fopen( "tmp/FreqN.dat", "w" ); 
+  printf("Stas: check  f_old = %e \n", fold);
+  printf("Stas: check  tstop = %f, fstop = %e, tmax = %f \n", tstop, fstop, tmax);
+  printf("Stas: check -> tend = %f,  fend = %e, tTaper = %e , tmax-tend =  %e \n ", tend, fstop, tTaper, tmax-tend);*/
   for(i = n-1; i >= 0; i--)
     { 
       
@@ -542,6 +546,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  thomas = -interpthomas[i];
 
 	  f = Freq(td, Mtot, Mchirp, eta, beta, sigma, tc);
+    /* fprintf(fp2, "%f\t %e\n", td, f);*/
 	    
 	    x = pow(PI*Mtot*f*TSUN,2./3.);
 
@@ -551,7 +556,19 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 		// imply that f had decreased with time (i.e. going from the current iteration
 		// to the previous one), casting into doubt the validity of the Post-Newtonian
 		// expansion.*/
-	    if((x < xmax) && (x < xold) )
+		if (taperQFactor < 1.0e-6){
+           if ((x < xold) && (x < xmax))
+              valid = 1;
+           else
+              valid = 0;    
+       }else{
+           if (x < xold)
+               valid = 1;
+            else
+               valid = 0;
+ 	    }
+	   /* if((x < xmax) && (x < xold) ) */
+   	 if(valid != 0 )
 	      {
 	    Phi15 = p150 - p15*beta;
 	    Phi20 = p200 - p20*(15./32.*sigma);
@@ -719,7 +736,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   free_dvector(thomasy2, 0,VECLENGTH);
 
   
- /* fclose(fp1); */
+ /* fclose(fp1); 
+  fclose(fp2);*/
 
 
 }

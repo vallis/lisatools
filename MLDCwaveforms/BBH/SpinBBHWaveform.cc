@@ -56,13 +56,14 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
                                        double thetaS10, double phiS10,  double thetaS20, double phiS20, \
                                        double maxDuration, double TaperQFactor){
 
-  LISAWPAssert( S1z >= -1.0 && S1z <=1.0, "S1z is outside [-1,1]" );
+ /* LISAWPAssert( S1z >= -1.0 && S1z <=1.0, "S1z is outside [-1,1]" );
   LISAWPAssert( S2z >= -1.0 && S2z <=1.0, "S2z is outside [-1,1]" );
-  LISAWPAssert(observerSet, "you need to set position of the source");
+  LISAWPAssert(observerSet, "you need to set position of the source");*/
   
   double  t = 0.0;
   taperQ = TaperQFactor;
   maxDur = maxDuration;
+  tIni = t0;
  
 
   // First we need to translate all directions from SSB to source frame
@@ -415,8 +416,9 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
   }// end of the backward integration
     // ----- Forward integration  ----
   back =  false; 
-    
-  while (t <= maxDuration){
+  double Tpad = 1.e5; // pading of the integration
+  tend = maxDuration;    
+  while (t <= maxDuration+Tpad){
      
        time.push_back(t);
        freq.push_back(om);
@@ -473,7 +475,8 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
 
        MECO = CheckMECO();
        if (MECO){
-          std::cout << "*** we reached merger condition at t = " << t << std::endl;
+          std::cout << std::setprecision(15) << "*** we reached merger condition at t = " << t << std::endl;
+          tend = t;
           break;
        }
        coord0 = coordn;  //take the final coordinates as initial for the next step
@@ -519,7 +522,7 @@ bool SpinBBHWaveform::CheckMECO(){
 	   nonstab = true;
    }
    */
-   if (taperQ != 0.){
+   if (taperQ == 0.){
      if(om >= om_lso){
          nonstab = true;
          std::cout << "LSO reached at omega = " << om << std::endl;
@@ -713,14 +716,18 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
     LISAWPAssert(observerSet, "You must specify direction to observer");
     LISAWPAssert(runDone, "You must compute inspiraling trajectory first");
 
+  //  int size = time.size();
+    int sizeM = (int)floor((maxDur-tIni)/dt);
     int size = time.size();
+    
+    /*std::cout << "Stas, check: size = " << size << "  sizeM = " << sizeM << std::endl; */
     
     if (!nonspin){
        LISAWPAssert(Phase.size() == size && io.size() == size && al.size() == size, "Sizes do not match");
     }else{
        LISAWPAssert(Phase.size() == size, "Sizes do not match");
     }
-    LISAWPAssert(size <= hPlusLength && size <= hCrossLength, "Buffer insufficient!");
+    LISAWPAssert(sizeM <= hPlusLength && sizeM <= hCrossLength, "Buffer insufficient!");
   
     double hp, hc;
 
@@ -738,10 +745,18 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
     double t;
     double tend = time[size-1];
     double tTaper = tend - LISAWP_PI*taperQ/freq[size-1];
-  /*  std::cout << "TaperQ = " << taperQ << "  freq_end = " << freq[size-1]/LISAWP_PI << std::endl;
+   /* std::cout << std::setprecision(15)  << "Stas: check the times: tend = " << tend << " maxDur = " << maxDur << std::endl;
+    
+    std::cout << "TaperQ = " << taperQ << "  freq_end = " << freq[size-1]/LISAWP_PI << std::endl;
     std::cout << "tend = " << tend << "  tTaper =  " << LISAWP_PI*taperQ/freq[size-1] << std::endl;
-    std::ofstream foutTest("tmp/CheckTaperStas.dat"); */
-    for(kk=0; kk<size; kk++){
+    std::cout << "beginning of the taper = " << tTaper << std::endl;
+    std::ofstream foutTest("tmp/CheckTaperStas.dat"); 
+    std::ofstream foutF("tmp/FreqS.dat");
+    */
+    int endInd = sizeM;
+    if (size < endInd) endInd = size;
+   // std::cout << "size = " << size << "  sizeM = " << sizeM << "  endInd = " << endInd << std::endl;
+    for(kk=0; kk<=endInd; kk++){
         
 	    alpha = al[kk];
         iota = io[kk];
@@ -754,6 +769,7 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
 	     Phi = Phase[kk];
         om = freq[kk];
         t = time[kk];
+ //       foutF << std::setprecision(15) << t << "     " << om/LISAWP_PI << std::endl;
 	
 	    sa = sin(alpha);
 	    sa2 = sin(2.0*alpha);
@@ -828,10 +844,11 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
         if (taperQ == 0.){
            wk = 0.5*( 1.0 - tanh(Ataper*(Mom23-xmax)) );
         }else{
-           if (tend < maxDur-dt){
+          // if (tend < maxDur-dt){
                wk = halfhann(t, tend, tTaper);// need t, tend, tstart_taper
-           }else
-               wk = 1.0;   
+          // }else{
+         //      wk = 1.0;   
+          // }      
         }     
       //  foutTest << std::setprecision(15) << t << "   " << wk << std::endl;
         switch(order){
@@ -884,7 +901,8 @@ int SpinBBHWaveform::ComputeWaveform(int order, double taper, \
         }*/
  
     }
- //   foutTest.close();
+  //  foutTest.close();
+  //    foutF.close();
    
     return((int)size);
 
