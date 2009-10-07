@@ -49,7 +49,7 @@ parser.add_option("-m", "--massRatioRange",
                   
 parser.add_option("-l", "--lowerMass",
                   type="float", dest="lowerMass", default=1.0,
-                  help="lower bound on the mass1 in 10^6 M_sun [defaults to 1]")                  
+                  help="lower bound on Mass1 in 10^6 Msun [defaults to 1]")                  
 
 parser.add_option("-r", "--coalescRange",
                   type="float", dest="deltaTc", default=None,
