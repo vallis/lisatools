@@ -4,6 +4,8 @@
 \usepackage{amsbsy}
 \usepackage{graphicx}
 \usepackage[usenames]{color}
+\usepackage{iopams}
+\usepackage{epstopdf}
 
 \newcommand{\eqref}[1]{{(\ref{#1})}}
 \newcommand{\ilya}[1]{{\color{red} \bf Ilya: #1}}
@@ -78,6 +80,160 @@ This be the abstract
 \section{Challenge 3.1: The Galactic Binaries {\it Neil and Matt}}
 
 \section{Challenge 3.2: The Massive Black Hole Binaries {\it Antoine}}
+The data set 3.2 contained four to six signals from the inspiralling spinning Massive Black Hole (MBH) binaries embedded in the instrument noise and Galactic background. The Galactic background was modeled as simulated 
+Galactic GW data with signals below signal-to-noise ratio 6. 
+For signal from the spinning MBH binaries in the quasi-circular orbit we have adopted the restricted waveforms with 
+the GW phase up to 2 Post-Newtonian order (see section 3.2 of \cite{MLDC3}). The magnitude and orientation of spins cover all possible values.  Each source is described by fifteen parameters: the two masses $m_{1}$ and $m_{2}$, the time of coalescence $t_{c}$, the sky-position $\beta$ and $\lambda$, the luminosity distance $D_{L}$, the initial orbital phase $\phi_{0}$, the magnitude of spins $a_{1}$ and $a_{2}$, the initial orientation of the first spin  $\theta_{S1}$ and $\phi_{S1}$, the orientation of the second spin $\theta_{S2}$ and $\phi_{S2}$ and the initial orientation of the orbital angular momentum  $\theta_{L}$ and $\phi_{L}$. The parameters for all sources are drawn uniformly from the 
+same prior range, but were distinguished by the times of coalescence and the SNR which are given in Table 8 of \cite{MLDC3}.
+
+The participants could submit multiple modes for each sources provided that there was no clear way to prefer one to another, in other words, the solutions should reflect the degeneracies in the parameter space and multi-modality of the
+likelihood. Five groups submitted their results: 
+\begin{itemize}
+\item \textbf{AEI} (Albert Einstein Institute (Germany))  have used a matched-filtering based genetic algorithm extended to a multi-modal search. The maximized function is {\em A-statistic} which is a geometrical mean of the log-likelihood for the whole duration of template and the low-frequency template \cite{GAspinbbhFullPaper}.
+
+\item \textbf{CambAEI} (collaboration between Cavendish Laboratory (UK), the Institute of Astrophysics (UK) and Albert Einstein Institute, (Germany)) have employed MultiNest algorithm \cite{MultiNest2} to compute the 
+evidence and to produce posterior distribution. The method is intrinsically multi-modal as it name states. They have 
+also used {\em A-statistic} to identify modes.
+
+\item \textbf{MTGWAGAPC} (a collaboration between Montana Gravitational Wave Astronomy Group (US) and  
+Astro-Particle and Cosmology Institut (France)) have used a parallel tempering MCMC algorithm. It is based on the MHMC algorithm used in previous challenges which utilizes frequency and thermostated annealing for an efficient parameter space exploration \cite{SMBHCornishPorter}. Parallel tempering employs a number of chains
+ at different temperatures where the hot chains explore the parameter space throughout the whole range, while the cool chains concentrate on the local maxima and the chains exchange information with each other.
+
+\item \textbf{JPLCITNWU} (a collaboration between  CalTech (US),  Jet Propulsion Laboratory (US)  
+the Northwester University (US)) have employed a two-stage method. At first, they have searched for the bright sources using the tools developed for the non-spinning MBH search \cite{JPLCaltech}, and in the second stage, they have employed  MultiNest algorithm.
+
+\item \textbf{GSFC} (Goddard Space Fly Center (US)) used a tempered Metropolis-Hastings MCMC algorithm within the framework of Xspec \cite{Xspec}. 
+
+\end{itemize}
+
+There were five signals from MBH binaries in the data set. The first tree binaries which coalesce within the 
+observation (MBH-1, 3 and 4) were detected by all five groups. From last two low SNR signals, MBH-2 (SNR $\sim$ 19) was detected by AEI, CambAEI, MTGWAGAPC and JPLCITNWU, whereas MBH-6 (SNR $\sim$ 13) was positively detected only by two groups, AEI and CambAEI.  
+
+The Table \ref{tab:SMBH_Err} shows fractional errors in the parameters estimation for the five sources. We have chosen only the best mode from each submission (i.e. highest SNR) for comparison with the true solution. Note that 
+sometimes the difference in the SNR of several modes was less that one (sigma), and the mode with the better 
+parameters recovery was not chosen.
+Table \ref{tab:SMBH_SNR} shows the recovered SNR and the overlap with  the true waveform for TDI channels A and E. The waveforms for the SNR and overlap evaluation were constructed using the submitted parameters and the software
+used to produce MLDC.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{lr|rrrrrrr}
+\hline
+Source & group & $\Delta M_{c}/ M_{c}  $& $\Delta \eta/ \eta $ & $ \Delta t_{c} $ &  $ \Delta $ Sky  & $ \Delta a_{1} $ & $ \Delta a_{2}  $ &  $\Delta D / D$ \\
+ & & $\times 10^{-5}$ & $\times 10^{-4}$ & (sec) & (deg) & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times10^{-2}$   \\
+
+\hline
+             & AEI            &         2.4 &        6.1 &   62.9 &   11.6 &    7.6 &   47.4 &   8.0 \\
+             & CambAEI &         3.4 &     40.7 &   24.8 &      2.0 &    8.5 &   79.6 &   0.7    \\
+MBH-1 & MTAPC    &       24.8 &     41.2 & 619.2 & 171.0 & 13.3 &   28.7 &    4.0  \\
+              & JPL           &       40.5 &  186.6 &   23.0 &    26.9 & 39.4 &   66.1 &    6.9  \\
+              & GSFC       &  1904.0 &  593.2 & 183.9 &    82.5 &   5.7 & 124.3 &  94.9  \\
+
+\hline
+               & AEI            &       9.0 &         5.2 &    100.8 & 175.9 &      6.2 &    18.6 &   2.7  \\
+               & CambAEI &     13.5 &      57.4 &    138.9 & 179.0 &    21.3 &      7.2 &   1.5 \\
+MBH-3  & MTAPC    &   333.0 &    234.1 &    615.7 &   80.2 &    71.6 & 177.2 & 16.1  \\
+               & JPL           &   153.0 &      51.4 &    356.8 &   11.2 & 187.7 & 414.9 &    2.7  \\
+               & GSFC       & 8168.4 & 2489.9 & 3276.9 &    77.9 & 316.3 &   69.9 &  95.6 \\
+
+\hline
+                & AEI            &      4.5 &      75.2 &       31.4 &   0.1 & 47.1 &173.6  &    9.1 \\
+                & CambAEI &      3.2 &    171.9 &      30.7 &   0.2 & 52.9 & 346.1 &  21.6 \\
+MBH-4   & MTAPC    &     48.6 & 2861.0 &        5.8 &   7.3 & 33.1 & 321.1 & 33.0  \\
+                & JPL           &  302.6 &    262.0 &   289.3 &   4.0 & 47.6 & 184.5 & 28.3  \\
+                & GSFC       &  831.3 & 1589.2 & 1597.6 & 94.4 & 59.8 & 566.7 & 95.4  \\
+
+\hline
+                & AEI            & 1114.1 & 952.2 & 38160.8 & 171.1 & 331.7 & 409.0 &  15.3 \\
+MBH-2   & CambAEI &      88.7 & 386.6 &   6139.7 & 172.4 & 210.8 & 130.7 &  24.4  \\
+                & MTAPC    &   128.6 &   45.8 & 16612.0 &      8.9 & 321.4 & 242.4 &  13.1  \\
+                & JPL           &   287.0 & 597.7 & 11015.7 &   11.8 & 375.3 & 146.3 &    9.9 \\
+
+\hline
+                & AEI            &    1042.3 & 1235.6 &   82343.2 &      2.1 & 258.2 & 191.6 & 26.0  \\
+MBH-6   & CambAEI &    5253.2 & 1598.8 & 953108.0 & 158.3 & 350.8 & 215.4 & 29.4  \\
+                & MTAPC    & 56608.7 &    296.7 & 180458.8 & 119.7 & 369.2 & 297.6 & 25.1  \\
+
+
+\hline
+\end{tabular}
+\end{center}
+\caption{ Relative/absolute errors for the spinning MBH binaries in the Challenge~3.2. All parameters are defined as in the table 7 of \cite{MLDC3}, except for the chirp mass $M_c \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$ and for the symmetric mass ratio $\eta = m_1 m_2 / (m_1 + m_2)^{2}$.  $ \Delta \textmd{Sky}$ is the angular distance in the sky between 
+the true and the estimated positions. We used only the mode with the highest SNR in all tables, if several modes per group were submitted.
+\label{tab:SMBH_Err}}
+\end{table} 
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{lr|rrrrr}
+\hline
+Source                              & group &  MBH-1      & MBH-2   & MBH-3    & MBH-4 & MBH-5   \\
+($\textrm{SNR}_{opt}$) &              & (1670.58) & (847.61) & (160.05) & (18.63) & (12.82) \\
+\hline
+                      & AEI            & 1657.71 & 846.96 & 160.05 & 20.54 & 13.69 \\
+                      & CambAEI & 1657.19 & 847.04 & 160.02 & 20.36 & 10.17 \\
+SNR             & MTAPC    & 1669.97 & 842.96 & 149.98 & 20.27 & 13.36\\
+                      & JPL           & 1664.87 & 835.73 & 158.34 & 18.20 & - \\
+                      & GSFC       &   267.04 & 218.05 &  -45.53 & - & - \\
+\hline
+                      & AEI            & 0.9936 & 0.9995 &  0.9989 & 0.9399 &  0.9288 \\
+                      & CambAEI & 0.9925 & 0.9993 &  0.9991 & 0.9592 &  0.4018 \\
+Overlap A    & MTAPC    & 0.9996 & 0.9943 &  0.8766 & 0.9238 & -0.0037 \\
+                      & JPL           & 0.9972 & 0.9826 &  0.8895 & 0.9661 & - \\
+                      & GSFC       & 0.1827 & 0.2815 & -0.1725 & - & - \\
+\hline
+                      & AEI            & 0.9914 & 0.9989 &  0.9994 & 0.9469 &  0.9293 \\
+                      & CambAEI & 0.9917 & 0.9993 &  0.9992 & 0.9697 &  0.4399 \\
+Overlap E    & MTAPC    & 0.9997 & 0.9945 &  0.9352 & 0.9149 &  0.0375\\
+                      & JPL           & 0.9981 & 0.9898 &  0.9925 & 0.9709 & - \\
+                      & GSFC       & 0.1426 & 0.2314 & -0.2937 & - & - \\
+\hline
+\end{tabular}
+\end{center}
+\caption{ Recovered SNR and overlaps for spinning MBH binaries in Challenge~3.2. The negative
+SNR is the result of the negative overlap and corresponds to  the waveforms in anti-phase.
+\label{tab:SMBH_SNR}}
+\end{table} 
+
+The accuracy in the parameter estimation strongly depends on whether we have observed the coalescence or not.
+The signals with observed merger (MBH-1, 3 and 4) have significantly larger SNR and span to higher frequencies, 
+allowing much more accurate recovery of the parameters of the MBH binary. 
+ For these sources, the errors in the masses, the time at coalescence, the distance and the sky position are comparable, if not better, to the ones obtained in non-spinning case (see table 1 and 2 of report on challenge 2.2 \cite{MLDC2Res}). Concerning the position on the sky, the results with  $\Delta \textrm{Sky} > 170 \deg$, correspond to the mirrored sky location which is a known degeneracy in the response function. The errors in the spin amplitudes
+  are consistent with the Fisher matrix prediction \cite{SpinBBHLangHugues}.  Despite the high SNR, the evaluation of the initial direction of the spins and of the orbital angular momentum has proven to be very difficult.  We observe a large number of the local maxima in these parameters which have SNR very close to the true one. This is illustrated in the Figure~\ref{fig:SMBH_spinLdeg} which shows the distribution of $\theta_{S1}$, $\phi_{S1}$, $\theta_{S2}$, $\phi_{S2}$, $\theta_{L}$ and $\phi_{L}$ for all the submitted modes for MBH-3. We see that the modes are well separated in parameters value but a difference in the SNR is less than 10. The SNR of the majority submitted results are within 10 (sigma) of the true one and the overlap is higher than 0.99.
+This reflects degeneracies in the parameter space and that the recovered signals resemble the true one very closely, despite poor estimation of some parameters.
+
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth, clip=true, viewport=0 4 198 83 ]{DirS1_srcMC2_SNR.eps}
+\includegraphics[width=0.5\textwidth, clip=true, viewport=0 4 198 83 ]{DirS2_srcMC2_SNR.eps}\\
+\center \includegraphics[width=0.5\textwidth, clip=true, viewport=0 4 198 83 ]{DirL_srcMC2_SNR.eps}
+\caption{Distribution of the modes for the initial direction of the spin 1 is shown on the top-left panel, of the spin 2
+is on the top-right panel and of the orbital angular  momentum is on the bottom panel. The cross corresponds to the true value ($\times$), the triangle up ($\blacktriangle$) are the modes form AEI, the triangle down ($\blacktriangledown$) are the modes form CambAEI, the square ($\blacksquare$) is the mode from MTGWAGAPC and the diamond ($\blacklozenge$) is the mode from JPLCITNWU submission. The color corresponds to the SNR.
+\label{fig:SMBH_spinLdeg}}
+\end{figure}
+
+
+Let us now comment on the parameter estimation for the last two signals with the coalescence time beyond the observational time. For MBH-2 the error in the masses and the time of coalescence are comparable to the Fisher matrix predictions. 
+The errors in the sky localization is around 10 degrees with a very strong local maximum at the mirrored 
+sky position. The overlaps between the recovered waveforms and the true ones are higher than 0.9 for all submissions.
+The recovered SNR for some modes was higher than the true one which is an artifact of the evaluation: 
+we extend the computation of the inner products beyond the frequency range of the signals which picks up a bit of the 
+"junk" SNR from the correlation with the noise. 
+%
+The determination of the spin amplitude is very bad. This reflects the fact that the spin have a very weak effect on the low frequency part of the waveform. 
+
+The source MBH-5 was the weakest, and the overlap evaluation suggests that only AEI group made a positive detection. 
+
+The spins are supposed to de-correlate some parameters in the waveform \cite{SpinBBHLangHugues} and we 
+do observe it in some cases, but 
+it also brings additional degeneracies and multiple local maxima in the parameter space, especially in the 
+initial directions of the spins and the orbital plane. This complexity is reflected in the submitted results.
+Nevertheless these results demonstrate solid capability in detecting the signals and good recovery of other 
+nine parameters. 
+
+
+
 
 \section{Challenge 3.3: The Extreme Mass Ratio Inspirals {\it Ilya}}
 
@@ -104,13 +260,73 @@ RP: the Max-Planck Society.
 LW: the Alexander von Humboldt Foundation's Sofja Kovalevskaja Programme, funded by the German Federal Ministry of Education and Research.
 JC's, CC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration.
 
+
 \section*{References}
 
-%\begin{thebibliography}{99}
-%
-%\end{thebibliography}
+\begin{thebibliography}{99}
+
+\bibitem{MLDC3}
+%Stanislav Babak, John~G. Baker, Matthew~J. Benacquista, Neil~J. Cornish, Jeff
+%  Crowder, Shane~L. Larson, Eric Plagnol, Edward~K. Porter, Michele Vallisneri,
+%  Alberto Vecchio, Keith Arnaud, Leor Barack, Arkadiusz Blaut, Curt Cutler,
+%  Stephen Fairhurst, Jonathan Gair, Xuefei Gong, Ian Harry, Deepak Khurana,
+%  Andrzej Krolak, Ilya Mandel, Reinhard Prix, B.~S. Sathyaprakash, Pavlin
+%  Savov, Yu~Shang, Miquel Trias, John Veitch, Yan Wang, Linqing Wen, and
+%  John~T. Whelan.
+S. Babak \& al.
+%\newblock The mock lisa data challenges: from challenge 1b to challenge 3.
+\newblock {\em gr-qc/arXiv}, 08062110, (2008).
+
+\bibitem{MLDC2Res}
+%S.~Babak, J.~G. Baker, M.~J. Benacquista, N.~J. Cornish, J.~Crowder, C.~Cutler,
+%  S.~L. Larson, T.~B. Littenberg, E.~K. Porter, M.~Vallisneri, A.~Vecchio,
+%  G.~Auger, L.~Barack, A.~Blaut, E.~Bloomer, D.~A. Brown, N.~Christensen,
+%  J.~Clark, S.~Fairhurst, J.~R. Gair, H.~Halloin, M.~Hendry, A.~Jimenez,
+%  A.~Krolak, I.~Mandel, C.~Messenger, R.~Meyer, S.~Mohanty, R.~Nayak,
+%  A.~Petiteau, M.~Pitkin, E.~Plagnol, R.~Prix, E.~L. Robinson, C.~Roever,
+%  P.~Savov, A.~Stroeer, J.~Toher, J.~Veitch, J.-Y. Vinet, L.~Wen, J.~T. Whelan,
+%  and G.~Woa.
+S. Babak \& al.
+%\newblock Report on the second mock lisa data challenge.
+%\newblock In {\em Proceedings of the 7th Amaldi Conference on Gravitational Waves}, page~8, Sydney, Australia, July 2007.
+\newblock {\em gr-qc/arXiv}, 0711.2667, (2007).
+
+
+\bibitem{GAspinbbhFullPaper}
+A. Petiteau, Y. Shang, S. Babak and  F. Feroz
+\newblock {\em in preparation } (2009)
+
+\bibitem{MultiNest2}
+M.~Bridges F.~Feroz, M. P.~Hobson.
+%\newblock Multinest: an efficient and robust bayesian inference tool for cosmology and particle physics.
+\newblock {\em MNRAS}, 398:1601, (2009).
+
+
+\bibitem{SMBHCornishPorter}
+N.~J. Cornish and E.~K. Porter.
+%\newblock The search for massive black hole binaries with lisa.
+\newblock {\em Class. Quant. Grav.}, 24:5729, (2006).
+
+\bibitem{JPLCaltech}
+D. A. Brown, J. Crowder, C. Cutler, I. Mandel, M. Vallisneri
+\newblock {\em  Class. Quant. Grav.}, 24:{S595}, (2007)  
+
+\bibitem{Xspec}
+K. A. Arnaud \& al.
+\newblock {\em  Web}, http://heasarc.gsfc.nasa.gov/docs/xanadu/xspec/ 
+
+
+\bibitem{SpinBBHLangHugues}
+R.~N. Lang and S.~A. Hugues.
+%\newblock Measuring coalescing massive binary black holes with gravitational waves : The impact of spin-induced precession.
+\newblock {\em Phys. Rev. D}, 74:122001, (2006).
+
+\end{thebibliography}
 
 \end{document}
+
+
+
 
 \section{Data sets 2.1 and 2.2: The Galaxy}
 
