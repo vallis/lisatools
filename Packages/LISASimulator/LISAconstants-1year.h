@@ -50,6 +50,9 @@ static const int npow=21;
  /* Number of data points to be FFTed */
 static const long NFFT=2097152;
 
+/* Start Time */
+#define T0 0.0
+
  /* Observation length */
 static const double T=31457280.0;
 
