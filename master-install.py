@@ -540,10 +540,8 @@ def makelisasim(path,include):
         assert(0 == os.system('tar zxf %s -C .' % (here + '/' + lisasimtar)))
         assert(0 == os.system('mv %s %s' % (lisasimdir,path)))
         
-        # copy modified LISAconstants.h, InstrumentNoise.c, and Compile files
+        # copy modified LISAconstants.h and Compile files
         assert(0 == os.system('cp %s %s/LISAconstants.h' % (here + '/Packages/LISASimulator/' + include,       path)))
-        assert(0 == os.system('cp %s %s/.'               % (here + '/Packages/LISASimulator/NoiseParameters.h',path)))
-        assert(0 == os.system('cp %s %s/.'               % (here + '/Packages/LISASimulator/InstrumentNoise.c',path)))
         assert(0 == os.system('cp %s %s/.'               % (here + '/Packages/LISASimulator/Compile',          path)))
         
         # patch IO on cygwin
