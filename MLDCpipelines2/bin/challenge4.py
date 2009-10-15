@@ -31,6 +31,10 @@ parser.add_option("-T", "--trainingOnly",
                   action="store_true", dest="trainingOnly", default=False,
                   help="run only training [default: False]")
 
+parser.add_option("-I", "--LISA",
+                  type="string", dest="LISAmodel", default='Eccentric',
+                  help="LISA model: Static, Rigid, Eccentric [default]")
+
 parser.add_option("-B", "--blindOnly",
                   action="store_true", dest="blindOnly", default=False,
                   help="run only blind [default: False]")
@@ -41,7 +45,7 @@ parser.add_option("-S", "--simulators",
 
 (options, args) = parser.parse_args()
 
-if 'ls' in options.simulators :
+if 'ls' in options.simulators:
     print 'Warning: currently only the synthlisa or LISACode dataset can be produced'
     options.simulators = 'sl,lc'
 
@@ -57,7 +61,7 @@ def twoseeds():
 
 seed4,seed4t = twoseeds()
 
-options4 = '--duration=62914560 --timeStep=15 --LISA=Eccentric'
+options4 = '--duration=62914560 --timeStep=15 --LISA=' + options.LISAmodel
 
 if 'sl' in options.simulators:
     options4 += ' --synthlisa'
