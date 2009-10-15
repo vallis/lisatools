@@ -36,6 +36,14 @@ parser.add_option("-p", "--PSD",
                   type="float", dest="PSD", default=1e-47,
                   help="total power spectral density (strain, adimensional) [default = 5e-48]")
 
+parser.add_option("-I", "--InterpolationOrder",
+                  type="int", dest="InterpolationOrder", default=2,
+                  help="interpolation order (synthLISA only?) [default = 2]")
+
+parser.add_option("-O", "--Oversampling",
+                  type="float", dest="Oversampling", default=5,
+                  help="Fknee oversampling, 0 to always use generation frequency (synthLISA only) [default = 5]")
+
 parser.add_option("-r", "--randomizePSD",
                   type="float", dest="randomizePSD", default=0.0,
                   help="fractional random displacement in total power spectral density (as a fraction of PSD) [default = 0]")
@@ -113,7 +121,8 @@ for i in range(npixels):
 
     mysystem.PseudoRandomSeed = random.randint(0,2**30)
 
-    mysystem.InterpolationOrder = 2
+    mysystem.InterpolationOrder = options.InterpolationOrder
+    mysystem.Oversampling = options.Oversampling
     
     if options.verbose:
         for p in mysystem.parameters:
