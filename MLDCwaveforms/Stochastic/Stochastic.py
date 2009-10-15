@@ -46,7 +46,8 @@ class Stochastic(lisaxml.Source):
                    ('Flow',                 'Hertz',       1e-5,    'minimum noise frequency'),
                    ('Fknee',                'Hertz',       1e-2,    'maximum noise frequency'),
                    ('PseudoRandomSeed',     '1',           0,       'seed for pseudorandom generators'),
-                   ('InterpolationOrder',   '1',           1,       'interpolation order for pseudorandom noise') )
+                   ('InterpolationOrder',   '1',           2,       'interpolation order for pseudorandom noise'),
+                   ('Oversampling',         '1',           5,       'oversampling of Fknee for generation') )
     
                    # some kind of random seed, too... some kind of sampling frequency...
     
@@ -69,15 +70,15 @@ class Stochastic(lisaxml.Source):
         seedhp = self.PseudoRandomSeed
         random.seed(seedhp); seedhc = random.randint(0,2**30)
         
-        # should check what the requested deltat is...
-        mydeltat = 0.1 / self.Fknee
-        # if deltat > mydeltat / 5:
-        #     raise ValueError, "Stochastic.py: for this stochastic source (Fknee = %s Hz), the cadence needs to be faster than %s s" % (self.Fknee,mydeltat)
-        
+        if self.Oversampling == 0:
+            mydeltat = deltat
+        else:
+            mydeltat = 0.5 / self.Fknee / self.Oversampling
+            
         noisehp = self.makealphanoise(mydeltat,prebuf,self.PowerSpectralDensity,-self.SpectralSlope,
                                       self.Flow,self.Fknee,self.InterpolationOrder,seedhp)
         noisehc = self.makealphanoise(mydeltat,prebuf,self.PowerSpectralDensity,-self.SpectralSlope,
-                                      self.Flow,self.Fknee,self.InterpolationOrder,seedhc)                            
+                                      self.Flow,self.Fknee,self.InterpolationOrder,seedhc)
         
         interp = synthlisa.getInterpolator(self.InterpolationOrder)
         
@@ -86,7 +87,7 @@ class Stochastic(lisaxml.Source):
     def waveforms(self,samples,deltat,inittime):
         noise = self.synthesize(samples,deltat,inittime) 
         
-        [hp,hc] = numpy.transpose(synthlisa.getobsc(samples,deltat,[noise.hp,noise.hc],inittime))
+        [hp,hc] = numpy.transpose(synthlisa.getobs(samples,deltat,[noise.hp,noise.hc],inittime))
         
         return (hp,hc)
     
