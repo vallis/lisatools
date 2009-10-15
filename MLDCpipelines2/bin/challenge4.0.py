@@ -100,6 +100,6 @@ for srcind in range(numpy.random.poisson(20)):
 # --- GWDB
 
 pixelref = 2
-run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --fLow=5e-6 --fHigh=0.03 --pixelRefinement=%(pixelref)s --nProc=%(nproc)s Immediate/Background.xml' % globals())
+run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --fLow=5e-6 --fHigh=0.03 --pixelRefinement=%(pixelref)s --Oversampling=0 --nProc=%(nproc)s Immediate/Background.xml' % globals())
 run('%(mydir)s/makesource-StochasticBackground.py --seed=%(seed)s --PSD=1.0e-47 --randomizePSD=0.3 --fLow=5e-6 --fHigh=0.03 --pixelRefinement=%(pixelref)s LISACode/source-Background.xml' % globals())
 seed = seed + 1
