@@ -82,6 +82,10 @@ parser.add_option("-c", "--combinedSNR",
                   action="store_true", dest="combinedSNR", default=False,
                   help="use combined snr = sqrt(2)*max{SNR_x, SNR_y, SNR_z} as SNR constrain [off by default] : Not use by LISACode at the moment")
 
+parser.add_option("-A", "--keyOmitsLISA",
+                  action="store_true", dest="keyOmitsLISA", default=False,
+                  help="do not include LISA specification in key [included by default]")
+
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
                   help="display parameter values [off by default] : Not use by LISACode at the moment")
@@ -92,6 +96,9 @@ if len(args) != 2:
     parser.error("You must specify an input file and an output file!")
 
 (inputfile,outputfile) = args
+
+
+detailXMLout = True
 
 ## Find directory which contains LISACode template in lisatools package
 #run("echo $SVNDIR/MLDCpipelines2/Template > tmpdirlogfile")
@@ -156,6 +163,7 @@ makefromtemplate('%s-input.xml' % cname, '%s/../Template/LISACode2.xml' % execdi
 
 
 LCinputXML = cname + '-input.xml'
+LCOutputXML = cname + '.xml'
 ## Merge with source data into a single lisacode input file
 basefile = lisaxml.readXML(LCinputXML)
 lisa = basefile.getLISAgeometry()
@@ -184,7 +192,36 @@ for sec in extrasecs:
     newbasefile.ExtraSection(sec)
 newbasefile.close()
 
+
 if options.verbose:
     run('%s %s-input.xml' % (lisacode.lisacode,cname))
 else:
     run('%s %s-input.xml > LogLC-%s' % (lisacode.lisacode,cname,cname))
+
+
+## Include informations in XML output file
+if detailXMLout:
+    outputXML = lisaxml.readXML(LCOutputXML)
+    if outputXML.getExtraSection('TDIData'):
+        datasec = outputXML.getExtraSection('TDIData')
+    else:
+        print "Error: No data in", LCOutputXML
+        sys.exit(1)
+    outputXML.close()
+    
+    finalXML = lisaxml.lisaXML(LCOutputXML,author=author,comments=comments)
+    for source in sourcesLC:
+        if hasattr(source,'TimeSeries'):
+            del source.TimeSeries
+        finalXML.SourceData(source)
+    for source in sources:
+        if hasattr(source,'TimeSeries'):
+            del source.TimeSeries
+        finalXML.SourceData(source)
+    if options.keyOmitsLISA == False :
+        for sec in extrasecs:
+            finalXML.ExtraSection(sec)
+        finalXML.LISAData(lisa)
+    finalXML.ExtraSection(datasec)
+    finalXML.close()
+    

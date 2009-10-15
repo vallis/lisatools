@@ -105,6 +105,9 @@ parser.add_option("-v", "--verbose",
 
 (options, args) = parser.parse_args()
 
+
+detailXMLout = True
+
 if options.duration < 10:
     options.duration = options.duration * 31457280
 
@@ -201,6 +204,7 @@ comments = SLbasefile.Comment
 SLbasefile.close()
 
 LCinputXML = cname + '-input.xml'
+LCOutputXML = cname + '.xml'
 newbasefile = lisaxml.lisaXML(LCinputXML,author=author,comments=comments)
 newbasefile.LISAData(LClisa)
 for sec in LCextrasecs:
@@ -213,3 +217,22 @@ if options.verbose:
     run('%s %s-input.xml' % (lisacode.lisacode,cname))
 else:
     run('%s %s-input.xml > LogLC-%s' % (lisacode.lisacode,cname,cname))
+
+## Include informations in XML output file
+if detailXMLout:
+    outputXML = lisaxml.readXML(LCOutputXML)
+    if outputXML.getExtraSection('TDIData'):
+        datasec = outputXML.getExtraSection('TDIData')
+    else:
+        print "Error: No data in", LCOutputXML 
+    outputXML.close()
+    
+    finalXML = lisaxml.lisaXML(LCOutputXML,author=author,comments=comments)
+    if options.keyOmitsLISA == False :
+        for sec in LCextrasecs:
+            finalXML.ExtraSection(sec)
+        for sec in SLextrasecs:
+            finalXML.ExtraSection(sec)
+        finalXML.LISAData(LClisa)
+    finalXML.ExtraSection(datasec)
+    finalXML.close()

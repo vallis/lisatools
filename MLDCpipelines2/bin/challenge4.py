@@ -43,7 +43,7 @@ parser.add_option("-S", "--simulators",
 
 if 'ls' in options.simulators :
     print 'Warning: currently only the synthlisa or LISACode dataset can be produced'
-    options.simulators = 'sl'
+    options.simulators = 'sl,lc'
 
 nproc = options.nproc
 
