@@ -228,6 +228,10 @@ parser.add_option("-C", "--lisacode",
                   action="store_true", dest="lisacodeonly", default=False,
                   help="run only lisacode, if challenge supports it [off by default]")
 
+parser.add_option("-n", "--nohighfreq",
+                  action="store_true", dest="nohighfreq", default=False,
+                  help="do not generate high-frequency datasets [generate by default]")
+
 parser.add_option("-f", "--keyFile",
                   type="string", dest="sourcekeyfile", default=None,
                   help="get source descriptions from key file, not CHALLENGE.py script")
@@ -757,12 +761,12 @@ def makedataset(simulator,dokey=True,hifreq=False):
 
 if dosynthlisa:
     makedataset('frequency')
-    if 'challenge4' in challengename:
+    if 'challenge4' in challengename and not options.nohighfreq:
         makedataset('frequency',dokey=False,hifreq=True)
 
 if dolisasim:
     makedataset('strain')
-    if 'challenge4' in challengename:
+    if 'challenge4' in challengename and not options.nohighfreq:
         makedataset('strain',dokey=False,hifreq=True)
 
 if dolisacode:
@@ -801,7 +805,7 @@ if dolisacode:
             os.chdir('..')
     else:
         makedataset('lisacode')
-        if 'challenge4' in challengename:
+        if 'challenge4' in challengename and not options.nohighfreq:
             makedataset('lisacode',dokey=False,hifreq=True)
 
 # make sure the keys point to real Table txt files, not symlinks
