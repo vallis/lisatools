@@ -228,7 +228,7 @@ parser.add_option("-C", "--lisacode",
                   action="store_true", dest="lisacodeonly", default=False,
                   help="run only lisacode, if challenge supports it [off by default]")
 
-parser.add_option("-h", "--nohighfreq",
+parser.add_option("-F", "--nohighfreq",
                   action="store_true", dest="nohighfreq", default=False,
                   help="do not generate high-frequency datasets [generate by default]")
 
