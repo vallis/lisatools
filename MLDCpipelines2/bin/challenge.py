@@ -598,8 +598,9 @@ if dolisacode:
         pwait()
         
         os.chdir('..')
-        run("mv LISACode/*.xml TDI/.")
-        run("mv LISACode/*.bin TDI/.")
+        run("mv LISACode/*lisacode.xml TDI/.")
+        run("mv LISACode/*lisacode-noise.xml TDI/.")
+        run("mv LISACode/*TDI.bin TDI/.")
  
     else:
         # Use of LISACode before challenge4 : challenge3.5
