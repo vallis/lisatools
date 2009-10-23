@@ -239,6 +239,70 @@ nine parameters.
 
 \section{Challenge 3.4: The Cosmic String Cusp Bursts {\it Ed}}
 
+A new source for Challenge 3 is the gravitational radiation emitted for the cusps of cosmic superstrings.  The blind data was composed of a one month data set (i.e. $2^{21}$ samples at 1 second cadence) and contained 3 such sources.  Each source is described
+by a set of 6 parameters : the ecliptic latitude $\beta$ and longitude $\lambda$, the amplitude of the wave ${\mathcal A}$, the polarization of the wave $\psi$, the burst's
+central time of arrival $t_C$ and a frequency parameter $f_{max}$.  This is the frequency beyond which there is a significant decay in the power spectrum of the burst, and is related to both the characteristic lengthscale of the string and the viewing angle.
+
+The groups were informed that the signal to noise ratio was uniform between 10 and 100, the logarithm of $f_{max}$ was uniformly distributed between $[-3,1]$ and the event rate was Poisson distributed with 5 events per month.  Four groups returned entries for Challenge 3.4 .  These were
+\begin{itemize}
+\item CAM :  A collaboration between Cambridge University and APC-Paris using the MultiNest algorithm. This is an efficient multi-modal
+Nested Sampling search algorithm which uses a number of live points in the parameter space.  
+\item CaNoe : A collaboration between Cambridge University and Northwestern University using a Time-Frequency search algorithm. This algorithm is a modified
+version of the Chirp-based Algorithm for Track Searches which identifies tracks of a particular shape in the spectrogram.
+\item JPLCIT : A JPL-Caltech collaboration which used both Markov Chain Monte Carlo (MCMC) and MultiNest algorithms.  The results presented here are for 
+the MultiNest search only.
+\item MTGWAG : The GW group at Montana State University used a parallel tempered MCMC technique~\cite{keycornish}.  The MCMC is a stochastic search method which is particularly
+useful for searches conducted in high dimensional spaces.  The parallel tempering adds the complexity of a number of inter-communicating search
+chains at different temperatures.
+\end{itemize}
+
+The four groups were successful in recovering all three burst sources.  In Table~\ref{tab:parerrs} we present the errors in parameter estimation for each group.  As each burst is of relatively short duration, LISA can be taken as being an effectively static detector.  Because of this, the position of the source in the sky is harder to determine than for other sources.  It has also been shown~\cite{keycornish} that for cosmic string bursts there are a number of degeneracies in the parameter space.  For example, a reflection in the plane of the detector produces one set of degenerate parameters, while a rotation in the plane generates two sets of secondary maxima.  This coupled with the fact that there is a high correlation between the sky position of the source and the central burst time makes parameter estimation very difficult.  
+
+We can see in most cases that the errors for the ecliptic latitude $\beta$ are between 0.1 and 1 radians, while the errors in the estimation of the longitude are much bigger.  This inaccuracy in the sky position also makes it difficult to determine the polarization of the wave.  In certain cases, the errors in sky resolution translates to a large error in the estimation in the central burst time $t_C$.   Similarly, groups had trouble determining the value of $f_{max}$ and in some cases returned the value of the Nyquist frequency in their search (i.e. 0.5 Hz) which resulted in the sometimes, very large errors in the parameter estimation. Finally, in most cases the groups were able to resolve the amplitude of the waves.
+
+\begin{table}
+\caption{\label{tab:parerrs}Returned values for cosmic string search.  Some groups returned multiple mode solutions, which are also presented.  The dashed lines represent unreturned parameter values.  The angular errors have units of radians.} 
+\vspace{2mm}
+%\begin{indented}
+%\lineup
+%\item[]
+%\begin{tabular}{@{}*{8}{l}}
+\lineup
+%\scriptsize 
+\flushright
+\begin{tabular}{llllllll}
+\br                              
+Group& \centre{1}{source}& \centre{1}{$\Delta\beta$}&\centre{1}{$\Delta\lambda$}&\centre{1}{$\Delta\psi$}&\centre{1}{$\Delta{\mathcal A}/{\mathcal A}$}&\centre{1}{$\Delta t_C/t_C$}&\centre{1}{$\Delta f_{max}/f_{max}$}\cr 
+\br
+CAM&1& \m1.118 & $-1.745$& \m2.393& $-0.319$& \m0.626& $-15.896$\cr
+&& \m0.298 & $-0.277$& \m1.195& $-0.220$& \m0.626& $-15.896$\cr
+&& $-0.432$ & \m3.029& \m 3.658& \m0.674&\m0.441& $-460.157$ \cr
+&2& \m0.449 & $-1.949$& \m4.846& $-0.062$& $-4.638\times10^{-4}$&\m$3.399\times10^{-3}$ \cr
+&3& $-1.149$ &$ -5.794$& \m1.843&$ -0.932$& $-1.672$& \m0.919\cr
+&& $-1.733$ & $-4.747$& \m2.408& $-1.159$& $-1.671$& \m0.919\cr
+\mr
+CaNoE&1& \m---& \m---& \m---& $-0.154$& \m0.626& $-15.896$ \cr 
+&2&\m ---& \m---& \m---& \m0.642& $-4.137\times10^{-4}$& $-0.199$ \cr 
+&3&\m ---&\m ---& \m---&  $-0.171$& $-1.671$& \m0.919 \cr 
+\mr
+JPLCIT&1& \m0.353 & \m3.239& \m1.787& $-0.298$& \m0.625& \m0.301\cr
+&& $-0.512$ & \m1.285& \m4.272& $-0.202$& \m0.626& \m0.267\cr
+&2& $-1.285$ & $-1.313$& \m5.523& \m0.562& $-0.494$& $-32.475$\cr
+&& $-0.528$ & $-2.825$&\m 5.537&\m 0.556& $-0.494$& $-26.098$\cr
+&3& \m0.303 & $-5.808$& \m3.813& $-1.347$& $-0.789$& \m0.999\cr
+&&$ -0.601$ & $-3.369$& \m5.908& $-1.516$& $-0.788$& \m0.999\cr
+\mr
+MTGWAG&1&\m0.247& $-0.215$& $-1.233$& $-0.144$& \m0.626& $-15.896$ \cr 
+&2&$-0.121$& $-0.767$& \m0.159& \m0.011& \m$4.018\times10^{-5}$& \m0.026 \cr 
+&3&$-1.033$&$ -5.683$& $-1.258$& $-0.769$& $-1.672$&  \m0.919\cr  
+\br
+\end{tabular}
+%\end{indented}
+\end{table}
+
+
+
+
 \section{Challenge 3.5: The Stochastic Backgrounds {\it Emma and Stas}}
 
 \section{Moving Forward: Prospects for Challenge 4 {\it Michele}}
@@ -320,6 +384,8 @@ K. A. Arnaud \& al.
 R.~N. Lang and S.~A. Hugues.
 %\newblock Measuring coalescing massive binary black holes with gravitational waves : The impact of spin-induced precession.
 \newblock {\em Phys. Rev. D}, 74:122001, (2006).
+
+\bibitem{keycornish} Shapiro Key~J \& Cornish~N~J, Phys. Rev. D {\bf 79} 043014 (2009).
 
 \end{thebibliography}
 
