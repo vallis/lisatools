@@ -106,7 +106,7 @@ the Northwester University (US)) have employed a two-stage method. At first, the
 
 \end{itemize}
 
-There were five signals from MBH binaries in the data set. The first tree binaries which coalesce within the 
+There were five signals from MBH binaries in this data set. The first three binaries which coalesce within the 
 observation (MBH-1, 3 and 4) were detected by all five groups. From last two low SNR signals, MBH-2 (SNR $\sim$ 19) was detected by AEI, CambAEI, MTGWAGAPC and JPLCITNWU, whereas MBH-6 (SNR $\sim$ 13) was positively detected only by two groups, AEI and CambAEI.  
 
 The Table \ref{tab:SMBH_Err} shows fractional errors in the parameters estimation for the five sources. We have chosen only the best mode from each submission (i.e. highest SNR) for comparison with the true solution. Note that 
@@ -158,7 +158,7 @@ MBH-6   & CambAEI &    5253.2 & 1598.8 & 953108.0 & 158.3 & 350.8 & 215.4 & 29.4
 \hline
 \end{tabular}
 \end{center}
-\caption{ Relative/absolute errors for the spinning MBH binaries in the Challenge~3.2. All parameters are defined as in the table 7 of \cite{MLDC3}, except for the chirp mass $M_c \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$ and for the symmetric mass ratio $\eta = m_1 m_2 / (m_1 + m_2)^{2}$.  $ \Delta \textmd{Sky}$ is the angular distance in the sky between 
+\caption{ Relative/absolute errors for the spinning MBH binaries in Challenge~3.2. All parameters are defined as in the table 7 of \cite{MLDC3}, except for the chirp mass $M_c \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$ and for the symmetric mass ratio $\eta = m_1 m_2 / (m_1 + m_2)^{2}$.  $ \Delta \textmd{Sky}$ is the angular distance in the sky between 
 the true and the estimated positions. We used only the mode with the highest SNR in all tables, if several modes per group were submitted.
 \label{tab:SMBH_Err}}
 \end{table} 
@@ -208,8 +208,7 @@ This reflects degeneracies in the parameter space and that the recovered signals
 \includegraphics[width=0.5\textwidth, clip=true, viewport=0 4 198 83 ]{DirS1_srcMC2_SNR.eps}
 \includegraphics[width=0.5\textwidth, clip=true, viewport=0 4 198 83 ]{DirS2_srcMC2_SNR.eps}\\
 \center \includegraphics[width=0.5\textwidth, clip=true, viewport=0 4 198 83 ]{DirL_srcMC2_SNR.eps}
-\caption{Distribution of the modes for the initial direction of the spin 1 is shown on the top-left panel, of the spin 2
-is on the top-right panel and of the orbital angular  momentum is on the bottom panel. The cross corresponds to the true value ($\times$), the triangle up ($\blacktriangle$) are the modes form AEI, the triangle down ($\blacktriangledown$) are the modes form CambAEI, the square ($\blacksquare$) is the mode from MTGWAGAPC and the diamond ($\blacklozenge$) is the mode from JPLCITNWU submission. The color corresponds to the SNR.
+\caption{Distribution of the modes for the initial direction of spin 1, spin 2, and orbital angular momentum for source MBH-3 is shown in the top-left, top-right and bottom panels, respectively. The cross corresponds to the true value ($\times$), the triangle up ($\blacktriangle$) are the modes form AEI, the triangle down ($\blacktriangledown$) are the modes form CambAEI, the square ($\blacksquare$) is the mode from MTGWAGAPC and the diamond ($\blacklozenge$) is the mode from JPLCITNWU submission. The color corresponds to the SNR.
 \label{fig:SMBH_spinLdeg}}
 \end{figure}
 
@@ -219,15 +218,15 @@ The errors in the sky localization is around 10 degrees with a very strong local
 sky position. The overlaps between the recovered waveforms and the true ones are higher than 0.9 for all submissions.
 The recovered SNR for some modes was higher than the true one which is an artifact of the evaluation: 
 we extend the computation of the inner products beyond the frequency range of the signals which picks up a bit of the 
-"junk" SNR from the correlation with the noise. 
+``junk'' SNR from the correlation with the noise. 
 %
-The determination of the spin amplitude is very bad. This reflects the fact that the spin have a very weak effect on the low frequency part of the waveform. 
+The determination of the spin amplitude is very bad. This reflects the fact that the spins have a very weak effect on the low frequency part of the waveform. 
 
 The source MBH-5 was the weakest, and the overlap evaluation suggests that only AEI group made a positive detection. 
 
 The spins are supposed to de-correlate some parameters in the waveform \cite{SpinBBHLangHugues} and we 
-do observe it in some cases, but 
-it also brings additional degeneracies and multiple local maxima in the parameter space, especially in the 
+do observe this in some cases, but 
+spins also bring additional degeneracies and multiple local maxima in the parameter space, especially in the 
 initial directions of the spins and the orbital plane. This complexity is reflected in the submitted results.
 Nevertheless these results demonstrate solid capability in detecting the signals and good recovery of other 
 nine parameters. 
@@ -237,19 +236,69 @@ nine parameters.
 
 \section{Challenge 3.3: The Extreme Mass Ratio Inspirals {\it Ilya}}
 
+The Extreme-Mass-Ratio Inspiral (EMRI) signals in Challenge 3.3 are based on Barack \& Cutler analytical kludge waveforms \cite{barackcutler}, as described in \cite{mldcgwdaw2}, but with only five harmonics present per signal \cite{MLDC3}.  Five EMRIs were injected, all coalescing during the second year of the data set, with dimensionless spins between $0.5$ and $0.7$, eccentricities at plunge between $0.15$ and $0.25$, and smaller-body masses between $9.5 M_\odot$ and $10.5 M_\odot$.  The mass of the larger body was in the range $0.95$--$1.05\times10^7 M_\odot$ for source 3.3.1,  $4.75$--$5.25 \times10^6 M_\odot$ for sources 3.3.2 and 3.3.3, and $0.95$--$1.05\times10^6 M_\odot$ for sources 3.3.4 and 3.3.5 (see Table 8 of \cite{MLDC3}).  In addition to the presence of multiple sources in the same data stream, the challenge participants had to contend with much weaker signals than in previous EMRI challenges, with announced signal-to-noise ratios varying between $10$ and $50$ (actual blind-injection SNRs varied between $20$ and $37$).
+
+Three groups attempted to find the Challenge 3.3 sources.  These were:
+\begin{itemize}
+\item \textbf{BabakGair}: This collaboration between AEI and Cambridge University used stochastic sampling and Markov Chain Monte Carlo techniques to find signal harmonics, and then carried out an F-statistic search in the space of harmonics before applying MCMC in the physical parameter space for the final fit.  The basic methodology is described in \cite{BabakGairPorter}, but this search contained several improvements in harmonic identification.
+\item \textbf{EtfAG}: This collaboration between Cambridge University and Northwestern University searched the time-frequency spectrogram for harmonics using the Chirp-based Algorithm for Track Search (CATS, \cite{CATS}) which they developed for earlier MLDC rounds \cite{GairMandelWen}; this iteration included several improvements to the search technique to allow for intersecting tracks from multiple sources.
+\item \textbf{MTAPCIOA} This collaboration between Montana State University, APC-Paris, and Cambridge University ... {\bf *** To be completed}.
+\end{itemize}
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{lr|rrrrrrrr}
+\hline
+Source & group & SNR & $\Delta M/ M  $ & $\Delta \mu/ \mu $ & $ \Delta t_{c} $ &  $ \Delta  e_0 / e_0 $ & $ \Delta |S| / |S| $ & $ \Delta \lambda / \lambda  $ &  $\Delta D / D$ \\
+(true SNR) & & $\times 10^{-3}$ & $\times 10^{-3}$ & (sec) &  &  & &    \\
+
+\hline
+EMRI-1& MTAPCIOA  & &  & & & & & &  \\
+(21.6732) & MTAPCIOA & & & & & & & &     \\
+\hline
+EMRI-2& MTAPCIOA & & & & & & & &  \\
+(33.3534)    & BabakGair & & & & & & & &     \\    
+              & BabakGair & & & & & & & &     \\    
+              & BabakGair & & & & & & & &     \\       
+              & EtfAG & & & & & & & & \\  
+\hline
+EMRI-3& MTAPCIOA & & & & & & & &  \\
+(20.9811)  & BabakGair & & & & & & & &     \\    
+             & BabakGair & & & & & & & &     \\    
+              & BabakGair & & & & & & & &     \\        
+\hline
+EMRI-4& MTAPCIOA &  &  & & & & & &  \\
+(26.6500)  & MTAPCIOA & & & & & & & &     \\
+\hline
+EMRI-5& MTAPCIOA  & &  & & & & & &  \\
+(36.1731) & MTAPCIOA & & & & & & & &     \\
+\hline                                               
+
+
+\end{tabular}
+\end{center}
+\caption{Parameter estimation errors for the EMRIs in Challenge~3.3. All parameters are defined as in the table 5 of \cite{mldcgwdaw2}.
+%We used only the mode with the highest SNR in all tables, if several modes per group were submitted.
+\label{tab:EMRI_Err}}
+\end{table} 
+
+The MLDC 3.3 parameter-estimation results are presented in Table \ref{tab:EMRI_Err}.
+{\bf *** To be completed}
+
 \section{Challenge 3.4: The Cosmic String Cusp Bursts {\it Ed}}
 
-A new source for Challenge 3 is the gravitational radiation emitted for the cusps of cosmic superstrings.  The blind data was composed of a one month data set (i.e. $2^{21}$ samples at 1 second cadence) and contained 3 such sources.  Each source is described
+A new source for Challenge 3 is the gravitational radiation emitted from the cusps of cosmic superstrings.  The blind data was composed of a one month data set (i.e. $2^{21}$ samples at 1 second cadence) and contained 3 such sources.  Each source is described
 by a set of 6 parameters : the ecliptic latitude $\beta$ and longitude $\lambda$, the amplitude of the wave ${\mathcal A}$, the polarization of the wave $\psi$, the burst's
 central time of arrival $t_C$ and a frequency parameter $f_{max}$.  This is the frequency beyond which there is a significant decay in the power spectrum of the burst, and is related to both the characteristic lengthscale of the string and the viewing angle.
 
-The groups were informed that the signal to noise ratio was uniform between 10 and 100, the logarithm of $f_{max}$ was uniformly distributed between $[-3,1]$ and the event rate was Poisson distributed with 5 events per month.  Four groups returned entries for Challenge 3.4 .  These were
+The groups were informed that the signal to noise ratio was uniform between 10 and 100, the logarithm of ($f_{max}/$Hz) was uniformly distributed between $[-3,1]$ and the event rate was Poisson distributed with 5 events per month.  Four groups returned entries for Challenge 3.4 .  These were
 \begin{itemize}
-\item CAM :  A collaboration between Cambridge University and APC-Paris using the MultiNest algorithm. This is an efficient multi-modal
+\item \textbf{CAM} :  A collaboration between Cambridge University and APC-Paris using the MultiNest algorithm. This is an efficient multi-modal
 Nested Sampling search algorithm which uses a number of live points in the parameter space.  
-\item CaNoe : A collaboration between Cambridge University and Northwestern University using a Time-Frequency search algorithm. This algorithm is a modified
+\item \textbf{CaNoe} : A collaboration between Cambridge University and Northwestern University using a Time-Frequency search algorithm. This algorithm is a modified
 version of the Chirp-based Algorithm for Track Searches which identifies tracks of a particular shape in the spectrogram.
-\item JPLCIT : A JPL-Caltech collaboration which used both Markov Chain Monte Carlo (MCMC) and MultiNest algorithms.  The results presented here are for 
+\item \textbf{JPLCIT} : A JPL-Caltech collaboration which used both Markov Chain Monte Carlo (MCMC) and MultiNest algorithms.  The results presented here are for 
 the MultiNest search only.
 \item MTGWAG : The GW group at Montana State University used a parallel tempered MCMC technique~\cite{keycornish}.  The MCMC is a stochastic search method which is particularly
 useful for searches conducted in high dimensional spaces.  The parallel tempering adds the complexity of a number of inter-communicating search
@@ -258,7 +307,7 @@ chains at different temperatures.
 
 The four groups were successful in recovering all three burst sources.  In Table~\ref{tab:parerrs} we present the errors in parameter estimation for each group.  As each burst is of relatively short duration, LISA can be taken as being an effectively static detector.  Because of this, the position of the source in the sky is harder to determine than for other sources.  It has also been shown~\cite{keycornish} that for cosmic string bursts there are a number of degeneracies in the parameter space.  For example, a reflection in the plane of the detector produces one set of degenerate parameters, while a rotation in the plane generates two sets of secondary maxima.  This coupled with the fact that there is a high correlation between the sky position of the source and the central burst time makes parameter estimation very difficult.  
 
-We can see in most cases that the errors for the ecliptic latitude $\beta$ are between 0.1 and 1 radians, while the errors in the estimation of the longitude are much bigger.  This inaccuracy in the sky position also makes it difficult to determine the polarization of the wave.  In certain cases, the errors in sky resolution translates to a large error in the estimation in the central burst time $t_C$.   Similarly, groups had trouble determining the value of $f_{max}$ and in some cases returned the value of the Nyquist frequency in their search (i.e. 0.5 Hz) which resulted in the sometimes, very large errors in the parameter estimation. Finally, in most cases the groups were able to resolve the amplitude of the waves.
+We can see in most cases that the errors for the ecliptic latitude $\beta$ are between 0.1 and 1 radians, while the errors in the estimation of the longitude are much bigger.  This inaccuracy in the sky position also makes it difficult to determine the polarization of the wave.  In certain cases, the errors in sky resolution translates to a large error in the estimation in the central burst time $t_C$.   Similarly, groups had trouble determining the value of $f_{max}$ and in some cases returned the value of the Nyquist frequency in their search (i.e. 0.5 Hz) which resulted in the occasionally very large errors in the estimation of this parameter. Finally, in most cases the groups were able to resolve the amplitude of the waves.
 
 \begin{table}
 \caption{\label{tab:parerrs}Returned values for cosmic string search.  Some groups returned multiple mode solutions, which are also presented.  The dashed lines represent unreturned parameter values.  The angular errors have units of radians.} 
@@ -337,9 +386,9 @@ JC's, CC's and MV's work was carried out at the Jet Propulsion Laboratory, Calif
 %  Andrzej Krolak, Ilya Mandel, Reinhard Prix, B.~S. Sathyaprakash, Pavlin
 %  Savov, Yu~Shang, Miquel Trias, John Veitch, Yan Wang, Linqing Wen, and
 %  John~T. Whelan.
-S. Babak \& al.
+S. Babak \& al.~2008 \textit{Class. Quant. Grav.} \textbf{25}, 184026.
 %\newblock The mock lisa data challenges: from challenge 1b to challenge 3.
-\newblock {\em gr-qc/arXiv}, 08062110, (2008).
+%\newblock {\em gr-qc/arXiv}, 0806.2110, (2008).
 
 \bibitem{MLDC2Res}
 %S.~Babak, J.~G. Baker, M.~J. Benacquista, N.~J. Cornish, J.~Crowder, C.~Cutler,
@@ -350,11 +399,16 @@ S. Babak \& al.
 %  A.~Petiteau, M.~Pitkin, E.~Plagnol, R.~Prix, E.~L. Robinson, C.~Roever,
 %  P.~Savov, A.~Stroeer, J.~Toher, J.~Veitch, J.-Y. Vinet, L.~Wen, J.~T. Whelan,
 %  and G.~Woa.
-S. Babak \& al.
+S. Babak \& al.~2008 \textit{Class. Quant. Grav.} \textbf{25}, 114037.
 %\newblock Report on the second mock lisa data challenge.
 %\newblock In {\em Proceedings of the 7th Amaldi Conference on Gravitational Waves}, page~8, Sydney, Australia, July 2007.
-\newblock {\em gr-qc/arXiv}, 0711.2667, (2007).
+%\newblock {\em arXiv:0711.2667}, (2007).
 
+\bibitem{BabakGairPorter} Babak S, Gair J R, Porter E 2009 \textit{Class. Quant. Grav.} \textbf{26} 135004.
+
+\bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
+
+\bibitem{mldcgwdaw2} Arnaud K A et al. (the MLDC Task Force) 2007 \textit{Class. Quant. Grav.} \textbf{24} S551
 
 \bibitem{GAspinbbhFullPaper}
 A. Petiteau, Y. Shang, S. Babak and  F. Feroz
@@ -379,11 +433,16 @@ D. A. Brown, J. Crowder, C. Cutler, I. Mandel, M. Vallisneri
 K. A. Arnaud \& al.
 \newblock {\em  Web}, http://heasarc.gsfc.nasa.gov/docs/xanadu/xspec/ 
 
+\bibitem{GairMandelWen}
+Gair J R, Mandel I, Wen L 2008 {\em Class. Quant. Grav.} \textbf{25} 184031.
 
 \bibitem{SpinBBHLangHugues}
 R.~N. Lang and S.~A. Hugues.
 %\newblock Measuring coalescing massive binary black holes with gravitational waves : The impact of spin-induced precession.
 \newblock {\em Phys. Rev. D}, 74:122001, (2006).
+
+\bibitem{CATS}
+Mandel I and Gair J R 2009 In preparation
 
 \bibitem{keycornish} Shapiro Key~J \& Cornish~N~J, Phys. Rev. D {\bf 79} 043014 (2009).
 
