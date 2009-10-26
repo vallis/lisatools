@@ -370,7 +370,7 @@ class XSILobject(XMLobject,list):
 class Stream(object):
     MapStreamsFromDisk = False
     
-    def __init__(self,data,filetype='Remote',encoding='Binary'):        
+    def __init__(self,data,filetype='Remote',encoding='Binary'):
         self.Data = data
         
         self.Type = filetype
@@ -394,13 +394,31 @@ class Stream(object):
         else:
             raise NotImplementedError, 'Stream(): I do not know how to handle these Stream data.'
     
+    def getChecksum(data,lfname):
+        import zlib
+        
+        if data == None or isinstance(data,numpy.memmap):   # compute the CRC-32 in batches
+            bfile = open(lfname,'r')
+            checksum = 0
+            while True:
+                databuffer = bfile.read(262144)
+                if databuffer == '': break
+                checksum = zlib.crc32(databuffer,checksum)
+            bfile.close()                        
+        else:
+            checksum = zlib.crc32(data)
+        
+        return checksum
+    
+    getChecksum = staticmethod(getChecksum)
+    
     def makeStream(node,length,records,xmlfile,disableremote=False):
         content = str(node)
         
         # if this flag is set, we will not load the Stream content,
         # but we'll treat it as an external file to copy or link
         if node.Type == 'Remote' and disableremote == True:
-            directory = os.path.dirname(xmlfile)
+            directory = os.path.dirname(xmlfile.filename)
             datafile = directory + '/' + content
             
             if 'http://' in directory or os.path.isfile(datafile):
@@ -414,7 +432,7 @@ class Stream(object):
         
         # load data from file
         if node.Type == 'Remote':
-            directory = os.path.dirname(xmlfile)
+            directory = os.path.dirname(xmlfile.filename)
         
             if 'http://' in directory:
                 loadfile = urllib.urlopen(directory + '/' + content,'r')
@@ -432,15 +450,24 @@ class Stream(object):
             if 'Binary' in node.Encoding:
                 if Stream.MapStreamsFromDisk == True:
                     lfname = loadfile.name; loadfile.close()
-                    data = numpy.memmap(filename=lfname,dtype='d',mode='c',shape=(length,records))
+                    
+                    if xmlfile.intent == 'r':
+                        filemode = 'c'
+                    elif os.path.isfile(lfname):
+                        filemode = 'r+'
+                    else:
+                        filemode = 'w+'
+                    
+                    data = numpy.memmap(filename=lfname,dtype='d',mode=filemode,shape=(length,records))
                 else:
                     data = numpy.fromfile(loadfile,'double',length * records)
                 # previously data = numpy.fromstring(loadfile.read(8 * length * records),'double')
                 
                 if hasattr(node,'Checksum'):
-                    import zlib
+                    datachecksum = Stream.getChecksum(data,loadfile.name)   # (getting name is OK even if file is closed)
+                    filechecksum = int(node.Checksum)
                     
-                    if int(node.Checksum) != zlib.crc32(data):
+                    if (datachecksum & 0xffffffffL) != (filechecksum & 0xffffffffL):
                         print 'Stream.makeStream(): failed checksum for binary file %s' % loadfile.name
                         raise IOError
                 
@@ -453,7 +480,7 @@ class Stream(object):
             else:
                 raise NotImplementedError, 'Stream.makeStream(): currently only remote binary/text and local text Streams are supported.'
             
-            loadfile.close()
+            loadfile.close()    # (no harm in closing twice)
         elif node.Type == 'Local' and 'Text' in node.Encoding:
             # we have the data already in 'content'
             pass
@@ -469,7 +496,10 @@ class Stream(object):
             data = numpy.array(map(float,content.split()),'d')
             
         # reshape the data array
-        data = numpy.reshape(data,(length,records))
+        try:
+            data = numpy.reshape(data,(length,records))
+        except:
+            raise IOError, "Stream.makeStream(): Can't reshape %s (%s) to %s x %s." % (len(data),type(data),length,records)
         
         return Stream(data,node.Type,node.Encoding)
     
@@ -485,13 +515,8 @@ class Stream(object):
                     bfile.close()
                     
                     # compute the CRC-32 from the file just written, in batches, to avoid MemoryErrors
-                    # (and let's hope it was written correctly)
-                    import zlib
-                    bfile = open(filename,'r'); checksum = 0
-                    while True:
-                        data = bfile.read(262144)
-                        if data == '': break
-                        checksum = zlib.crc32(data,checksum)
+                    checksum = Stream.getChecksum(None,filename)
+                    
                     bfile.close()
                 elif type(self.Data) == str:
                     if os.path.abspath(self.Data) != os.path.abspath(filename):
@@ -794,14 +819,15 @@ class Array(object):
                   self.Stream.XML(xmlfile) ] )
     
     def checkContent(self):
-        self.Arrays = [self.Stream.Data[:,col] for col in range(self.Records)]
+        if not isinstance(self.Stream.Data,numpy.memmap):
+            self.Arrays = [self.Stream.Data[:,col] for col in range(self.Records)]
         
-        # see if we can parse the column names
-        columnnames = [s.strip(' ') for s in self.Name.split(',')]
-        if len(columnnames) == self.Records:
-            for col in range(len(columnnames)):
-                if not hasattr(self,columnnames[col]):
-                    self.__dict__[columnnames[col]] = self.Arrays[col]
+            # see if we can parse the column names
+            columnnames = [s.strip(' ') for s in self.Name.split(',')]
+            if len(columnnames) == self.Records:
+                for col in range(len(columnnames)):
+                    if not hasattr(self,columnnames[col]):
+                        self.__dict__[columnnames[col]] = self.Arrays[col]
     
 
 
@@ -914,11 +940,12 @@ class FrequencySeries(XSILobject):
                 self.Bandwidth = self.Array.Length * self.Cadence
                 self.Bandwidth_Unit = self.Cadence_Unit
             
-            columnnames = [s.strip(' ') for s in self.Array.Name.split(',')]
-            if len(columnnames) == self.Array.Records:
-                for col in range(len(columnnames)):
-                    if not hasattr(self,columnnames[col]):
-                        self.__dict__[columnnames[col]] = self.Array.Arrays[col]
+            if hasattr(self.Array,'Arrays'):
+                columnnames = [s.strip(' ') for s in self.Array.Name.split(',')]
+                if len(columnnames) == self.Array.Records:
+                    for col in range(len(columnnames)):
+                        if not hasattr(self,columnnames[col]):
+                            self.__dict__[columnnames[col]] = self.Array.Arrays[col]
     
 
 class TimeSeries(XSILobject):
@@ -956,11 +983,12 @@ class TimeSeries(XSILobject):
                 self.Duration = self.Array.Length * self.Cadence
                 self.Duration_Unit = self.Cadence_Unit
             
-            columnnames = [s.strip(' ') for s in self.Array.Name.split(',')]
-            if len(columnnames) == self.Array.Records:
-                for col in range(len(columnnames)):
-                    if not hasattr(self,columnnames[col]):
-                        self.__dict__[columnnames[col]] = self.Array.Arrays[col]
+            if hasattr(self.Array,'Arrays'):
+                columnnames = [s.strip(' ') for s in self.Array.Name.split(',')]
+                if len(columnnames) == self.Array.Records:
+                    for col in range(len(columnnames)):
+                        if not hasattr(self,columnnames[col]):
+                            self.__dict__[columnnames[col]] = self.Array.Arrays[col]
     
 
 class Observable(XSILobject):
@@ -1009,14 +1037,14 @@ class Observable(XSILobject):
             super(Observable,self).__setattr__(attr,value)
     
     def checkContent(self):
-        if hasattr(self,'TimeSeries') and hasattr(self.TimeSeries,'Array'):
+        if hasattr(self,'TimeSeries') and hasattr(self.TimeSeries,'Array') and hasattr(self.TimeSeries.Array,'Arrays'):
             ar = self.TimeSeries.Array
             columnnames = [s.strip(' ') for s in ar.Name.split(',')]
             if len(columnnames) == ar.Records:
                 for col in range(len(columnnames)):
                     self.__dict__[columnnames[col]] = ar.Arrays[col]
         
-        if hasattr(self,'FrequencySeries') and hasattr(self.FrequencySeries,'Array'):
+        if hasattr(self,'FrequencySeries') and hasattr(self.FrequencySeries,'Array') and hasattr(self.FrequencySeries.Array,'Arrays'):
             ar = self.FrequencySeries.Array
             columnnames = [s.strip(' ') for s in ar.Name.split(',')]
             if len(columnnames) == ar.Records:
@@ -1509,7 +1537,7 @@ class lisaXML(XSILobject):
         else:
             tw = xmlutils.TagWrapper(('XSIL', {}, [], None))
             
-        XSILobject.makeXSIL(tw,filename,self=self)
+        XSILobject.makeXSIL(tw,self,self=self)
         
         # assign meta data if given
         if author:
