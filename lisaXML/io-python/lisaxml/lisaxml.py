@@ -1213,7 +1213,7 @@ class readXML(object):
             if checksum != None:
                 import zlib
                 
-                if checksum != zlib.crc32(readbuffer):
+                if (checksum & 0xffffffffL) != (zlib.crc32(readbuffer) & 0xffffffffL):
                     print 'readXML.__processTimeSeries(): failed checksum for binary file %s' % binaryfile.name
                     raise IOError
             
