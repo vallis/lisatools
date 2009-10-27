@@ -56,19 +56,28 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     
     if (platform.system() == 'Darwin') and (('10.4' in platform.mac_ver()[0]) or ('10.5' in platform.mac_ver()[0])):
         # attempt to build universal binary version of library
-        
-        # previously had also "-O -g"; adding "-arch ppc64 -arch x86_64" would build also 64-bit versions,
-        #   which are not backward compatible with Tiger
-        os.environ['CFLAGS'] = "-arch i386 -arch ppc"
-        os.environ['CXXFLAGS'] = "-arch i386 -arch ppc"
-        os.environ['LDFLAGS'] = "-arch i386 -arch ppc"
-                
+            
         if '10.4' in platform.mac_ver()[0]:
+            # previously had also "-O -g"; adding "-arch ppc64 -arch x86_64" would build also 64-bit versions,
+            #   which are not backward compatible with Tiger
+            os.environ['CFLAGS'] = "-arch i386 -arch ppc"
+            os.environ['CXXFLAGS'] = "-arch i386 -arch ppc"
+            os.environ['LDFLAGS'] = "-arch i386 -arch ppc"
+            
             # the -isysroot is needed because the system is not universal on PPC OSX Tiger
-            os.environ['CFLAGS'] += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+            os.environ['CFLAGS']   += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
             os.environ['CXXFLAGS'] += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-            os.environ['LDFLAGS'] += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
-        
+            os.environ['LDFLAGS']  += " -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+        elif platform.architecture()[0] == '64bit':
+            if platform.processor() == 'i386':
+                os.environ['CFLAGS']   = "-arch i386 -arch x86_64"
+                os.environ['CXXFLAGS'] = "-arch i386 -arch x86_64"
+                os.environ['LDFLAGS']  = "-arch i386 -arch x86_64"
+            else:
+                os.environ['CFLAGS']   = "-arch ppc -arch ppc64"
+                os.environ['CXXFLAGS'] = "-arch ppc -arch ppc64"
+                os.environ['LDFLAGS']  = "-arch ppc -arch ppc64"
+                            
         configureflags += " --disable-dependency-tracking"
     
     if packagetar:
@@ -82,7 +91,7 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     
     os.chdir(packagedir)
     assert(0 == os.system('./configure ' + configureflags))
-    assert(0 == os.system('make'))
+    assert(0 == os.system('make -j %s' % makeproc))
     assert(0 == os.system('make install'))
     os.chdir('..')
     
@@ -112,6 +121,7 @@ installswig  = False
 installfftw  = False
 downloadgalaxy = False
 makeclib = False
+makeproc = '1'
 
 for arg in sys.argv:
     if arg.startswith('--prefix='):             # main library dir
@@ -135,11 +145,13 @@ for arg in sys.argv:
     elif arg.startswith('--traits'):            # include experimental traits functionality
         dotraits = True
     elif arg.startswith('--installgsl'):        # force GSL install
-        installgsl = True    
+        installgsl = True
     elif arg.startswith('--installswig'):       # force SWIG install
         installswig = True
     elif arg.startswith('--installfftw'):       # force FFTW install
         installfftw = True        
+    elif arg.startswith('--nproc'):             # run multiproc make
+        makeproc = arg.split('=', 1)[1]
     elif arg.startswith('--downloadgalaxy'):    # force Galaxy download
         downloadgalaxy = True
 
