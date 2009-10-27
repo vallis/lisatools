@@ -56,7 +56,11 @@ parser.add_option("-f", "--maximumFrequency",
 
 parser.add_option("-T", "--requestTime",
                   type="float", dest="requestTime", default=None,
-                  help="request that barycentric time series be stored only for this period around CentralTime (second) [off by defaults]")
+                  help="request that barycentric time series be stored only for this period around CentralTime (seconds) [off by default]")
+
+parser.add_option("-C", "--requestCadence",
+                  type="float", dest="requestCadence", default=15,
+                  help="align the RequestTimeOffset to a multiple of this value (seconds) [15 by default]")
 
 parser.add_option("-n", "--sourceName",
                   type="string", dest="sourceName", default="Cosmic string cusp burst",
@@ -113,7 +117,8 @@ if options.RequestSN:
     mysystem.RequestSN_Unit = '1'
 
 if options.requestTime:
-    mysystem.RequestTimeOffset = int(mysystem.CentralTime - 0.5 * options.requestTime)
+    offset = mysystem.CentralTime - 0.5 * options.requestTime
+    mysystem.RequestTimeOffset = offset - (offset % options.requestCadence)
     mysystem.RequestTimeOffset_Unit = 'Second'
     
     mysystem.RequestDuration = options.requestTime
