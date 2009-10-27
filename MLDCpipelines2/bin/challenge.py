@@ -719,6 +719,7 @@ def makedataset(simulator,dokey=True,hifreq=False):
     if not istraining:
         merger += ' --noKey'    # include keys only if we're training
     if hifreq:
+        # --conserveMemory is still experimental, disable it by default
         merger += ' --upsample' # instruct mergeXML.py to upsample for hi-freq dataset
     
     thenoisefile = 'TDI/tdi-' + simulator + '-noise.xml'
