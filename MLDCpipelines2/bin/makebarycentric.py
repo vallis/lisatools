@@ -122,16 +122,32 @@ for cnt,mysystem in zip(range(len(allsystems)),allsystems):
     
     if hasattr(mysystem,'RequestTimeOffset') and hasattr(mysystem,'RequestDuration'):
         # the arrays hp0 and hc0 begin at i=0,t=-prebuffer, and go until i=samples,t=duration+postbuffer (excluded, a la C loops)
-        # now we wish to crop to t=RequestTimeOffset-prebuffer until t=RequestTimeOffset+RequestDuration+postbuffer
-        # however we cannot go before the first sample, or after the last
+        # now we wish to crop to t=RequestTimeOffset-prebuffer until t=RequestTimeOffset+RequestDuration+postbuffer,
+        # while aligning these times onto the grid; however we cannot go before the first sample, or after the last
+
+        length = int((mysystem.RequestDuration + options.prebuffer + options.postbuffer) / options.timestep)
+
+        if length > len(hp0):
+            print "makebarycentric.py: RequestDuration is too large."
+            sys.exit(1)
+
+        # this will automatically include the prebuffering period
+        initialindex = int(mysystem.RequestTimeOffset / options.timestep)
+        finalindex   = initialindex + length
         
-        initialindex = max(0,int(mysystem.RequestTimeOffset / options.timestep))
-        finalindex   = min(len(hp0),initialindex + int((mysystem.RequestDuration + options.prebuffer + options.postbuffer) / options.timestep))
+        if initialindex < 0:
+            initialindex, finalindex = 0, length
+        elif finalindex > len(hp0):
+            initialindex, finalindex = len(hp0) - length, len(hp0)
         
         hp0 = hp0[initialindex:finalindex].copy()
         hc0 = hc0[initialindex:finalindex].copy()
         
         initialtime = options.timestep * initialindex - options.prebuffer
+
+        # reset RequestOffset and RequestDuration to be aligned on the grid, but don't include buffers        
+        mysystem.RequestTimeOffset = initialtime + options.prebuffer
+        mysystem.RequestDuration   = options.timestep * length - options.prebuffer - options.postbuffer
     
     # impose polarization on waveform if given
     
