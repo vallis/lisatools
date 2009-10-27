@@ -721,6 +721,8 @@ def makedataset(simulator,dokey=True,hifreq=False):
     if hifreq:
         # --conserveMemory is still experimental, disable it by default
         merger += ' --upsample' # instruct mergeXML.py to upsample for hi-freq dataset
+        if 'challenge4.0' in challengename:
+            merger += ' --cadence=1.875'
     
     thenoisefile = 'TDI/tdi-' + simulator + '-noise.xml'
     tdifiles = 'TDI/*-tdi-' + simulator + '.xml'
