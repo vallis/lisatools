@@ -284,6 +284,10 @@ parser.add_option("-U", "--upsample",
                   action="store_true", dest="upsample", default=False,
                   help="upsample all time series to the fastest one [default is to downsample to the slowest]")
 
+parser.add_option("-c", "--cadence",
+                  type="float", dest="cadence", default=None,
+                  help="if used in conjunction with upsample, enforce this Cadence [default is None]")
+
 parser.add_option("-d", "--debug",
                   action="store_true", dest="debug", default=False,
                   help="toggle debugging information [off by default]")
@@ -405,7 +409,7 @@ for inputfile in inputfiles:
             # upsample or downsample
             
             if options.upsample:
-                mincadence = min(thistdi.TimeSeries.Cadence,tdi.TimeSeries.Cadence)
+                mincadence = (options.cadence != None) and options.cadence or min(thistdi.TimeSeries.Cadence,tdi.TimeSeries.Cadence)
                 
                 upsample(tdi,    mincadence)
                 upsample(thistdi,mincadence)
