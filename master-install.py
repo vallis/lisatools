@@ -56,7 +56,7 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     
     if (platform.system() == 'Darwin') and (('10.4' in platform.mac_ver()[0]) or ('10.5' in platform.mac_ver()[0])):
         # attempt to build universal binary version of library
-            
+        
         if '10.4' in platform.mac_ver()[0]:
             # previously had also "-O -g"; adding "-arch ppc64 -arch x86_64" would build also 64-bit versions,
             #   which are not backward compatible with Tiger
@@ -83,17 +83,18 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     if packagetar:
         assert(0 == os.system('tar zxf ' + packagetar))
     
-    env = ''
-    
     # use the local m4 if there is one
-    if os.path.isfile(prefix + '/bin/m4'):
-        env += ('M4=%s; ' % prefix + '/bin/m4') 
+    if prefix != None and os.path.isfile(prefix + '/bin/m4'):
+        os.environ['M4'] = prefix + '/bin/m4'
     
     os.chdir(packagedir)
     assert(0 == os.system('./configure ' + configureflags))
     assert(0 == os.system('make -j %s' % makeproc))
     assert(0 == os.system('make install'))
     os.chdir('..')
+    
+    if 'm4' in package and prefix != None:
+        os.system('ln -fs %s/bin/m4 %s/bin/gm4' % (prefix,prefix))
     
     os.environ['CFLAGS'] = ""
     os.environ['CXXFLAGS'] = ""
@@ -259,7 +260,7 @@ if (platform.system() == 'Darwin') and ('10.5' in platform.mac_ver()[0]):
     m4version = re.search('.* ([0-9\.]*)',stdo).group(1)
     
     if m4version == '1.4.6':
-        print "--> I've found m4 version 1.4.6 on Leopard; I'll install 1.4.9 locally."
+        print "--> I've found m4 version 1.4.6; I'll install 1.4.9 locally."
         installpackage('http://ftp.gnu.org/gnu/m4/m4-1.4.9.tar.gz',prefix=libdir,keepdownload=False)
 
 # check if we have numpy, install it otherwise
