@@ -351,7 +351,140 @@ MTGWAG&1&\m0.247& $-0.215$& $-1.233$& $-0.144$& \m0.626& $-15.896$ \cr
 
 
 
-\section{Challenge 3.5: The Stochastic Backgrounds {\it Emma and Stas}}
+\section{Challenge 3.5: The Stochastic Background {\it Emma and Stas}}
+
+This is the first round of the MLDC to contain a stochastic background challenge.
+The 3.5 data set contained an isotropic stochastic background signal
+along with instrumental noise. The stochastic background is characterised
+by the dimensionless quantity,
+\begin{equation}
+\Omega_{\mathrm{gw}}(f)=\frac{1}{\rho_{\mathrm{crit}}}\frac{\mathrm{d} \rho_{\mathrm{gw}}(f)}{\mathrm{d} \log{f}},
+\end{equation}
+where $\rho_{\mathrm{gw}}(f)$ is the energy density in gravitational waves
+and $\rho_{\mathrm{crit}}=3c^2H_0^2/8\pi G$ is the energy density required
+to close the universe. 
+The signal was created with a constant
+gravitational wave spectrum, 
+with amplitude within the range $\Omega_{\mathrm{gw}} = 8.95\times 10^{-12} - 1.66\times 10^{-11}$
+(where the Hubble constant was taken to be $H_0=70 \mathrm{km}/\mathrm{s}/\mathrm{Mpc}$).
+
+The instrumental noise was created approximating LISA as a rigidly rotating
+triangle with equal and constant arm lengths.
+The amplitudes of the 
+secondary noises were independently randomized  by $\pm 20\%$,
+and include laser phase noise at a level of approximately ten times the secondary 
+noise at 1mHz.
+
+Two groups submitted entries for this challenge:
+
+\begin{itemize}
+\item \textbf{AEIBham} (a collaboration between the Albert Einstein Institute
+(Germany) and the University of Birmingham (UK)) submitted multiple entries,
+using different applications of the same Bayesian Markov Chain Monte Carlo
+analysis method. However, we will not compare all of the submissions, but
+instead focus on the analysis of the $A$ and $E$ channels, for which two results were submitted
+over two different frequency bands; 0.1 -- 1 mHz (\textbf{AEIBham (a)} )
+and 0.1 -- 5 mHz ( \textbf{AEIBham (b)} ).
+\item \textbf{MTGWAG} (the Montana Gravitational Wave Astronomy Group (USA)) 
+utilised a Parallel Tempered Markov Chain Monte Carlo search to
+estimate the amplitude of the stochastic background, using all three of the 
+$A$, $E$ and $T$ channels. They also parameterised
+the noise and estimated the amplitudes of the individual position and 
+acceleration noise spectra.
+\end{itemize}
+
+Two different data sets were created for Challenge 3.5; one using 
+SyntheticLISA \cite{}, and one using LISACode \cite{}. Both of the groups 
+analysed the SyntheticLISA data, in which the injected signal had
+an amplitude
+$\Omega_{\mathrm{gw}}=1.123390\times 10^{-11}$. Table \ref{tab:SGWB_recovered}
+shows the values of $\Omega_{\mathrm{gw}}$ recovered by the different
+analyses, along with a fractional error, 
+$\Delta \Omega_{\mathrm{gw}}/\Omega_{\mathrm{gw}}$,
+where $\Delta \Omega_{\mathrm{gw}}$ is the difference between the recovered
+and injected values; both groups recovered the injection
+to within $10\%$. 
+Figure \ref{fig:stochastic_pdf} shows the recovered posterior PDFs on 
+$\Omega_{\mathrm{gw}}$ for each of the analyses. 
+
+\begin{table}
+\begin{center}
+\begin{tabular}{l@{ }l|cc}
+\hline
+Group & & Estimated $\Omega_{\mathrm{gw}}$ & $\Delta \Omega_{\mathrm{gw}} / \Omega_{\mathrm{gw}}$ \\
+\hline
+AEIBham & (a) & 1.136e-11 & 0.0116 \\ 
+AEIBham & (b) & 1.020e-11 & 0.0917 \\ 
+\hline
+MTGWAG &  & 1.089e-11 & 0.0310 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{Recovered amplitudes of the stochastic GW background and the fractional
+error. The injected value was $\Omega_{\mathrm{gw}}=1.123390\times 10^{-11}$.
+\label{tab:SGWB_recovered}
+}
+\end{table} 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{stochastic_pdfs.eps}
+\caption{The recovered posterior PDFs on $\Omega_{\mathrm{gw}}$ for the three analyses.
+\label{fig:stochastic_pdf}}
+\end{figure}
+
+
+All three analyses recovered the injected value to within $10\%$.
+The major difference between the analyses is the treatment of the instrumental
+noise. 
+The AEIBham analyses 
+used analytical expressions to characterise the shape of the noise power spectra
+in the $A$ and $E$ channels, such that the noise model had two unknown parameters;
+the overall amplitudes of the noise PSDs.
+For this it was assumed that the secondary noises were symmetrical,
+which was not true of these data. It was also assumed that the GW spectrum was
+flat throughout the whole band, which was not in fact the case at higher frequencies. This
+may explain why the AEIBham (b) result was further from the injected
+value that either the AEIBham (a) result (where the GW spectrum was indeed
+a true power law throughout the whole band) or the MTGWAG result (where the 
+response function had been recalibrated using the training data to take 
+this into account).
+
+The MTGWAG analyses used all three channels, and fully characterised the noise
+in terms of the twelve secondary noise amplitudes (again assuming that the 
+spectral shapes were fixed). It also compensated for the fact that the
+GW spectrum was not a power law at high frequency by using a response function
+calibrated using the training data. The recovered secondary noise amplitudes are compared to the injected
+values in Table \ref{tab:MTGWAG_noise_est}. Although the individual parameters
+were not well constrained, certain combinations were, and the amplitude of
+the GW spectrum was recovered to within a few percent of the injected value.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{l|ccc}
+\hline
+Parameter & Estimated value & Injected value & Relative error \\
+\hline
+pm1 & 4.546e-48 & 2.298e-48 & 0.978 \\ 
+pm1s & 3.302e-49 & 2.800e-48 & 0.882 \\ 
+pm2 & 5.004e-48 & 2.902e-48 & 0.724 \\ 
+pm2s & 1.958e-48 & 2.399e-48 & 0.184 \\ 
+pm3 & 2.909e-48 & 2.575e-48 & 0.130 \\ 
+pm3s & 1.907e-48 & 2.873e-48 & 0.336 \\ 
+pd1 & 1.200e-37 & 1.649e-37 & 0.272 \\ 
+pd1s & 1.756e-37 & 1.525e-37 & 0.151 \\ 
+pd2 & 1.172e-37 & 1.798e-37 & 0.348 \\ 
+pd2s & 2.533e-37 & 2.103e-37 & 0.204 \\ 
+pd3 & 1.812e-37 & 2.021e-37 & 0.103 \\ 
+pd3s & 2.633e-37 & 2.005e-37 & 0.313 \\ 
+\hline
+\end{tabular}
+\end{center}
+\caption{Amplitudes of secondary noises recovered by the MTGWAG analysis.
+\label{tab:MTGWAG_noise_est}
+}
+\end{table} 
+
 
 \section{Moving Forward: Prospects for Challenge 4 {\it Michele}}
 
