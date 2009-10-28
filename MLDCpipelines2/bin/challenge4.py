@@ -20,7 +20,7 @@ def run(command):
 
 mydir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
-parser = OptionParser(usage="usage: %prog [options] SEED...",
+parser = OptionParser(usage="usage: %prog [options] SEED [CHALLENGENAME]...",
                       version="$Id$")
 
 parser.add_option("-P", "--nProc",
@@ -45,10 +45,6 @@ parser.add_option("-S", "--simulators",
 
 (options, args) = parser.parse_args()
 
-if 'ls' in options.simulators:
-    print 'Warning: currently only the synthlisa or LISACode dataset can be produced'
-    options.simulators = 'sl,lc'
-
 nproc = options.nproc
 
 if len(args) < 1:
@@ -70,8 +66,9 @@ if 'ls' in options.simulators:
 if 'lc' in options.simulators:
     options4 += ' --lisacode'
 
+challengename = (len(args) > 1) and args[1] or 'challenge4.0'
 
 if not options.trainingOnly:                                                                  
-    run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s            --seed=%(seed4)s  --combinedSNR challenge4.0' % globals())
+    run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s            --seed=%(seed4)s  --combinedSNR %(challengename)s' % globals())
 if not options.blindOnly:
-    run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s --training --seed=%(seed4t)s --combinedSNR challenge4.0' % globals())
+    run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s --training --seed=%(seed4t)s --combinedSNR %(challengename)s' % globals())
