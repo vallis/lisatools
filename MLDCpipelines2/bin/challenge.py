@@ -300,12 +300,10 @@ if dolisasim:
     # see if the duration is allowed by lisasim
     import lisasimulator
     
-    if options.duration == 31457280 and options.timestep == 15.0:
-        pass
-    elif options.duration == 62914560 and (options.timestep == 15.0 or options.timestep == 1.875):
+    if (options.duration == 31457280 or options.duration == 62914560) and options.timestep == 15.0:
         pass
     else:
-        parser.error("I can only run the LISA Simulator for one year at 15 s, or two years at 15 or 1.875 s!")
+        parser.error("I can only run the LISA Simulator for one or two years at 15 s!")
     
     if options.randomizeNoise > 0.0:
         parser.error("Option --randomizeNoise is not supported with the LISA Simulator.")
@@ -505,28 +503,31 @@ step4time = time.time()
 # STEP 4: run LISA Simulator
 # --------------------------
 
+# TO DO: adjust the timestep for MLDC4?
+
 if dolisasim:
-    # TO DO: deal with stochastic source files here, by making temporary barycentric and then deleting?
-    #        a separate command-line utility may be needed
     for xmlfile in glob.glob('Immediate/*.xml'):
         print "--> !!! Ignoring immediate synthlisa file %s" % xmlfile
 
-    for xmlfile in glob.glob('Barycentric/*-barycentric.xml'):
-        tdifile = 'TDI/' + re.sub('\-barycentric.xml','-tdi-strain.xml',os.path.basename(xmlfile))
-
+    for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
+        if 'Barycentric' in xmlfile:
+            tdifile = 'TDI/' + re.sub('\-barycentric.xml','-tdi-strain.xml',os.path.basename(xmlfile))
+            lisasimexe = 'makeTDIsignal-lisasim.py'
+        elif 'Immediate' in xmlfile:
+            tdifile = 'TDI/' + re.sub('\.xml','-tdi-strain.xml',os.path.basename(xmlfile))
+            lisasimexe = 'makeTDIsignal-lisasim --immediate'
+        
         if (not makemode) or newer(xmlfile,tdifile):
             # remember that we're not doing any SNR adjusting here...
-            
-            if 'challenge4' in challengename and 'Burst' in xmlfile:
-                prun('%(execdir)s/makeTDIsignal-lisasim.py --duration=%(duration)s --timeStep=1.875 --extend %(xmlfile)s %(tdifile)s')
-            else:
-                prun('%(execdir)s/makeTDIsignal-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
+            prun('%(execdir)s/%(lisasimexe)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
     
     slnoisefile = 'TDI/tdi-strain-noise.xml'
-
+    
     if donoise and ((not makemode) or (not os.path.isfile(slnoisefile))):
-        # TO DO: adjust the timestep for MLDC4
-        prun('%(execdir)s/makeTDInoise-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s --seedNoise=%(seednoise)s %(slnoisefile)s')
+        if 'challenge4' in challengename:
+            prun('%(execdir)s/makeTDInoise-lisasim.py --duration=%(duration)s --timeStep=1.875 --seedNoise=%(seednoise)s %(slnoisefile)s')
+        else:
+            prun('%(execdir)s/makeTDInoise-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s --seedNoise=%(seednoise)s %(slnoisefile)s')
     
     pwait()
 
