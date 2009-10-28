@@ -81,20 +81,21 @@ def getslice(a1,col):
         return a1[:,col]
 
 
-def makeTimeSeries(name,cadence,begtime,length,records):
+def makeTimeSeries(name,cadence,begtime,length,records,datatype):
     if lisaxml2.Stream.MapStreamsFromDisk:
         obsarray = numpy.memmap(filename=tempfile.TemporaryFile(),dtype='d',mode='w+',shape=(length,records))
     else:
         obsarray = numpy.zeros((length,records),'d')
     
+    stepoffset = (datatype == 'Strain') and 0.5 or 0
     endtime = begtime + cadence * length
     
     # fill the time axis if present (works only in the first position)
     if obsnames(name)[0] == 't':
         if lisaxml2.Stream.MapStreamsFromDisk:
             for s in chunk(length,lisaxml2.Stream.BufferLength):
-                bt = begtime +  s.start     * cadence
-                et = begtime + (s.stop - 1) * cadence
+                bt = begtime + ( s.start     + stepoffset) * cadence
+                et = begtime + ((s.stop - 1) + stepoffset) * cadence
                 
                 obsarray[s,0] = numpy.linspace(bt,et,lisaxml2.Stream.BufferLength)
                 obsarray.flush()
@@ -165,7 +166,7 @@ def extend(tdi,begtime,endtime):
         endindex  = int( (ts_endtime - begtime) / ts.Cadence )
         
         # fill the new array with zeros and with the correct time axis
-        newts = makeTimeSeries(ts.name,ts.Cadence,begtime,newlength,ts.Array.Records)
+        newts = makeTimeSeries(ts.name,ts.Cadence,begtime,newlength,ts.Array.Records,tdi.DataType)
         
         # copy old array, and replace it in the TimeSeries
         copyTimeSeries(newts,ts,begin1=begindex,end1=endindex)
@@ -190,7 +191,7 @@ def upsample(tdi,mincadence):
             print "mergeXML.py (upsample): Don't know how to deal with odd-point FFTs."
             sys.exit(1)
         
-        newts = makeTimeSeries(ts.name,mincadence,ts.TimeOffset,newlength,ts.Array.Records)
+        newts = makeTimeSeries(ts.name,mincadence,ts.TimeOffset,newlength,ts.Array.Records,tdi.DataType)
         
         newfft = numpy.zeros(newlength/2 + 1,'complex128')
         
@@ -227,7 +228,7 @@ def downsample(tdi,maxcadence):
             print "mergeXML.py (downsample): Sorry, I don't know how to deal with odd-point FFTs."
             sys.exit(1)
         
-        newts = makeTimeSeries(ts.name,maxcadence,ts.TimeOffset,newlength,ts.Array.Records)
+        newts = makeTimeSeries(ts.name,maxcadence,ts.TimeOffset,newlength,ts.Array.Records,tdi.DataType)
         
         # allocate new arrays
         obsarray = numpy.zeros((newlength,ts.Array.Records),'d')
@@ -375,6 +376,7 @@ for inputfile in inputfiles:
         
         for source in sources:
             if hasattr(source,'TimeSeries'):
+                source.remove(source.TimeSeries)
                 del source.TimeSeries
             
             if options.subtract:
@@ -393,7 +395,8 @@ for inputfile in inputfiles:
                 tdid[obsname] = lisaxml2.Observable(name=thistdi.name,datatype=thistdi.DataType,
                                                     timeseries=makeTimeSeries(obsname,
                                                                               thistdi.TimeSeries.Cadence,thistdi.TimeSeries.TimeOffset,
-                                                                              thistdi.TimeSeries.Array.Length,thistdi.TimeSeries.Array.Records))                
+                                                                              thistdi.TimeSeries.Array.Length,thistdi.TimeSeries.Array.Records,
+                                                                              thistdi.DataType))                
             
             tdi = tdid[obsname]
             
