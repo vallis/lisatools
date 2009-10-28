@@ -87,20 +87,20 @@ def makeTimeSeries(name,cadence,begtime,length,records,datatype):
     else:
         obsarray = numpy.zeros((length,records),'d')
     
-    stepoffset = (datatype == 'Strain') and 0.5 or 0
+    stepoffset = cadence * ((datatype == 'Strain') and 0.5 or 0)
     endtime = begtime + cadence * length
     
     # fill the time axis if present (works only in the first position)
     if obsnames(name)[0] == 't':
         if lisaxml2.Stream.MapStreamsFromDisk:
             for s in chunk(length,lisaxml2.Stream.BufferLength):
-                bt = begtime + ( s.start     + stepoffset) * cadence
-                et = begtime + ((s.stop - 1) + stepoffset) * cadence
+                bt = begtime +  s.start     * cadence + stepoffset
+                et = begtime + (s.stop - 1) * cadence + stepoffset
                 
                 obsarray[s,0] = numpy.linspace(bt,et,lisaxml2.Stream.BufferLength)
                 obsarray.flush()
         else:
-            obsarray[:,0] = numpy.linspace(begtime,endtime - cadence,length)
+            obsarray[:,0] = numpy.linspace(begtime + stepoffset,endtime - cadence + stepoffset,length)
     
     ts = lisaxml2.TimeSeries(obsarray,name,Cadence=cadence,TimeOffset=begtime)    
     ts.checkContent()
