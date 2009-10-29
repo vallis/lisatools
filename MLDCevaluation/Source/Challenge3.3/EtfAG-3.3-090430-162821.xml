@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">
+        EtfAG
+    </Param>
+    <Param Name="GenerationDate" Type="ISO-8601">
+        2009-04-30T16:28:21PDT
+    </Param>
+    <Comment>
+        Thank you for your submission! Please check this file for correctness. It can be retrieved at http://www.tapir.caltech.edu/~mldc/submit-3/EtfAG-3.3-090430-162821.xml
+        Your comments:
+        PolarAngleOfSpin, AzimuthalAngleOfSpin, initial phase angles and distance were not estimated.
+        Synthetic LISA was used.
+    </Comment>
+    <XSIL Type="SourceData">
+        <XSIL Name="EMRI src0-0" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                1.0
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                1.46
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                4812175.542
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.748272428
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.6479682688
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                0
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.0003748197021
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.1901889567
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                0
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                500000000
+            </Param>
+            <Param Name="Probability" Unit="1">
+                1
+            </Param>
+            <Param Name="FixHarmonics" Unit="1">
+                5
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+        </XSIL>
+    </XSIL>
+</XSIL>
