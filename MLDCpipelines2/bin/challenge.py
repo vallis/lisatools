@@ -515,7 +515,7 @@ if dolisasim:
             lisasimexe = 'makeTDIsignal-lisasim.py'
         elif 'Immediate' in xmlfile:
             tdifile = 'TDI/' + re.sub('\.xml','-tdi-strain.xml',os.path.basename(xmlfile))
-            lisasimexe = 'makeTDIsignal-lisasim --immediate'
+            lisasimexe = 'makeTDIsignal-lisasim.py --immediate'
         
         if (not makemode) or newer(xmlfile,tdifile):
             # remember that we're not doing any SNR adjusting here...
