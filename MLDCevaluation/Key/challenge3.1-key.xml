@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">MLDC Task Force</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2008-04-03T19:19:17CEST</Param>
+    <Comment>
+        XML key for challenge3.1, source seed = 6465626, noise seed = 6465626, LISAtools SVN revision 836
+                        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="LISAData">
+        <XSIL Name="Standard MLDC PseudoLISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="Galaxy_6465626-bright" Type="PlaneWaveTable">
+            <Param Name="SourceType" Type="String">
+                GalacticBinary
+            </Param>
+            <Table>
+                <Column Name="Frequency" Type="double" Unit="Hertz"/>
+                <Column Name="FrequencyDerivative" Type="double" Unit="Hertz/Second"/>
+                <Column Name="EclipticLatitude" Type="double" Unit="Radian"/>
+                <Column Name="EclipticLongitude" Type="double" Unit="Radian"/>
+                <Column Name="Amplitude" Type="double" Unit="1"/>
+                <Column Name="Inclination" Type="double" Unit="Radian"/>
+                <Column Name="Polarization" Type="double" Unit="Radian"/>
+                <Column Name="InitialPhase" Type="double" Unit="Radian"/>
+                <Dim Name="Length">
+                    40628
+                </Dim>
+                <Dim Name="Records">
+                    8
+                </Dim>
+                <Stream Type="Remote" Encoding="Text">
+                    challenge3.1-key-0.txt
+                </Stream>
+            </Table>
+        </XSIL>
+        <XSIL Name="Galaxy_6465626" Type="PlaneWaveTable">
+            <Param Name="SourceType" Type="String">
+                GalacticBinary
+            </Param>
+            <Table>
+                <Column Name="Frequency" Type="double" Unit="Hertz"/>
+                <Column Name="FrequencyDerivative" Type="double" Unit="Hertz/Second"/>
+                <Column Name="EclipticLatitude" Type="double" Unit="Radian"/>
+                <Column Name="EclipticLongitude" Type="double" Unit="Radian"/>
+                <Column Name="Amplitude" Type="double" Unit="1"/>
+                <Column Name="Inclination" Type="double" Unit="Radian"/>
+                <Column Name="Polarization" Type="double" Unit="Radian"/>
+                <Column Name="InitialPhase" Type="double" Unit="Radian"/>
+                <Dim Name="Length">
+                    60307941
+                </Dim>
+                <Dim Name="Records">
+                    8
+                </Dim>
+                <Stream Type="Remote" Encoding="Text">
+                    challenge3.1-key-1.txt.gz
+                </Stream>
+            </Table>
+        </XSIL>
+    </XSIL>
+</XSIL>

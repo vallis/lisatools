@@ -1,0 +1,409 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author">MLDC Task Force</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2008-04-03T23:24:22CEST</Param>
+    <Comment>
+        XML key for challenge3.3, source seed = 160970, noise seed = 160970, LISAtools SVN revision 836
+                        lisaXML 1.0 [M. Vallisneri, June 2006]
+    </Comment>
+    <XSIL Type="LISAData">
+        <XSIL Name="Standard MLDC PseudoLISA" Type="PseudoLISA">
+            <Param Name="TimeOffset" Unit="Second">
+                0
+            </Param>
+            <Param Name="InitialPosition" Unit="Radian">
+                0
+            </Param>
+            <Param Name="InitialRotation" Unit="Radian">
+                0
+            </Param>
+            <Param Name="Armlength" Unit="Second">
+                16.6782
+            </Param>
+        </XSIL>
+    </XSIL>
+    <XSIL Type="SourceData">
+        <XSIL Name="EMRI-3.3.1" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.421812762567
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                6.12722883835
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.12926516708
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                1.02683301361
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.607839950171
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.3529155149
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                9592613.64626
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000195874494514
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                5.21945959065
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.181454715223
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                5.87897706737
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                4.97256712568
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.809747003385
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                1173313438.97
+            </Param>
+            <Param Name="FixHarmonics" Unit="1">
+                5
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+            <Param Name="PlungeTime" Unit="Second">
+                61127729.6416
+            </Param>
+            <Param Name="FinalEccentricity" Unit="1">
+                0.177906304635
+            </Param>
+            <Param Name="FinalTildeGamma" Unit="Radian">
+                0.625605599722
+            </Param>
+            <Param Name="FinalAzimuthalOrbitalPhase" Unit="Radian">
+                1.63748088367
+            </Param>
+            <Param Name="FinalAlphaAngle" Unit="Radian">
+                6.08888115306
+            </Param>
+            <Comment>
+                The parameters at plunge (PlungeTime, FinalEccentricity, FinalTildeGamma,
+                                                                FinalAzimuthalOrbitalPhase, FinalAlphaAngle) are redundant and are provided
+                                                                only for convenience in checking search codes against training sets.
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-3.3.2" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.309309003618
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                0.11494431373
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                2.24818152818
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                1.63464448875
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.692134078912
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                10.273191191
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                5100199.16606
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000347776262561
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                5.76199818474
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.213573418806
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                2.45298001024
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                3.74184008697
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.754736122664
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                1520762989.37
+            </Param>
+            <Param Name="FixHarmonics" Unit="1">
+                5
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+            <Param Name="PlungeTime" Unit="Second">
+                44695714.0821
+            </Param>
+            <Param Name="FinalEccentricity" Unit="1">
+                0.204619989702
+            </Param>
+            <Param Name="FinalTildeGamma" Unit="Radian">
+                0.881640961337
+            </Param>
+            <Param Name="FinalAzimuthalOrbitalPhase" Unit="Radian">
+                1.696549042
+            </Param>
+            <Param Name="FinalAlphaAngle" Unit="Radian">
+                4.27334252623
+            </Param>
+            <Comment>
+                The parameters at plunge (PlungeTime, FinalEccentricity, FinalTildeGamma,
+                                                                FinalAzimuthalOrbitalPhase, FinalAlphaAngle) are redundant and are provided
+                                                                only for convenience in checking search codes against training sets.
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-3.3.3" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.826097927775
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                5.27590766107
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                2.61746442351
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                3.92144901838
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.66538293599
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.79609777714
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                5086539.44262
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000349074995142
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                5.48968279165
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.216008554513
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                3.79728001023
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                0.106180675993
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                2.11083840561
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                2906764852.0
+            </Param>
+            <Param Name="FixHarmonics" Unit="1">
+                5
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+            <Param Name="PlungeTime" Unit="Second">
+                34394455.7972
+            </Param>
+            <Param Name="FinalEccentricity" Unit="1">
+                0.205082669576
+            </Param>
+            <Param Name="FinalTildeGamma" Unit="Radian">
+                4.25939067151
+            </Param>
+            <Param Name="FinalAzimuthalOrbitalPhase" Unit="Radian">
+                1.74537829693
+            </Param>
+            <Param Name="FinalAlphaAngle" Unit="Radian">
+                2.57925951449
+            </Param>
+            <Comment>
+                The parameters at plunge (PlungeTime, FinalEccentricity, FinalTildeGamma,
+                                                                FinalAzimuthalOrbitalPhase, FinalAlphaAngle) are redundant and are provided
+                                                                only for convenience in checking search codes against training sets.
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-3.3.4" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                0.797989999242
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                4.1086367746
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.10239225236
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                4.23034017187
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.505119348095
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.78578706275
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                961947.558935
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000953736908048
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                2.41818653174
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.321265837719
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                1.9727525346
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                4.76056779987
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                1.56055035566
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                4239069338.64
+            </Param>
+            <Param Name="FixHarmonics" Unit="1">
+                5
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+            <Param Name="PlungeTime" Unit="Second">
+                52652923.0352
+            </Param>
+            <Param Name="FinalEccentricity" Unit="1">
+                0.159304714442
+            </Param>
+            <Param Name="FinalTildeGamma" Unit="Radian">
+                0.34473323803
+            </Param>
+            <Param Name="FinalAzimuthalOrbitalPhase" Unit="Radian">
+                5.89459809617
+            </Param>
+            <Param Name="FinalAlphaAngle" Unit="Radian">
+                5.47769788191
+            </Param>
+            <Comment>
+                The parameters at plunge (PlungeTime, FinalEccentricity, FinalTildeGamma,
+                                                                FinalAzimuthalOrbitalPhase, FinalAlphaAngle) are redundant and are provided
+                                                                only for convenience in checking search codes against training sets.
+            </Comment>
+        </XSIL>
+        <XSIL Name="EMRI-3.3.5" Type="PlaneWave">
+            <Param Name="SourceType">
+                ExtremeMassRatioInspiral
+            </Param>
+            <Param Name="EclipticLatitude" Unit="Radian">
+                -0.292678160597
+            </Param>
+            <Param Name="EclipticLongitude" Unit="Radian">
+                1.74440501669
+            </Param>
+            <Param Name="Polarization" Unit="Radian">
+                0
+            </Param>
+            <Param Name="PolarAngleOfSpin" Unit="Radian">
+                1.07271409078
+            </Param>
+            <Param Name="AzimuthalAngleOfSpin" Unit="Radian">
+                1.21169168546
+            </Param>
+            <Param Name="Spin" Unit="MassSquared">
+                0.674606515437
+            </Param>
+            <Param Name="MassOfCompactObject" Unit="SolarMass">
+                9.90936659385
+            </Param>
+            <Param Name="MassOfSMBH" Unit="SolarMass">
+                978930.744125
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalFrequency" Unit="Hertz">
+                0.000953029442749
+            </Param>
+            <Param Name="InitialAzimuthalOrbitalPhase" Unit="Radian">
+                4.97527775424
+            </Param>
+            <Param Name="InitialEccentricity" Unit="Unit">
+                0.311791387201
+            </Param>
+            <Param Name="InitialTildeGamma" Unit="Radian">
+                4.52767395201
+            </Param>
+            <Param Name="InitialAlphaAngle" Unit="Radian">
+                5.31289641334
+            </Param>
+            <Param Name="LambdaAngle" Unit="Radian">
+                0.857224573595
+            </Param>
+            <Param Name="Distance" Unit="Parsec">
+                5194581048.93
+            </Param>
+            <Param Name="FixHarmonics" Unit="1">
+                5
+            </Param>
+            <Param Name="IntegrationStep" Unit="Second">
+                15.0
+            </Param>
+            <Param Name="PlungeTime" Unit="Second">
+                57763416.7917
+            </Param>
+            <Param Name="FinalEccentricity" Unit="1">
+                0.168964481607
+            </Param>
+            <Param Name="FinalTildeGamma" Unit="Radian">
+                2.90007173091
+            </Param>
+            <Param Name="FinalAzimuthalOrbitalPhase" Unit="Radian">
+                2.41583635517
+            </Param>
+            <Param Name="FinalAlphaAngle" Unit="Radian">
+                1.35131856482
+            </Param>
+            <Comment>
+                The parameters at plunge (PlungeTime, FinalEccentricity, FinalTildeGamma,
+                                                                FinalAzimuthalOrbitalPhase, FinalAlphaAngle) are redundant and are provided
+                                                                only for convenience in checking search codes against training sets.
+            </Comment>
+        </XSIL>
+    </XSIL>
+</XSIL>
