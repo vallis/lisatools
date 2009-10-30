@@ -408,15 +408,14 @@ and include laser phase noise at a level of approximately ten times the secondar
 noise at 1mHz.
 
 Two groups submitted entries for this challenge:
-
 \begin{itemize}
 \item \textbf{AEIBham} (a collaboration between the Albert Einstein Institute
 (Germany) and the University of Birmingham (UK)) submitted multiple entries,
 using different applications of the same Bayesian Markov Chain Monte Carlo
 analysis method. However, we will not compare all of the submissions, but
 instead focus on the analysis of the $A$ and $E$ channels, for which two results were submitted
-over two different frequency bands; 0.1 -- 1 mHz (\textbf{AEIBham (a)} )
-and 0.1 -- 5 mHz ( \textbf{AEIBham (b)} ).
+over two different frequency bands; 0.1--1 mHz (\textbf{AEIBham (a)})
+and 0.1--5 mHz (\textbf{AEIBham (b)}).
 \item \textbf{MTGWAG} (the Montana Gravitational Wave Astronomy Group (USA)) 
 utilised a Parallel Tempered Markov Chain Monte Carlo search to
 estimate the amplitude of the stochastic background, using all three of the 
@@ -438,6 +437,31 @@ and injected values; both groups recovered the injection
 to within $10\%$. 
 Figure \ref{fig:stochastic_pdf} shows the recovered posterior PDFs on 
 $\Omega_{\mathrm{gw}}$ for each of the analyses. 
+
+The major difference between the analyses is the treatment of the instrumental
+noise. 
+The AEIBham analyses 
+used analytical expressions to characterise the shape of the noise power spectra
+in the $A$ and $E$ channels, such that the noise model had two unknown parameters ---
+the overall amplitudes of the noise PSDs.
+For this it was assumed that the secondary noises were symmetrical,
+which was not true of these data sets. It was also assumed that the strain spectrum was
+proportional to $f^3$ throughout the whole band, which was not in fact the case at higher frequencies. This
+may explain why the AEIBham (b) result was further from the injected
+value that either the AEIBham (a) result (where the GW spectrum was indeed
+a true power law throughout the whole band) or the MTGWAG result (where the 
+response function had been recalibrated using the training data to take 
+this into account).
+
+The MTGWAG analysis used all three channels, and compensated for the fact that the
+GW spectrum was not a power law at high frequency by using a response function
+calibrated using the training data. The noise was fully characterised 
+in terms of the twelve secondary noise amplitudes (again assuming that the 
+spectral shapes were fixed). The recovered secondary noise amplitudes 
+were not constrained, but the total position or acceleration noise
+in single arm of LISA can be well constrained. 
+These noise combinations are compared to the injected
+values in Table \ref{tab:MTGWAG_noise_est}. 
 
 \begin{table}
 \begin{center}
@@ -461,35 +485,11 @@ error. The injected value was $\Omega_{\mathrm{gw}}=1.123390\times 10^{-11}$.
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{stochastic_pdfs.eps}
-\caption{The recovered posterior PDFs on $\Omega_{\mathrm{gw}}$ for the three analyses.
+\caption{The recovered posterior PDFs on $\Omega_{\mathrm{gw}}$ for the three analyses. The limits on the x-axis correspond to the prior on 
+$\Omega_{\mathrm{gw}}$ and the vertical dashed line indicates the injected 
+value.
 \label{fig:stochastic_pdf}}
 \end{figure}
-
-
-All three analyses recovered the injected value to within $10\%$.
-The major difference between the analyses is the treatment of the instrumental
-noise. 
-The AEIBham analyses 
-used analytical expressions to characterise the shape of the noise power spectra
-in the $A$ and $E$ channels, such that the noise model had two unknown parameters;
-the overall amplitudes of the noise PSDs.
-For this it was assumed that the secondary noises were symmetrical,
-which was not true of these data. It was also assumed that the GW spectrum was
-flat throughout the whole band, which was not in fact the case at higher frequencies. This
-may explain why the AEIBham (b) result was further from the injected
-value that either the AEIBham (a) result (where the GW spectrum was indeed
-a true power law throughout the whole band) or the MTGWAG result (where the 
-response function had been recalibrated using the training data to take 
-this into account).
-
-The MTGWAG analyses used all three channels, and fully characterised the noise
-in terms of the twelve secondary noise amplitudes (again assuming that the 
-spectral shapes were fixed). It also compensated for the fact that the
-GW spectrum was not a power law at high frequency by using a response function
-calibrated using the training data. The recovered secondary noise amplitudes are compared to the injected
-values in Table \ref{tab:MTGWAG_noise_est}. Although the individual parameters
-were not well constrained, certain combinations were, and the amplitude of
-the GW spectrum was recovered to within a few percent of the injected value.
 
 \begin{table}
 \begin{center}
@@ -507,7 +507,8 @@ pd2 & pd3s & $3.805 \times 10^{-37}$ & $3.804 \times 10^{-37}$ & $3.552 \times 1
 \end{tabular}
 \end{center}
 \caption{Combinations of amplitudes of secondary noises 
-recovered by the MTGWAG analysis.
+recovered by the MTGWAG analysis. These combinations correspond to the total
+acceleration noise (pm) or position noise (pd) in a single arm of LISA.
 \label{tab:MTGWAG_noise_est}
 }
 \end{table} 
