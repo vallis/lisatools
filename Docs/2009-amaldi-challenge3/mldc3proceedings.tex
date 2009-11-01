@@ -6,6 +6,7 @@
 \usepackage[usenames]{color}
 \usepackage{iopams}
 \usepackage{epstopdf}
+\usepackage{multirow}
 
 \newcommand{\eqref}[1]{{(\ref{#1})}}
 \newcommand{\ilya}[1]{{\color{red} \bf Ilya: #1}}
@@ -267,7 +268,7 @@ nine parameters.
 
 \section{Challenge 3.3: The Extreme Mass Ratio Inspirals {\it Ilya}}
 
-The Extreme-Mass-Ratio Inspiral (EMRI) signals in Challenge 3.3 are based on Barack \& Cutler analytical kludge waveforms \cite{barackcutler}, as described in \cite{mldcgwdaw2}, but with only five harmonics present per signal \cite{MLDC3}.  Five EMRIs were injected, all coalescing during the second year of the data set, with dimensionless spins between $0.5$ and $0.7$, eccentricities at plunge between $0.15$ and $0.25$, and smaller-body masses between $9.5 M_\odot$ and $10.5 M_\odot$.  The mass of the larger body was in the range $0.95$--$1.05\times10^7 M_\odot$ for source 3.3.1,  $4.75$--$5.25 \times10^6 M_\odot$ for sources 3.3.2 and 3.3.3, and $0.95$--$1.05\times10^6 M_\odot$ for sources 3.3.4 and 3.3.5 (see Table 8 of \cite{MLDC3}).  In addition to the presence of multiple sources in the same data stream, the challenge participants had to contend with much weaker signals than in previous EMRI challenges, with announced signal-to-noise ratios varying between $10$ and $50$ (actual blind-injection SNRs varied between $20$ and $37$).
+The Extreme-Mass-Ratio Inspiral (EMRI) signals in Challenge 3.3 are based on Barack \& Cutler analytical kludge waveforms \cite{barackcutler}, as described in \cite{mldcgwdaw2}, but with only five harmonics present per signal \cite{MLDC3}.  Five EMRI signals were injected into a single realization of the LISA detector noise, all coalescing during the second year of the data set, with dimensionless spins between $0.5$ and $0.7$, eccentricities at plunge between $0.15$ and $0.25$, and smaller-body masses between $9.5 M_\odot$ and $10.5 M_\odot$.  The mass of the larger body was in the range $0.95$--$1.05\times10^7 M_\odot$ for source 3.3.1,  $4.75$--$5.25 \times10^6 M_\odot$ for sources 3.3.2 and 3.3.3, and $0.95$--$1.05\times10^6 M_\odot$ for sources 3.3.4 and 3.3.5 (see Table 8 of \cite{MLDC3}).  In addition to the presence of multiple sources in the same data stream, the challenge participants had to contend with much weaker signals than in previous EMRI challenges, with announced signal-to-noise ratios varying between $10$ and $50$ (actual blind-injection SNRs varied between $20$ and $37$).
 
 Three groups attempted to find the Challenge 3.3 sources.  These were:
 \begin{itemize}
@@ -279,43 +280,60 @@ Three groups attempted to find the Challenge 3.3 sources.  These were:
 
 \begin{table}
 \begin{center}
-\begin{tabular}{lr|rrrrrrrr}
+\begin{tabular}{|l|rrrrrrrrrr|}
 \hline
-Source & group & SNR & $\Delta M/ M  $ & $\Delta \mu/ \mu $ & $ \Delta t_{c} $ &  $ \Delta  e_0 / e_0 $ & $ \Delta |S| / |S| $ & $ \Delta \lambda / \lambda  $ &  $\Delta D / D$ \\
-(true SNR) & & $\times 10^{-3}$ & $\times 10^{-3}$ & (sec) &  &  & &    \\
+Group & SNR & $\frac{\Delta M}{M}$ & $\frac{\Delta \mu}{\mu}$ & $ \frac{\Delta \nu_0}{\nu_0} $ &  $\Delta  e_0$ &  $\Delta |S|$ & $\frac{\Delta \lambda_{\rm SL}}{\lambda_{\rm SL}}$ & $\Delta{\rm Spin}$ & $\Delta{\rm Sky}$ & $\frac{\Delta D}{D}$ \\
+& & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times 10^{-5}$ & $\times 10^{-3}$  & $\times 10^{-3}$ & & (deg) & (deg) &    \\
+\hline
 
+\multicolumn{11}{|c|}{EMRI-1 (true SNR$=21.673$)} \\
+MTAPCIOA  & 21.794 & 5.05  &  3.29 &  1.61  &  -5.1  &  -1.4  &  -0.019  &  23  &  2.0  &  0.073  \\ %0-0
+MTAPCIOA & 21.804 & -0.058  &  -0.011  &  -0.078  &  -0.046  &  0.016  &  0.00054  &  3.5  &  1.0  &  0.13 \\ %0-1
 \hline
-EMRI-1& MTAPCIOA  & &  & & & & & &  \\
-(21.6732) & MTAPCIOA & & & & & & & &     \\
-\hline
-EMRI-2& MTAPCIOA & & & & & & & &  \\
-(33.3534)    & BabakGair & & & & & & & &     \\    
-              & BabakGair & & & & & & & &     \\    
-              & BabakGair & & & & & & & &     \\       
-              & EtfAG & & & & & & & & \\  
-\hline
-EMRI-3& MTAPCIOA & & & & & & & &  \\
-(20.9811)  & BabakGair & & & & & & & &     \\    
-             & BabakGair & & & & & & & &     \\    
-              & BabakGair & & & & & & & &     \\        
-\hline
-EMRI-4& MTAPCIOA &  &  & & & & & &  \\
-(26.6500)  & MTAPCIOA & & & & & & & &     \\
-\hline
-EMRI-5& MTAPCIOA  & &  & & & & & &  \\
-(36.1731) & MTAPCIOA & & & & & & & &     \\
-\hline                                               
 
+\multicolumn{11}{|c|}{EMRI-2 (true SNR$=32.935$)} \\
+MTAPCIOA & 32.387 & -3.64  &  -2.61  &  -3.09  &  3.8  &  0.87  &  0.012  &  11  &  3.7  &  0.0030  \\ %0-2
+BabakGair & 22.790 & 33.1  &  -19.7  &  10.1  &  -33  &  -7.3  &  0.25  &  47  &  3.5  &  -0.25  \\  %1-0
+BabakGair & 22.850 & 32.7  &  -20.0  &  9.94  &  -32 &  -7.2  &  0.25  &  58  &  3.5  &  -0.24  \\ %1-1
+BabakGair & 22.801 & 33.5  &  -19.5  &  10.5  &  -33  &  -7.4  &  0.24  &  40  &  3.5  &  -0.25  \\     %1-2
+\hline
+
+\multicolumn{11}{|c|}{EMRI-3 (true SNR$=19.507$)} \\
+MTAPCIOA & 19.598 & 1.62  &  0.38 &  -0.10  &  -0.35  &  -0.94  &  -0.0030  &  5.0  &  3.0  &  -0.041  \\  %0-3
+BabakGair & 21.392 & 1.77  &  1.01  &  1.95  &  -1.2 &  -0.68  &  -0.0023  &  116  &  4.5  &  0.13  \\   %0-0
+BabakGair & 21.364 & 2.26  &  1.88  &  2.71  &  -2.0  &  -0.69  &  -0.0025  &  65  &  6.1  &  0.14  \\    %0-1
+BabakGair & 21.362 & 1.51  &  1.01  &  2.09  &  -1.3  &  -0.50  &  -0.0017  &  7.6  &  6.2  &  0.14  \\  %0-2
+EtfAG & - & 54.0 &  4.88  &  -7375  &  26  &  17  &  -  &  -  &  32  &  0.83  \\        
+\hline
+
+\multicolumn{11}{|c|}{EMRI-4 (true SNR$=26.650$)} \\
+MTAPCIOA & -0.441 & -8.77  &  -10.1  &  -6.03  &  -3.7 &  144  &  0.95  &  99  &  13  &  -2.3  \\ %0-5
+\hline
+
+\multicolumn{11}{|c|}{EMRI-5 (true SNR$=36.173$)} \\
+MTAPCIOA  & 17.480  &  -3.32  &  5.00  &  -1.80  &  0.22  &  55  &  0.062  &  43  &  1.8  &  -1.3  \\ %0-4
+\hline                                              
 
 \end{tabular}
 \end{center}
-\caption{Parameter estimation errors for the EMRIs in Challenge~3.3. All parameters are defined as in the table 5 of \cite{mldcgwdaw2}.
-%We used only the mode with the highest SNR in all tables, if several modes per group were submitted.
+\caption{Parameter estimation errors for the EMRIs in Challenge~3.3. Multiple solutions are included when submitted by the groups.
+%All parameters are defined as in the table 5 of \cite{mldcgwdaw2}.
+The true SNR is computed with the LISA Simulator response and noise realization; the SNRs reported by individual groups are computed with the simulator used in the respective searches (LISA Simulator for MTAPCIOA, Synthetic LISA for EtfAG and BabakGair).
 \label{tab:EMRI_Err}}
 \end{table} 
 
-The MLDC 3.3 parameter-estimation results are presented in Table \ref{tab:EMRI_Err}.
-{\bf *** To be completed}
+The MLDC 3.3 parameter-estimation results are presented in Table \ref{tab:EMRI_Err}.  The columns include the mass of the large body $M$, the mass of the small body $\mu$, the initial value of the azimuthal orbital frequency $\nu_0$, the initial value of the eccentricity $e_0$, the dimensionless spin $|S|$, the spin-orbit misalignment angle $\lambda$ and the luminosity distance to the source $D$.  The angular distances in the sky between true and estimated spin orientations $\Delta {\rm Spin}$ and source locations $\Delta {\rm Sky}$ are also included.
+
+All five EMRI signals were found by MTAPCIOA.  They were generally able to get very good parameter-estimation accuracies, with fractional errors of a few tenths of a percent in the masses of both bodies and sky localization errors of a few degrees (up to $13$ degrees for EMRI-4).  One of their solutions for EMRI-1 was particularly impressive, with fractional errors of a few times $10^{-5}$ in masses, initial eccentricity, and initial spin.  However, an indication of the difficulty of resolving secondary maxima is shown by this group's other solution for EMRI-1, which has almost the same SNR ($21.794$ for the secondary vs.~$21.804$ for the primary), but parameter errors that are about two orders of magnitude greater.  
+
+The time-frequency analysis carried out by the EtfAG group was particularly hard-hit by the simultaneous lowering of the SNR and the presence of multiple overlapping signals in MLDC 3.3.  The group was unable to find the low-frequency, low-SNR source EMRI-1.  And while they found a medium-frequency source, the relatively large parameter-estimation errors suggest that the time-frequency approach did not adequately resolve between the overlapping harmonics of the sources EMRI-2 and EMRI-3.
+
+The BabakGair group submitted three (relatively close) solutions for each of EMRI-2 and EMRI-3.  For EMRI-3, their estimates are better than those of EtfAG and comparable to those of MTAPCIOA, albeit somewhat less accurate for the initial parameter values and distance.  For EMRI-2, BabakGair had errors of a few percent in the masses and initial eccentricity, and had significant errors in the spin orientation angle and distance, although the location of the source on the sky was still found correctly to within $3.5$ degrees.
+
+The high-frequency sources EMRI-4 and EMRI-5 presented a challenge for all groups.  Although MTAPCIOA were able to resolve these sources and estimated their masses fairly accurately, they had significantly higher errors in determining the magnitude and orientation of the spins than for other sources, and they overestimated the distance to both sources by factors of $2$ or $3$ vs.~distance errors of $\lesssim 10\%$ for the other sources.  Furthermore, their negative SNR for the EMRI-4 source may be indicative of an imperfect subtraction of the louder EMRI-5 source.  The other two groups were unable to localize either of the high-frequency EMRI sources by the submission deadline.
+
+Thus, while all EMRI sources have been found and their masses have been accurately estimated, the results of MLDC 3.3 suggest that some work remains to be done on improving the estimates of EMRI parameters for relatively weak and overlapping signals.
+
 
 \section{Challenge 3.4: The Cosmic String Cusp Bursts {\it Ed}}
 
