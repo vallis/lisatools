@@ -135,6 +135,7 @@ RecSystems = SourceXML.getLISASources()
 fout = open(outF, 'w')
 
 spr = "    "
+
 for key in KeySystems:
     #print "Keys: ", key.name
     if (key.name == keyS):
@@ -157,6 +158,15 @@ for key in KeySystems:
                   delP = delP3
 	      rec = rec + "EclipticLongitude:   " 
 	      rec = rec + str(delP) + spr + str(delP*ParamRange[1]/key.EclipticLongitude) + "\n"
+              SkyPolarAngleEMRI = pi/2.-emri.EclipticLatitude
+              SkyPolarAngleKey = pi/2.-key.EclipticLatitude
+	      print "EcLatKey, EcLongKey:", key.EclipticLatitude, key.EclipticLongitude
+              print "EcLatEMRI, EcLongEMRI:", emri.EclipticLatitude, emri.EclipticLongitude
+              CosSkyAngle = (cos(SkyPolarAngleEMRI)*cos(SkyPolarAngleKey) \
+                                        * cos(emri.EclipticLongitude-key.EclipticLongitude) + \
+              			sin(SkyPolarAngleEMRI)*sin(SkyPolarAngleKey))
+	      SkyAngleTable=math.acos(CosSkyAngle)*(180.0/pi)
+	      print "CosSkyAngle, SkyAngle (deg):", CosSkyAngle, SkyAngleTable
               delP = (key.PolarAngleOfSpin - emri.PolarAngleOfSpin)
 	      rec = rec + "PolarAngleOfSpin:    "
 	      rec = rec + str(delP/ParamRange[2]) + spr + str(delP/key.PolarAngleOfSpin) + "\n"
@@ -169,18 +179,26 @@ for key in KeySystems:
                  delP = delP3
 	      rec = rec + "AzimuthalAngleOfSpin:   "
 	      rec = rec + str(delP) + spr + str(delP*ParamRange[3]/key.AzimuthalAngleOfSpin) + "\n"
+              SpinAngleTable = math.acos (cos(emri.PolarAngleOfSpin)*cos(key.PolarAngleOfSpin) \
+						*cos(emri.AzimuthalAngleOfSpin-key.AzimuthalAngleOfSpin) + \
+					sin(emri.PolarAngleOfSpin)*sin(key.PolarAngleOfSpin)) * (180.0/pi)
               delP = (key.Spin - emri.Spin)
 	      rec = rec + "Spin:     "
 	      rec = rec + str(delP/ParamRange[4]) + spr + str(delP/key.Spin) + "\n"
+ 	      SpinTable = delP * 1000.0	
               delP = key.MassOfCompactObject - emri.MassOfCompactObject
 	      rec = rec + "MassOfCompactObject:     "
 	      rec = rec + str(delP/ParamRange[5]) + spr + str(delP/key.MassOfCompactObject) + "\n"
+              MuTable = delP/key.MassOfCompactObject*1000.0
               delP = key.MassOfSMBH - emri.MassOfSMBH
 	      rec = rec + "MassOfSMBH:    "
 	      rec = rec + str(delP/ParamRange[6]) + spr + str(delP/key.MassOfSMBH) + "\n"
+	      MTable = delP/key.MassOfSMBH*1000.0
 	      rec  = rec + "InitialAzimuthalOrbitalFrequency:     "
               rec = rec + str((key.InitialAzimuthalOrbitalFrequency - emri.InitialAzimuthalOrbitalFrequency)\
                         /key.InitialAzimuthalOrbitalFrequency) + "\n"
+              NuTable = (key.InitialAzimuthalOrbitalFrequency - emri.InitialAzimuthalOrbitalFrequency)\
+                        /key.InitialAzimuthalOrbitalFrequency*100000.0
               delP = (key.InitialAzimuthalOrbitalPhase - emri.InitialAzimuthalOrbitalPhase)/ParamRange[8]
               delP2 = (key.InitialAzimuthalOrbitalPhase + 2.*pi - emri.InitialAzimuthalOrbitalPhase)/ParamRange[8]
               delP3 = (key.InitialAzimuthalOrbitalPhase - 2.*pi - emri.InitialAzimuthalOrbitalPhase)/ParamRange[8]
@@ -193,6 +211,7 @@ for key in KeySystems:
               delP = key.InitialEccentricity - emri.InitialEccentricity
 	      rec = rec + "InitialEccentricity:     " 
 	      rec = rec + str(delP/ParamRange[9]) + spr +  str(delP/key.InitialEccentricity) + "\n"
+	      EccTable=delP*1000.0
               delP = (key.InitialTildeGamma - emri.InitialTildeGamma)/ParamRange[10]
               delP2 = (key.InitialTildeGamma + 2.*pi - emri.InitialTildeGamma)/ParamRange[10]
               delP3 = (key.InitialTildeGamma - 2.*pi - emri.InitialTildeGamma)/ParamRange[10]
@@ -214,10 +233,21 @@ for key in KeySystems:
               delP = key.LambdaAngle - emri.LambdaAngle
 	      rec = rec + "LambdaAngle:      " 
 	      rec = rec + str(delP/ParamRange[12]) + spr + str(delP/key.LambdaAngle) + "\n"
+              LambdaTable = delP/key.LambdaAngle
 	      rec = rec + "Distance:    "
 	      rec = rec + str((key.Distance - emri.Distance)/key.Distance) + "\n"
+              DistTable = (key.Distance - emri.Distance)/key.Distance 
 	      fout.write(rec + "\n")	
-	     
+
+print "Group & SNR & $\\frac{\\Delta M}{M}$ & $\\frac{\\Delta \\mu}{\\mu}$ & $ \\frac{\\Delta \\nu_0}{\\nu_0} $" + \
+	" &  $\\Delta  e_0$ &  $\\Delta |S|$ & " + \
+	"$\\frac{\\Delta \\lambda_{\\rm SL}}{\\lambda_{\\rm SL}}$ & $\\Delta{\\rm Spin}$ & " + \
+	"$\\Delta{\\rm Sky}$ & $\\frac{\\Delta D}{D}$ \\\\" + "\n" 
+print "& & $\\times 10^{-3}$ & $\\times 10^{-3}$ & $\\times 10^{-5}$ & $\\times 10^{-3}$ &" + \
+	" $\\times 10^{-3}$ & & (deg) & (deg) &   \\\\" + "\n"
+print "?", " & ", "?", " & ", MTable, " & ",  MuTable, " & ", NuTable, " & ", \
+	EccTable, " & ", SpinTable, " & ", LambdaTable, " & ", SpinAngleTable, " & ", \
+	SkyAngleTable, " & ", DistTable, " \\\\" + "\n"
 fout.close()	      
 
 
