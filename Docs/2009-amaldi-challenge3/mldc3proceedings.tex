@@ -42,7 +42,7 @@ Hubert Halloin$^{10}$,
 Martin Hendry$^{13}$,
 Arturo Jimenez$^3$,
 Andrzej Kr\'olak$^{19}$,
-Ilya Mandel$^{9,6}$,
+Ilya Mandel$^{9, 23}$,
 Chris Messenger$^{13}$,
 Renate Meyer$^{20}$,
 Soumya Mohanty$^3$,
@@ -83,6 +83,7 @@ Graham Woan$^{13}$}
 \address{$^{20}$ Dept.\ of Statistics, The Univ.\ of Auckland, Auckland, New Zealand}
 \address{$^{21}$ ARTEMIS, Observatoire de la Cote d'Azur-C.N.R.S., 06304 Nice, France} 
 \address{$^{22}$Center for Computational Relativity and Gravitation and School of Mathematical Sciences, Rochester Institute of Technology, 85 Lomb Memorial Drive, Rochester, NY 14623, USA}
+\address{$^{23}$ NSF Astronomy \& Astrophysics Postdoctoral Fellow}
 
 \ead{Michele.Vallisneri@jpl.nasa.gov}
 
@@ -274,7 +275,7 @@ Three groups attempted to find the Challenge 3.3 sources.  These were:
 \begin{itemize}
 \item \textbf{BabakGair}: This collaboration between AEI and Cambridge University used stochastic sampling and Markov Chain Monte Carlo techniques to find signal harmonics, and then carried out an F-statistic search in the space of harmonics before applying MCMC in the physical parameter space for the final fit.  The basic methodology is described in \cite{BabakGairPorter}, but this search contained several improvements in harmonic identification.
 \item \textbf{EtfAG}: This collaboration between Cambridge University and Northwestern University searched the time-frequency spectrogram for harmonics using the Chirp-based Algorithm for Track Search (CATS, \cite{CATS}) which they developed for earlier MLDC rounds \cite{GairMandelWen}; this iteration included several improvements to the search technique to allow for intersecting tracks from multiple sources.
-\item \textbf{MTAPCIOA} This collaboration between Montana State University, APC-Paris, and Cambridge University ... {\bf *** To be completed}.
+\item \textbf{MTAPCIOA} This collaboration between Montana State University, APC-Paris, and Cambridge University employed a parallel tempering MCMC algorithm that included harmonic jumps to force the algorithm to move between secondary solutions in the parameter space. This algorithm was developed from a code used in previous rounds of the MLDC \cite{Cornish:2008}; the key improvements for this round were the inclusion of parallel tempering as described in \cite{keycornish} and improved implementation of the harmonic jumps.
 \end{itemize}
 
 
@@ -546,7 +547,7 @@ NC: NASA Grants NNG05GI69G and NNX07AJ61G.
 MV: the LISA Mission Science Office and by JPL's HRDF.
 DB and SF: NSF grant PHY-0601459 and the LIGO Lab.
 JG: St Catharine's College, Cambridge.
-IM: the Brinson Foundation, NASA grant NNG04GK98G and NSF grant PHY-0601459.
+IM: NASA ATP grant NNX07AH22G and the NSF Astronomy \& Astrophysics Postdoctoral Fellowship under award AST-0901985.
 RP: the Max-Planck Society.
 LW: the Alexander von Humboldt Foundation's Sofja Kovalevskaja Programme, funded by the German Federal Ministry of Education and Research.
 JTW: NSF grant NSF grant PHY-0855494.
@@ -587,6 +588,8 @@ S. Babak \& al.~2008 \textit{Class. Quant. Grav.} \textbf{25}, 114037.
 \bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
 
 \bibitem{mldcgwdaw2} Arnaud K A et al. (the MLDC Task Force) 2007 \textit{Class. Quant. Grav.} \textbf{24} S551
+
+\bibitem{Cornish:2008} N J Cornish, arXiv:0804.3323
 
 \bibitem{GAspinbbhFullPaper}
 A. Petiteau, Y. Shang, S. Babak and  F. Feroz
