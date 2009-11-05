@@ -68,7 +68,7 @@ if 'lc' in options.simulators:
 
 challengename = (len(args) > 1) and args[1] or 'challenge4.0'
 
-if not options.trainingOnly:                                                                  
-    run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s            --seed=%(seed4)s  --combinedSNR %(challengename)s' % globals())
 if not options.blindOnly:
     run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s --training --seed=%(seed4t)s --combinedSNR %(challengename)s' % globals())
+if not options.trainingOnly:                                                                  
+    run('%(mydir)s/challenge.py -P %(nproc)s %(options4)s            --seed=%(seed4)s  --combinedSNR %(challengename)s' % globals())
