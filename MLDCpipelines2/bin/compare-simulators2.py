@@ -64,6 +64,12 @@ for tdiG in tdiGens:
     for Sim in xrange(len(args)):
         Datatdifile = lisaxml.readXML(args[Sim])
         tdiData = Datatdifile.getTDIObservables()[0]
+        if (Sim == 0):
+            stime = tdiData.TimeSeries.Cadence
+        else:
+            if (stime != tdiData.TimeSeries.Cadence):
+                print "All the file should have the same time step."
+                sys.exit()
         if ( (UsedSim[Sim] == 'SL') or (UsedSim[Sim] == 'LC') ):
             if (options.verbose):
                 if (UsedSim[Sim] == 'SL'):
@@ -85,8 +91,8 @@ for tdiG in tdiGens:
             if(tdiG == 'Z'):
                 X.append(tdiData.Zs)
 
-
-    stime = 15
+        
+    print " --> time step =" , stime , "s"
     patches = 64
 
     # use Blackman windowing for spectra
