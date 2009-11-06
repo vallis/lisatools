@@ -309,13 +309,13 @@ The true SNR is computed with the LISA Simulator response and noise realization;
 
 The MLDC 3.3 parameter-estimation results are presented in Table \ref{tab:EMRI_Err}.  The columns include the mass of the large body $M$, the mass of the small body $\mu$, the initial value of the azimuthal orbital frequency $\nu_0$, the initial value of the eccentricity $e_0$, the dimensionless spin $|S|$, the spin-orbit misalignment angle $\lambda$ and the luminosity distance to the source $D$.  The angular distances in the sky between true and estimated spin orientations $\Delta {\rm Spin}$ and source locations $\Delta {\rm Sky}$ are also included.
 
-All five EMRI signals were found by MTAPCIOA.  They were generally able to get very good parameter-estimation accuracies, with fractional errors of a few tenths of a percent in the masses of both bodies and sky localization errors of a few degrees (up to $13$ degrees for EMRI-4).  One of their solutions for EMRI-1 was particularly impressive, with fractional errors of a few times $10^{-5}$ in masses, initial eccentricity, and initial spin.  However, an indication of the difficulty of resolving secondary maxima is shown by this group's other solution for EMRI-1, which has almost the same SNR ($21.794$ for the secondary vs.~$21.804$ for the primary), but parameter errors that are about two orders of magnitude greater.  
+All five EMRI signals were recovered with nearby parameters by MTAPCIOA.  This group was generally able to get very good parameter-estimation accuracies, with fractional errors of a few tenths of a percent in the masses of both bodies and sky localization errors of a few degrees (up to $13$ degrees for EMRI-4).  One of their solutions for EMRI-1 was particularly impressive, with fractional errors of a few times $10^{-5}$ in masses, initial eccentricity, and initial spin.  However, an indication of the difficulty of resolving secondary maxima is shown by this group's other solution for EMRI-1, which has almost the same SNR ($21.794$ for the secondary vs.~$21.804$ for the primary), but parameter errors that are about two orders of magnitude greater.  
 
 The time-frequency analysis carried out by the EtfAG group was particularly hard-hit by the simultaneous lowering of the SNR and the presence of multiple overlapping signals in MLDC 3.3.  The group was unable to find the low-frequency, low-SNR source EMRI-1.  And while they found a medium-frequency source, the relatively large parameter-estimation errors suggest that the time-frequency approach did not adequately resolve between the overlapping harmonics of the sources EMRI-2 and EMRI-3.
 
 The BabakGair group submitted three (relatively close) solutions for each of EMRI-2 and EMRI-3.  For EMRI-3, their estimates are better than those of EtfAG and comparable to those of MTAPCIOA, albeit somewhat less accurate for the initial parameter values and distance.  For EMRI-2, BabakGair had errors of a few percent in the masses and initial eccentricity, and had significant errors in the spin orientation angle and distance, although the location of the source on the sky was still found correctly to within $3.5$ degrees.
 
-The high-frequency sources EMRI-4 and EMRI-5 presented a challenge for all groups.  Although MTAPCIOA were able to resolve these sources and estimated their masses fairly accurately, they had significantly higher errors in determining the magnitude and orientation of the spins than for other sources, and they overestimated the distance to both sources by factors of $2$ or $3$ vs.~distance errors of $\lesssim 10\%$ for the other sources.  Furthermore, their negative SNR for the EMRI-4 source may be indicative of an imperfect subtraction of the louder EMRI-5 source.  The other two groups were unable to localize either of the high-frequency EMRI sources by the submission deadline.
+The high-frequency sources EMRI-4 and EMRI-5 presented a challenge for all groups.  Although MTAPCIOA found these sources and estimated their masses fairly accurately, they had significantly higher errors in determining the magnitude and orientation of the spins than for other sources, and they overestimated the distance to both sources by factors of $2$ or $3$ vs.~distance errors of $\lesssim 10\%$ for the other EMRI sources.  Furthermore, their negative SNR for the claimed EMRI-4 source and the low overlaps between the individual recovered and injected waveforms for EMRI-4 and EMRI-5, indicate that, in fact, these sources were not resolved individually; rather, the MTAPCIOA search converged on two parameter sets which jointly represent a combination of the two injected sources.   The other two groups were unable to localize either of the high-frequency EMRI sources by the submission deadline.
 
 Thus, while all EMRI sources have been found and their masses have been accurately estimated, the results of MLDC 3.3 suggest that some work remains to be done on improving the estimates of EMRI parameters for relatively weak and overlapping signals.
 
@@ -662,105 +662,6 @@ Figure \ref{fig:paramerrors} shows the SNRs of the recovered sources and the err
 
 Altogether, these challenges demonstrated a solid capability in analyzing signals from the Galaxy and resolving a large number of binaries. As we mentioned, deciding how well they were recovered is not an easy question to answer, because of the difficulty of defining (at least operationally) a notion of \emph{identity} for recovered sources. These problems deserve careful attention in the future.
 
-\section{Data set 2.2: MBH binaries (over the Galaxy)}
-
-Four groups reported parameter sets for the MBH binaries in data set 2.2:
-\begin{description} 
-\item[AEIse] Babak and Porter used an $\mathcal{F}$-statistic, template-bank--based matched-filtering search, followed by an MCMC stage.
-\item[MTAEI] Cornish and Porter used an MHMC matched-filtering search with a \emph{frequency-annealed} scheme where shorter, lower-frequency templates are used in the initial phases of the search and then progressively extended \cite{cornishporter}.
-\item[JPLCT] The JPL--CIT collaboration used a three-stage pipeline consisting of a track search in the time--frequency (TF) plane, followed by template-bank--based matched filtering, and by an MCMC refinement \cite{brown}.
-\item[LisaFrance] The French collaboration used a TF track search alone, and therefore reported only mass and time-of-coalescence parameters.
-\end{description}
-All the four MBH binaries in the data set (MBH-1, 2, 4 and 5, with total optimal SNRs $\sim$ 2583, 25, 174 and 117) were positively detected by AEIse, MTAEI, and JPLCT; the TF method used by LisaFrance identified MBH-1 and 4, but not MBH-2, and could report only a time of coalescence for MBH-5.
-%
-\begin{table}
-\caption{\label{tab:mbh1}%
-Recovered SNRs and parameter errors for MBH-1. Here $M_c \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$ and $\mu = m_1 m_2 / (m_1 + m_2)$ are the chirp and reduced masses; $t_c$ and $\phi_c$ are the time and GW phase at coalescence; $\beta$ and $\lambda$ are the ecliptic latitude and longitude; $D$ is the luminosity distance; $\iota$ and $\psi$ are the inclination and polarization angles (see \cite{mldcgwdaw2} for details). All errors on angles are given in radians; the true (optimal) SNR is \textbf{2583.42}.}
-\small%
-\begin{tabular}{@{}l|r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r}
-\br
-           & SNR & $\Delta M_c/M_c$ & $\Delta \mu/\mu$ & $\Delta t_c/t_c$ & $\Delta \beta$ & $\Delta \lambda$ & $\Delta D / D$ & $\Delta \iota$ & $\Delta \psi$ & $\Delta \phi_c$ \\
-           &     & $\times 10^{-5}$ & $\times 10^{-5}$ & $\times 10^{-6}$ & $\times 10^{-1}$ & $\times 10^{-2}$ & $\times 10^{-2}$ & $\times 10^{-2}$ & $\times 10^{-1}$ & $\times 10^{-1}$ \\
-\mr
-AEIse      & 2247.60 &  147.0 & 3386.2 & 19.0 & $-5.07$ & $-82.1$ & 77.8 & $-6.86$ &  13.8 & $-6.82$ \\
-MTAEI      & 2583.34 &    7.9 &    9.1 &  3.6 & 1.65 &  $-1.2$ &  3.5 &  4.94 &   1.2 & $-7.70$ \\
-JPLCT      & 2582.42 &   27.5 &   28.7 & 16.0 & 4.81 &  12.2 & 12.3 & $-3.19$ & $-12.1$ &  7.45 \\
-lisaFrance & \multicolumn{1}{c}{--} & 2944.6 &   72.7 & 67.8 & \multicolumn{1}{c}{--}    &  \multicolumn{1}{c}{--}   & \multicolumn{1}{c}{--}   & \multicolumn{1}{c}{--}    & \multicolumn{1}{c}{--}    &  \multicolumn{1}{c}{--}   \\
-\br
-\end{tabular}
-% note: I'm inverting the \theta errors because we quote \beta
-\end{table}
-%
-\begin{table}
-\vspace{-9pt}
-\caption{Recovered SNRs and parameter errors for MBH-4, given as in table \ref{tab:mbh1}. The true (optimal) SNR is \textbf{174.12}.\label{tab:mbh4}}
-\small%
-\begin{tabular}{@{}l|r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r}
-\br
-           & SNR & $\Delta M_c/M_c$ & $\Delta \mu/\mu$ & $\Delta t_c/t_c$ & $\Delta \beta$ & $\Delta \lambda$ & $\Delta D / D$ & $\Delta \iota$ & $\Delta \psi$ & $\Delta \phi_c$ \\
-           &     & $\times 10^{-6}$ & $\times 10^{-4}$ & $\times 10^{-6}$ & $\times 10^{-2}$ & $\times 10^{-2}$ & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times 10^{-1}$ \\
-\mr
-AEIse       & 81.38     &   1396.3  &  149.9 &   3.4 & $-12.5$ & $ 104.7$ &  574.0 &  $  3.5$ &   $-185.4$ & $  8.1$ \\
-MTAEI       & 174.13    &    148.8  &   21.3 &   2.1 & $2.4$ & $   2.1$ &   15.1 &  $  2.8$ &   $  -7.5$ & $  1.7$ \\
-            & 174.11    &     17.1  &   20.5 &  33.3 & $-42.4$ & $-310.6$ &   16.7 &  $-13.7$ &   $-146.3$ & $ -6.3$ \\
-JPLCT       & 174.11    &      4.2  &    9.5 &   2.1 & $7.8$ & $   9.6$ &    1.2 &  $  1.3$ &   $ -21.3$ & $ -5.4$ \\
-            & 174.12    &    124.7  &    9.0 &  35.4 & $-47.3$ & $-302.9$ &    6.3 &  $-12.4$ &   $1436.4$ & $-12.4$ \\
-lisaFrance  & \multicolumn{1}{c}{--}        &  34394.1  & 1804.1 & 280.8 &  \multicolumn{1}{c}{--}    &  \multicolumn{1}{c}{--}      &  \multicolumn{1}{c}{--}    &    \multicolumn{1}{c}{--}   &   \multicolumn{1}{c}{--}       & \multicolumn{1}{c}{--}      \\
-\br
-\end{tabular}
-\vspace{-6pt}
-\end{table}
-
-Tables \ref{tab:mbh1} and \ref{tab:mbh4} show fractional parameter errors for MBH-1 and 4, together with the SNR recovered by the best-fit candidates, computed as 
-%
-\begin{equation}
-\mathrm{SNR}_\mathrm{best}  = \frac{(A_\mathrm{true}|A_\mathrm{best}) + (E_\mathrm{true}|E_\mathrm{best})}
-{\sqrt{(A_\mathrm{best}|A_\mathrm{best}) + (E_\mathrm{best}|E_\mathrm{best})}},
-\end{equation}
-%
-with $(\cdot|\cdot)$ the usual noise-weighted inner product, and $A = (2X - Y - Z)/3$ and $E = (Z-Y)/\sqrt{3}$ two noise-orthogonal TDI observables (see, e.g., \cite{VCT}). Table \ref{tab:mbh1} shows that the JPLCT search for MBH-1 locked onto a secondary probability maximum with $\mathrm{SNR}_\mathrm{best}$ only slightly lower than the optimal value, but with sky positions off by several degrees, which led also to errors in the other parameters. The JPLCT authors conjecture that this was caused by first subtracting a rough MBH-1 model from the data, then subtracting the resolvable Galactic binaries, and finally refining the MBH search.
-
-MBH-4 (table \ref{tab:mbh1}) is an interesting example of a ``true'' bimodal probability distribution for the source parameters. MTAEI and JPLCT each submitted two candidates, placed at rather different sky locations, quoting relative probability ratios of 1:1 and 1.18:1. In this case, it was probably the sky position and orientation of this source that conspired to degrade LISA's positional sensitivity, since they resulted in a very weak signal in one of the noise-orthogonal observables.
-
-Altogether, this challenge demonstrated a solid capability in the detection and parameter estimation of nonspinning-MBH inspirals with moderate optimal SNRs, even in the presence of a strong Galactic background, at least if the inspirals can be considered close to our idealized model: circular and adiabatic with negligible spin effects. These restrictions are being relaxed for the upcoming Challenge 3.
-
-\section{Data sets 1.3.X: EMRIs}
-
-Three groups reported parameter sets for the EMRIs in data sets 1.3.1--1.3.4 (but none for 1.3.5). No group tackled the problem of detecting these systems in data set 2.2 (on top of the Galactic background).
-%
-\begin{description}
-\item[BBGP] Babak and colleagues used an MCMC matched-filtering search that modeled the signal with a sequence of progressively longer templates (a \emph{time-annealed} scheme).
-%
-\item[EtfAG] Gair, Mandel and Wen used a TF track search that (for now) targeted only the intrinsic parameters and sky position \cite{gair}.
-%
-\item[MT] Cornish used an MHMC matched-filtering search, running it in parallel on individual month-long segments that were subsequently strung together.
-\end{description}
-%
-Table \ref{tab:emri} shows typical recovered SNRs and errors. A comparison of the optimal and recoved SNRs indicates that the matched-filtering searches locked on several secondary probability maxima with similar probabilities. Still, the recovered SNRs correspond to solid detections with exceedingly low false-alarm probabilities. The errors are quoted as fractions of the allowed parameter ranges, and they are quite large. Intriguingly, the TF search was the most accurate in determining the sky position.
-
-Altogether, these challenges demonstrated a positive capability of detecting EMRIs, at least if their signals are similar in complexity to the \emph{kludge} waveforms used in this challenge \cite{mldcgwdaw2}; however, the prospects for accurate parameter estimation are still uncertain, and a good focus for further challenges.
-%
-\begin{table}
-\caption{Recovered SNRs and parameter errors for the EMRI signal in data set 1.3.1. Here $\beta$ and $\lambda$ are the ecliptic latitude and longitude; $\theta_K$, $\phi_K$, and $a$ set the orientation and magnitude of the central-BH spin; $\mu$ and $M$ are the compact-object and central-BH masses; $\nu_0$ is the initial radial orbital frequency; $e_0$ is the initial eccentricity; and $D$ is the luminosity distance.
-All errors are given as \emph{fractions of the allowed prior range} for the corresponding parameters (0.15 for $e_0$), except for $\nu_0$ and $D$. Not all parameters are shown. See \cite{mldcgwdaw2} for details on the assumed EMRI waveforms. The true (optimal) SNR is \textbf{130.98}.\label{tab:emri}}
-\small%
-\lineup
-\begin{tabular}{@{}l@{\;}|@{\;}l@{\;}@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l@{}}
-\br
-& SNR & \multicolumn{1}{c}{$\delta \beta$} & \multicolumn{1}{c}{$\delta \lambda$} & \multicolumn{1}{c}{$\delta \theta_K$} & \multicolumn{1}{c}{$\delta \phi_K$} & \multicolumn{1}{c}{$\delta a$} & \multicolumn{1}{c}{$\delta \mu$} & \multicolumn{1}{c}{$\delta M$} & \multicolumn{1}{c}{$\frac{\Delta \nu_0}{\nu_0}$} & \multicolumn{1}{c}{$\delta e_0$} & \multicolumn{1}{c}{$\frac{\Delta D}{D}$} \\
-\mr
-BBGP    & 74.86  & $-0.33 $   & $-0.0095$   & $-0.13 $ & $-0.076$ & $\m 0.28 $ & $-0.15$   & $-0.51$   & $\m 0.017  $ & $\m 0.21 $ &  $-1.21$ \\
-        & 72.96  & $-0.32 $   & $\m 0.011 $ & $-0.15 $ & $-0.078$ & $\m 0.27 $ & $-0.15$   & $-0.51$   & $\m 0.017  $ & $\m 0.21 $ &  $-1.22$ \\
-        & 72.52  & $-0.28 $   & $\m 0.025 $ & $-0.063$ & $-0.036$ & $\m 0.41 $ & $-0.17$   & $-0.35$   & $-0.009  $   & $\m 0.29 $ &  $-2.15$ \\
-        & 72.49  & $-0.28 $   & $\m 0.025 $ & $-0.063$ & $-0.034$ & $\m 0.41 $ & $-0.17$   & $-0.36$   & $-0.009  $   & $\m 0.29 $ &  $-2.17$ \\
-        & 70.59  & $-0.31 $   & $-0.020 $   & $-0.36 $ & $-0.21 $ & $\m 0.44 $ & $-0.12$   & $-0.12$   & $-0.03   $   & $\m 0.28 $ &  $-0.91$ \\
-EtfAG   & \multicolumn{1}{c}{--}  & $\m 0.016$ & $\m 0.0012$ & \multicolumn{1}{c}{--}    & \multicolumn{1}{c}{--}        & $-0.082$   & $\m 0.10 $ & $-0.17$   & $\m 0.0026 $ &  $\m 0.098$ &   \multicolumn{1}{c}{--}   \\
-MT      & 74.85 & $\m 0.15 $ & $\m 0.47  $ & $-0.069$ & $-0.15 $ & $-0.026$   & $\m 0.073$ & $\m 0.18$ & $\m 0.00025$  & $-0.11 $   &  $-0.71$ \\
-        & 76.52  & $\m 0.084$ & $-0.49  $   & $-0.33 $ & $-0.10 $ & $-0.022$   & $\m 0.046$ & $\m 0.16$ & $\m 0.00026$ & $-0.10 $   &  $-0.70$ \\
-\br
-\end{tabular}
-\vspace{-6pt}
-\end{table}
 
 \section{Conclusion}
 
