@@ -97,6 +97,77 @@ This be the abstract
 
 \section{Challenge 3.1: The Galactic Binaries {\it Neil and Matt}}
 
+Three groups submitted Galactic Binary catalogs:
+\begin{itemize}
+
+\item \textbf{BhamUIB} (A collaboration between the University of
+Birmingham (UK) and the University of the Balearic Islands (Spain))
+A multi-source MCMC algorithm was used to search in three narrow
+frequency windows, $0.3 {\rm mHz} \leq f \leq 0.4 {\rm mHz}$,
+$0.9 {\rm mHz} \leq f \leq 1.0 {\rm mHz}$, and
+$1.6 {\rm mHz} \leq f \leq 1.7 {\rm mHz}$. The MLDC waveform
+generator was used. A total of 494 sources were reported.
+
+\item \textbf{AEIRIT} (A collaboration between the Albert Einstein Institute
+(Germany) and the Rochester Institute of Technology (US)). A LIGO-style
+hierachical, sequential, ${\cal F}$-statistic match filter search
+using frequency domain, rigid-adiabatic templates.
+Individual TDI channels are used to generate triggers, and those that
+pass a concidence condition are passed to a final, coherent analysis
+using noise-orthogonal TDI combinations. A total of 1940 sources
+were reported.
+
+\item \textbf{PoWrWa} (A collaboration between the Albert Einstein Institute
+(Germany), the University of Wroclaw (Poland) and the Polish Academy of
+Sciences (Poland)). A sequential ${\cal F}$-statistic match filter search
+using rigid-adiabatic templates. Individual bandwidths of $0.1 {\rm mHz}$
+were analyzed. The brightest source in each band was identified and
+removed, and the process repeated until a pre-set SNR threshold was
+reached. A total of 14838 sources were reported.
+
+\end{itemize}
+
+The Challenge 3.1 data set contains the signals from over 60 million
+chirping galactic binaries. The vast majority of these signals are too
+weak to be isolated, leaving an unresolved component which forms a
+non-stationary confusion noise that adds to the overall noise level.
+Estimates based on self-consistent removal schemes~\cite{Timpano:2005gm}
+or Bayesian model selection~\cite{Crowder:2007ft} suggest that it should be
+possible to recover between 20,000-30,000 galactic sources. The entries
+for this round fell short of this target for a variety of reasons.
+The \textbf{BhamUIB} entry only analyzed a small fraction of the data,
+while the \textbf{AEIRIT} and \textbf{PoWrWa} use sequential removal
+schemes, which limits how deep they can dig before source confusion
+degrades the signal recovery. Previous studies~\cite{Crowder:2007ft}
+indicate that it should be possible to recover approximately 99\% of
+the resolvable sources to an accuracy of better than 90\% (as measured
+by the overlap between the injected and recovered waveforms). We therefore
+adopt the signal correlation as the metric by which the entries are measured.
+
+The first step in computing the correlation between injected and recovered
+signals is to identify the injected signal that corresponds most closely
+to the recovered signal. This is done by taking all the injected signals
+with ${\rm SNR} > 3$ that have frequencies within 6 frequency bins of the
+recovered signal and computing the chisquared $\chi^2 = (h-h' \vert h- h')$,
+where $h$ is the injected waveform (generated from the key file),
+$h'$ is the recovered waveform (generated using the submitted source
+parameters), and the brackets $(a\vert b)$ denote the standard noise weighted
+inner product summed over the noise orthogonal $A,E,T$ TDI channels.
+The injected signal with the smallest $\chi^2$ is identified with the
+recovered signal. The correlation between these signals, $C= (h \vert h')/
+(h\vert h)^{1/2} (h' \vert h')^{1/2}$, is then computed. Using as our
+figure of merit the percentage of recovered sources with $C > 0.9$ we
+found: \textbf{BhamUIB} 30\%; \textbf{AEIRIT} 95\%; \textbf{PoWrWa} 33\%.
+The \textbf{PoWrWa} group have reported a bug in their analysis
+code that affects sources with frequencies above 3 mHz. If we only
+consider the 6955 sources they recoverd below 2 mHz, their figure of
+merit improves to 58\%.
+
+
+
+
+
+
 \section{Challenge 3.2: The Massive Black Hole Binaries {\it Antoine}}
 The data set 3.2 contained four to six signals from inspiralling spinning Massive Black Hole (MBH) binaries embedded in both instrument noise and a galactic background. The galactic background was modeled as simulated 
 galactic GW data with signals below  a signal-to-noise ratio  of 6. 
@@ -566,6 +637,18 @@ S. Babak \& al.~2008 \textit{Class. Quant. Grav.} \textbf{25}, 114037.
 %\newblock In {\em Proceedings of the 7th Amaldi Conference on Gravitational Waves}, page~8, Sydney, Australia, July 2007.
 %\newblock {\em arXiv:0711.2667}, (2007).
 
+\bibitem{Timpano:2005gm}
+  S.~E.~Timpano, L.~J.~Rubbo and N.~J.~Cornish,
+  %``Characterizing the galactic gravitational wave background with LISA,''
+  Phys.\ Rev.\  D {\bf 73}, 122001 (2006)
+
+
+\bibitem{Crowder:2007ft}
+  J.~Crowder and N.~J.~Cornish,
+  %``Extracting galactic binary signals from the first round of Mock LISA   Data
+  %Challenges,''
+  Class.\ Quant.\ Grav.\  {\bf 24}, S575 (2007)
+
 \bibitem{BabakGairPorter} Babak S, Gair J R, Porter E 2009 \textit{Class. Quant. Grav.} \textbf{26} 135004.
 
 \bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
@@ -681,6 +764,11 @@ Furthermore, the MLDC conventions, file formats, and software tools (see \url{li
 \bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
 %
 \bibitem{mldcgwdaw2} Arnaud K A et al. (the MLDC Task Force) 2007 \textit{Class. Quant. Grav.} \textbf{24} S551
+
+
+
+
+
 %
 \bibitem{JKS98}
 P.\ Jaranowski, A.\ Kr\'olak, and B.\ F.\ Schutz, Phys.\ Rev.\ D
