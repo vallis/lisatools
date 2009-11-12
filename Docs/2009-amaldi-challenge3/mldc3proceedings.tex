@@ -65,6 +65,10 @@ John T. Whelan$^{17}$}
 \address{$^{16}$ Departament de F\'isica, Univ.\ de les Illes Balears, Cra.\ Valldemossa Km.\ 7.5, E-07122 Palma de Mallorca, Spain}
 \address{$^{17}$ Center for Computational Relativity and Gravitation \& School of Math.\ Sciences, Rochester Inst.\ of Technology, 85 Lomb Memorial Drive, Rochester, NY 14623, USA}
 
+
+
+ 
+
 \ead{Michele.Vallisneri@jpl.nasa.gov}
 
 \begin{abstract}
@@ -93,41 +97,111 @@ This be the abstract
 
 \section{Challenge 3.1: The Galactic Binaries {\it Neil and Matt}}
 
-\section{Challenge 3.2: The Massive Black Hole Binaries {\it Antoine}}
-The data set 3.2 contained four to six signals from the inspiralling spinning Massive Black Hole (MBH) binaries embedded in the instrument noise and Galactic background. The Galactic background was modeled as simulated 
-Galactic GW data with signals below signal-to-noise ratio 6. 
-For signal from the spinning MBH binaries in the quasi-circular orbit we have adopted the restricted waveforms with 
-the GW phase up to 2 Post-Newtonian order (see section 3.2 of \cite{MLDC3}). The magnitude and orientation of spins cover all possible values.  Each source is described by fifteen parameters: the two masses $m_{1}$ and $m_{2}$, the time of coalescence $t_{c}$, the sky-position $\beta$ and $\lambda$, the luminosity distance $D_{L}$, the initial orbital phase $\phi_{0}$, the magnitude of spins $a_{1}$ and $a_{2}$, the initial orientation of the first spin  $\theta_{S1}$ and $\phi_{S1}$, the orientation of the second spin $\theta_{S2}$ and $\phi_{S2}$ and the initial orientation of the orbital angular momentum  $\theta_{L}$ and $\phi_{L}$. The parameters for all sources are drawn uniformly from the 
-same prior range, but were distinguished by the times of coalescence and the SNR which are given in Table 8 of \cite{MLDC3}.
-
-The participants could submit multiple modes for each sources provided that there was no clear way to prefer one to another, in other words, the solutions should reflect the degeneracies in the parameter space and multi-modality of the
-likelihood. Five groups submitted their results: 
+Three groups submitted Galactic Binary catalogs:
 \begin{itemize}
-\item \textbf{AEI} (Albert Einstein Institute (Germany))  have used a matched-filtering based genetic algorithm extended to a multi-modal search. The maximized function is {\em A-statistic} which is a geometrical mean of the log-likelihood for the whole duration of template and the low-frequency template \cite{GAspinbbhFullPaper}.
 
-\item \textbf{CambAEI} (collaboration between Cavendish Laboratory (UK), the Institute of Astrophysics (UK) and Albert Einstein Institute, (Germany)) have employed MultiNest algorithm \cite{MultiNest2} to compute the 
-evidence and to produce posterior distribution. The method is intrinsically multi-modal as it name states. They have 
-also used {\em A-statistic} to identify modes.
+\item \textbf{BhamUIB} (A collaboration between the University of
+Birmingham (UK) and the University of the Balearic Islands (Spain))
+A multi-source MCMC algorithm was used to search in three narrow
+frequency windows, $0.3 {\rm mHz} \leq f \leq 0.4 {\rm mHz}$,
+$0.9 {\rm mHz} \leq f \leq 1.0 {\rm mHz}$, and
+$1.6 {\rm mHz} \leq f \leq 1.7 {\rm mHz}$. The MLDC waveform
+generator was used. A total of 494 sources were reported.
 
-\item \textbf{MTGWAGAPC} (a collaboration between Montana Gravitational Wave Astronomy Group (US) and  
-Astro-Particle and Cosmology Institut (France)) have used a parallel tempering MCMC algorithm. It is based on the MHMC algorithm used in previous challenges which utilizes frequency and thermostated annealing for an efficient parameter space exploration \cite{SMBHCornishPorter}. Parallel tempering employs a number of chains
- at different temperatures where the hot chains explore the parameter space throughout the whole range, while the cool chains concentrate on the local maxima and the chains exchange information with each other.
+\item \textbf{AEIRIT} (A collaboration between the Albert Einstein Institute
+(Germany) and the Rochester Institute of Technology (US)). A LIGO-style
+hierachical, sequential, ${\cal F}$-statistic match filter search
+using frequency domain, rigid-adiabatic templates.
+Individual TDI channels are used to generate triggers, and those that
+pass a concidence condition are passed to a final, coherent analysis
+using noise-orthogonal TDI combinations. A total of 1940 sources
+were reported.
 
-\item \textbf{JPLCITNWU} (a collaboration between  CalTech (US),  Jet Propulsion Laboratory (US)  
-the Northwester University (US)) have employed a two-stage method. At first, they have searched for the bright sources using the tools developed for the non-spinning MBH search \cite{JPLCaltech}, and in the second stage, they have employed  MultiNest algorithm.
-
-\item \textbf{GSFC} (Goddard Space Fly Center (US)) used a tempered Metropolis-Hastings MCMC algorithm within the framework of Xspec \cite{Xspec}. 
+\item \textbf{PoWrWa} (A collaboration between the Albert Einstein Institute
+(Germany), the University of Wroclaw (Poland) and the Polish Academy of
+Sciences (Poland)). A sequential ${\cal F}$-statistic match filter search
+using rigid-adiabatic templates. Individual bandwidths of $0.1 {\rm mHz}$
+were analyzed. The brightest source in each band was identified and
+removed, and the process repeated until a pre-set SNR threshold was
+reached. A total of 14838 sources were reported.
 
 \end{itemize}
 
-There were five signals from MBH binaries in this data set. The first three binaries which coalesce within the 
-observation (MBH-1, 3 and 4) were detected by all five groups except MBH-4 for GSFC (we consider a result as a detection if $SNR > 5$ with $t_{c}$ close to the true value). From last two low SNR signals, MBH-2 (SNR $\sim$ 19) was detected by AEI, CambAEI, MTGWAGAPC and JPLCITNWU, whereas MBH-6 (SNR $\sim$ 13) was positively detected only by two groups, AEI and CambAEI.  
+The Challenge 3.1 data set contains the signals from over 60 million
+chirping galactic binaries. The vast majority of these signals are too
+weak to be isolated, leaving an unresolved component which forms a
+non-stationary confusion noise that adds to the overall noise level.
+Estimates based on self-consistent removal schemes~\cite{Timpano:2005gm}
+or Bayesian model selection~\cite{Crowder:2007ft} suggest that it should be
+possible to recover between 20,000-30,000 galactic sources. The entries
+for this round fell short of this target for a variety of reasons.
+The \textbf{BhamUIB} entry only analyzed a small fraction of the data,
+while the \textbf{AEIRIT} and \textbf{PoWrWa} use sequential removal
+schemes, which limits how deep they can dig before source confusion
+degrades the signal recovery. Previous studies~\cite{Crowder:2007ft}
+indicate that it should be possible to recover approximately 99\% of
+the resolvable sources to an accuracy of better than 90\% (as measured
+by the overlap between the injected and recovered waveforms). We therefore
+adopt the signal correlation as the metric by which the entries are measured.
 
-The Table \ref{tab:SMBH_Err} shows fractional errors in the parameters estimation for the five sources. We have chosen only the best mode from each submission (i.e. highest SNR) for comparison with the true solution. Note that 
-sometimes the difference in the SNR of several modes was less that one (sigma), and the mode with the better 
-parameters recovery was not chosen.
-Table \ref{tab:SMBH_SNR} shows the recovered SNR and the overlap with  the true waveform for TDI channels A and E. The waveforms for the SNR and overlap evaluation were constructed using the submitted parameters and the software
-used to produce MLDC.
+The first step in computing the correlation between injected and recovered
+signals is to identify the injected signal that corresponds most closely
+to the recovered signal. This is done by taking all the injected signals
+with ${\rm SNR} > 3$ that have frequencies within 6 frequency bins of the
+recovered signal and computing the chisquared $\chi^2 = (h-h' \vert h- h')$,
+where $h$ is the injected waveform (generated from the key file),
+$h'$ is the recovered waveform (generated using the submitted source
+parameters), and the brackets $(a\vert b)$ denote the standard noise weighted
+inner product summed over the noise orthogonal $A,E,T$ TDI channels.
+The injected signal with the smallest $\chi^2$ is identified with the
+recovered signal. The correlation between these signals, $C= (h \vert h')/
+(h\vert h)^{1/2} (h' \vert h')^{1/2}$, is then computed. Using as our
+figure of merit the percentage of recovered sources with $C > 0.9$ we
+found: \textbf{BhamUIB} 30\%; \textbf{AEIRIT} 95\%; \textbf{PoWrWa} 33\%.
+The \textbf{PoWrWa} group have reported a bug in their analysis
+code that affects sources with frequencies above 3 mHz. If we only
+consider the 6955 sources they recoverd below 2 mHz, their figure of
+merit improves to 58\%.
+
+
+
+
+
+
+\section{Challenge 3.2: The Massive Black Hole Binaries {\it Antoine}}
+The data set 3.2 contained four to six signals from inspiralling spinning Massive Black Hole (MBH) binaries embedded in both instrument noise and a galactic background. The galactic background was modeled as simulated 
+galactic GW data with signals below  a signal-to-noise ratio  of 6. 
+For a spinning MBH binary in a quasi-circular orbit, we have adopted restricted waveforms with 
+the GW phase expanded to 2 post-Newtonian order (see section 3.2 of \cite{MLDC3}). The magnitude and orientation of spins cover all possible values.  Each source is described by fifteen parameters: the two masses $m_{1}$ and $m_{2}$, the time of coalescence $t_{c}$, the sky-position angles $\beta$ and $\lambda$, the luminosity distance $D_{L}$, the initial orbital phase $\phi_{0}$, the magnitude of spins $a_{1}$ and $a_{2}$, the initial orientation of the first spin  $\theta_{S1}$ and $\phi_{S1}$, the orientation of the second spin $\theta_{S2}$ and $\phi_{S2}$ and the initial orientation of the orbital angular momentum  $\theta_{L}$ and $\phi_{L}$. The parameters for all sources are drawn uniformly from the 
+same prior range, but were distinguished by the times of coalescence and the SNR which are given in Table 8 of \cite{MLDC3}.
+
+The participants were allowed to submit multiple modes for each source, provided that there was no clear way of preferring one mode to another. In other words, the solutions should reflect the degeneracies in the parameter space and multi-modality of the
+likelihood. Five groups submitted their results: 
+\begin{itemize}
+\item \textbf{AEI} (Albert Einstein Institute (Germany))  have used a matched-filtering based genetic algorithm extended to a multi-modal search. The maximized function is the {\em A-statistic} which is a geometrical mean of the log-likelihood for the whole duration template and the low-frequency template \cite{GAspinbbhFullPaper}.
+
+\item \textbf{CambAEI} (collaboration between Cavendish Laboratory (UK), the Institute of Astronomy (UK) and the Albert Einstein Institute, (Germany)) have employed the MultiNest algorithm \cite{MultiNest2} to compute the 
+evidence and to produce posterior distributions. The method is intrinsically multi-modal as it name states. They have 
+also used the {\em A-statistic} to identify modes.
+
+\item \textbf{GSFC} (Goddard Space Fly Center (US)) used a tempered Metropolis-Hastings MCMC algorithm within the framework of Xspec \cite{Xspec}. 
+
+\item \textbf{JPLCITNWU} (a collaboration between  CalTech (US),  the Jet Propulsion Laboratory (US)  
+and Northwestern University (US)) have employed a two-stage method. At first, they searched for the bright sources using the tools developed for a non-spinning MBH search \cite{JPLCaltech}, and in the second stage, they employed  the MultiNest algorithm.
+
+\item \textbf{MTGWAGAPC} (a collaboration between Montana Gravitational Wave Astronomy Group (US) and  
+the Astro-Particle and Cosmology Institute (France)) have used a parallel tempering MCMC algorithm. It is based on the MHMC algorithm used in previous challenges which utilizes frequency and thermostated annealing for an efficient parameter space exploration \cite{SMBHCornishPorter}. Parallel tempering employs a number of chains
+ at different temperatures where the hot chains explore the parameter space throughout the whole range, while the cool chains concentrate on the local maxima and the chains exchange information with each other via a genetic algorithm.
+
+\end{itemize}
+
+There were five signals from MBH binaries in this data set. The parameters for the first three binaries which coalesce within the observation (MBH-1, 3 and 4) were recovered by all five groups. For the last two low SNR signals, MBH-2 (SNR $\sim$ 19), parameters were recovered by AEI, CambAEI, MTGWAGAPC and JPLCITNWU, whereas for MBH-6 (SNR $\sim$ 13), parameters were recovered by AEI, CambAEI and MTGWAGAPC.  
+
+Table \ref{tab:SMBH_Err} shows fractional errors in the parameter estimations for the five sources. We have chosen only the best mode from each submission (i.e. highest SNR) for comparison with the true solution. Note that 
+sometimes the difference in the SNR of several modes was less that 1, and the mode with the better 
+parameter recovery was not chosen.
+Table \ref{tab:SMBH_SNR} shows the recovered SNR and the overlap with  the true waveform for TDI channels A and E. We should note that the SNR is calculated by comparing the recovered waveforms with the full data set, whereas the overlap evaluations were conducted by using waveforms with the true and recovered parameters and the software
+used to produce the MLDC.
 
 \begin{table}
 \caption{ Relative/absolute errors for the spinning MBH binaries in Challenge~3.2. All parameters are defined as in the table 7 of \cite{MLDC3}, except for the chirp mass $M_c \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$ and for the symmetric mass ratio $\eta = m_1 m_2 / (m_1 + m_2)^{2}$.  $ \Delta \textmd{Sky}$ is the angular distance in the sky between 
@@ -173,14 +247,16 @@ MBH-6         & CambAEI &    5253.2 & 1598.8 & 953108.0 & 158.3 & 350.8 & 215.4 
 \br
 \end{tabular}
 %\end{indented}
-\end{table} 
+\end{table}
+
+
 
 The accuracy in the parameter estimation strongly depends on whether we have observed the coalescence or not.
 The signals with observed merger (MBH-1, 3 and 4) have significantly larger SNR and span to higher frequencies, 
 allowing much more accurate recovery of the parameters of the MBH binary. 
  For these sources, the errors in the masses, the time at coalescence, the distance and the sky position are comparable, if not better, to the ones obtained in non-spinning case (see table 1 and 2 of report on challenge 2.2 \cite{MLDC2Res}). Concerning the position on the sky, the results with  $\Delta \textrm{Sky} > 170 \deg$, correspond to the mirrored sky location which is a known degeneracy in the response function. The errors in the spin amplitudes
-  are consistent with the Fisher matrix prediction \cite{SpinBBHLangHugues}.  Despite the high SNR, the evaluation of the initial direction of the spins and of the orbital angular momentum has proven to be very difficult.  We observe a large number of the local maxima in these parameters which have SNR very close to the true one. This is illustrated in the Figure~\ref{fig:SMBH_spinLdeg} which shows the distribution of $\theta_{S1}$, $\phi_{S1}$, $\theta_{S2}$, $\phi_{S2}$, $\theta_{L}$ and $\phi_{L}$ for all the submitted modes for MBH-3. We see that the modes are well separated in parameters value but a difference in the SNR is less than 10. The SNR of the majority submitted results are within 10 (sigma) of the true one and the overlap is higher than 0.99.
-This reflects degeneracies in the parameter space and that the recovered signals resemble the true one very closely, despite poor estimation of some parameters.
+  are consistent with the Fisher matrix prediction \cite{SpinBBHLangHugues}.  Despite the high SNR, the evaluation of the initial direction of the spins and of the orbital angular momentum has proven to be very difficult.  We observe a large number of the local maxima in these parameters which have SNR very close to the true one. This is illustrated in the Figure~\ref{fig:SMBH_spinLdeg} which shows the distribution of $\theta_{S1}$, $\phi_{S1}$, $\theta_{S2}$, $\phi_{S2}$, $\theta_{L}$ and $\phi_{L}$ for all the submitted modes for MBH-3. We see that the modes are well separated in parameter values, but the difference in the SNR is less than 10. The SNR of the majority of submitted results are within 10 of the true one and the overlap is higher than 0.99.
+This reflects the degeneracies in the parameter space and that the recovered signals resemble the true one very closely, despite poor estimation of some parameters.
 
 
 \begin{figure}
@@ -193,7 +269,7 @@ This reflects degeneracies in the parameter space and that the recovered signals
 
 
 Let us now comment on the parameter estimation for the last two signals with the coalescence time beyond the observational time. For MBH-2 the error in the masses and the time of coalescence are comparable to the Fisher matrix predictions. 
-The errors in the sky localization is around 10 degrees with a very strong local maximum at the mirrored 
+The errors in the sky localization are around 10 degrees with a very strong local maximum at the mirrored 
 sky position. The overlaps between the recovered waveforms and the true ones are higher than 0.9 for all submissions.
 The recovered SNR for some modes was higher than the true one which is an artifact of the evaluation: 
 we extend the computation of the inner products beyond the frequency range of the signals which picks up a bit of the 
@@ -201,10 +277,10 @@ we extend the computation of the inner products beyond the frequency range of th
 %
 The determination of the spin amplitude is very bad. This reflects the fact that the spins have a very weak effect on the low frequency part of the waveform. 
 
-The source MBH-6 was the weakest, and the overlap evaluation suggests that only AEI group made a positive detection. 
+The source MBH-6 was the weakest, and tree groups succeeded in recovering parameters. 
 
 The spins are supposed to de-correlate some parameters in the waveform \cite{SpinBBHLangHugues} and we 
-might observe this in some cases, but more investigations are needed to clearly conclude on this point.
+might observe this in some cases, but more investigations are needed to clearly conclude his point.
 However, the spins also bring additional degeneracies and multiple local maxima in the parameter space, especially in the initial directions of the spins and the orbital plane. This complexity is reflected in the submitted results.
 Nevertheless these results demonstrate solid capability in detecting the signals and good recovery of other 
 nine parameters. 
@@ -255,7 +331,7 @@ EMRI-5 & MTAPCIOA  & 17.480  &  -3.32  &  5.00  &  -1.80  &  0.22  &  55  &  0.0
 (36.173) & \\
 \br                                              
 \end{tabular}
-\end{table} 
+\end{table}
 
 The MLDC 3.3 parameter-estimation results are presented in Table \ref{tab:EMRI_Err}.  The columns include the mass of the large body $M$, the mass of the small body $\mu$, the initial value of the azimuthal orbital frequency $\nu_0$, the initial value of the eccentricity $e_0$, the dimensionless spin $|S|$, the spin-orbit misalignment angle $\lambda$ and the luminosity distance to the source $D$.  The angular distances in the sky between true and estimated spin orientations $\Delta {\rm Spin}$ and source locations $\Delta {\rm Sky}$ are also included.
 
@@ -284,7 +360,7 @@ Nested Sampling search algorithm which uses a number of live points in the param
 version of the Chirp-based Algorithm for Track Searches which identifies tracks of a particular shape in the spectrogram.
 \item \textbf{JPLCIT} : A JPL-Caltech collaboration which used both Markov Chain Monte Carlo (MCMC) and MultiNest algorithms.  The results presented here are for 
 the MultiNest search only.
-\item MTGWAG : The GW group at Montana State University used a parallel tempered MCMC technique~\cite{keycornish}.  The MCMC is a stochastic search method which is particularly
+\item \textbf{MTGWAG} : The GW group at Montana State University used a parallel tempered MCMC technique~\cite{keycornish}.  The MCMC is a stochastic search method which is particularly
 useful for searches conducted in high dimensional spaces.  The parallel tempering adds the complexity of a number of inter-communicating search
 chains at different temperatures.
 \end{itemize}
@@ -425,7 +501,7 @@ MTGWAG &  & 1.089e-11 & 0.0310 \\
 \br
 \end{tabular}
 \end{indented}
-\end{table} 
+\end{table}
 
 \begin{figure}
 \centering
@@ -456,6 +532,7 @@ pd2 & pd3s & $3.805 \times 10^{-37}$ & $3.804 \times 10^{-37}$ & $3.552 \times 1
 \end{tabular}
 \end{indented}
 \end{table} 
+
 
 
 \section{Moving Forward: Prospects for Challenge 4 {\it Michele}}
@@ -507,6 +584,18 @@ S. Babak \& al.~2008 \textit{Class. Quant. Grav.} \textbf{25}, 114037.
 %\newblock Report on the second mock lisa data challenge.
 %\newblock In {\em Proceedings of the 7th Amaldi Conference on Gravitational Waves}, page~8, Sydney, Australia, July 2007.
 %\newblock {\em arXiv:0711.2667}, (2007).
+
+\bibitem{Timpano:2005gm}
+  S.~E.~Timpano, L.~J.~Rubbo and N.~J.~Cornish,
+  %``Characterizing the galactic gravitational wave background with LISA,''
+  Phys.\ Rev.\  D {\bf 73}, 122001 (2006)
+
+
+\bibitem{Crowder:2007ft}
+  J.~Crowder and N.~J.~Cornish,
+  %``Extracting galactic binary signals from the first round of Mock LISA   Data
+  %Challenges,''
+  Class.\ Quant.\ Grav.\  {\bf 24}, S575 (2007)
 
 \bibitem{BabakGairPorter} Babak S, Gair J R, Porter E 2009 \textit{Class. Quant. Grav.} \textbf{26} 135004.
 
@@ -623,6 +712,11 @@ Furthermore, the MLDC conventions, file formats, and software tools (see \url{li
 \bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
 %
 \bibitem{mldcgwdaw2} Arnaud K A et al. (the MLDC Task Force) 2007 \textit{Class. Quant. Grav.} \textbf{24} S551
+
+
+
+
+
 %
 \bibitem{JKS98}
 P.\ Jaranowski, A.\ Kr\'olak, and B.\ F.\ Schutz, Phys.\ Rev.\ D
