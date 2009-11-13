@@ -101,13 +101,13 @@ for tdiG in tdiGens:
 
     # compute spectra, averaging "patches" overlapping segments of time series
     if (options.verbose):
-        print " --> Compute X spectrums ..."
+        print " --> Compute spectrums ..."
     sX = []
     for iSim in xrange(len(X)):
         sX.append(synthlisa.spect(X[iSim],stime,patches,win=mywindow))
 
     if (options.verbose):
-        print " --> Normalized X spectrums ..."
+        print " --> Normalized spectrums ..."
     f = sX[0][1:,0]
     for iSim in xrange(len(sX)):
         if ( (UsedSim[iSim] == 'SL') or (UsedSim[iSim] == 'LC') ):
