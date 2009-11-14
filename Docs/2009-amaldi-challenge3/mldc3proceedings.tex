@@ -154,121 +154,79 @@ merit improves to 58\%.
 
 \section{Massive black-hole binaries (MLDC 3.2)}
 
-The dataset 3.2 contained four to six signals from inspiralling spinning Massive Black Hole (MBH) binaries embedded in both instrument noise and a galactic background. The galactic background was modeled as simulated 
-galactic GW data with signals below  a signal-to-noise ratio  of 6. 
-For a spinning MBH binary in a quasi-circular orbit, we have adopted restricted waveforms with 
-the GW phase expanded to 2 post-Newtonian order (see section 3.2 of \cite{MLDC3}). The magnitude and orientation of spins cover all possible values.  Each source is described by fifteen parameters: the two masses $m_{1}$ and $m_{2}$, the time of coalescence $t_{c}$, the sky-position angles $\beta$ and $\lambda$, the luminosity distance $D_{L}$, the initial orbital phase $\phi_{0}$, the magnitude of spins $a_{1}$ and $a_{2}$, the initial orientation of the first spin  $\theta_{S1}$ and $\phi_{S1}$, the orientation of the second spin $\theta_{S2}$ and $\phi_{S2}$ and the initial orientation of the orbital angular momentum  $\theta_{L}$ and $\phi_{L}$. The parameters for all sources are drawn uniformly from the 
-same prior range, but were distinguished by the times of coalescence and the SNR which are given in Table 8 of \cite{MLDC3}.
-
-The participants were allowed to submit multiple modes for each source, provided that there was no clear way of preferring one mode to another. In other words, the solutions should reflect the degeneracies in the parameter space and multi-modality of the
-likelihood. Five groups submitted their results: 
+Challenge dataset 3.2 contained five signals from MBH inspirals, embedded in instrument noise and a partially subtracted Galactic background (see \cite{MLDC3} for a synopsis of the waveform model and for the random selection of source parameters). Multi-TDI SNRs ranged from $\sim 13$ to $\sim 1671$, with the two weakest signals (MBH-2 and MBH-6) corresponding to mergers after the end of the dataset. Five collaborations submitted entries:
+%
+% For a spinning MBH binary in a quasi-circular orbit, we have adopted restricted waveforms with the GW phase expanded to 2 post-Newtonian order (see section 3.2 of \cite{MLDC3}). The magnitude and orientation of spins cover all possible values.  Each source is described by fifteen parameters: the two masses $m_{1}$ and $m_{2}$, the time of coalescence $t_{c}$, the sky-position angles $\beta$ and $\lambda$, the luminosity distance $D_{L}$, the initial orbital phase $\phi_{0}$, the magnitude of spins $a_{1}$ and $a_{2}$, the initial orientation of the first spin  $\theta_{S1}$ and $\phi_{S1}$, the orientation of the second spin $\theta_{S2}$ and $\phi_{S2}$ and the initial orientation of the orbital angular momentum  $\theta_{L}$ and $\phi_{L}$. The parameters for all sources are drawn uniformly from the same prior range, but were distinguished by the times of coalescence and the SNR which are given in Table 8 of \cite{MLDC3}.
+%
 \begin{itemize}
-\item \textbf{AEI} (Albert Einstein Institute (Germany))  have used a matched-filtering based genetic algorithm extended to a multi-modal search. The maximized function is the {\em A-statistic} which is a geometrical mean of the log-likelihood for the whole duration template and the low-frequency template \cite{GAspinbbhFullPaper}.
-
-\item \textbf{CambAEI} (collaboration between Cavendish Laboratory (UK), the Institute of Astronomy (UK) and the Albert Einstein Institute, (Germany)) have employed the MultiNest algorithm \cite{MultiNest2} to compute the 
-evidence and to produce posterior distributions. The method is intrinsically multi-modal as it name states. They have 
-also used the {\em A-statistic} to identify modes.
-
-\item \textbf{GSFC} (Goddard Space Fly Center (US)) used a tempered Metropolis-Hastings MCMC algorithm within the framework of Xspec \cite{Xspec}. 
-
-\item \textbf{JPLCITNWU} (a collaboration between  CalTech (US),  the Jet Propulsion Laboratory (US)  
-and Northwestern University (US)) have employed a two-stage method. At first, they searched for the bright sources using the tools developed for a non-spinning MBH search \cite{JPLCaltech}, and in the second stage, they employed  the MultiNest algorithm.
-
-\item \textbf{MTGWAGAPC} (a collaboration between Montana Gravitational Wave Astronomy Group (US) and  
-the Astro-Particle and Cosmology Institute (France)) have used a parallel tempering MCMC algorithm. It is based on the MHMC algorithm used in previous challenges which utilizes frequency and thermostated annealing for an efficient parameter space exploration \cite{SMBHCornishPorter}. Parallel tempering employs a number of chains
- at different temperatures where the hot chains explore the parameter space throughout the whole range, while the cool chains concentrate on the local maxima and the chains exchange information with each other via a genetic algorithm.
-
+\item \textbf{AEI} (researchers at the Albert Einstein Institute, Germany) used a genetic matched-filtering algorithm extended to a multi-modal search; as a merit function they took the $A$-statistic, a geometrical mean of the log-likelihood for the signal and for a low-frequency signal subset \cite{GAspinbbhFullPaper}.
+\item \textbf{CambAEI} (a collaboration between the Cambridge Cavendish Laboratory and Institute of Astronomy with the the Albert Einstein Institute) adopted the MultiNest implementation of nested-sampling integration \cite{MultiNest2} to compute the evidence and produce posterior distributions. This method is intrinsically multimodal, and the $A$-statistic was used to identify modes.
+\item \textbf{GSFC} (researchers at Goddard Space Flight Center) employed the Xspec tempered Metropolis-Hastings MCMC algorithm \cite{Xspec}. 
+\item \textbf{JPLCITNWU} (a collaboration between JPL/Caltech and Northwestern University) employed a two-stage method whereby they followed up a nonspinning MBH search \cite{JPLCaltech} with MultiNest.
+\item \textbf{MTGWAGAPC} (researchers at Montana State University and at the Astro-Particle and Cosmology Institute in Paris) adopted a parallel-tempering MCMC algorithm, evolved from the thermostated, frequency-annealed algorithm employed in previous challenges \cite{SMBHCornishPorter}.
 \end{itemize}
-
-There were five signals from MBH binaries in this dataset. The parameters for the first three binaries which coalesce within the observation (MBH-1, 3 and 4) were recovered by all five groups. For the last two low SNR signals, MBH-2 (SNR $\sim$ 19), parameters were recovered by AEI, CambAEI, MTGWAGAPC and JPLCITNWU, whereas for MBH-6 (SNR $\sim$ 13), parameters were recovered by AEI, CambAEI and MTGWAGAPC.  
-
-Table \ref{tab:SMBH_Err} shows fractional errors in the parameter estimations for the five sources. We have chosen only the best mode from each submission (i.e. highest SNR) for comparison with the true solution. Note that 
-sometimes the difference in the SNR of several modes was less that 1, and the mode with the better 
-parameter recovery was not chosen.
-Table \ref{tab:SMBH_SNR} shows the recovered SNR and the overlap with  the true waveform for TDI channels A and E. We should note that the SNR is calculated by comparing the recovered waveforms with the full dataset, whereas the overlap evaluations were conducted by using waveforms with the true and recovered parameters and the software
-used to produce the MLDC.
-
+%
+All five groups recovered parameters for the loud signals; MBH-2 (SNR $\sim$ 19) was recovered by AEI, CambAEI, JPLCITNWU and MTGWAGAPC; MBH-6 (SNR $\sim$ 13) by AEI, CambAEI and MTGWAGAPC. Participants were encouraged to submit multiple modes of comparable probability, if present. For the best (highest-SNR) mode in each entry, Table \ref{tab:SMBH_Err} lists the fractional parameter errors, as well as the recovered SNR and individual TDI-channel fitting factor FF. Both the recovered SNR and the $\mathrm{SNR}_\mathrm{true}$ of the true waveform were computed by filtering the noisy dataset (in its LISA Simulator version) with the appropriate template, while the FFs were computed between noiseless signals. Note that the reported modes had often SNR differences of less than one, and the highest-SNR mode did not always have the best parameter recovery.
+%
 \begin{table}
-\caption{ Relative/absolute errors for the spinning MBH binaries in Challenge~3.2. All parameters are defined as in the table 7 of \cite{MLDC3}, except for the chirp mass $M_c \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$ and for the symmetric mass ratio $\eta = m_1 m_2 / (m_1 + m_2)^{2}$.  $ \Delta \textmd{Sky}$ is the angular distance in the sky between 
-the true and the estimated positions. We used only the mode with the highest SNR in all tables, if several modes per group were submitted. Recovered SNR and overlaps for spinning MBH binaries in Challenge~3.2. The negative
-SNR is the result of the negative overlap and corresponds to  the waveforms in anti-phase.
-\label{tab:SMBH_SNR}
-\label{tab:SMBH_Err}}
+\caption{Selected parameter errors, SNRs, and FFs for each group's highest-SNR entries to MLDC 3.2. The time of coalescence $t_c$, spin magnitudes $a_{1,2}$ and luminosity distance $D$ are defined in Table 7 of \cite{MLDC3}; in addition, the (redshifted) chirp mass $M_c \equiv (m_1 m_2)^{3/5} / (m_1 + m_2)^{1/5}$, and the symmetric mass ratio $\eta = m_1 m_2 / (m_1 + m_2)^{2}$. $\Delta\textrm{sky}$ is the angular geodesic distance between 
+the estimated and true positions; values $\sim 180$ deg correspond to the antipodal sky location, a known quasi-degeneracy in the LISA response.\label{tab:SMBH_Err}} \vspace{-12pt}
 \lineup \scriptsize \flushright
 %\begin{indented}\item[]
-\begin{tabular}{l@{\;}r|r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r|r@{\;}r@{\;}r}
+\begin{tabular}{l@{\;}r@{\;}|@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}r@{\;}|@{\;}r@{\;}r@{\;}r}
 \br
-Source & group & $\Delta M_{c}/ M_{c}  $& $\Delta \eta/ \eta $ & $ \Delta t_{c} $ &  $ \Delta $ Sky  & $ \Delta a_{1} $ & $ \Delta a_{2}  $ &  $\Delta D / D$ & SNR & $\mathrm{FF}_A$ & $\mathrm{FF}_E$ \\
-$\mathrm{SNR}_\mathrm{true}$ & & $\times 10^{-5}$ & $\times 10^{-4}$ & (sec) & (deg) & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times10^{-2}$   \\
+source & group & $\Delta M_{c}/ M_{c}  $& $\Delta \eta/ \eta $ & $ \Delta t_{c} $ &  $ \Delta\mathrm{sky}$ & $ \Delta a_{1} $ & $ \Delta a_{2}  $ &  $\Delta D / D$ & SNR & $\mathrm{FF}_A$ & $\mathrm{FF}_E$ \\
+$(\mathrm{SNR}_\mathrm{true})$ & & $\times 10^{-5}$ & $\times 10^{-4}$ & (sec) & (deg) & $\times 10^{-3}$ & $\times 10^{-3}$ & $\times10^{-2}$   \\
 \mr
-              & AEI            &         2.4 &        6.1 &   62.9 &   11.6 &    7.6 &   47.4 &   8.0 & 1657.71 & 0.9936 & 0.9914 \\
-              & CambAEI &         3.4 &     40.7 &   24.8 &      2.0 &    8.5 &   79.6 &   0.7 & 1657.19 & 0.9925  & 0.9917   \\
-MBH-1         & MTAPC    &       24.8 &     41.2 & 619.2 & 171.0 & 13.3 &   28.7 &    4.0  & 1669.97 & 0.9996 & 0.9997 \\
-1670.58              & JPL           &       40.5 &  186.6 &   23.0 &    26.9 & 39.4 &   66.1 &    6.9  & 1664.87 & 0.9972 & 0.9981 \\
+\textbf{MBH-1}              & AEI            &         2.4 &        6.1 &   62.9 &   11.6 &    7.6 &   47.4 &   8.0 & 1657.71 & 0.9936 & 0.9914 \\
+(1670.58)              & CambAEI &         3.4 &     40.7 &   24.8 &      2.0 &    8.5 &   79.6 &   0.7 & 1657.19 & 0.9925  & 0.9917   \\
+         & MTAPC    &       24.8 &     41.2 & 619.2 & 171.0 & 13.3 &   28.7 &    4.0  & 1669.97 & 0.9996 & 0.9997 \\
+              & JPL           &       40.5 &  186.6 &   23.0 &    26.9 & 39.4 &   66.1 &    6.9  & 1664.87 & 0.9972 & 0.9981 \\
               & GSFC       &  1904.0 &  593.2 & 183.9 &    82.5 &   5.7 & 124.3 &  94.9  &  267.04 & 0.1827 & 0.1426 \\
 \mr
-              & AEI            &       9.0 &         5.2 &    100.8 & 175.9 &      6.2 &    18.6 &   2.7 & 846.96 & 0.9995 & 0.9989  \\
-              & CambAEI &     13.5 &      57.4 &    138.9 & 179.0 &    21.3 &      7.2 &   1.5 & 847.04  & 0.9993 & 0.9993 \\
-MBH-3         & MTAPC    &   333.0 &    234.1 &    615.7 &   80.2 &    71.6 & 177.2 & 16.1 & 842.96  & 0.9943 & 0.9945  \\
-847.61              & JPL           &   153.0 &      51.4 &    356.8 &   11.2 & 187.7 & 414.9 &    2.7 & 835.73 & 0.9826 & 0.9898  \\
+\textbf{MBH-3}              & AEI            &       9.0 &         5.2 &    100.8 & 175.9 &      6.2 &    18.6 &   2.7 & 846.96 & 0.9995 & 0.9989  \\
+(847.61)              & CambAEI &     13.5 &      57.4 &    138.9 & 179.0 &    21.3 &      7.2 &   1.5 & 847.04  & 0.9993 & 0.9993 \\
+         & MTAPC    &   333.0 &    234.1 &    615.7 &   80.2 &    71.6 & 177.2 & 16.1 & 842.96  & 0.9943 & 0.9945  \\
+              & JPL           &   153.0 &      51.4 &    356.8 &   11.2 & 187.7 & 414.9 &    2.7 & 835.73 & 0.9826 & 0.9898  \\
               & GSFC       & 8168.4 & 2489.9 & 3276.9 &    77.9 & 316.3 &   69.9 &  95.6 & 218.05 & 0.2815 & 0.2314 \\
 
 \mr
-              & AEI            &      4.5 &      75.2 &       31.4 &   0.1 & 47.1 &173.6  &    9.1 & 160.05 & 0.9989 &  0.9994 \\
-              & CambAEI &      3.2 &    171.9 &      30.7 &   0.2 & 52.9 & 346.1 &  21.6  & 160.02 & 0.9991 &  0.9992  \\
-MBH-4         & MTAPC    &     48.6 & 2861.0 &        5.8 &   7.3 & 33.1 & 321.1 & 33.0  & 149.98  & 0.8766 &  0.9352  \\
-160.05              & JPL           &  302.6 &    262.0 &   289.3 &   4.0 & 47.6 & 184.5 & 28.3  & 158.34  & 0.8895 &  0.9925 \\
-              & GSFC       &  831.3 & 1589.2 & 1597.6 & 94.4 & 59.8 & 566.7 & 95.4 & -45.53 & -0.1725 & -0.2937 \\
+\textbf{MBH-4}              & AEI            &      4.5 &      75.2 &       31.4 &   0.1 & 47.1 &173.6  &    9.1 & 160.05 & 0.9989 &  0.9994 \\
+(160.05)              & CambAEI &      3.2 &    171.9 &      30.7 &   0.2 & 52.9 & 346.1 &  21.6  & 160.02 & 0.9991 &  0.9992  \\
+         & MTAPC    &     48.6 & 2861.0 &        5.8 &   7.3 & 33.1 & 321.1 & 33.0  & 149.98  & 0.8766 &  0.9352  \\
+              & JPL           &  302.6 &    262.0 &   289.3 &   4.0 & 47.6 & 184.5 & 28.3  & 158.34  & 0.8895 &  0.9925 \\
+              & GSFC       &  831.3 & 1589.2 & 1597.6 & 94.4 & 59.8 & 566.7 & 95.4 & $-45.53$ & $-0.1725$ & $-0.2937$ \\
 
-\mr
-              & AEI            & 1114.1 & 952.2 & 38160.8 & 171.1 & 331.7 & 409.0 &  15.3 & 20.54 & 0.9399 & 0.9469 \\
-MBH-2         & CambAEI &      88.7 & 386.6 &   6139.7 & 172.4 & 210.8 & 130.7 &  24.4  & 20.36 & 0.9592 & 0.9697 \\
-18.95              & MTAPC    &   128.6 &   45.8 & 16612.0 &      8.9 & 321.4 & 242.4 &  13.1  & 20.27 & 0.9228 & 0.9260 \\
+\br
+\textbf{MBH-2}              & AEI            & 1114.1 & 952.2 & 38160.8 & 171.1 & 331.7 & 409.0 &  15.3 & 20.54 & 0.9399 & 0.9469 \\
+(18.95)         & CambAEI &      88.7 & 386.6 &   6139.7 & 172.4 & 210.8 & 130.7 &  24.4  & 20.36 & 0.9592 & 0.9697 \\
+              & MTAPC    &   128.6 &   45.8 & 16612.0 &      8.9 & 321.4 & 242.4 &  13.1  & 20.27 & 0.9228 & 0.9260 \\
               & JPL           &   287.0 & 597.7 & 11015.7 &   11.8 & 375.3 & 146.3 &    9.9 & 18.69 & 0.9661 & 0.9709 \\
 \mr
-              & AEI            &    1042.3 & 1235.6 &   82343.2 &      2.1 & 258.2 & 191.6 & 26.0 & 13.69 &  0.9288 &  0.9293 \\
-MBH-6         & CambAEI &    5253.2 & 1598.8 & 953108.0 & 158.3 & 350.8 & 215.4 & 29.4 & 10.17 &  0.4018 &  0.4399 \\
-12.82              & MTAPC    & 56608.7 &    296.7 & 180458.8 & 119.7 & 369.2 & 297.6 & 25.1 & 11.34 & -0.0004 &  0.0016 \\
+\textbf{MBH-6}             & AEI            &    1042.3 & 1235.6 &   82343.2 &      2.1 & 258.2 & 191.6 & 26.0 & 13.69 &  0.9288 &  0.9293 \\
+(12.82)         & CambAEI &    5253.2 & 1598.8 & 953108.0 & 158.3 & 350.8 & 215.4 & 29.4 & 10.17 &  0.4018 &  0.4399 \\
+              & MTAPC    & 56608.7 &    296.7 & 180458.8 & 119.7 & 369.2 & 297.6 & 25.1 & 11.34 & -0.0004 &  0.0016 \\
 \br
 \end{tabular}
 %\end{indented}
 \end{table}
+%
 
-
-
-The accuracy in the parameter estimation strongly depends on whether we have observed the coalescence or not.
-The signals with observed merger (MBH-1, 3 and 4) have significantly larger SNR and span to higher frequencies, 
-allowing much more accurate recovery of the parameters of the MBH binary. 
- For these sources, the errors in the masses, the time at coalescence, the distance and the sky position are comparable, if not better, to the ones obtained in non-spinning case (see table 1 and 2 of report on challenge 2.2 \cite{mldcamaldi2}). Concerning the position on the sky, the results with  $\Delta \textrm{Sky} > 170 \deg$, correspond to the mirrored sky location which is a known degeneracy in the response function. The errors in the spin amplitudes
-  are consistent with the Fisher matrix prediction \cite{SpinBBHLangHugues}.  Despite the high SNR, the evaluation of the initial direction of the spins and of the orbital angular momentum has proven to be very difficult.  We observe a large number of the local maxima in these parameters which have SNR very close to the true one. This is illustrated in the Figure~\ref{fig:SMBH_spinLdeg} which shows the distribution of $\theta_{S1}$, $\phi_{S1}$, $\theta_{S2}$, $\phi_{S2}$, $\theta_{L}$ and $\phi_{L}$ for all the submitted modes for MBH-3. We see that the modes are well separated in parameter values, but the difference in the SNR is less than 10. The SNR of the majority of submitted results are within 10 of the true one and the overlap is higher than 0.99.
-This reflects the degeneracies in the parameter space and that the recovered signals resemble the true one very closely, despite poor estimation of some parameters.
-
-
+The binaries that merge within the duration of the dataset (MBH-1, 3, and 4) have significantly larger SNR and reach higher frequencies, and thus allow a much more accurate recovery of source parameters. For these sources, the mass, time-of-coalescence, distance, and sky-position errors are comparable, if not better, to those of nonspinning-binary searches (see Tables 1 and 2 of \cite{mldcamaldi2}). The errors in the spin amplitudes are consistent with the Fisher-matrix results of \cite{SpinBBHLangHughes}.
+However, despite the high SNR, the estimation of the initial direction of the spins and of the orbital angular momentum has proved to be very difficult. We observe a large number of the local likelihood maxima that have comparable, high SNR (and $\mathrm{FF} > 0.99$), yet very different values of these parameters, as illustrated in Fig.\ \ref{fig:SMBH_spinLdeg} for the MBH-3 entries. Parameter estimation was not as successful for the weaker signals with mergers beyond the end of the dataset. Still, for MBH-2 the errors in the masses and time of coalescence are comparable to the Fisher matrix predictions. The errors in sky position are $\sim 10$ deg, with a strong local likelihood maxima at the antipodal sky position. Spin amplitudes are determined very poorly.
+% ISSUE: The recovered SNR for some modes was higher than the true one which is an artifact of the evaluation: we extend the computation of the inner products beyond the frequency range of the signals which picks up a bit of the ``junk'' SNR from the correlation with the noise. [This means that the templates are not truncated at the end of the dataset?]
+% ISSUE: The determination of the spin amplitude is very bad. This reflects the fact that the spins have a very weak effect on the low frequency part of the waveform. [Removing pending resolution of issue raised by Alberto.]
+%
 \begin{figure}
-\includegraphics[width=0.5\textwidth, clip=true, viewport=0 0 198 83 ]{DirS1_srcMC2_SNR.eps}
-\includegraphics[width=0.5\textwidth, clip=true, viewport=0 0 198 83 ]{DirS2_srcMC2_SNR.eps}\\
-\center \includegraphics[width=0.5\textwidth, clip=true, viewport=0 0 198 83 ]{DirL_srcMC2_SNR.eps}
-\caption{Distribution of the modes for the initial direction of spin 1, spin 2, and orbital angular momentum for source MBH-3 is shown in the top-left, top-right and bottom panels, respectively. The cross corresponds to the true value ($\times$), the triangle up ($\blacktriangle$) are the modes form AEI, the triangle down ($\blacktriangledown$) are the modes form CambAEI, the square ($\blacksquare$) is the mode from MTGWAGAPC and the diamond ($\blacklozenge$) is the mode from JPLCITNWU submission. The color corresponds to the SNR.
+\includegraphics[width=0.33\textwidth,height=3.5cm]{DirS1_srcMC2_SNR.eps}
+\includegraphics[width=0.33\textwidth,height=3.5cm]{DirS2_srcMC2_SNR.eps}
+\includegraphics[width=0.33\textwidth,height=3.5cm]{DirL_srcMC2_SNR.eps}
+\caption{Distribution of reported modes for MBH-3 along the spin and orbital--angular-momentum angles.
+$\times$: true value; $\blacktriangle$: AEI; $\blacktriangledown$: CambAEI; $\blacksquare$: MTGWAGAPC; $\blacklozenge$: JPLCITNWU. [The color corresponds to the SNR.]
 \label{fig:SMBH_spinLdeg}}
 \end{figure}
 
-
-Let us now comment on the parameter estimation for the last two signals with the coalescence time beyond the observational time. For MBH-2 the error in the masses and the time of coalescence are comparable to the Fisher matrix predictions. 
-The errors in the sky localization are around 10 degrees with a very strong local maximum at the mirrored 
-sky position. The overlaps between the recovered waveforms and the true ones are higher than 0.9 for all submissions.
-The recovered SNR for some modes was higher than the true one which is an artifact of the evaluation: 
-we extend the computation of the inner products beyond the frequency range of the signals which picks up a bit of the 
-``junk'' SNR from the correlation with the noise. 
-%
-The determination of the spin amplitude is very bad. This reflects the fact that the spins have a very weak effect on the low frequency part of the waveform. 
-
-The source MBH-6 was the weakest, and tree groups succeeded in recovering parameters. 
-
-The spins are supposed to de-correlate some parameters in the waveform \cite{SpinBBHLangHugues} and we 
-might observe this in some cases, but more investigations are needed to clearly conclude his point.
-However, the spins also bring additional degeneracies and multiple local maxima in the parameter space, especially in the initial directions of the spins and the orbital plane. This complexity is reflected in the submitted results.
-Nevertheless these results demonstrate solid capability in detecting the signals and good recovery of other 
-nine parameters. 
+Lang and Hughes \cite{SpinBBHLangHughes} report that spin-induced modulations remove correlations between parameters in Fisher-matrix computations, improving overall parameter determination. However, here we observe that spin interactions also cause nonlocal degeneracies in parameters space, especially so for spin and orbital--angular-momentum angles. Further investigations are needed to determine which phenomenon is stronger. Nevertheless, the entries to MLDC 3.2 demonstrate a solid detection capability for spinning-binary inspirals, and a good recovery of most source parameters.
 
 \section{Extreme--mass-ratio inspirals (MLDC 3.3)}
 
@@ -278,7 +236,7 @@ Three groups attempted to find the Challenge 3.3 sources.  These were:
 \begin{itemize}
 \item \textbf{BabakGair}: This collaboration between AEI and Cambridge University used stochastic sampling and Markov Chain Monte Carlo techniques to find signal harmonics, and then carried out an F-statistic search in the space of harmonics before applying MCMC in the physical parameter space for the final fit.  The basic methodology is described in \cite{BabakGairPorter}, but this search contained several improvements in harmonic identification.
 \item \textbf{EtfAG}: This collaboration between Cambridge University and Northwestern University searched the time-frequency spectrogram for harmonics using the Chirp-based Algorithm for Track Search (CATS, \cite{CATS}) which they developed for earlier MLDC rounds \cite{GairMandelWen}; this iteration included several improvements to the search technique to allow for intersecting tracks from multiple sources.
-\item \textbf{MTAPCIOA} This collaboration between Montana State University, APC-Paris, and Cambridge University employed a parallel tempering MCMC algorithm that included harmonic jumps to force the algorithm to move between secondary solutions in the parameter space. This algorithm was developed from a code used in previous rounds of the MLDC \cite{Cornish:2008}; the key improvements for this round were the inclusion of parallel tempering as described in \cite{keycornish} and improved implementation of the harmonic jumps.
+\item \textbf{MTAPCIOA} This collaboration between Montana State University, APC-Paris, and Cambridge University employed a parallel-tempering MCMC algorithm that included harmonic jumps to force the algorithm to move between secondary solutions in the parameter space. This algorithm was developed from a code used in previous rounds of the MLDC \cite{Cornish:2008}; the key improvements for this round were the inclusion of parallel-tempering as described in \cite{keycornish} and improved implementation of the harmonic jumps.
 \end{itemize}
 
 
@@ -313,6 +271,7 @@ EMRI-5 & MTAPCIOA  & 17.480  &  -3.32  &  5.00  &  -1.80  &  0.22  &  55  &  0.0
 (36.173) & \\
 \br                                              
 \end{tabular}
+\vspace{-12pt}
 \end{table}
 
 The MLDC 3.3 parameter-estimation results are presented in Table \ref{tab:EMRI_Err}.  The columns include the mass of the large body $M$, the mass of the small body $\mu$, the initial value of the azimuthal orbital frequency $\nu_0$, the initial value of the eccentricity $e_0$, the dimensionless spin $|S|$, the spin-orbit misalignment angle $\lambda$ and the luminosity distance to the source $D$.  The angular distances in the sky between true and estimated spin orientations $\Delta {\rm Spin}$ and source locations $\Delta {\rm Sky}$ are also included.
@@ -330,29 +289,25 @@ Thus, while all EMRI sources have been found and their masses have been accurate
 
 \section{Cosmic-string--cusp bursts (MLDC 3.4)}
 
-A new source for Challenge 3 is the gravitational radiation emitted from the cusps of cosmic superstrings.  The blind data was composed of a one month dataset (i.e. $2^{21}$ samples at 1 second cadence) and contained 3 such sources.  Each source is described
-by a set of 6 parameters : the ecliptic latitude $\beta$ and longitude $\lambda$, the amplitude of the wave ${\mathcal A}$, the polarization of the wave $\psi$, the burst's
-central time of arrival $t_C$ and a frequency parameter $f_{max}$.  This is the frequency beyond which there is a significant decay in the power spectrum of the burst, and is related to both the characteristic lengthscale of the string and the viewing angle.
+% Each source is described by a set of 6 parameters: the ecliptic latitude $\beta$ and longitude $\lambda$, the amplitude of the wave ${\mathcal A}$, the polarization of the wave $\psi$, the burst's central time of arrival $t_C$ and a frequency parameter $f_\mathrm{max}$.
+% The groups were informed that the signal to noise ratio was uniform between 10 and 100, the logarithm of ($f_{max}/$Hz) was uniformly distributed between $[-3,1]$ and the event rate was Poisson distributed with 5 events per month.  Four groups returned entries for Challenge 3.4.
 
-The groups were informed that the signal to noise ratio was uniform between 10 and 100, the logarithm of ($f_{max}/$Hz) was uniformly distributed between $[-3,1]$ and the event rate was Poisson distributed with 5 events per month.  Four groups returned entries for Challenge 3.4 .  These were
+Challenge dataset 3.4 contained three burst signals from cosmic-string cusps, immersed in instrument noise with slightly randomized levels for each individual noise (i.e., from the six proof masses and photodetectors). The dataset was less than a month long ($2^{21}$ s), with a higher sampling rate (1 s) than the others, to accommodate the potential high-frequency content of these signals, which have power-law spectrum up to an $f_\mathrm{max}$ determined by the characteristic length scale of the string and the viewing angle (see \cite{MLDC3} for more details about the waveforms and the random choice of their parameters). Four collaborations submitted entries:
+%
 \begin{itemize}
-\item \textbf{CAM} :  A collaboration between Cambridge University and APC-Paris using the MultiNest algorithm. This is an efficient multi-modal
-Nested Sampling search algorithm which uses a number of live points in the parameter space.  
-\item \textbf{CaNoe} : A collaboration between Cambridge University and Northwestern University using a Time-Frequency search algorithm. This algorithm is a modified
-version of the Chirp-based Algorithm for Track Searches which identifies tracks of a particular shape in the spectrogram.
-\item \textbf{JPLCIT} : A JPL-Caltech collaboration which used both Markov Chain Monte Carlo (MCMC) and MultiNest algorithms.  The results presented here are for 
-the MultiNest search only.
-\item \textbf{MTGWAG} : The GW group at Montana State University used a parallel tempered MCMC technique~\cite{keycornish}.  The MCMC is a stochastic search method which is particularly
-useful for searches conducted in high dimensional spaces.  The parallel tempering adds the complexity of a number of inter-communicating search
-chains at different temperatures.
+\item \textbf{CAM} (a collaboration between Cambridge University and APC--Paris) used MultiNest.
+\item \textbf{CaNoe} (researchers at Cambridge and Northwestern Universities) implemented a time--frequency algorithm, a modified version of the Chirp-based Algorithm for Track Searches (CATS) \cite{CATS}.
+\item \textbf{JPLCIT} (Caltech/JPL) experimented with MCMC and MultiNest, but only submitted entries based on the latter.
+\item \textbf{MTGWAG} (Montana State University) used a parallel-tempering MCMC \cite{keycornish}. 
 \end{itemize}
-
-The four groups were successful in recovering all three burst sources.  In Table~\ref{tab:parerrs} we present the errors in parameter estimation for each group.  As each burst is of relatively short duration, LISA can be taken as being an effectively static detector.  Because of this, the position of the source in the sky is harder to determine than for other sources.  It has also been shown~\cite{keycornish} that for cosmic string bursts there are a number of degeneracies in the parameter space.  For example, a reflection in the plane of the detector produces one set of degenerate parameters, while a rotation in the plane generates two sets of secondary maxima.  This coupled with the fact that there is a high correlation between the sky position of the source and the central burst time makes parameter estimation very difficult.  
-
-We can see in most cases that the errors for the ecliptic latitude $\beta$ are between 0.1 and 1 radians, while the errors in the estimation of the longitude are much bigger.  This inaccuracy in the sky position also makes it difficult to determine the polarization of the wave.  In certain cases, the errors in sky resolution translates to a large error in the estimation in the central burst time $t_C$.   Similarly, groups had trouble determining the value of $f_{max}$ and in some cases returned the value of the Nyquist frequency in their search (i.e. 0.5 Hz) which resulted in the occasionally very large errors in the estimation of this parameter. Finally, in most cases the groups were able to resolve the amplitude of the waves.
-
+%
+All groups successfully recovered all three bursts. Table \ref{tab:parerrs} shows the parameter-estimation errors, SNRs, and FFs for all entries. 
+Although the accuracy of parameters is poor, the FFs are very high; this suggests that these results are not due to shortcomings in the search methods, but to the very character of the waveforms. As a matter of fact, for relatively short signals such as these bursts, LISA can be considered as a static detector, and its response is not imprinted with any modulations from the LISA orbit or from the rotation of its constellation. Hence the sky position of burst sources can only be determined by triangulation between the spacecraft---a weaker effect, and one that vanishes in the limit of long wavelengths. Thus, the determination of sky position is intrinsically harder for bursts, and it is further complicated by the presence of degeneracies \cite{keycornish} such as the reflection of sky position across the instantaneous LISA plane. The bursts' barycentric central time $t_C$ and its polarization are strongly coupled with sky position, and therefore are also determined poorly.
+% ISSUE: need input from Ed
+% ISSUE: fmax = 0.03, 0.001, 6; is that borne out?
+%
 \begin{table}
-\caption{\label{tab:parerrs}Returned values for cosmic string search.  Some groups returned multiple mode solutions, which are also presented.  The dashed lines represent unreturned parameter values.  The angular errors have units of radians. [Should reorder by source, then group. Also align numbers, add units.]} 
+\caption{\label{tab:parerrs}Returned values for cosmic string search.  Some groups returned multiple mode solutions, which are also presented.  The dashed lines represent unreturned parameter values.  The angular errors have units of radians. [Should reorder by source, then group. Also align numbers, add units. Discuss special case of $f_\mathrm{max}$]} 
 \lineup \scriptsize \flushright
 \begin{tabular}{l@{\;}l|l@{\;}l@{\;}l@{\;}l@{\;}l@{\;}l}
 \br                              
@@ -382,138 +337,59 @@ MTGWAG&1&\m0.247& $-0.215$& $-1.233$& $-0.144$& \m0.626& $-15.896$ \cr
 \br
 \end{tabular}
 %\end{indented}
+\vspace{-12pt}
 \end{table}
-
 
 \section{Stochastic background (MLDC 3.5)}
 
-This is the first round of the MLDC to contain a stochastic background challenge.
-The 3.5 dataset contained an isotropic stochastic background signal
-along with instrumental noise. The stochastic background is characterised
-by the dimensionless quantity,
+Challenge dataset 3.5 contained an isotropic stochastic background signal immersed in instrument noise, with noise levels slightly randomized as in MLDC 3.4.
+To facilitate the use of the GW-canceling TDI combination $T$, 
+the LISA orbits were approximated as those traced by a rigidly rotating
+triangle, with equal and constant arm lengths (except for the Sagnac effect). The background was realized by placing $192 \times 2$ linearly polarized, stochastic pseudosources at positions uniformly distributed across the sky. See \cite{MLDC3} for more details. Now, isotropic stochastic backgrounds can be characterized by a single dimensionless quantity,
+%
 \begin{equation}
 \Omega_{\mathrm{gw}}(f)=\frac{1}{\rho_{\mathrm{crit}}}\frac{\mathrm{d} \rho_{\mathrm{gw}}(f)}{\mathrm{d} \log{f}},
 \end{equation}
-where $\rho_{\mathrm{gw}}(f)$ is the energy density in gravitational waves
+%
+where $\rho_{\mathrm{gw}}(f)$ is the energy density in GWs,
 and $\rho_{\mathrm{crit}}=3c^2H_0^2/8\pi G$ is the energy density required
-to close the universe. 
-The signal was created with a constant
-gravitational wave spectrum, 
-with amplitude within the range $\Omega_{\mathrm{gw}} = 8.95\times 10^{-12} - 1.66\times 10^{-11}$
-(where the Hubble constant was taken to be $H_0=70 \mathrm{km}/\mathrm{s}/\mathrm{Mpc}$).
-
-The instrumental noise was created approximating LISA as a rigidly rotating
-triangle with equal and constant arm lengths.
-The amplitudes of the 
-secondary noises were independently randomized  by $\pm 20\%$,
-and include laser phase noise at a level of approximately ten times the secondary 
-noise at 1mHz.
-
-Two groups submitted entries for this challenge:
+to close the Universe. In this MLDC round, $\Omega_{\mathrm{gw}}$ was taken to be constant across frequencies, and in this dataset it was set equal to $1.123 \times 10^{-11}$ (with $H_0=70 \mathrm{km}/\mathrm{s}/\mathrm{Mpc}$). Two groups submitted entries for this challenge, and both analyzed the same version of the dataset, generated by Synthetic LISA:
+%
 \begin{itemize}
 \item \textbf{AEIBham} (a collaboration between the Albert Einstein Institute
-(Germany) and the University of Birmingham (UK)) submitted multiple entries,
-using different applications of the same Bayesian Markov Chain Monte Carlo
-analysis method. However, we will not compare all of the submissions, but
-instead focus on the analysis of the $A$ and $E$ channels, for which two results were submitted
-over two different frequency bands; 0.1--1 mHz (\textbf{AEIBham (a)})
-and 0.1--5 mHz (\textbf{AEIBham (b)}).
-\item \textbf{MTGWAG} (the Montana Gravitational Wave Astronomy Group (USA)) 
-utilised a Parallel Tempered Markov Chain Monte Carlo search to
-estimate the amplitude of the stochastic background, using all three of the 
-$A$, $E$ and $T$ channels. They also parameterised
-the noise and estimated the amplitudes of the individual position and 
-acceleration noise spectra.
+and the University of Birmingham) submitted multiple entries using different applications of the same MCMC algorithm. In this paper we focus on the AEIBham analysis of the TDI $A$ and $E$ observables, which was run separately over frequency bands of 0.1--1 mHz (a) and 0.1--5 mHz (b).
+\item \textbf{MTGWAG} (Montana State University) analyzed the TDI $A$, $E$, and $T$ spectra with parallel-tempering MCMC. They estimated the background level as well as the levels of select linear combinations of the individual LISA noises (other combinations are left essentially undetermined by TDI observations).
 \end{itemize}
-
-Two different datasets were created for Challenge 3.5 --- one using 
-Synthetic LISA \cite{synthlisa}, and one using LISACode \cite{lisacode} ---
-each with a different amplitude of the stochastic GW background.
-Both of the groups 
-analysed the Synthetic LISA data, in which the injected signal had
-an amplitude
-$\Omega_{\mathrm{gw}}=1.123390\times 10^{-11}$. Table \ref{tab:SGWB_recovered}
-shows the values of $\Omega_{\mathrm{gw}}$ recovered by the different
-analyses, along with a fractional error, 
-$\Delta \Omega_{\mathrm{gw}}/\Omega_{\mathrm{gw}}$,
-where $\Delta \Omega_{\mathrm{gw}}$ is the difference between the recovered
-and injected values; both groups recovered the injection
-to within $10\%$. 
-Figure \ref{fig:stochastic_pdf} shows the recovered posterior PDFs on 
-$\Omega_{\mathrm{gw}}$ for each of the analyses. 
-
-The major difference between the analyses is the treatment of the instrumental
-noise. 
-The AEIBham analyses 
-used analytical expressions to characterise the shape of the noise power spectra
-in the $A$ and $E$ channels, such that the noise model had two unknown parameters ---
-the overall amplitudes of the noise PSDs.
-For this it was assumed that the secondary noises were symmetrical,
-which was not true of these datasets. It was also assumed that the strain spectrum was
-proportional to $f^3$ throughout the whole band, which was not in fact the case at higher frequencies. This
-may explain why the AEIBham (b) result was further from the injected
-value that either the AEIBham (a) result (where the GW spectrum was indeed
-a true power law throughout the whole band) or the MTGWAG result (where the 
-response function had been recalibrated using the training data to take 
-this into account).
-
-The MTGWAG analysis used all three channels, and compensated for the fact that the
-GW spectrum was not a power law at high frequency by using a response function
-calibrated using the training data. The noise was fully characterised 
-in terms of the twelve secondary noise amplitudes (again assuming that the 
-spectral shapes were fixed). The recovered secondary noise amplitudes 
-were not constrained, but the total position or acceleration noise
-in single arm of LISA can be well constrained. 
-These noise combinations are compared to the injected
-values in Table \ref{tab:MTGWAG_noise_est}. 
-
-\begin{table}
-\caption{Recovered amplitudes of the stochastic GW background and the fractional
-error. The injected value was $\Omega_{\mathrm{gw}}=1.123390\times 10^{-11}$.
-\label{tab:SGWB_recovered}}
-\begin{indented} \item[]
-\begin{tabular}{l@{ }l|cc}
-\br
-Group & & Estimated $\Omega_{\mathrm{gw}}$ & $\Delta \Omega_{\mathrm{gw}} / \Omega_{\mathrm{gw}}$ \\
-\mr
-AEIBham & (a) & 1.136e-11 & 0.0116 \\ 
-AEIBham & (b) & 1.020e-11 & 0.0917 \\ 
-\mr
-MTGWAG &  & 1.089e-11 & 0.0310 \\ 
-\br
-\end{tabular}
-\end{indented}
-\end{table}
-
+%
+Figure \ref{fig:stochastic_pdf} shows the reported posterior PDFs and the best-fit values for $\Omega_{\mathrm{gw}}$, along with their fractional error; both groups recovered the injected value within less than $10\%$. Figure \ref{fig:stochastic_pdf} shows also the best-fit levels reported by MTGWAG for the determinable proof-mass and photodetector noise combinations.
+The AEIBham analyses used theoretical expressions for TDI $A$ and $E$ noise spectra, which left only their overall levels as unknowns. However, this treatment assumed that the secondary noises were symmetrical, which was not the case in this dataset. In addition, because of limitations in the MLDC stochastic-background generation code, the actual GW strain spectrum differed from the nominal $f^{-3}$ power law at higher frequencies.
+This may explain why the AEIBham (b) result was further from the injected
+value that either the AEIBham (a) result (in which band the GW spectrum was actually $f^{-3}$) or the MTGWAG result, which used all three TDI channel, solved for their unknown correlations, and calibrated the GW spectrum using training datasets.
+%
 \begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{stochastic_pdfs.eps}
-\caption{The recovered posterior PDFs on $\Omega_{\mathrm{gw}}$ for the three analyses. The limits on the x-axis correspond to the prior on 
-$\Omega_{\mathrm{gw}}$ and the vertical dashed line indicates the injected 
-value.
-\label{fig:stochastic_pdf}}
-\end{figure}
-
-\begin{table}
-\caption{Combinations of amplitudes of secondary noises 
-recovered by the MTGWAG analysis. These combinations correspond to the total
-acceleration noise (pm) or position noise (pd) in a single arm of LISA.
-\label{tab:MTGWAG_noise_est}}
-\begin{indented} \item[]
-\begin{tabular}{l@{+}l|lll}
+\lineup \scriptsize \flushright
+\begin{minipage}{0.5\textwidth}
+\vspace{-12pt}
+\includegraphics[width=\textwidth]{stochastic_pdfs.eps}
+\end{minipage}
+\begin{tabular}[b]{l@{+}l|ll}
 \br
-\multicolumn{2}{l|}{Combination} & Estimated value & Injected value & Relative error \\
+\multicolumn{2}{l|}{noise} & estimated/true & frac.\ error \\
 \mr
-pm1 & pm2s & $6.503 \times 10^{-48}$ & $4.697 \times 10^{-48}$ & $0.385$ \\ 
-pm1s & pm3 & $3.240 \times 10^{-48}$ & $5.375 \times 10^{-48}$ & $0.397$ \\ 
-pm2 & pm3s & $6.912 \times 10^{-48}$ & $5.775 \times 10^{-48}$ & $0.197$ \\ 
-pd1 & pd2s & $3.733 \times 10^{-37}$ & $3.752 \times 10^{-37}$ & $5.030 \times 10^{-3}$ \\ 
-pd1s & pd3 & $3.568 \times 10^{-37}$ & $3.547 \times 10^{-37}$ & $6.082 \times 10^{-3}$ \\ 
-pd2 & pd3s & $3.805 \times 10^{-37}$ & $3.804 \times 10^{-37}$ & $3.552 \times 10^{-4}$ \\ 
+pm$_1$ & pm$_2^*$ & $6.5/4.7 \times 10^{-48}$ & $0.385$ \\ 
+pm$_1^*$ & pm$_3$ & $3.2/5.4 \times 10^{-48}$ & $0.397$ \\ 
+pm$_2$ & pm$_3^*$ & $6.9/5.8 \times 10^{-48}$ & $0.197$ \\ 
+pd$_1$ & pd$_2^*$ & $3.733/3.752 \times 10^{-37}$ &  $5.0 \times 10^{-3}$ \\ 
+pd$_1^*$ & pd$_3$ & $3.568/3.547 \times 10^{-37}$ &  $6.1 \times 10^{-3}$ \\ 
+pd$_2$ & pd$_3^*$ & $3.805/3.804 \times 10^{-37}$ &  $3.6 \times 10^{-4}$ \\ 
 \br
 \end{tabular}
-\end{indented}
-\end{table} 
+\vspace{-12pt}
+\caption{Left: posterior PDFs, their modes, and corresponding fractional error w.r.t.\ the true $\Omega_{\mathrm{gw}}$ reported by each analysis. The horizontal-axis range corresponds to the ``prior'' MLDC range. Right: combinations of LISA noise levels 
+recovered by MTGWAG; the combinations correspond to the total
+acceleration noise (pm) or position noise (pd) in a single LISA arm.\label{fig:stochastic_pdf}}
+\vspace{-12pt}
+\end{figure}
 
 \section{Moving forward: a synopsis of MLDC 4}
 \label{sec:mldc4}
@@ -566,11 +442,11 @@ CC's and MV's work was carried out at the Jet Propulsion Laboratory, California 
 
 \begin{thebibliography}{99}
 
-\bibitem{lisasimulator} Cornish N J and Rubbo L J 2003 \emph{Phys. Rev. D} \textbf{67} 022001; erratum-ibid. 029905; LISA Simulator website, \url{www.physics.montana.edu/lisa}; included in \cite{lisatools}
+\bibitem{lisasimulator} Cornish N J and Rubbo L J 2003 \textit{Phys. Rev. D} \textbf{67} 022001; erratum-ibid. 029905; LISA Simulator website, \url{www.physics.montana.edu/lisa}; included in \cite{lisatools}
 
-\bibitem{synthlisa} Vallisneri M 2005 \emph{Phys. Rev. D} \textbf{71}; Synthetic LISA website, \url{www.vallis.org/syntheticlisa}; included in \cite{lisatools}
+\bibitem{synthlisa} Vallisneri M 2005 \textit{Phys. Rev. D} \textbf{71}; Synthetic LISA website, \url{www.vallis.org/syntheticlisa}; included in \cite{lisatools}
 
-\bibitem{lisacode} Petiteau A, Auger G, Halloin H, Jeannin O, Plagnol E, Pireaux S, Regimbeau T and Vinet J--Y 2008 \emph{Phys. Rev. D} \textbf{77} 023002; LISACode website, \url{www.apc.univ-paris7.fr/LISA-France/analyse.phtml}; included in \cite{lisatools}
+\bibitem{lisacode} Petiteau A, Auger G, Halloin H, Jeannin O, Plagnol E, Pireaux S, Regimbeau T and Vinet J--Y 2008 \textit{Phys. Rev. D} \textbf{77} 023002; LISACode website, \url{www.apc.univ-paris7.fr/LISA-France/analyse.phtml}; included in \cite{lisatools}
 
 \bibitem{lisatools} LISAtools website and SVN repository, \url{lisatools.googlecode.com}
 
@@ -582,61 +458,52 @@ CC's and MV's work was carried out at the Jet Propulsion Laboratory, California 
 %  Andrzej Krolak, Ilya Mandel, Reinhard Prix, B.~S. Sathyaprakash, Pavlin
 %  Savov, Yu~Shang, Miquel Trias, John Veitch, Yan Wang, Linqing Wen, and
 %  John~T. Whelan.
-S. Babak \& al.~2008 \textit{Class. Quant. Grav.} \textbf{25}, 184026.
+Babak et al. 2008 \textit{Class. Quant. Grav.} \textbf{25} 184026
 %\newblock The mock lisa data challenges: from challenge 1b to challenge 3.
 %\newblock {\em gr-qc/arXiv}, 0806.2110, (2008).
 
 \bibitem{Timpano:2005gm}
-  S.~E.~Timpano, L.~J.~Rubbo and N.~J.~Cornish,
+  Timpano S E, Rubbo L J and Cornish N J 2006 \textit{Phys. Rev. D} \textbf{73} 122001
   %``Characterizing the galactic gravitational wave background with LISA,''
-  Phys.\ Rev.\  D {\bf 73}, 122001 (2006)
 
 \bibitem{Crowder:2007ft}
-  J.~Crowder and N.~J.~Cornish,
+  Crowder J and Cornish N J 2007 \textit{Class. Quant. Grav.}  \textbf{24} S575
   %``Extracting galactic binary signals from the first round of Mock LISA   Data
   %Challenges,''
-  Class.\ Quant.\ Grav.\  {\bf 24}, S575 (2007)
 
 \bibitem{BabakGairPorter} Babak S, Gair J R, Porter E 2009 \textit{Class. Quant. Grav.} \textbf{26} 135004.
 
 \bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
 
-\bibitem{Cornish:2008} N J Cornish, arXiv:0804.3323
+\bibitem{Cornish:2008} Cornish N J 2008 arXiv:0804.3323
 
 \bibitem{GAspinbbhFullPaper}
-A. Petiteau, Y. Shang, S. Babak and  F. Feroz
-\newblock {\em in preparation } (2009)
+Petiteau A, Shang Y, Babak B and Feroz F 2009 \textit{in preparation}
 
 \bibitem{MultiNest2}
-M.~Bridges F.~Feroz, M. P.~Hobson.
+Bridges M, Feroz F, Hobson M P 2009 \textit{MNRAS} \textbf{398} 1601
 %\newblock Multinest: an efficient and robust bayesian inference tool for cosmology and particle physics.
-\newblock {\em MNRAS}, 398:1601, (2009).
 
-\bibitem{SMBHCornishPorter}
-N.~J. Cornish and E.~K. Porter.
+\bibitem{SMBHCornishPorter} Cornish N J and Porter E K 2006
+\textit{Class. Quant. Grav.} \textbf{24} 5729
 %\newblock The search for massive black hole binaries with lisa.
-\newblock {\em Class. Quant. Grav.}, 24:5729, (2006).
 
 \bibitem{JPLCaltech}
-D. A. Brown, J. Crowder, C. Cutler, I. Mandel, M. Vallisneri
-\newblock {\em  Class. Quant. Grav.}, 24:{S595}, (2007)  
+Brown D A, Crowder J, Cutler C, Mandel I and Vallisneri M 2007
+\textit{Class. Quant. Grav.} \textbf{24} S595  
 
-\bibitem{Xspec}
-K. A. Arnaud \& al.
-\newblock {\em  Web}, http://heasarc.gsfc.nasa.gov/docs/xanadu/xspec/ 
+\bibitem{Xspec} Arnaud K A et al., Xspec website, \url{http://heasarc.gsfc.nasa.gov/xanadu/xspec}
 
 \bibitem{GairMandelWen}
-Gair J R, Mandel I, Wen L 2008 {\em Class. Quant. Grav.} \textbf{25} 184031.
+Gair J R, Mandel I, Wen L 2008 {\em Class. Quant. Grav.} \textbf{25} 184031
 
-\bibitem{SpinBBHLangHugues}
-R.~N. Lang and S.~A. Hugues.
+\bibitem{SpinBBHLangHughes} Lang R N and Hughes S A 2006 Phys. Rev. D \textbf{74} 122001
 %\newblock Measuring coalescing massive binary black holes with gravitational waves : The impact of spin-induced precession.
-\newblock {\em Phys. Rev. D}, 74:122001, (2006).
 
 \bibitem{CATS}
-Mandel I and Gair J R 2009 In preparation
+Mandel I and Gair J R 2009 \textit{in preparation}
 
-\bibitem{keycornish} Shapiro Key~J \& Cornish~N~J, Phys. Rev. D {\bf 79} 043014 (2009).
+\bibitem{keycornish} Shapiro Key J and Cornish N J 2009 \textit{Phys. Rev. D} \textbf{79} 043014
 
 \bibitem{mldclisasymp} Arnaud K A et al. (the MLDC Task Force) 2006 \textit{Laser Interferometer Space Antenna: 6th International LISA Symp. (Greenbelt, MD, 19--23 Jun 2006)} ed Merkowitz S M and Livas J C (Melville, NY: AIP) p 619; \textit{ibid} p 625 (long version with lisaXML description: \textit{Preprint} gr-qc/0609106)
 %
@@ -645,7 +512,6 @@ Mandel I and Gair J R 2009 In preparation
 \bibitem{mldcgwdaw2} Arnaud K A et al. (the MLDC Task Force) 2007 \textit{Class. Quant. Grav.} \textbf{24} S551
 %
 \bibitem{mldcamaldi2} Babak S et al. (the MLDC Task Force and Challenge 2 Participants) 2008 \textit{Class. Quant. Grav.} \textbf{25} 114037
-
 
 \end{thebibliography}
 
