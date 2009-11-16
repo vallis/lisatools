@@ -41,11 +41,11 @@ Mike Hobson$^{12}$,
 Joey Shapiro Key$^4$,
 Andrzej Kr\'olak$^{14}$,
 Anthony Lasenby$^{12,15}$,
-Reinhard Prix$^1$,
+Reinhard Prix$^{16}$,
 Yu Shang$^1$,
-Miquel Trias$^{16}$,
+Miquel Trias$^{17}$,
 John Veitch$^{10}$,
-John T. Whelan$^{17}$}
+John T. Whelan$^{18}$}
 \address{$^1$ Max-Planck-Institut f\"ur Gravitationsphysik (Albert-Einstein-Institut), Am M\"uhlenberg 1, D-14476 Golm bei Potsdam, Germany}
 \address{$^2$ Gravitational Astrophysics Lab., NASA Goddard Space Flight Center, 8800 Greenbelt Rd., Greenbelt, MD 20771, USA}
 \address{$^3$ Center for Gravitational Wave Astronomy, Univ.\ of Texas at Brownsville, Brownsville, TX 78520, USA}
@@ -61,8 +61,9 @@ John T. Whelan$^{17}$}
 \address{$^{13}$ Inst.\ of Astronomy, Univ.\ of Cambridge, Cambridge CB30HA, UK}
 \address{$^{14}$ Inst.\ of Mathematics, Polish Academy of Sciences, Warsaw, Poland}
 \address{$^{15}$ Kavli Institute for Cosmology, Univ.\ of Cambridge, Cambridge CB30HA, UK}
-\address{$^{16}$ Departament de F\'isica, Univ.\ de les Illes Balears, Cra.\ Valldemossa Km.\ 7.5, E-07122 Palma de Mallorca, Spain}
-\address{$^{17}$ Center for Computational Relativity and Gravitation \& School of Math.\ Sciences, Rochester Inst.\ of Technology, 85 Lomb Memorial Drive, Rochester, NY 14623, USA}
+\address{$^{16}$ Max-Planck-Institut f\"{u}r Gravitationsphysik (Albert-Einstein-Institut), D-30167 Hannover, Germany}
+\address{$^{17}$ Departament de F\'isica, Univ.\ de les Illes Balears, Cra.\ Valldemossa Km.\ 7.5, E-07122 Palma de Mallorca, Spain}
+\address{$^{18}$ Center for Computational Relativity and Gravitation \& School of Math.\ Sciences, Rochester Inst.\ of Technology, 85 Lomb Memorial Drive, Rochester, NY 14623, USA}
 
 \ead{Michele.Vallisneri@jpl.nasa.gov}
 
@@ -129,7 +130,7 @@ adopt correlation as the metric by which the entries are measured.
 
 For this we need to identify the injected signal that corresponds most closely to each recovered signal. To do this, we consider all injected signals with ${\rm SNR} > 3$ within six frequency bins of the recovered signal, and we select the injected signal with the minimum $\chi^2 = (h-h' \vert h-h')$,
 where $h$ and $h'$ are the injected and recovered waveforms, and $(a\vert b)$ denotes the standard noise-weighted inner product, summed over the noise-orthogonal $A$, $E$, and $T$ TDI channels. The correlation is then computed as $C = (h \vert h')/
-(h \vert h)^{1/2} (h' \vert h')^{1/2}$. Using as a figure of merit the percentage of recovered sources with $C > 0.9$, we find 30\% for BhamUIB, 95\% for AEIRIT, 33\% for PoWrWa 33\%. PoWrWa have reported a bug in their code that affects sources with frequencies above 3 mHz. Results are better after correcting it \cite{babaknew}. If we consider only the 6,955 sources they report below 2 mHz, their figure of merit improves to 58\%.
+(h \vert h)^{1/2} (h' \vert h')^{1/2}$. Using as a figure of merit the percentage of recovered sources with $C > 0.9$, we find 30\% for BhamUIB, 95\% for AEIRIT, 33\% for PoWrWa. PoWrWa have reported a bug in their code that affects sources with frequencies above 3 mHz. Results are better after correcting it \cite{babaknew}. If we consider only the 6,955 sources they report below 3 mHz, their figure of merit improves to 58\%.
 
 \section{Massive black-hole binaries (MLDC 3.2)}
 
@@ -300,7 +301,7 @@ $(\mathrm{SNR}_\mathrm{true})$ & & (deg) & (sec) & (rad) &  &  &  &    \\
 Challenge dataset 3.4 contained three burst signals from cosmic-string cusps, immersed in instrument noise with slightly randomized levels for each individual noise (i.e., from the six proof masses and photodetectors). The dataset was less than a month long ($2^{21}$ s), with a higher sampling rate (1 s) than the others, to accommodate the potential high-frequency content of these signals, which have power-law spectrum up to an $f_\mathrm{max}$ determined by the characteristic length scale of the string and the viewing angle (see \cite{MLDC3} for more details about the waveforms and the random choice of their parameters). Four collaborations submitted entries:
 %
 \begin{itemize}
-\item \textbf{CAM} (a collaboration between Cambridge University and APC--Paris) used MultiNest.
+\item \textbf{CAM} (a collaboration between Cambridge U.\ and APC--Paris) used MultiNest.
 \item \textbf{CaNoe} (researchers at Cambridge and Northwestern Universities) implemented a time--frequency algorithm, a modified version of CATS \cite{CATS}.
 \item \textbf{JPLCIT} (Caltech/JPL) experimented with MCMC and MultiNest, but only submitted entries based on the latter \cite{cohen2009}.
 \item \textbf{MTGWAG} (Montana State University) used a parallel-tempering MCMC \cite{keycornish}. 
@@ -336,6 +337,11 @@ Figure \ref{fig:stochastic_pdf} shows the reported posterior PDFs and the best-f
 The AEIBham analyses used theoretical expressions for TDI $A$ and $E$ noise spectra, which left only their overall levels as unknowns. However, this treatment assumed that the secondary noises were symmetric, which was not the case in this dataset. In addition, because of limitations in the MLDC stochastic-background generation code, the actual GW strain spectrum differed from the nominal $f^{-3}$ power law at higher frequencies.
 This may explain why the AEIBham (b) result was further from the injected
 value that either the AEIBham (a) result (in which band the GW spectrum was actually $f^{-3}$) or the MTGWAG result, which used all three TDI channel, solved for their unknown correlations, and calibrated the GW spectrum using training datasets.
+
+\section{Moving forward: a synopsis of MLDC 4}
+\label{sec:mldc4}
+
+While the third round of the MLDCs was focused on increasing the complexity and variety of GW sources, we are devoting the next iteration to the \emph{global-fit} problem of detecting and analyzing sources of different types superposed in the LISA data. Thus, MDLC 4 consists of a single, ``whole enchilada'' challenge that includes all the sources of MLDCs 3.1--3.5 \emph{in the same dataset}, albeit with larger source numbers (for EMRIs and cosmic-string bursts) and parameter ranges (for MBH binaries and EMRIs). See Table \ref{table:MLDC4} for details. The duration of the dataset is again approximately two years ($2^{22} \times 15$ s), but the data are released both as a high-cadence time series of $2^{25}$ samples with $\Delta t = 1.875$ s, and as a downsampled time series of $2^{22}$ samples with $\Delta t = 15$ s (however, only the cosmic-string bursts and instrument noise contribute spectral content above 33 mHz).
 %
 \begin{figure}
 \lineup \scriptsize \flushright
@@ -361,11 +367,6 @@ recovered by MTGWAG; the combinations correspond to the total
 acceleration noise (pm) or position noise (pd) in a single LISA arm.\label{fig:stochastic_pdf}}
 \vspace{-12pt}
 \end{figure}
-
-\section{Moving forward: a synopsis of MLDC 4}
-\label{sec:mldc4}
-
-While the third round of the MLDCs was focused on increasing the complexity and variety of GW sources, we are devoting the next iteration to the \emph{global-fit} problem of detecting and analyzing sources of different types superposed in the LISA data. Thus, MDLC 4 consists of a single, ``whole enchilada'' challenge that includes all the sources of MLDCs 3.1--3.5 \emph{in the same dataset}, albeit with larger source numbers (for EMRIs and cosmic-string bursts) and parameter ranges (for MBH binaries and EMRIs). See Table \ref{table:MLDC4} for details. The duration of the dataset is again approximately two years ($2^{22} \times 15$ s), but the data are released both as a high-cadence time series of $2^{25}$ samples with $\Delta t = 1.875$ s, and as a downsampled time series of $2^{22}$ samples with $\Delta t = 15$ s (however, only the cosmic-string bursts and instrument noise contribute spectral content above 33 mHz).
 
 Three versions of both datasets are released: fractional-frequency--fluctuation data generated by Synthetic LISA \cite{synthlisa} and LISACode \cite{lisacode}, and equivalent-strain data generated by the LISA Simulator \cite{lisasimulator}. In contrast to MLDCs 3.4 and 3.5, all the LISA instrument noises are set to symmetric, nominal levels, and the LISA armlength are allowed to ``breathe.'' See \cite{mldcgwdaw2,MLDC3} for more details about the MLDC models of LISA orbits, noises, and interferometric observables. The waveform models of MLDC 3 \cite{MLDC3} are used unchanged in MLDC 4, except for the following: the spectra of cosmic-string bursts are truncated below $10^{-5}$ Hz; the stochastic-background spectrum is $f^{-3}$ between $10^{-5}$ Hz and 33 mHz, and drops lower below and above that range; last, 
 when MBH binaries end within the duration of the dataset, they are terminated 
@@ -395,13 +396,14 @@ an average of 6 \textit{EMRIs} & $\mu = 9.5\mbox{--}10.5 \, M_\odot$, $S = 0.5\m
 \vspace{-12pt}
 \end{table}
 
-Challenges beyond MLDC 4 will feature ever more realistic datasets, including more sophisticated waveform models, such as MBH coalescences with merger and ringdown phases, and ``real-mission'' noise models and instrument events drawn from the ongoing experimental investigations of the LISA architecture and subsystem. To obtain more information and to participate in the MLDCs, see the official MLDC website, \url{astrogravs.nasa.gov/docs/mldc}, and the Task Force wiki, \url{www.tapir.caltech.edu/listwg1b}.
+Challenges beyond MLDC 4 will feature ever more realistic datasets, including more sophisticated waveform models, such as MBH coalescences with merger and ringdown phases, and ``real-mission'' noise models and instrument events drawn from the ongoing experimental investigations of the LISA architecture and subsystem. To obtain more information and to participate in the MLDCs, see the official MLDC website, \url{astrogravs.nasa.gov/docs/mldc}, the Task Force wiki, \url{www.tapir.caltech.edu/listwg1b}, and the \texttt{lisatools} software repository \cite{lisatools}.
 
-\ack
-The authors acknowledge support from
-the German Aerospace Center (SB, EKP, AP, JTW);
-the Max-Planck Society (SB, EKP, JTW, AP, RP, ELR);
+
+\ack The authors acknowledge support from
+the German Aerospace Center (SB, AP, JTW);
+the Max-Planck Society (SB, JTW, AP, RP, ELR);
 the LISA Mission Science Office at JPL (CC, MV);
+MNiSW grant N N203 387237 (AB, AK);
 NASA grants NNG04GD52G (MB),
   NNG05GI69G and NNX07AJ61G (NJC),
   06-BEFS06-31 (MV and CC),
@@ -409,8 +411,9 @@ NASA grants NNG04GD52G (MB),
   and the NASA Center for GW Astronomy at the U. of Texas, Brownsville;
 NSF grant PHY-0855494 (JTW),
   and the NSF A\&A postdoctoral fellowship under AST-0901985 (IM);
-St Catharine's College, Cambridge (JG).
-CC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration.
+St Catharine's College, Cambridge (JG);
+E.U.\ FEDER funds, Spanish Ministerio de Ciencia e Innovaci\'on projects FPA2007-60220, HA2007-0042 and CSD2007-00042, Govern de les Illes Balears, Conselleria d'Economia, Hisenda i Innovaci\'o (MT).
+CC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration. Copyright 2009.
 
 \section*{References}
 
@@ -436,7 +439,9 @@ CC's and MV's work was carried out at the Jet Propulsion Laboratory, California 
 %
 \bibitem{Cornish:2007if} Cornish N J and Littenberg T B 2007 \textit{Phys. Rev. D} \textbf{76} 083006
 %
-\bibitem{whelan2009} Whelan J T, Prix R and Khurana D 2009 arXiv:0908.3766 
+\bibitem{whelan2009} Whelan J T, Prix R and Khurana D 2009 arXiv:0908.3766;
+2008 \textit{Class. Quantum Grav.} \textbf{25} 184029;
+Prix R and Whelan J T 2007 \textit{Class. Quant. Grav.} \textbf{24} S565 
 %
 \bibitem{babaknew} Babak S, B{\l}aut A. and Kr{\'o}lak A \textit{in preparation}
 %
