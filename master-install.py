@@ -54,7 +54,7 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     
     configureflags += " --prefix=" + prefix
     
-    if (platform.system() == 'Darwin') and (('10.4' in platform.mac_ver()[0]) or ('10.5' in platform.mac_ver()[0])):
+    if platform.system() == 'Darwin':
         # attempt to build universal binary version of library
         
         if '10.4' in platform.mac_ver()[0]:
@@ -77,7 +77,7 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
                 os.environ['CFLAGS']   = "-arch ppc -arch ppc64"
                 os.environ['CXXFLAGS'] = "-arch ppc -arch ppc64"
                 os.environ['LDFLAGS']  = "-arch ppc -arch ppc64"
-                            
+                        
         configureflags += " --disable-dependency-tracking"
     
     if packagetar:
