@@ -242,9 +242,9 @@ print "--> Checking FFTW"
 if not os.path.isfile(fftwdir + '/include/fftw3.h') or installfftw:
     if installfftw == True:
         print "--> Installing FFTW"    
-        installpackage(fftwdownload,prefix=fftwdir,keepdownload=True, configureflags='--enable-shared')
+        installpackage(fftwdownload,prefix=fftwdir,keepdownload=True, configureflags='--enable-shared --enable-threads')
         # redo in single precision, get rid of tar.gz
-        installpackage(fftwdownload,prefix=fftwdir,keepdownload=False,configureflags='--enable-shared --enable-float')
+        installpackage(fftwdownload,prefix=fftwdir,keepdownload=False,configureflags='--enable-shared --enable-float --enable-threads')
     else:
         print "!!! I cannot find FFTW3 on your system. If you have it, please specify"
         print "    its location with --fftw=FFTWDIR (for instance, --fftw=/usr/local if"
