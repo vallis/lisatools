@@ -5,11 +5,11 @@
 \usepackage{graphicx}
 \usepackage[usenames]{color}
 \usepackage{iopams}
-\usepackage{epstopdf}
+% \usepackage{epstopdf}
 \usepackage{multirow}
+\usepackage{hyperref}
 
 \newcommand{\eqref}[1]{{(\ref{#1})}}
-\newcommand{\ilya}[1]{{\color{red} \bf Ilya: #1}}
  
 \begin{document}
 
@@ -78,7 +78,7 @@ The Mock LISA Data Challenges are a program to demonstrate LISA data-analysis ca
 
 \section{The Mock LISA Data Challenges}
 
-The Laser Interferometer Space Antenna (LISA) is a planned NASA--ESA gravitational-wave (GW) observatory sensitive in the $10^{-5}$--$10^{-1}$ Hz range \cite{lisa}. LISA's data will contain superposed signals from millions of sources, including all the binaries in the Galaxies with orbital periods below five hours and massive--black-hole (MBH) binary coalescences out to $z \sim 20$. Thousands of sources will be resolvable individually. The potential for source confusion and the very complex dynamics and waveforms of sources such as extreme--mass-ratio inspirals (EMRIs), suggested the need for a coordinated effort to develop and demonstrate LISA data-analysis capabilities. The Mock LISA Data Challenges (MLDCs) began in early 2006 with this very purpose.
+The Laser Interferometer Space Antenna (LISA) is a planned NASA--ESA gravitational-wave (GW) observatory sensitive in the $10^{-5}$--$10^{-1}$ Hz range \cite{lisa}. LISA's data will contain superposed signals from millions of sources, including all the binaries in the Galaxies with orbital periods below five hours and massive--black-hole (MBH) binary coalescences out to $z \sim 20$ \cite{baker2007}. Thousands of sources will be resolvable individually. The potential for source confusion and the very complex dynamics and waveforms of sources such as extreme--mass-ratio inspirals (EMRIs), suggested the need for a coordinated effort to develop and demonstrate LISA data-analysis capabilities. The Mock LISA Data Challenges (MLDCs) began in early 2006 with this very purpose.
 
 The complexity and ambition of the challenges has risen with each round: MLDC 1 \cite{mldclisasymp,mldcgwdaw1} focused on simple sources, isolated or moderately interfering; MLDC 2 \cite{mldcgwdaw2,mldcamaldi2} introduced a Galactic \emph{ensemble} of 26 million binaries (20,000 of which were successfully recovered), as well as the problem of detecting MBH binaries over the Galactic cacophony; MLDC 1B \cite{MLDC3} reprised the first challenge for new research collaborations joining the effort, and saw the first successful detections of EMRI signals. MLDC 3, released in April 2008 and due in April 2009, consisted of five subchallenges that featured more realistic models of previously examined sources (chirping Galactic binaries in MLDC 3.1, spinning MBH binary inspirals in 3.2, superposed EMRIs in 3.3) and entirely new sources (GW bursts from cosmic-string cusps in 3.4, an isotropic stochastic background in 3.5); see \cite{MLDC3} for a detailed discussion of the source models and GW content of each subchallenge. Fifteen collaborations, comprising all the participants listed in the byline and most task-force members, submitted a total of seventeen entries (all can be found at \url{www.tapir.caltech.edu/~mldc/results3} together with technical notes about search implementation).
 
@@ -104,14 +104,14 @@ $0.9 \, {\rm mHz} \leq f \leq 1.0 \, {\rm mHz}$, and
 $1.6 \, {\rm mHz} \leq f \leq 1.7 \, {\rm mHz}$, using the MLDC waveform
 generator \cite{Cornish:2007if}. A total of 494 sources were reported.
 %
-\item \textbf{AEIRIT} (researchers at the Albert Einstein Institute in Golm, Germany, and the Rochester Institute of Technology) set up a LIGO-style
-hierarchical, sequential search based on the ${\cal F}$-statistic and on frequency-domain rigid-adiabatic templates \cite{whelan2009}.
+\item \textbf{AEIRIT} (researchers at the Albert Einstein Institute in Hannover, Germany, and the Rochester Institute of Technology) set up a LIGO-style
+hierarchical search based on the ${\cal F}$-statistic and on frequency-domain rigid-adiabatic templates \cite{whelan2009}.
 Triggers are generated for the individual TDI channels; those found in coincidence
 are analyzed coherently using noise-orthogonal TDI observables. A total of 1940 sources
 were reported.
 %
 \item \textbf{PoWrWa} (a collaboration between the Albert Einstein Institute, the University of Wroc{\l}aw, and the Polish Academy of
-Sciences) adopted a sequential matched-filtering search that used the ${\cal F}$-statistic and rigid-adiabatic templates \cite{babaknew}, and analyzed a few 0.1-mHz wide frequency bands. The brightest source in each band is identified and
+Sciences) adopted an iterative matched-filtering search that used the ${\cal F}$-statistic and rigid-adiabatic templates \cite{babaknew}, and analyzed a few 0.1-mHz wide frequency bands. The brightest source in each band is identified and
 removed, and the process repeated until a pre-set SNR threshold is
 reached. A total of 14,838 sources were reported.
 %
@@ -120,7 +120,7 @@ reached. A total of 14,838 sources were reported.
 The entries
 for this round fell short of the theoretical target for a variety of reasons.
 BhamUIB analyzed only a small fraction of the data,
-while AEIRIT and PoWrWa used sequential removal
+while AEIRIT and PoWrWa used single-pass or iterative search
 schemes, which are limited in how deep they can dig before source confusion
 degrades signal recovery. Previous studies~\cite{Crowder:2007ft}
 indicate that it should be possible to recover approximately 99\% of
@@ -351,7 +351,7 @@ While the third round of the MLDCs was focused on increasing the complexity and 
 \end{minipage}
 \begin{tabular}[b]{l@{+}l|ll}
 \br
-\multicolumn{2}{l|}{noise} & estimated/true & frac.\ error \\
+\multicolumn{2}{l|}{noise} & MTGWAG/true & frac.\ error \\
 \mr
 pm$_1$ & pm$_2^*$ & $6.5/4.7 \times 10^{-48}$ & $0.385$ \\ 
 pm$_1^*$ & pm$_3$ & $3.2/5.4 \times 10^{-48}$ & $0.397$ \\ 
@@ -362,9 +362,7 @@ pd$_2$ & pd$_3^*$ & $3.805/3.804 \times 10^{-37}$ &  $3.6 \times 10^{-4}$ \\
 \br
 \end{tabular}
 \vspace{-12pt}
-\caption{Left: posterior PDFs, their modes, and corresponding fractional error w.r.t.\ the true $\Omega_{\mathrm{gw}}$ reported by each analysis. The horizontal-axis range corresponds to the ``prior'' MLDC range. Right: combinations of LISA noise levels 
-recovered by MTGWAG; the combinations correspond to the total
-acceleration noise (pm) or position noise (pd) in a single LISA arm.\label{fig:stochastic_pdf}}
+\caption{Plot on left: posterior PDFs for $\Omega_\mathrm{gw}$ reported by each analysis, their modes $\hat{\Omega}_\mathrm{gw}$, and the corresponding fractional error w.r.t.\ the true $\Omega_{\mathrm{gw}}$. The horizontal-axis range corresponds to the ``prior'' MLDC range. Table on right: estimated LISA noise levels (modes) in the MTGWAG analysis. The $\mathrm{pm}_k$ and $\mathrm{pm}^*_k$ are the proof mass noises introduced in the left and right optical assemblies on LISA spacecraft $k$; likewise for photodetector noises $\mathrm{pd}_k$ and $\mathrm{pd}^*_k$. The combinations of noises shown in the table are the only ones that are constrained effectively by the data after laser phase noise has been removed with TDI.\label{fig:stochastic_pdf}}
 \vspace{-12pt}
 \end{figure}
 
@@ -373,7 +371,7 @@ when MBH binaries end within the duration of the dataset, they are terminated
 at the time $t_\mathrm{max}$ when the frequency derivative changes sign, indicating that the PN expansion is failing. To reduce spectral leakage, a half Hann window $\cos^2[\pi (t - t_\mathrm{max} + \Delta t) / 2 \Delta t]$ is applied between $t_\mathrm{max} - \Delta t$ and $t_\mathrm{max}$, with $\Delta t = Q/f_\mathrm{max}$, $f_\mathrm{max}$ the frequency at time $t_\mathrm{max}$, and $Q$ the quality factor (lisaXML parameter \texttt{Q}) set to 3 for MLDC 4 (setting \texttt{Q}=0 yields the old $r = 6M$ termination condition).
 %
 \begin{table}
-\caption{MLDC 4 source content and parameter selection (cf.\ Table of \cite{MLDC3}; figures in \textbf{bold} have changed compared to MLDC 3). Parameters are sampled uniformly from the ranges given below; angular parameters are drawn from appropriate sphere-uniform distributions. Source distances are set from the randomly selected multi-TDI SNRs, approximated as $\sqrt{2} \times \mathrm{max} \{\textrm{SNR}_X,\textrm{SNR}_Y,\textrm{SNR}_Z\}$. $\mathrm{Poisson}(\lambda)$ denotes a Poisson-distributed deviate with mean $\lambda$.\label{table:MLDC4}}
+\caption{MLDC 4 source content and parameter priors (cf.\ Tables 7 and 8 of \cite{MLDC3}; the parameters in \textbf{bold} have changed compared to MLDC 3). Parameters are always sampled uniformly from the ranges given below; angular parameters are drawn from appropriate uniform distributions on the circle or sphere. Source distances are set from the SNRs selected randomly in the ranges given below, defining $\mathrm{SNR} = \sqrt{2} \times \mathrm{max} \{\textrm{SNR}_X,\textrm{SNR}_Y,\textrm{SNR}_Z\}$. The notation $\mathbf{Poisson}(\lambda)$ indicates a random number of sources distributed according to a Poisson distribution with mean $\lambda$.\label{table:MLDC4}}
 \lineup \scriptsize \flushright
 \begin{tabular}{l@{\hspace{6pt}}l}
 \br
@@ -413,13 +411,15 @@ NSF grant PHY-0855494 (JTW),
   and the NSF A\&A postdoctoral fellowship under AST-0901985 (IM);
 St Catharine's College, Cambridge (JG);
 E.U.\ FEDER funds, Spanish Ministerio de Ciencia e Innovaci\'on projects FPA2007-60220, HA2007-0042 and CSD2007-00042, Govern de les Illes Balears, Conselleria d'Economia, Hisenda i Innovaci\'o (MT).
-CC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration. Copyright 2009.
+CC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration. Copyright 2009. All rights reserved.
 
 \section*{References}
 
 \begin{thebibliography}{99}
 %
 \bibitem{lisa} Bender P, Danzmann P and the LISA Study Team 1998 ``Laser Interferometer Space Antenna for the Detection of Gravitational Waves, Pre-Phase A Report'' \textbf{MPQ 233} (Garching: Max-Planck-Instit\"ut f\"ur Quantenoptik) 
+%
+\bibitem{baker2007} Baker J G et al. 2007 \textit{Phys. Rev. D} \textbf{75} 124024
 %
 \bibitem{mldclisasymp} Arnaud K A et al. (the MLDC Task Force) 2006 \textit{Laser Interferometer Space Antenna: 6th International LISA Symp. (Greenbelt, MD, 19--23 Jun 2006)} ed Merkowitz S M and Livas J C (Melville, NY: AIP) p 619; \textit{ibid} p 625 (long version with lisaXML description: gr-qc/0609106)
 %
