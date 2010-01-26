@@ -22,6 +22,7 @@ Matthew J. Benacquista$^3$,
 Neil J. Cornish$^4$,
 Shane L. Larson$^5$,
 Ilya Mandel$^6$,
+Sean T. McWilliams$^2$,
 Antoine Petiteau$^1$,
 Edward K. Porter$^7$,
 Emma L. Robinson$^1$,
@@ -329,7 +330,7 @@ to close the Universe. In this MLDC round, $\Omega_{\mathrm{gw}}$ was taken to b
 %
 \begin{itemize}
 \item \textbf{AEIBham} (a collaboration between the Albert Einstein Institute
-and the University of Birmingham) submitted multiple entries using different applications of the same MCMC algorithm. Here we focus on the AEIBham analysis of the TDI $A$ and $E$ observables, which was run separately over frequency bands of 0.1--1 mHz (a) and 0.1--5 mHz (b).
+and the University of Birmingham) submitted multiple entries using different applications of the same MCMC algorithm \cite{Robinson2008}. Here we focus on the AEIBham analysis of the TDI $A$ and $E$ observables, which was run separately over frequency bands of 0.1--1 mHz (a) and 0.1--5 mHz (b).
 \item \textbf{MTGWAG} (Montana State University) analyzed the TDI $A$, $E$, and $T$ spectra with parallel-tempering MCMC. They estimated the background level as well as the levels of select linear combinations of the individual LISA noises (other combinations are left essentially undetermined by TDI observations).
 \end{itemize}
 %
@@ -371,7 +372,7 @@ when MBH binaries end within the duration of the dataset, they are terminated
 at the time $t_\mathrm{max}$ when the frequency derivative changes sign, indicating that the PN expansion is failing. To reduce spectral leakage, a half Hann window $\cos^2[\pi (t - t_\mathrm{max} + \Delta t) / 2 \Delta t]$ is applied between $t_\mathrm{max} - \Delta t$ and $t_\mathrm{max}$, with $\Delta t = Q/f_\mathrm{max}$, $f_\mathrm{max}$ the frequency at time $t_\mathrm{max}$, and $Q$ the quality factor (lisaXML parameter \texttt{Q}) set to 3 for MLDC 4 (setting \texttt{Q}=0 yields the old $r = 6M$ termination condition).
 %
 \begin{table}
-\caption{MLDC 4 source content and parameter priors (cf.\ Tables 7 and 8 of \cite{MLDC3}; the parameters in \textbf{bold} have changed compared to MLDC 3). Parameters are always sampled uniformly from the ranges given below; angular parameters are drawn from appropriate uniform distributions on the circle or sphere. Source distances are set from the SNRs selected randomly in the ranges given below, defining $\mathrm{SNR} = \sqrt{2} \times \mathrm{max} \{\textrm{SNR}_X,\textrm{SNR}_Y,\textrm{SNR}_Z\}$. The notation $\mathbf{Poisson}(\lambda)$ indicates a random number of sources distributed according to a Poisson distribution with mean $\lambda$.\label{table:MLDC4}}
+\caption{MLDC 4 source content and parameter priors (cf.\ Tables 7 and 8 of \cite{MLDC3}; the parameters in \textbf{bold} have changed compared to MLDC 3). Parameters are always sampled uniformly from the ranges given below; angular parameters are drawn from appropriate uniform distributions on the circle or sphere. Source distances are set from SNRs selected randomly in the ranges given below, defining $\mathrm{SNR} = \sqrt{2} \times \mathrm{max} \{\textrm{SNR}_X,\textrm{SNR}_Y,\textrm{SNR}_Z\}$. The notation $\mathbf{Poisson}(\lambda)$ indicates a random number of sources distributed according to a Poisson distribution with mean $\lambda$.\label{table:MLDC4}}
 \lineup \scriptsize \flushright
 \begin{tabular}{l@{\hspace{6pt}}l}
 \br
@@ -409,6 +410,7 @@ NASA grants NNG04GD52G (MB),
   and the NASA Center for GW Astronomy at the U. of Texas, Brownsville;
 NSF grant PHY-0855494 (JTW),
   and the NSF A\&A postdoctoral fellowship under AST-0901985 (IM);
+the Science and Technology Facilities Council (AV);
 St Catharine's College, Cambridge (JG);
 E.U.\ FEDER funds, Spanish Ministerio de Ciencia e Innovaci\'on projects FPA2007-60220, HA2007-0042 and CSD2007-00042, Govern de les Illes Balears, Conselleria d'Economia, Hisenda i Innovaci\'o (MT).
 CC's and MV's work was carried out at the Jet Propulsion Laboratory, California Institute of Technology, under contract with the National Aeronautics and Space Administration. Copyright 2009. All rights reserved.
@@ -447,7 +449,7 @@ Prix R and Whelan J T 2007 \textit{Class. Quant. Grav.} \textbf{24} S565
 %
 \bibitem{GAspinbbhFullPaper} Petiteau A, Shang Y, Babak B and Feroz F \textit{in preparation}
 %
-\bibitem{MultiNest2} Bridges M, Feroz F, Hobson M P 2009 \textit{MNRAS} \textbf{398} 1601
+\bibitem{MultiNest2} Bridges M, Feroz F and Hobson M P 2009 \textit{MNRAS} \textbf{398} 1601
 %
 \bibitem{Xspec} Arnaud K A et al., Xspec website, \url{http://heasarc.gsfc.nasa.gov/xanadu/xspec}
 %
@@ -459,11 +461,11 @@ Prix R and Whelan J T 2007 \textit{Class. Quant. Grav.} \textbf{24} S565
 %
 \bibitem{barackcutler} Barack L and Cutler C 2004 \textit{Phys. Rev.} D \textbf{69} 082005
 %
-\bibitem{BabakGairPorter} Babak S, Gair J R, Porter E 2009 \textit{Class. Quant. Grav.} \textbf{26} 135004.
+\bibitem{BabakGairPorter} Babak S, Gair J R and Porter E 2009 \textit{Class. Quant. Grav.} \textbf{26} 135004.
 %
 \bibitem{CATS} Mandel I and Gair J R \textit{in preparation}
 %
-\bibitem{GairMandelWen} Gair J R, Mandel I, Wen L 2008 \textit{Class. Quant. Grav.} \textbf{25} 184031
+\bibitem{GairMandelWen} Gair J R, Mandel I and Wen L 2008 \textit{Class. Quant. Grav.} \textbf{25} 184031
 %
 \bibitem{Cornish:2008} Cornish N J 2008 arXiv:0804.3323
 %
@@ -474,6 +476,8 @@ Prix R and Whelan J T 2007 \textit{Class. Quant. Grav.} \textbf{24} S565
 \bibitem{synthlisa} Vallisneri M 2005 \textit{Phys. Rev. D} \textbf{71}; Synthetic LISA website, \url{www.vallis.org/syntheticlisa}; included in \cite{lisatools}
 %
 \bibitem{cohen2009} Cohen M, Cutler C and Vallisneri M \textit{in preparation}
+%
+\bibitem{Robinson2008} Robinson E L, Romano J D and Vecchio A 2008 \textit{Class. Quant. Grav.} \textbf{25} 184019 
 %
 \bibitem{lisacode} Petiteau A et al. 2008 \textit{Phys. Rev. D} \textbf{77} 023002; LISACode website, \url{www.apc.univ-paris7.fr/LISA-France/analyse.phtml}; included in \cite{lisatools}
 %
