@@ -1,0 +1,7 @@
+We thank the referees for the useful comments.
+
+We have added a reference [Baker J G et al. 2007 Phys. Rev. D 75 124024] for the possible z~20 detection of MBH binaries.
+
+We have reworked Fig. 2 and Table 4, expanding the captions to clarify the issues flagged by the referee.
+
+In addition, we have fixed typos, added references to relevant articles that have appeared in the meantime, and added an author (previously missed) to the byline.

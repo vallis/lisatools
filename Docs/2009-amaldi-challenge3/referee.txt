@@ -1,0 +1,6 @@
+
+This article is well written. The results are important for the LISA data analysis and parameter estimation. It is worth publishing. I only have minor comments on this paper.
+
+sec. 1, para. 1, line 4, please add reference for z~20 detection.
+
+sec 6 , the Table next to Fig. 2 and Table 4 are confusing and rewriting is needed. The legend in Fig. 2 is a mixed-up. Meanings of pm1, pm2, pd1, pd2 need to be explained. What do the estimated/true value stand for? What is the frac. error for? This table needs major modification. Table 4 is also a mess. Poission(2), Poisson (20) need to be explained even if they were in previous papers.
