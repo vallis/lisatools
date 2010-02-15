@@ -24,6 +24,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double tcurrent, tfinal, hcurrent;
   double cphil, sphil;
   double N[3], LSvals[10], updatedvals[10], fourthordervals[10];
+  double OLSvals[10], OOLSvals[10];
   double derivvals[10];
   double LcrossN[3];
   double JcrossL[3];
@@ -35,11 +36,13 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double x, xrt, taper, xold, xmax;
   double tmax, VAmp, r;
   double shp, shc, c2psi, s2psi;
+  double En, Enold;
   double tend = 0.0,taper1,taper2; /* tend stores final time where hp and hc are non-zero...*/
   double taperQFactor; /* Added by Stas -> needed for the half-hann taper */
   int valid = 0;
 
   int i, j, n, idxm;
+  int iend;
   int index, laststep;
   
   double tTaper;
@@ -53,6 +56,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double *betavec;
   double *sigmavec;
   double *thomasvec;
+  double *freak;
+  double *Energy;
 
   /* For the spline:*/
 
@@ -62,6 +67,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double *betay2;
   double *sigmay2;
   double *thomasy2;
+  double *freak2;
+  double *Energy2;
 
   double *tdvals;
   double *interpmul;
@@ -71,6 +78,7 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   double *interpthomas;
   double stas1, stas2;
 
+  double x2, x3, x4, x5;
   double T_endpad, dtx, bd, sd, tx, bx, sx, fx, tstop, fstop;
   double t1, t2, f1, f2;
 
@@ -99,6 +107,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   betavec = dvector(0,VECLENGTH);
   sigmavec = dvector(0,VECLENGTH);
   thomasvec = dvector(0,VECLENGTH);
+  freak = dvector(0,VECLENGTH);
+  Energy = dvector(0,VECLENGTH);
 
   /* For the spline:*/
 
@@ -108,6 +118,8 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   betay2 = dvector(0,VECLENGTH);
   sigmay2 = dvector(0,VECLENGTH);
   thomasy2 = dvector(0,VECLENGTH);
+  freak2 = dvector(0,VECLENGTH);
+  Energy2 = dvector(0,VECLENGTH);
 
   /* Double Kerr Parameters: m1/Msun, m2/Msun, tc/sec, DL/Gpc, chi1, chi2, cos(theta), cos(thetaL(0)),
    cos(thetaS1(0)), cos(thetaS2(0)), phi, phiL(0), phiS1(0), phiS2(0), phic.  
@@ -263,10 +275,14 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   LdotS2 = calcLdotS2(LSvals);
   S1dotS2 = calcSdotS(LSvals);
 
+  /* these hold the variables one and two steps back */
+  for (i = 0; i <= 9; i++) OOLSvals[i] = LSvals[i];
+  for (i = 0; i <= 9; i++) OLSvals[i] = LSvals[i];
+
   /*  beta and sigma at time -Tpad */
 
   beta = (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);     
-  sigma = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
+  sigma = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;   
 
   timevec[index] = tcurrent*TSUN;
   mulvec[index] = LSvals[2];
@@ -275,77 +291,22 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   betavec[index] = beta;
   sigmavec[index] = sigma;
   thomasvec[index] = LSvals[9]; 
+
+   f = Freq(timevec[index], Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
+   freak[index] = f;
+   x = pow(Mtot*TSUN*PI*f,1.0/3.0);
+   x2 = x*x; x3 = x2*x; x4 = x3*x; x5 = x4*x;
+   Energy[index] = -0.5*mu*TSUN*x2*(1.0 - x2*(9.0+eta)/12.0 
+     +x3*(8.0/(3.0*Mtot*Mtot))*(LdotS1*chi1*m1*(m1+0.75*m2)+LdotS2*chi2*m2*(m2+0.75*m1))
+     -x4*(81.0-57.0*eta+eta*eta)/24.0
+     +x4/eta*(chi1*chi2*m1*m1*m2*m2)/(Mtot*Mtot*Mtot*Mtot)*(S1dotS2-3.0*LdotS1*LdotS2));
   
-  fold = 0.0;
-  
+  valid = 1;
 
   /* Start the integration: */
   
   while(tcurrent < tfinal)
     {	
- 
-         f = Freq(timevec[index], Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
-         x = pow(PI*Mtot*f*TSUN,2./3.);
-
-       if(f < fold) /* need to locate turn over point precisely */
-	    {
-          dtx = timevec[index]-timevec[index-1];
-          bd = (betavec[index]-betavec[index-1])/dtx;
-          sd = (sigmavec[index]-sigmavec[index-1])/dtx;
-          tx = timevec[index-1];
-          dtx /= 2.0;
-          fx = fold;
-          t1 = tx + dtx;
-          bx = betavec[index-1]+bd*(t1-timevec[index-1]);
-          sx = sigmavec[index-1]+sd*(t1-timevec[index-1]);
-          f1 = Freq(t1, Mtot, Mchirp, eta, bx, sx, tc);
-          if(f1 > fx)
-	       {
-             fx = f1;
-             tx = t1;
-          }
-          for(i = 0; i < 10; i++)
-	       {
-	        /* printf("%.10e %.10e\n", tx, fx); */
-	           dtx /= 2.0;
-              t1 = tx +dtx;
-              bx = betavec[index-1]+bd*(t1-timevec[index-1]);
-              sx = sigmavec[index-1]+sd*(t1-timevec[index-1]);
-              f1 = Freq(t1, Mtot, Mchirp, eta, bx, sx, tc);
-              t2 = tx - dtx;
-              bx = betavec[index-1]+bd*(t2-timevec[index-1]);
-              sx = sigmavec[index-1]+sd*(t2-timevec[index-1]);
-              f2 = Freq(t2, Mtot, Mchirp, eta, bx, sx, tc);
-              if(f1 > fx)
-	           {
-                  fx = f1;
-                  tx = t1;
-              }
-              if(f2 > fx)
-	           {
-                fx = f2;
-                tx = t2;
-              }
-	       }
-          tstop = tx;
-          fstop = fx;
-
-       }
-
-
-       if (taperQFactor < 1.0e-6){
-          if ((f >= fold) && (x < xmax))
-             valid = 1;
-          else
-             valid = 0;    
-      }else{
-          if (f >= fold)
-              valid = 1;
-           else
-              valid = 0;
-	      } 
-
-       /* printf("%e %e %e %d\n", timevec[index], f, fold, valid); */
       
    if (valid != 0) {  /* Check to make sure we're chirping and PN valid */
 	
@@ -355,18 +316,15 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	     laststep = ENDYES;
 	   }
 	
-   do
+         do
 	  {	    
 	    rkckstep(updatedvals, fourthordervals, hcurrent, LSvals, tcurrent, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc);
-	  
 	    maxerr = 0.0;
-	  
 	    for(i = 0; i <= 9; i++)
 	      {
 		double errori = fabs((updatedvals[i]-fourthordervals[i])/RK_EPS);
 		maxerr = (errori > maxerr) ? errori : maxerr;
 	      }
-	  
 	    oldh = hcurrent;
 	    
 	    if (maxerr > 1.) 
@@ -381,6 +339,10 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  }
 	while(maxerr > 1.);
 	
+	/* these hold the variables one and two steps back */
+	for (i = 0; i <= 9; i++) OOLSvals[i] = OLSvals[i];
+	for (i = 0; i <= 9; i++) OLSvals[i] = LSvals[i];
+
 	for (i = 0; i <= 9; i++) LSvals[i] = updatedvals[i];
 	
 	if (laststep == ENDYES)
@@ -400,48 +362,133 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
         sphilvec[index] = LSvals[1];
         cphilvec[index] = LSvals[0]; 
       
-	betavec[index] =  (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);
+	betavec[index] =  (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) 
+         + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);
 	
 	sigmavec[index] = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
 	
 	thomasvec[index] = LSvals[9];
 
-        /* printf("%d %e %e\n", index, timevec[index], thomasvec[index]); */
+         f = Freq(timevec[index], Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
+         freak[index] = f;
+         x = pow(Mtot*TSUN*PI*f,1.0/3.0);
+         x2 = x*x; x3 = x2*x; x4 = x3*x; x5 = x4*x;
+         Energy[index] = -0.5*mu*TSUN*x2*(1.0 - x2*(9.0+eta)/12.0 
+           +x3*(8.0/(3.0*Mtot*Mtot))*(LdotS1*chi1*m1*(m1+0.75*m2)+LdotS2*chi2*m2*(m2+0.75*m1))
+	   -x4*(81.0-57.0*eta+eta*eta)/24.0
+           +x4/eta*(chi1*chi2*m1*m1*m2*m2)/(Mtot*Mtot*Mtot*Mtot)*(S1dotS2-3.0*LdotS1*LdotS2));
 
-        fold = f;
-	xold = x; /* When the integration is done, will contain largest x reached... */
+	 // printf("%d %.12e %.12e %.12e\n", index, timevec[index], freak[index], Energy[index]); 
+
        
-      }
-      else {
-	/* If PN gone bad go to tfinal and keep everything the same. */
-        tcurrent = tfinal;
-   	tmax = tcurrent*TSUN;  
-	
-	/* At tmax, we've just barely gone beyond breakdown of PN */
-	timevec[index] = tmax;
-	mulvec[index] = mulvec[index-1];
-	sphilvec[index] = sphilvec[index-1];
-	cphilvec[index] = cphilvec[index-1];
-	betavec[index] = betavec[index-1];
-	sigmavec[index] = sigmavec[index-1];
-	thomasvec[index] = thomasvec[index-1];
+	 /* Stopping condition used prior to Challenge 4 */
+	 if (taperQFactor < 1.0e-6)
+         {
+          if ((freak[index] >= freak[index-1]) && (x2 < xmax))
+	    {
+             valid = 1;
+            }
+          else
+            {
+             valid = 0;    
+	    }
+	  }
+         else  /* The Challenge 4 stopping condition */
+	  {
+          if ((freak[index] >= freak[index-1]) && (Energy[index] <= Energy[index-1]))
+	    {
+             valid = 1;
+            }
+          else
+            {
+             valid = 0;    
+             iend = index - 2;
+	    }
+	  }
 
-	for(i = 0; i < 10; i++)  /* pad the array for safe interpolation */
+	xold = x2; /* When the integration is done, will contain largest x reached... */
+       
+        }
+      else {
+
+        tcurrent = tfinal;
+   	tmax = timevec[index];
+
+	/*	for(i = 1; i < 10; i++) 
 	 {
-        index++;
-	timevec[index] = timevec[index-1]+1000.0;
-	mulvec[index] = mulvec[index-1];
-	sphilvec[index] = sphilvec[index-1];
-	cphilvec[index] = cphilvec[index-1];
-	betavec[index] = betavec[index-1];
-	sigmavec[index] = sigmavec[index-1];
-	thomasvec[index] = thomasvec[index-1];
+	 timevec[index+i] = timevec[index+i-1]+(timevec[index-i+1]-timevec[index-i]);
+	mulvec[index+i] = mulvec[index-i];
+	sphilvec[index+i] = sphilvec[index-i];
+	cphilvec[index+i] = cphilvec[index-i];
+	betavec[index+i] = betavec[index-i];
+	sigmavec[index+i] = sigmavec[index-i];
+	thomasvec[index+i] = thomasvec[index-i];
+	freak[index+i] = freak[index-i];
+	Energy[index+i] = Energy[index-i];
+        printf("%d %.12e %.12e %.12e\n", index, timevec[index+i], freak[index+i], Energy[index+i]); 
 	 }
 
+       */
 
 
       }
     }
+
+
+  /* Here we catch the MECO location more precisely */
+   if (taperQFactor > 1.0e-6)
+      {
+        index = iend;   /* go back two steps */
+	tcurrent = timevec[index]/TSUN;
+	for (i = 0; i <= 9; i++) LSvals[i] = OOLSvals[i];
+        hcurrent /= 100.0;  /* advance forward more carefully */
+        valid = 1;
+ 
+       do
+	 {
+        rkckstep(updatedvals, fourthordervals, hcurrent, LSvals, tcurrent, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc);
+	for (i = 0; i <= 9; i++) LSvals[i] = updatedvals[i];
+	tcurrent += hcurrent;
+        index++;
+	timevec[index] = tcurrent*TSUN;
+	LdotS1 = calcLdotS1(LSvals);
+	LdotS2 = calcLdotS2(LSvals);
+	S1dotS2 = calcSdotS(LSvals);
+	mulvec[index] = LSvals[2];
+        sphilvec[index] = LSvals[1];
+        cphilvec[index] = LSvals[0]; 
+	betavec[index] =  (LdotS1*chi1/12.)*(113.*(m1/Mtot)*(m1/Mtot) + 75.*eta) 
+         + (LdotS2*chi2/12.)*(113.*(m2/Mtot)*(m2/Mtot) + 75.*eta);
+	sigmavec[index] = eta*(721.*LdotS1*chi1*LdotS2*chi2 - 247.*S1dotS2*chi1*chi2)/48.;    
+	thomasvec[index] = LSvals[9];
+
+         f = Freq(timevec[index], Mtot, Mchirp, eta, betavec[index], sigmavec[index], tc);
+         freak[index] = f;
+         x = pow(Mtot*TSUN*PI*f,1.0/3.0);
+         x2 = x*x; x3 = x2*x; x4 = x3*x; x5 = x4*x;
+         Energy[index] = -0.5*mu*TSUN*x2*(1.0 - x2*(9.0+eta)/12.0 
+           +x3*(8.0/(3.0*Mtot*Mtot))*(LdotS1*chi1*m1*(m1+0.75*m2)+LdotS2*chi2*m2*(m2+0.75*m1))
+	   -x4*(81.0-57.0*eta+eta*eta)/24.0
+           +x4/eta*(chi1*chi2*m1*m1*m2*m2)/(Mtot*Mtot*Mtot*Mtot)*(S1dotS2-3.0*LdotS1*LdotS2));
+
+	 // printf("%d %.12e %.12e %.12e\n", index, timevec[index], freak[index], Energy[index]); 
+
+        if ((freak[index] >= freak[index-1]) && (Energy[index] <= Energy[index-1]))
+	    {
+             valid = 1;
+            }
+          else
+            {
+             valid = 0;    
+	    }
+
+	xold = x2; /* When the integration is done, will contain largest x reached... */
+	 } while(valid == 1);
+
+   	tmax = timevec[index];
+        tstop = timevec[index-1];
+	fstop = freak[index-1];
+      }
   
   if (index >= VECLENGTH) {
     fprintf(stderr, "VECLENGTH is too small--fix and recompile (%d,%d).\n",index,VECLENGTH);
@@ -456,6 +503,15 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
   spline(timevec, betavec, index, 1.e30, 1.e30, betay2);
   spline(timevec, sigmavec, index, 1.e30, 1.e30, sigmay2); 
   spline(timevec, thomasvec, index, 1.e30, 1.e30, thomasy2);
+  spline(timevec, freak, index, 1.e30, 1.e30, freak2); 
+  spline(timevec, Energy, index, 1.e30, 1.e30, Energy2);
+
+
+
+   /* 1022 1.939528324258e+07 1.263687099744e-03 -2.677703663596e-01
+      1023 1.939533753970e+07 1.268360846640e-03 -2.681595405665e-01
+      1024 1.939538422842e+07 1.264424782073e-03 -2.678388861247e-01 */
+
   
   /* End precession. */
   
@@ -498,10 +554,19 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  interpthomas[i] = A*thomasvec[index] + B*thomasvec[index+1] + C*thomasy2[index] + D*thomasy2[index+1];
 	 
 	}
+      else  /* no longer have data, freeze values at last valid point */
+        {
+	  interpmul[i] =   interpmul[i-1];
+	  interpphil[i] = interpphil[i-1];
+	  interpbeta[i] = interpbeta[i-1];
+	  interpsigma[i] = interpsigma[i-1];
+	  interpthomas[i] = interpthomas[i-1];
+        }
+
       t += dt;
 
 
-      /* printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]);*/
+      /*  printf("%d %.14e %.14e %.14e %.14e %e %e %e %e %e\n", index, timevec[index], timevec[index+1], tdvals[i], t, interpmul[i], interpphil[i], interpbeta[i], interpsigma[i], interpthomas[i]); */
     }
   
   /* Now calculate hp and hc, starting with the final time and working backwards. 
