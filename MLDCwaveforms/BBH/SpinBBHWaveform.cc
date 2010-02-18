@@ -265,11 +265,11 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
  /* if (om >= om_lso)
            std::cout << "inital frequncy = " << om << "  lso frequency = " << om_lso << std::endl;
   LISAWPAssert(om < om_lso, "LSO reached with initial conditions"); */
-  MECO = CheckMECO();
+ /* MECO = CheckMECO();
   if(MECO){
         std::cerr << "MECO/LSO reached with initial conditioins" << std::endl;
         exit(1);
-  }
+  }*/
 
   std::vector<double> tn;
   std::vector<double> Phase_n;
@@ -335,9 +335,9 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
              Ldotn = -sin(iota)*cos(alpha)*sin(theta) - cos(theta)*cos(iota);
         //     abeta = acos( (cos(iota)*Ldotn + cos(theta))/(sin(iota)*sqrt(1. - Ldotn*Ldotn) )); 
                         
- //            fout345 << std::setprecision(15) << t << "    " << Phi << "   " \
+ /*           fout345 << std::setprecision(15) << t << "    " << Phi << "   " \
                         << coordn(11)  <<  "     " << coordn(12) << "     " << beta << "     "\
-                        << sigma << std::endl;
+                        << sigma << std::endl; */
              coord0 = coordn;
              Phi += coordn(11);
             
@@ -398,6 +398,7 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
          S2y = sin(thetaS2In)*sin(phiS2In);
          om = ComputeOrbFreq(t, Tc);
          om_prev = om;
+         En_prev = ComputeEnergy();
          
          coord0(0) = iota;
          coord0(1) = alpha;
@@ -439,12 +440,12 @@ void SpinBBHWaveform::ComputeInspiral(double t0,  double tc, double phiC, double
         Ldotn = -sin(iota)*cos(alpha)*sin(theta) - cos(theta)*cos(iota);
 //        abeta = acos( (cos(iota)*Ldotn + cos(theta))/(sin(iota)*sqrt(1. - Ldotn*Ldotn)) ); 
              
- //       fout345 << std::setprecision(15) << t << "    " << Phi - coord0(11) << "   " \
+ /*       fout345 << std::setprecision(15) << t << "    " << Phi - coord0(11) << "   " \
                          << coord0(11)  <<  "     " << coordn(12) << "     " << beta << "     "\
                             << sigma << std::endl;
                             
- //       fout345 << std::setprecision(15) << t << "     " << ComputeOrbPhase(om, PhiOrbC) \
-            << "      " << ComputeOrbPhase(t, Tc, PhiOrbC) << std::endl;
+        fout345 << std::setprecision(15) << t << "     " << ComputeOrbPhase(om, PhiOrbC) \
+            << "      " << ComputeOrbPhase(t, Tc, PhiOrbC) << std::endl; */
     
       /* fout33 << t << spr << om << spr << Phi << spr << iota << spr << alpha
    	      << spr << S1x << spr << S1y << spr << S1z << spr << S2x << spr << 
@@ -494,6 +495,7 @@ bool SpinBBHWaveform::CheckMECO(){
 	
    bool nonstab;
    nonstab = false;
+   
 
 // We desable MECO condition and use d\omega/dt>0 and LSO conditions
 
@@ -522,18 +524,29 @@ bool SpinBBHWaveform::CheckMECO(){
 	   nonstab = true;
    }
    */
+   
+   
    if (taperQ == 0.){
      if(om >= om_lso){
          nonstab = true;
          std::cout << "LSO reached at omega = " << om << std::endl;
      }
-   }
-   if(om < om_prev){
-       std::cout << "Instability condition is met at domega/dt = 0: orb. ang. freq. = " << om << std::endl;
-       nonstab =  true;
+   }else{
+      double En_cur = ComputeEnergy();
+      if(om <= om_prev){
+          std::cout << "Instability condition is met at domega/dt = 0: orb. ang. freq. = " << om << std::endl;
+          nonstab =  true;
+      }
+      if (En_cur >= En_prev){
+          std::cout << "Instability condition is met at MECO: dE/domega = 0: orb. ang. freq. = " << om << std::endl;
+          nonstab =  true;
+      }
+      En_prev = En_cur;
    }
    
    om_prev = om;
+  
+   
    //std::cout << "test: om = " << om << "  dEdom =  " << dEdomega << std::endl;
    return(nonstab);
 }
@@ -628,6 +641,28 @@ void SpinBBHWaveform::Derivs(double x, Matrix<double> y, Matrix<double>& dydx, i
     }
 
   
+}
+
+double SpinBBHWaveform::ComputeEnergy(){
+   
+   double Mom = M*om;
+  
+   double S1S2 = S1x*S2x + S1y*S2y + S1z*S2z;
+   double LS1 = Lnx*S1x + Lny*S1y + Lnz*S1z;
+   double LS2 = Lnx*S2x + Lny*S2y + Lnz*S2z;
+   
+   double Mom13 = pow(Mom, 1./3.);
+   double Mom23 = Mom13*Mom13;
+   double Mom43 = Mom23*Mom23;
+   double SOr = 2.*( x1*( 4./3.*m1M2 + eta )*LS1 + x2*( 4./3.*m2M2 + eta )*LS2 );
+   double SSp = (1./eta)*(x1*x2*m1M2*m2M2)*(S1S2 - 3.0*LS1*LS2);
+   double Energy = -0.5*mu*Mom23*( 1.0 - Mom23*(9.0+eta)/12.0 + SOr*Mom \
+      - Mom43*(81.0-57.0*eta+eta*eta)/24.0 + Mom43*SSp );
+        
+/*    From Neil ->          (8.0/(3.0*Mtot*Mtot))*(LdotS1*chi1*m1*(m1+0.75*m2)+LdotS2*chi2*m2*(m2+0.75*m1))
+   -x4*(81.0-57.0*eta+eta*eta)/24.0
+        +x4/eta*(chi1*chi2*m1*m1*m2*m2)/(Mtot*Mtot*Mtot*Mtot)*(S1dotS2-3.0*LdotS1*LdotS2));*/
+        return(Energy);
 }
 
 double SpinBBHWaveform::ComputeOrbFreq(double t, double tc){

@@ -139,6 +139,7 @@ namespace LISAWP{
    double om_lso;
    bool nospin_route;
    double om_prev;
+   double En_prev;
    double dt, tend;
    double om; 
    double Phi;
@@ -152,6 +153,7 @@ namespace LISAWP{
   /** checks MECO condition */
 
    bool CheckMECO();
+   double ComputeEnergy();
    
    /** computes derivatives */
    
