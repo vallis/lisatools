@@ -30,7 +30,12 @@
 // and here we can add some Python to the interface code
 
 %pythoncode %{
-import lisaxml
+#import lisaxml
+if 'lisaxml2' in sys.modules:
+	import lisaxml2 as lisaxml
+else:
+	import lisaxml
+
 import numpy
 import math
 
