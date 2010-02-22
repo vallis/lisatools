@@ -378,9 +378,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	   -x4*(81.0-57.0*eta+eta*eta)/24.0
            +x4/eta*(chi1*chi2*m1*m1*m2*m2)/(Mtot*Mtot*Mtot*Mtot)*(S1dotS2-3.0*LdotS1*LdotS2));
 
-	 // printf("%d %.12e %.12e %.12e\n", index, timevec[index], freak[index], Energy[index]); 
+	 /* printf("%d %.12e %.12e %.12e %.12e %.12e\n", index, timevec[index], freak[index],
+	    thomasvec[index], betavec[index], sigmavec[index]); */
 
-       
 	 /* Stopping condition used prior to Challenge 4 */
 	 if (taperQFactor < 1.0e-6)
          {
@@ -552,6 +552,9 @@ void SBH_Barycenter(SBH_structure SBH, double *hp, double *hc)
 	  interpsigma[i] = A*sigmavec[index] + B*sigmavec[index+1] + C*sigmay2[index] + D*sigmay2[index+1];
 
 	  interpthomas[i] = A*thomasvec[index] + B*thomasvec[index+1] + C*thomasy2[index] + D*thomasy2[index+1];
+
+	  /* printf("%d %.12e %.12e %.12e %.12e %.12e\n", i, tdvals[i], interpphil[i], interpthomas[i],
+	     interpbeta[i], interpsigma[i]); */
 	 
 	}
       else  /* no longer have data, freeze values at last valid point */
@@ -838,7 +841,7 @@ void rkckstep(double outputvals[], double fourthorderoutputvals[], double h, dou
   update(0, 0.0, h, currentvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
   
   for(i = 0; i <= 9; i++) intvals[i] = currentvals[i] + B21*k[i][0];
-  
+
   update(1, A2, h, intvals, t, m1, m2, Mtot, Mchirp, mu, eta, chi1, chi2, N, tc, k);
   
   for(i = 0; i <= 9; i++) intvals[i] = currentvals[i] + B31*k[i][0] + B32*k[i][1];
@@ -877,7 +880,7 @@ void update(int j, double A, double h, double intvals[], double t, double m1, do
   double LdotS1;
   double LdotS2;
   double S1dotS2;
-  double LdotN;
+  double LdotN, LcN;
   double beta;
   double sigma;
 
@@ -896,8 +899,10 @@ void update(int j, double A, double h, double intvals[], double t, double m1, do
   LdotN = calcLdotN(intvals, N);
   
   calcLcrossN(LcrossN, intvals, N);
+
+  LcN = LcrossN[0]*LcrossN[0]+LcrossN[1]*LcrossN[1]+LcrossN[2]*LcrossN[2];
   
-  derivvals[9] = -2.*LdotN/(1.-LdotN*LdotN)*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
+  derivvals[9] = -2.*LdotN/LcN*(LcrossN[0]*derivvals[0]+LcrossN[1]*derivvals[1]+LcrossN[2]*derivvals[2]);
     
   for(i = 0; i <= 9; i++) k[i][j] = h*derivvals[i];
   
