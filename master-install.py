@@ -26,6 +26,29 @@ def runcommand(command):
     
     return sp.returncode, stdout, stderr
 
+def checkpackage(package):
+    """Checks if a Python package is installed, returned the version number (0 if not found)"""
+    
+    try:
+        module = __import__(package)
+        
+        if hasattr(module,'version'):
+            if isinstance(module.version,str):
+                return LooseVersion(module.version)
+            else:
+                if hasattr(module.version,'version_short') and isinstance(module.version.version_short,str):
+                    return LooseVersion(module.version.version_short)
+                elif hasattr(module.version,'version') and isinstance(module.version.version,str):
+                    return LooseVersion(module.version.version)
+        elif hasattr(module,'__version__') and isinstance(module.__version__,str):
+            return LooseVersion(module.__version__)
+        
+        print '!!! Cannot find version number for package', package
+        sys.exit(1)
+    except ImportError:
+        return LooseVersion('0')
+    
+
 def findpackage(package):
     """Looks for a package, returns the newest version with its version number."""
     
@@ -77,8 +100,9 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
                 os.environ['CFLAGS']   = "-arch ppc -arch ppc64"
                 os.environ['CXXFLAGS'] = "-arch ppc -arch ppc64"
                 os.environ['LDFLAGS']  = "-arch ppc -arch ppc64"
-                        
-        configureflags += " --disable-dependency-tracking"
+        
+        # this is probably not needed anymore...
+        # configureflags += " --disable-dependency-tracking"
     
     if packagetar:
         assert(0 == os.system('tar zxf ' + packagetar))
@@ -88,9 +112,18 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
         os.environ['M4'] = prefix + '/bin/m4'
     
     os.chdir(packagedir)
-    assert(0 == os.system('./configure ' + configureflags))
-    assert(0 == os.system('make -j %s' % makeproc))
-    assert(0 == os.system('make install'))
+    if os.path.isfile('setup.py'):
+        assert(0 == os.system('python setup.py install' + configureflags))
+        # special case for LISA...
+        if 'synthLISA' in packagetar and makeclib:
+            assert(0 == os.system('python setup.py install' + configureflags + ' --make-clib'))
+    elif os.path.isfile('configure'):
+        assert(0 == os.system('./configure ' + configureflags))
+        assert(0 == os.system('make -j %s' % makeproc))
+        assert(0 == os.system('make install'))
+    else:
+        print "!!! Don't know how to install", packagetar
+        sys.exit(1)
     os.chdir('..')
     
     if 'm4' in package and prefix != None:
@@ -477,39 +510,10 @@ os.chdir(here)
 # install/check install for synthlisa
 
 print "--> Checking synthLISA"
-package, packageversion = findpackage('synthLISA')
-packagedir = re.sub('.tar.gz','',package)
 
-try:
-    import synthlisa
-    
-    synthlisaversion = synthlisa.version.version_short
-    if LooseVersion(synthlisaversion) < LooseVersion(packageversion):
-        print "---> I am finding version %s, but I'll install the newer %s" % (synthlisaversion,packageversion)
-        newsynthlisa = True
-except:
-    newsynthlisa = True
-    print "---> I can't find it, I'd better install it! (from %s)" % package
-     
-if newsynthlisa:
+if checkpackage('synthlisa') < LooseVersion('1.3.5') or newsynthlisa:
     print "--> Installing Synthetic LISA"
-    os.chdir('Packages')
-    assert(0 == os.system('rm -rf %s' % packagedir))
-    assert(0 == os.system('tar zxf %s' % package))
-    # apply some patches (for synthlisa 1.3.4d)
-    for f in ['lisasim-swig.i']:
-        src = 'synthlisa/' + f
-        trg = packagedir + '/lisasim/' + f
-        if newer(src,trg):
-            assert(0 == os.system('cp %s %s' % (src,trg)))
-    # go in and compile
-    os.chdir(packagedir)
-    assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
-    if makeclib:
-        assert(0 == os.system('python setup.py install --prefix=%s --make-clib' % libdir))
-    os.chdir('..')
-    assert(0 == os.system('rm -rf %s' % packagedir))
-    os.chdir(here)
+    installpackage('http://www.vallis.org/software/synthLISA-1.3.5.tar.gz',prefix=libdir,keepdownload=False)
 
 # install/check install for LISACode
 
