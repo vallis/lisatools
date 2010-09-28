@@ -27,14 +27,6 @@ nproc = int(sys.argv[3])
 random.seed(seed)
 numpy.random.seed(seed)
 
-# --- DEFINITION OF THE CHALLENGE
-
-# MBHs need better taper at the end to avoid hiccup; increase mass ratio to 1-10
-# EMRIs could use taper, but is hidden in noise; have undisclosed number of EMRIs of each kind;
-#   consider lowering plunge eccentricity (0.05), currently random.uniform(0.15, 0.25) 
-# Neil: we produce two challenge 4 data sets. One with a full galaxy, and one
-#   with a partially regressed galaxy (as we did for challenge 3.2).
-
 # --- the galaxy!
 
 run('%(mydir)s/makesource-Galaxy3.py --seed=%(seed)s -f -v Galaxy/TheGalaxy.xml' % globals())
