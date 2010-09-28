@@ -107,6 +107,8 @@ run('mkdir XML',quiet=True)
 
 run('ln -s %s/Data/AMCVn_GWR_MLDC.dat ./Data/AMCVn_GWR_MLDC.dat' % galaxydir,quiet=True)
 run('ln -s %s/Data/dwd_GWR_MLDC.dat ./Data/dwd_GWR_MLDC.dat' % galaxydir,quiet=True)
+run('ln -s %s/Data/AMCVn_GWR_MLDC_bulgefix_opt.dat ./Data/AMCVn_GWR_MLDC_bulgefix_opt.dat' % galaxydir,quiet=True)
+run('ln -s %s/Data/dwd_GWR_MLDC_bulgefix.dat ./Data/dwd_GWR_MLDC_bulgefix.dat' % galaxydir,quiet=True)
 run('ln -s %s/Data/Verification.dat ./Data/Verification.dat' % galaxydir,quiet=True)
 
 # make Galaxy!
