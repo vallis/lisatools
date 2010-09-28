@@ -187,7 +187,10 @@ for arg in sys.argv:
     elif arg.startswith('--nproc'):             # run multiproc make
         makeproc = arg.split('=', 1)[1]
     elif arg.startswith('--downloadgalaxy'):    # force Galaxy download
-        downloadgalaxy = True
+        if '=' in arg:
+            downloadgalaxy = int(arg.split('=',1)[1])
+        else:
+            downloadgalaxy = True
 
 if libdir == None:
     print "!!! You need to specify a master lib dir with --prefix=<libdir>"
@@ -453,28 +456,27 @@ if ( newer_group(sources,'Fast_Response3') or newer_group(sources,'Galaxy_Maker3
     print "    (recompiling Galaxy3)"
     assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
-# previously the download was disabled for cygwin. But it may just be a question of requiring curl,
-# or replacing it... (not 'CYGWIN' in platform.system())
+os.chdir('Data')
 
-if not os.path.isfile('Data/AMCVn_GWR_MLDC.dat'):
-    if downloadgalaxy == True:
-        print "    (downloading Nelemans AMCV galaxy (791M), this will take a while...)"
-        assert(0 == os.system('curl http://www.tapir.caltech.edu/mldc/data/AMCVn_GWR_MLDC.dat.bz2  > Data/AMCVn_GWR_MLDC.dat.bz2'))
-        assert(0 == os.system('bunzip2 Data/AMCVn_GWR_MLDC.dat.bz2'))
+if not os.path.isfile('AMCVn_GWR_MLDC.dat') or not os.path.isfile('dwd_GWR_MLDC.dat'):
+    if downloadgalaxy == True or downloadgalaxy == 3:
+        assert(0 == os.system('curl -O http://www.tapir.caltech.edu/mldc/data/AMCVn_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 AMCVn_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('curl -O http://www.tapir.caltech.edu/mldc/data/dwd_GWR_MLDC.dat.bz2'))
+        assert(0 == os.system('bunzip2 dwd_GWR_MLDC.dat.bz2'))
     else:
-        print "!!! If you want to generate galactic backgrounds, you'll need to download"
-        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
-        print "    for you if you give me the --downloadgalaxy option."
+        print "!!! If you want to generate galactic backgrounds for challenge 3, you'll need to download the catalogs."
+        print "    Do so with the option --downloadgalaxy=3 or --downloadgalaxy to get all catalogs."
 
-if not os.path.isfile('Data/dwd_GWR_MLDC.dat'):
-    if downloadgalaxy == True:
-        print "    (downloading Nelemans dwd galaxy (427M), this will take a while...)"
-        assert(0 == os.system('curl http://www.tapir.caltech.edu/mldc/data/dwd_GWR_MLDC.dat.bz2  > Data/dwd_GWR_MLDC.dat.bz2'))
-        assert(0 == os.system('bunzip2 Data/dwd_GWR_MLDC.dat.bz2'))
+if not os.path.isfile('AMCVn_GWR_MLDC_bulgefix_opt.dat') or not os.path.isfile('dwd_GWR_MLDC_bulgefix.dat'):
+    if downloadgalaxy == True or downloadgalaxy == 4:
+        assert(0 == os.system('curl -O http://www.tapir.caltech.edu/mldc/data/AMCVn_GWR_MLDC_bulgefix_opt.dat.bz2'))
+        assert(0 == os.system('bunzip2 AMCVn_GWR_MLDC_bulgefix_opt.dat.bz2'))
+        assert(0 == os.system('curl -O http://www.tapir.caltech.edu/mldc/data/dwd_GWR_MLDC_bulgefix.dat.bz2'))
+        assert(0 == os.system('bunzip2 dwd_GWR_MLDC_bulgefix.dat.bz2'))
     else:
-        print "!!! If you want to generate galactic backgrounds, you'll need to download"
-        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
-        print "    for you if you give me the --downloadgalaxy option."
+        print "!!! If you want to generate galactic backgrounds for challenge 4, you'll need to download the catalogs."
+        print "    Do so with the option --downloadgalaxy=4 or --downloadgalaxy to get all catalogs."
 
 os.chdir(here)
 
@@ -491,19 +493,15 @@ if ( newer_group(sources,'Fast_Response') or newer_group(sources,'Galaxy_Maker')
     print "    (recompiling Galaxy)"
     assert(0 == os.system('./Compile --gsl=%s --fftw=%s' % (gsldir,fftwdir)))
 
-# previously the download was disabled for cygwin. But it may just be a question of requiring curl,
-# or replacing it... (not 'CYGWIN' in platform.system())
+os.chdir('Data')
 
-if not os.path.isfile('Data/dwd_GWR_all_pars.dat'):
-    if downloadgalaxy == True:
-        print "    (downloading Nelemans challenge 2 galaxy (388M), this will take a while...)"
-        assert(0 == os.system('curl http://www.tapir.caltech.edu/mldc/data/dwd_GWR_all_pars.dat.gz > dwd_GWR_all_pars.dat.gz'))
+if not os.path.isfile('dwd_GWR_all_pars.dat'):
+    if downloadgalaxy == True or downloadgalaxy == 2:
+        assert(0 == os.system('curl -O http://www.tapir.caltech.edu/mldc/data/dwd_GWR_all_pars.dat.gz'))
         assert(0 == os.system('gunzip dwd_GWR_all_pars.dat.gz'))
-        assert(0 == os.system('mv dwd_GWR_all_pars.dat Data/.'))
     else:
-        print "!!! If you want to generate galactic backgrounds, you'll need to download"
-        print "    the big Galaxy catalogs by Nelemans (several hundreds Mb). I can do it"
-        print "    for you if you give me the --downloadgalaxy option."
+        print "!!! If you want to generate galactic backgrounds for challenge 2, you'll need to download the catalogs."
+        print "    Do so with the option --downloadgalaxy=2 or --downloadgalaxy to get all catalogs."
         
 os.chdir(here)
 
