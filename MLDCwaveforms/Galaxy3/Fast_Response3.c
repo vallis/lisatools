@@ -432,8 +432,9 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
     {
       m = q + i-1 - M/2;
       xm = pi*(f0*T - (double)m);
-      b[2*i-1] = cos(xm)*sin(xm)/xm;
-      b[2*i] = sin(xm)*sin(xm)/xm;
+      if(xm == 0.0) sinc = 1.0; else sinc = sin(xm)/xm;
+      b[2*i-1] = cos(xm)*sinc;
+      b[2*i] = sin(xm)*sinc;
     }
 
 
@@ -503,7 +504,8 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
 		{
 		  arg1 = 0.5*fonfs[i]*(1 - kdotr[i][j]);
 		  arg2 = pi*fdot*xi[i]*xi[i] + phio - 2.*pi*kdotx[i]*f0;
-		  sinc = 0.25*sin(arg1)/arg1;
+
+      if (arg1 == 0.0) sinc = 0.25; else sinc = 0.25*sin(arg1)/arg1;
 	      
 		  tran1r = dplus[i][j]*DPr + dcross[i][j]*DCr;
 		  tran1i = dplus[i][j]*DPi + dcross[i][j]*DCi;
