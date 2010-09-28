@@ -96,6 +96,8 @@ for waveforms in allsources:
         RequestSamples  = int( (RequestEndTime - RequestInitTime) / options.timestep)
         RequestSamples += (RequestSamples % 2)  # want an even value
 
+        # print "Doing %s samples from t0 = %s" % (RequestSamples,RequestInitTime)
+
         if not settime:
             options.inittime = RequestInitTime
             samples = RequestSamples

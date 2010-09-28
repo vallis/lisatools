@@ -37,7 +37,7 @@ numpy.random.seed(seed)
 
 # --- the galaxy!
 
-run('%(mydir)s/makesource-Galaxy3.py --seed=%(seed)s -v Galaxy/TheGalaxy.xml' % globals())
+run('%(mydir)s/makesource-Galaxy3.py --seed=%(seed)s -f -v Galaxy/TheGalaxy.xml' % globals())
 
 seed = seed + 1
 

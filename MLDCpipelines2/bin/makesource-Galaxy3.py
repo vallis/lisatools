@@ -41,6 +41,10 @@ parser.add_option("-c", "--confusion",
                   action="store_true", dest="confusion", default=False,
                   help="run Galaxy3 code to produce partially regressed confusion foreground [defaults to False]")
 
+parser.add_option("-f", "--bulgefix",
+                  action="store_true", dest="bulgefix", default=False,
+                  help="use the fixed Challenge-4 catalogs with the correct cusp distribution [defaults to False]")
+
 parser.add_option("-g", "--general",
                   action="store_true", dest="general", default=False,
                   help="use Galaxy_General instead of Galaxy3 [off by default]")
@@ -50,12 +54,16 @@ parser.add_option("-g", "--general",
 if options.seed == None:
     parser.error("You must give me a seed!")
 
-seed = options.seed
+seed         = options.seed
 verification = options.verification
-confusion = options.confusion
+confusion    = options.confusion
+bulgefix     = options.bulgefix
 
 if verification and confusion:
     parser.error("The --verification and --confusion options are incompatible.")
+
+if bulgefix and confusion:
+    parser.error("The --bulgefix and --confusion options are incompatible.")
     
 if len(args) != 1:
     parser.error("I need a location for the output Galaxy file!")
@@ -83,7 +91,7 @@ workdir = os.path.abspath(tempfile.mkdtemp(dir='.'))
 os.chdir(workdir)
 
 if not options.general:
-    execfiles = ['Fast_Response3','Fast_XML_LS3','Fast_XML_SL3','Galaxy_key3','Galaxy_Maker3','Confusion_Maker3']
+    execfiles = ['Fast_Response3','Fast_XML_LS3','Fast_XML_SL3','Galaxy_key3','Galaxy_Maker3','Galaxy_Maker4','Confusion_Maker3']
 
     for f in execfiles:
         run('ln -s %s/%s ./%s' % (galaxydir,f,f),quiet=True)
@@ -109,12 +117,19 @@ galaxyfile = os.path.abspath(outputfile)
 
 os.chdir(workdir)
 
-if verification:
-    run('./Galaxy_Maker3 %s 1' % seed)
-elif confusion:
-    run('./Confusion_Maker3 %s' % seed)
+if bulgefix:
+    if verification:
+        run('./Galaxy_Maker4 %s 1' % seed)
+    else:
+        run('./Galaxy_Maker4 %s 0' % seed)
 else:
-    run('./Galaxy_Maker3 %s 0' % seed)
+    if confusion:
+        run('./Confusion_Maker3 %s' % seed)
+    else:
+        if verification:
+            run('./Galaxy_Maker3 %s 1' % seed)
+        else:
+            run('./Galaxy_Maker3 %s 0' % seed)
 
 run('./Galaxy_key3 TheGalaxy %s' % seed)
 
