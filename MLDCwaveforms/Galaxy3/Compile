@@ -27,6 +27,7 @@ if fftwdir != gsldir:
 assert(0 == os.system('gcc -O2 -o Fast_Response3 Fast_Response3.c arrays.c AENoise.c -lm -lfftw3' + setpath))
 
 assert(0 == os.system('gcc -O2 -o Galaxy_Maker3 Galaxy_Maker3.c arrays.c AENoise.c SNR_Check.c -lm -lgsl -lgslcblas -lfftw3' + setpath))
+assert(0 == os.system('gcc -O2 -o Galaxy_Maker4 Galaxy_Maker4.c arrays.c AENoise.c SNR_Check.c -lm -lgsl -lgslcblas -lfftw3' + setpath))
 
 assert(0 == os.system('gcc -O2 -o Confusion_Maker3 Confusion_Maker3.c arrays.c AENoise.c SNR_Check.c -lm -lgsl -lgslcblas -lfftw3' + setpath))
 
