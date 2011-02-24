@@ -8,7 +8,7 @@
 void spacecraft(double t,  double *x, double *y, double *z);
 void convolve(long N, double *a, long M, double *b, double *cn);
 void XYZ(double ***d, double f0, long q, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
-void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
+void FAST_LISA(int swtch, double *params, long N, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL);
 double AEnoise(double f);
 void KILL(char*);
 
@@ -23,8 +23,9 @@ int main(int argc,char **argv)
   double *XLS, *YLS, *ZLS;
   double *XSL, *YSL, *ZSL;
   double fonfs, Sn, Sm, Acut;
-  long M, N, q;
+  long M, N, Ch, q;
   long i, j, k, cnt, mult;
+  int swtch;
 
   // used by fftw3
   fftw_complex *out;
@@ -34,6 +35,10 @@ int main(int argc,char **argv)
 
   FILE* Infile;
   FILE* Outfile;
+
+  // set swtch = 0 for old version that has the wrap-around bug
+  // set swtch = 1 for new version that fixes the wrap-around bug
+  swtch = 1;
 
   if(argc !=2) KILL("Fast_Response rSeed\n");
 
@@ -95,7 +100,18 @@ int main(int argc,char **argv)
 
        fonfs = f/fstar;
 
-       q = (long)(f*T);
+       if(swtch == 0) {
+         q = (long)(f*T);
+       } else {
+         q = (long)(f*T+0.5*fdot*T*T);  // this centers the snippet on the average frequency
+         Ch = (long)(pow(2.0,ceil(log(fdot*T*T)*1.442695040888963))); // number of bins covered by chirp (rounded to a power of 2)
+
+         if(Ch > N) {
+           N = 2*Ch;              // The logic here is that N should be large enough to cover
+         } else if(4*Ch > N) {    // the chirp (so we want N >= 2 Ch to be safe). And even when
+           N *= 2;                // Ch is as little as 1/4 of N, we want to increase N to be safe.
+         }
+       }
 
        Sn = AEnoise(f);
 
@@ -108,14 +124,15 @@ int main(int argc,char **argv)
 
        if(M < N) M = N;
        if(N < M) N = M;
-       if(M > 8192) M = 8192;
-
-       N = M;
+       if(swtch == 0) {
+         if(M > 8192) M = 8192;
+         N = M;
+       }
 
        XLS = dvector(1,2*M);  YLS = dvector(1,2*M);  ZLS = dvector(1,2*M);
        XSL = dvector(1,2*M);  YSL = dvector(1,2*M);  ZSL = dvector(1,2*M);
 
-       FAST_LISA(params, N, M, XLS, XSL, YLS, YSL, ZLS, ZSL);
+       FAST_LISA(swtch, params, N, M, XLS, XSL, YLS, YSL, ZLS, ZSL);
 
       for(i=1; i<=M; i++)
        {
@@ -155,6 +172,23 @@ int main(int argc,char **argv)
       sprintf(Gfile, "Galaxy_SL_%s", argv[1]);
       fprintf(Outfile,"%s\n", Gfile);
       fclose(Outfile);
+
+
+
+      /*  Outfile = fopen("test_power.dat","w");
+  for(i=1; i<NFFT/2; i++)
+    {
+      fprintf(Outfile,"%e %e %e %e\n", (double)(i)/T, (XfLS[2*i]*XfLS[2*i]+XfLS[2*i+1]*XfLS[2*i+1]),
+	      (YfLS[2*i]*YfLS[2*i]+YfLS[2*i+1]*YfLS[2*i+1]), (ZfLS[2*i]*ZfLS[2*i]+ZfLS[2*i+1]*ZfLS[2*i+1]));
+    }
+  fclose(Outfile);
+
+  Outfile = fopen("test_Xamp.dat","w");
+  for(i=1; i<NFFT/2; i++)
+    {
+      fprintf(Outfile,"%e %e %e\n", (double)(i)/T, XfLS[2*i], XfLS[2*i+1]);
+    }
+    fclose(Outfile); */
 
 
    out[0][0] = 0.0;
@@ -271,7 +305,7 @@ int main(int argc,char **argv)
 	
 	
 
-void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL)
+void FAST_LISA(int swtch, double *params, long N, long M, double *XLS, double *XSL, double *YLS, double *YSL, double *ZLS, double *ZSL)
 {
 
   /*   Indicies   */
@@ -298,7 +332,7 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
 
   /*   GW Source data   */
   double Mc, theta, phi, psi, D, iota, A, Aplus, Across, f0, fdot, phio;
-  double costh, sinth, cosph, sinph, cosi, cosps, sinps;
+  double costh, sinth, cosph, sinph, cosi, cosps, sinps, fbin, fref;
  
   /*   Time and distance variables   */
   double *xi, t;
@@ -373,14 +407,14 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
 
   d = d3tensor(1,3,1,3,1,2*M);
 
-   f0 = params[0];
-   fdot = params[1];
-   theta = params[2];
-   phi = params[3]; 
-   A = params[4]; 
-   iota = params[5];
-   psi = params[6];
-   phio = params[7];
+  f0 = params[0];
+  fdot = params[1];
+  theta = params[2];
+  phi = params[3]; 
+  A = params[4]; 
+  iota = params[5];
+  psi = params[6];
+  phio = params[7];
 
   //Calculate cos and sin of sky position, inclination, polarization
   costh = cos(theta);   sinth = sin(theta);
@@ -392,8 +426,14 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
   Aplus = A*(1.+cosi*cosi);
   Across = -2.0*A*cosi;
 
-  //Calculate carrier frequency bin
-  q = (long)(f0*T);
+  if(swtch == 0) {
+    fref = f0;
+  } else {
+    fref = f0+0.5*fdot*T; // this centers the snippet on the mid frequency
+  }
+
+  fbin = fref*T;
+  q = (long)(fbin);
 
   //Calculate constant pieces of transfer functions
   DPr = Aplus*cosps;
@@ -431,7 +471,7 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
   for(i=1; i<=M; i++)
     {
       m = q + i-1 - M/2;
-      xm = pi*(f0*T - (double)m);
+      xm = pi*(fbin - (double)m);
       if(xm == 0.0) sinc = 1.0; else sinc = sin(xm)/xm;
       b[2*i-1] = cos(xm)*sinc;
       b[2*i] = sin(xm)*sinc;
@@ -503,10 +543,10 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
 	      if(i!=j)
 		{
 		  arg1 = 0.5*fonfs[i]*(1 - kdotr[i][j]);
-		  arg2 = pi*fdot*xi[i]*xi[i] + phio - 2.*pi*kdotx[i]*f0;
-
-      if (arg1 == 0.0) sinc = 0.25; else sinc = 0.25*sin(arg1)/arg1;
-	      
+		  arg2 = 2.0*pi*(f0-fref)*t + pi*fdot*xi[i]*xi[i] + phio - 2.*pi*kdotx[i]*f0;
+          
+		  if (arg1 == 0.0) sinc = 0.25; else sinc = 0.25*sin(arg1)/arg1;
+          
 		  tran1r = dplus[i][j]*DPr + dcross[i][j]*DCr;
 		  tran1i = dplus[i][j]*DPi + dcross[i][j]*DCi;
 
@@ -652,7 +692,7 @@ void FAST_LISA(double *params, long N, long M, double *XLS, double *XSL, double 
   /*   Call subroutines for synthesizing different TDI data channels  */
   
   /*   X Y Z-Channel   */
-  XYZ(d, f0, q, M, XLS, XSL, YLS, YSL, ZLS, ZSL);
+  XYZ(d, fref, q, M, XLS, XSL, YLS, YSL, ZLS, ZSL);
  
 
   /*   Deallocate Arrays   */
