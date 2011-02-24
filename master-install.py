@@ -509,9 +509,9 @@ os.chdir(here)
 
 print "--> Checking synthLISA"
 
-if checkpackage('synthlisa') < LooseVersion('1.3.5') or newsynthlisa:
+if checkpackage('synthlisa') < LooseVersion('1.3.6') or newsynthlisa:
     print "--> Installing Synthetic LISA"
-    installpackage('http://www.vallis.org/software/synthLISA-1.3.5.tar.gz',prefix=libdir,keepdownload=False)
+    installpackage('http://www.vallis.org/software/synthLISA-1.3.6.tar.gz',prefix=libdir,keepdownload=False)
 
 # install/check install for LISACode
 
