@@ -1,0 +1,5 @@
+gcc -O2 -o Galaxy Galaxy.c arrays.c -lm
+gcc -O2 -o Confusion_Fit Confusion_Fit.c arrays.c -lm
+gcc -O2 -o Bright_Remove Bright_Remove.c arrays.c -lm
+gcc -02 -o Density Density.c arrays.c -lm
+gcc -O2 -o Fisher_Galaxy Fisher_Galaxy.c arrays.c -lcblas -lclapack -lm

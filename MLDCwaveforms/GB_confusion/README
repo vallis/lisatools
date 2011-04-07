@@ -1,0 +1,83 @@
+This directory contains codes for simulating a full galaxy and figuring
+out the number of bright sources and the confusion levels for 4 (X) and 
+5/6 (AE) link operation using arbitrary spacecraft orbits. The code uses  
+lapack and blas, so you will likely have to edit the compile script 
+(compile) to point to the needed libraries.
+
+The user must supply a list of galactic binaries with columns:
+
+initial frequency | initial df/dt | ecliptic latitude | ecliptic longitude | amplitude | inclination angle | polarization angle | initial phase
+
+which we'll abbreviae as
+
+f0 | dfdt_0 | theta | phi | A | iota | psi | phi_0
+
+This is identical to the MDLC file format with frequencies in Hz, and 
+angles in radians.
+
+The user also must include a file containing the {t,x,y,z} components of 
+each spacecraft in ecliptic coordinates during the observation time, 
+with columns:
+
+t (s) | SC1_x | SC1_y | SC1_z | SC2_x | SC2_y | SC2_z | SC3_x | SC3_y | SC3_z
+
+here all positions are in meters.
+
+For reference, we have used the MLDC4 training data which can be 
+downloaded at
+
+http://pandora.aei.mpg.de/~steffeng/MLDC4/FullDataset1/svn1159/challenge4.0-training-key-frequency-1.txt
+
+We have included in this directory a file (EccentricInclined.txt) with the 
+baseline orbits used in the MLDCs at a sampling rate of 1/day for a four 
+year observation time, as well as a Detector header file (Baseline.h)
+corresponding to the orbits of EccentricInclined.txt and a 4 year LISA 
+mission with original LISA design shot and acceleration noise.
+
+Before running, create a new .h file to set the following global parameters:
+
+- T     (Observation time [s])
+- NFFT  (Number of samples -- should be a power of 2)
+- L     (Mean arm length of detector [m])
+- Sps   (Photon shot noise power)
+- Sacc  (Acceleration noise power)
+- fstar (Transfer frequency =  c/(2*pi*L) [Hz])
+ 
+See Baseline.h for example.
+
+The spacecraft positions for calculating the detector response are interpolated 
+from the supplied orbit file, so be careful that T does not exceed the duration of 
+the supplied orbits.  We would recommend naming the header file something memorable 
+as all output will be appended with its name.  For example, suppose we run with 
+Baseline.h, the EccentricInclined.txt, and the MLDC galaxy:
+
+> ./run Baseline challenge4.0-training-key-frequency-1.txt EccentricInclined.txt
+
+Notice the lack of a file extension on Baseline!
+
+The script then:
+- Generates the instrument response to the galaxy
+- Makes a preliminary estimate of the confusion noise
+- Iteratively removes "bright" GBs and re-estimates the confusion noise
+- When finished, the  code computes the Fisher matrix derived uncertainities 
+  for all model parameters, including the 2nd time derivative of f (needed 
+  to measure luminosity distance) and determines wether fdot and fddot are 
+  measurable. 
+  
+Output files include:  
+- 1-sided Confusion noise estimates (X && AE)
+  Columns: f (Hz) | X S_n(f) | XS_confusion(f) | AE S_n(f) | AE S_confusion(f)
+  (e.g., Confusion_Baseline.dat)
+  
+- The parameter uncertainities (X || AE) [std. dev. (s_) estimated by the Fisher, fractional uncertainty in df/dt, d^2f/dt^2
+  Columns: f0 | df/dt_0 | d^2f/dt^2_0 | theta | phi | A | iota | psi | phi_0 | s_{f} | s_{df/dt} | ...
+           ...s_{d^2f/dt&2} | s_{theta} | s_{phi} | s_A | s_{iota} | s_{psi} | s_{phi_0} | signal-to-noise ratio
+  (e.g., SigmasX_Baseline.dat and SigmasAE_Baseline.dat)
+  
+- List of "bright" GBs (X || AE)
+  Columns: f0 | dfdt_0 | theta | phi | A | iota | psi | phi_0
+  (e.g., BrightX_Baseline.dat and BrightAE_Baseline.dat)
+  
+- Fourier domain (strain) instrument response to the galaxy (X && AE)
+  Columns: f (Hz) | Re{X} | Im{X} | Re{A} | Im{A} | Re{E} | Im{E}
+  (e.g., Galaxy_XAE_Baseline.dat) 

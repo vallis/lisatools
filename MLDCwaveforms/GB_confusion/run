@@ -1,0 +1,106 @@
+#!/usr/bin/perl
+
+###################################################
+#
+# Script for estimating confusion noise for 
+# different LISA configurations.  
+# 
+# RUN:  ./run HeaderFile GalaxyFile OrbitFile
+# note: do not include file extension on HeaderFile
+#
+# The script will copy [HeaderFile].h to Detector.h, 
+# recompile the codes, and run using the supplied 
+# source catalog [GalaxyFile].  Spacecraft orbits 
+# are supplied by [OrbitFile]
+#
+# -- Including OrbitFile makes HeaderFile mostly
+#    irrelevent
+#
+###################################################
+
+
+#Usage
+if (@ARGV != 3) 
+{
+	print "\nUsage:  ./run HeaderFile GalaxyFile OrbitFile \n";
+	print "        HeaderFile: name of header file with LISA parameters (no extension)\n";
+	print "        GalaxyFile: name of file containing galactic binaries (with extension)\n";
+	print "        OrbitFile:  List of S/C x,y,z coordinates (with extension)\n\n" ;
+	print "Example:  ./run Descope1 challenge4.0-training-key-frequency-1.txt EccentricInclined.txt\n";
+	die "\nExiting to system\n";
+}
+
+#Parse input parameters
+my $DetectorHeader = $ARGV[0];
+my $GalaxyFile     = $ARGV[1];
+my $OrbitFile      = $ARGV[2];
+
+# Copy input header file to Detector.h and recompile. 
+print "\n# Copy HeaderFile to Detector.h and recompile\n";
+system("cp -v $DetectorHeader.h Detector.h");
+system("./compile");
+
+# Simulate instrument response using supplied source file
+print "\n# Simulate instrument response using supplied source file\n";
+system("./Galaxy $GalaxyFile $OrbitFile > out");
+
+# store output tagged with DetectorFile name
+system("cp -v Galaxy_XAE.dat Galaxy_XAE_$DetectorHeader.dat");
+system("cp -v Bright.dat Bright_$DetectorHeader.dat");
+
+# Estimate confusion noise using simulated data
+print "\n# Estimate confusion noise using simulated data\n";
+system("./Confusion_Fit Galaxy_XAE_$DetectorHeader.dat > out\n");
+
+# store output tagged with DetectorFile name
+system("cp -v Confusion_XAE_0.dat Confusion_XAE_0_$DetectorHeader.dat");
+
+# Iteratively refine confusion noise 
+print "\n# Iteratively refine confusion noise\n";
+my $n = 1;
+my $m = 0;
+my $nmax = 10;
+my $rhoX;
+my $rhoAE;
+my $rhoXmax  = 0.13;
+my $rhoAEmax = 0.25;
+
+while ($n <= $nmax)	
+{
+	$m = $n - 1;
+	
+	#iteratively remove bright galaxies and estimate confusion noise
+	print("  Iteration $n using Confusion_XAE_${m}_${DetectorHeader}.dat ... \n");	
+	system("./Bright_Remove Galaxy_XAE_${DetectorHeader}.dat Confusion_XAE_${m}_${DetectorHeader}.dat Bright_${DetectorHeader}.dat $OrbitFile > out");
+	
+	system("cp -v Confusion_XAE_1.dat Confusion_XAE_${n}_${DetectorHeader}.dat");
+	
+	#estimate source density
+	my $rhoX  = `./Density BrightX.dat`;
+	my $rhoAE = `./Density BrightAE.dat`;
+	
+ 	$n = $n + 1;
+	
+	#stopping condition based on source density -- do at least 5 iterations
+	if ($rhoX > $rhoXmax || $rhoAE > $rhoAEmax )
+	{
+		print "stopping after $n iterations\n";
+		print " rhoX:  ${rhoX}/${rhoXmax}\n";
+		print " rhoAE: ${rhoAE}/${rhoAEmax}\n";
+		$n = $nmax+1;
+	}
+}
+
+# Store final source catalog and confusion noise tagged with DetectorFile name
+printf "\n# Store final source catalog tagged with DetectorFile name\n";
+system("cp -v BrightX.dat BrightX_${DetectorHeader}.dat");
+system("cp -v BrightAE.dat BrightAE_${DetectorHeader}.dat");
+system("cp -v Confusion_XAE_1.dat Confusion_${DetectorHeader}.dat");
+
+# Combine results and output PE and noise information
+print "\n# Combine results and output PE and noise information\n";
+system("./Fisher_Galaxy BrightAE_${DetectorHeader}.dat Confusion_${DetectorHeader}.dat SigmasX_${DetectorHeader}.dat SigmasAE_${DetectorHeader}.dat $OrbitFile");
+
+# Clean up directory
+print "\n# Cleaning directory of work-space data files\n";
+system("rm -v Afit.dat BrightX.dat BrightAE.dat Confusion_XAE* Density.dat Galaxy_XAE.dat Galaxy_XAE_Pow.dat Galaxy_XAE_R1.dat Noise_Pow.dat Power_0.dat Power_1.dat Xf.dat Xfit.dat out");
