@@ -117,7 +117,7 @@ else:
     L = float(options.armlength)
     
     if options.LISAmodel == 'Eccentric':
-        parser.error("You can only set --armlength with --LISA=Static or --LISA=Rigid")
+        lisa = synthlisa.EccentricInclined(L,0.0,1.5*math.pi,-1,0)
     elif options.LISAmodel == 'Static':
         lisa = synthlisa.OriginalLISA(L,L,L)
     elif options.LISAmodel == 'Rigid':
