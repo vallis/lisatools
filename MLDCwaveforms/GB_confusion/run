@@ -50,7 +50,7 @@ system("cp -v Bright.dat Bright_$DetectorHeader.dat");
 
 # Estimate confusion noise using simulated data
 print "\n# Estimate confusion noise using simulated data\n";
-system("./Confusion_Fit Galaxy_XAE_$DetectorHeader.dat > out\n");
+system("./Confusion_Fit Galaxy_XAE_$DetectorHeader.dat $OrbitFile > out\n");
 
 # store output tagged with DetectorFile name
 system("cp -v Confusion_XAE_0.dat Confusion_XAE_0_$DetectorHeader.dat");
@@ -95,11 +95,13 @@ while ($n <= $nmax)
 printf "\n# Store final source catalog tagged with DetectorFile name\n";
 system("cp -v BrightX.dat BrightX_${DetectorHeader}.dat");
 system("cp -v BrightAE.dat BrightAE_${DetectorHeader}.dat");
-system("cp -v Confusion_XAE_1.dat Confusion_${DetectorHeader}.dat");
+#system("cp -v Confusion_XAE_1.dat Confusion_${DetectorHeader}.dat");
+system("cp -v Confusion_XAE_DS.dat Confusion_${DetectorHeader}.dat");
 
 # Combine results and output PE and noise information
 print "\n# Combine results and output PE and noise information\n";
-system("./Fisher_Galaxy BrightAE_${DetectorHeader}.dat Confusion_${DetectorHeader}.dat SigmasX_${DetectorHeader}.dat SigmasAE_${DetectorHeader}.dat $OrbitFile");
+#system("./Fisher_Galaxy BrightAE_${DetectorHeader}.dat Confusion_${DetectorHeader}.dat SigmasX_${DetectorHeader}.dat SigmasAE_${DetectorHeader}.dat $OrbitFile");
+system("./Fisher_Galaxy BrightAE_${DetectorHeader}.dat Confusion_XAE_1.dat SigmasX_${DetectorHeader}.dat SigmasAE_${DetectorHeader}.dat $OrbitFile");
 
 # Clean up directory
 print "\n# Cleaning directory of work-space data files\n";
