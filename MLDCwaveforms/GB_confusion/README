@@ -38,12 +38,13 @@ Before running, create a new .h file to set the following global parameters:
 
 - T     (Observation time [s])
 - NFFT  (Number of samples -- should be a power of 2)
-- L     (Mean arm length of detector [m])
 - Sps   (Photon shot noise power)
 - Sacc  (Acceleration noise power)
-- fstar (Transfer frequency =  c/(2*pi*L) [Hz])
  
 See Baseline.h for example.
+
+The code determines the average armlength L and the transfer frequency fstar based 
+from the orbit file (assuming it is evenly sampled in time).
 
 The spacecraft positions for calculating the detector response are interpolated 
 from the supplied orbit file, so be careful that T does not exceed the duration of 
