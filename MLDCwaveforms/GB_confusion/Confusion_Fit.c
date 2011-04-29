@@ -1,4 +1,12 @@
+/*********************************************************/
+/*                                                       */
+/*       Confusion_Fit.c, Version 2.3, 4/28/2011         */                                                            
+/*      Written by Neil Cornish & Tyson Littenberg       */                                          
+/*                                                       */
 /* gcc -O2 -o Confusion_Fit Confusion_Fit.c arrays.c -lm */
+/*                                                       */
+/*********************************************************/
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,11 +15,30 @@
 #include "Constants.h"
 #include "Detector.h"
 
+struct lisa_orbit{                     
+	int N;
+	
+	double L;
+	double fstar;
+	
+	double *t;              
+	double **x;             
+	double **y;                     
+	double **z;                  
+	double **dx;
+	double **dy;
+	double **dz;
+};
+struct lisa_orbit orbit;
+
+void initialize_orbit(char OrbitFile[], struct lisa_orbit *orbit);
+void LISA_spline(double *x, double *y, int n, double yp1, double ypn, double *y2);
+
 double quickselect(double *arr, int n, int k);
-void medianX(long imin, long imax, double *XP, double *Xnoise, double *Xconf);
-void medianAE(long imin, long imax, double *AEP, double *AEnoise, double *AEconf);
-void instrument_noise(double f, double *SAE, double *SXYZ);
-double chiX(long imin, long imax, int Nfit, double *XP, double *Xfit, double *fpoints);
+void medianX(long imin, long imax, double fstar, double L, double *XP, double *Xnoise, double *Xconf);
+void medianAE(long imin, long imax, double fstar, double L, double *AEP, double *AEnoise, double *AEconf);
+void instrument_noise(double f, double fstar, double L, double *SAE, double *SXYZ);
+double chiX(long imin, long imax, int Nfit, double fstar, double L, double *XP, double *Xfit, double *fpoints);
 double Xconf(double f, int Nfit, double *Xfit, double *fpoints);
 void startX(long imin, long imax, int Nfit, double *XP, double *Xfit, double *fpoints);
 double ran2(long *idum);
@@ -45,7 +72,7 @@ int main(int argc,char **argv)
   FILE* Infile;
   FILE* Outfile;
 
-  if(argc !=2) KILL("Confusion_Fit Galaxy.dat\n");
+  if(argc !=3) KILL("Confusion_Fit Galaxy.dat Orbit.dat\n");
 
   XfLS = dvector(0,NFFT-1);  AALS = dvector(0,NFFT-1);  EELS = dvector(0,NFFT-1);
 
@@ -55,6 +82,18 @@ int main(int argc,char **argv)
 
   XfLS = dvector(0,NFFT-1);  AALS = dvector(0,NFFT-1); EELS = dvector(0,NFFT-1);
 
+	
+	//Data structure for interpolating orbits from file	
+	struct lisa_orbit *LISAorbit;
+	LISAorbit = &orbit;
+	
+	//Set up orbit structure (allocate memory, read file, cubic spline)
+	sprintf(Gfile,"%s",argv[2]);	
+	initialize_orbit(Gfile, LISAorbit);
+	
+	double L     = LISAorbit->L;
+	double fstar = LISAorbit->fstar;
+	
   rseed = -7584529636;
 
       Infile = fopen(argv[1],"r");
@@ -74,7 +113,7 @@ int main(int argc,char **argv)
      for(i=imin; i< imax; i++)
        {
         f = (double)(i)/T;
-        instrument_noise(f, &SAE, &SXYZ);
+        instrument_noise(f, fstar, L, &SAE, &SXYZ);
 	 XP[i] = (2.0*(XfLS[2*i]*XfLS[2*i] + XfLS[2*i+1]*XfLS[2*i+1]));
          //XP[i] = SXYZ*0.5*(pow(gasdev2(&rseed), 2.0)+pow(gasdev2(&rseed), 2.0));
          AEP[i] = (2.0*(AALS[2*i]*AALS[2*i]+AALS[2*i+1]*AALS[2*i+1])); 
@@ -84,13 +123,13 @@ int main(int argc,char **argv)
      for(i=imin; i< imax; i++)
        {
          f = (double)(i)/T;
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
 	 fprintf(Outfile,"%e %e %e %e %e\n", f, XP[i], AEP[i], SXYZ, SAE);
        }
      fclose(Outfile);
 
-     medianX(imin, imax, XP, Xnoise, Xconf);
-     medianAE(imin, imax, AEP, AEnoise, AEconf);
+     medianX(imin, imax, fstar, L, XP, Xnoise, Xconf);
+     medianAE(imin, imax, fstar, L, AEP, AEnoise, AEconf);
 
       Outfile = fopen("Confusion_XAE_0.dat","w");
       for(i=imin; i<= imax; i++)
@@ -104,7 +143,7 @@ int main(int argc,char **argv)
      for(i=imin; i< imax; i++)
        {
          f = (double)(i)/T;
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
 	 fprintf(Outfile,"%e %e %e %e %e %e %e\n", f, Xnoise[i], Xconf[i], SXYZ, AEnoise[i], AEconf[i], SAE);
        }
      fclose(Outfile);
@@ -113,7 +152,7 @@ int main(int argc,char **argv)
 
 }
 
-void medianX(long imin, long imax, double *XP, double *Xnoise, double *Xconf)
+void medianX(long imin, long imax, double fstar, double L, double *XP, double *Xnoise, double *Xconf)
 {
   double f, logf;
   double XC, SAE, SXYZ;
@@ -156,7 +195,7 @@ void medianX(long imin, long imax, double *XP, double *Xnoise, double *Xconf)
        {
 	 for(j=0; j<=100; j++) XX[j] = XP[imin+101*i+j];
          f = (double)(imin+101*i-50)/T;
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
          inst[i] = log(SXYZ*1.0e40);
          chi=quickselect(XX, 101, 51);
          //printf("%e %e\n", f, chi/0.72);
@@ -250,7 +289,7 @@ void medianX(long imin, long imax, double *XP, double *Xnoise, double *Xconf)
          lf = log(f);
          j = (long)floor((lf-lfmin)/dlf);
 	 fit = pcx[j]+((pcx[j+1]-pcx[j])/dlf)*(lf-(lfmin+(double)(j)*dlf));
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
          alpha = exp(fit)*1.0e-40;
          conf = alpha -SXYZ;
          if(conf < SXYZ/30.0) conf = 1.0e-46;
@@ -267,7 +306,7 @@ void medianX(long imin, long imax, double *XP, double *Xnoise, double *Xconf)
   return;
 }
 
-void medianXcheby(long imin, long imax, double *XP, double *Xnoise, double *Xconf)
+void medianXcheby(long imin, long imax, double fstar, double L, double *XP, double *Xnoise, double *Xconf)
 {
   double f, logf;
   double XC, SAE, SXYZ;
@@ -307,7 +346,7 @@ void medianXcheby(long imin, long imax, double *XP, double *Xnoise, double *Xcon
        {
 	 for(j=0; j<=100; j++) XX[j] = XP[imin+101*i+j];
          f = (double)(imin+101*i-50)/T;
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
          inst[i] = log(SXYZ*1.0e40);
          chi=quickselect(XX, 101, 51);
          //printf("%e %e\n", f, chi/0.72);
@@ -383,7 +422,7 @@ void medianXcheby(long imin, long imax, double *XP, double *Xnoise, double *Xcon
          for(j=2; j <= Npoly; j++) fpows[1][j] = 2.0*x*fpows[1][j-1]-fpows[1][j-2];
 	 fit = 0.0;
          for(j=0; j <= Npoly; j++) fit += pcx[j]*fpows[1][j];
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
          alpha = exp(fit+log(SXYZ*1.0e40))*1.0e-40;
          conf = alpha -SXYZ;
          if(conf < SXYZ/30.0) conf = 1.0e-46;
@@ -401,7 +440,7 @@ void medianXcheby(long imin, long imax, double *XP, double *Xnoise, double *Xcon
   return;
 }
 
-void medianAE(long imin, long imax, double *AEP, double *AEnoise, double *AEconf)
+void medianAE(long imin, long imax, double fstar, double L, double *AEP, double *AEnoise, double *AEconf)
 {
   double f, logf;
   double XC, SAE, SXYZ;
@@ -444,7 +483,7 @@ void medianAE(long imin, long imax, double *AEP, double *AEnoise, double *AEconf
        {
 	 for(j=0; j<=100; j++) XX[j] = AEP[imin+101*i+j];
          f = (double)(imin+101*i-50)/T;
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
          inst[i] = log(SAE*1.0e40);
          chi=quickselect(XX, 101, 51);
          //printf("%e %e\n", f, chi/0.72);
@@ -528,7 +567,7 @@ void medianAE(long imin, long imax, double *AEP, double *AEnoise, double *AEconf
          lf = log(f);
          j = (long)floor((lf-lfmin)/dlf);
 	 fit = pcx[j]+((pcx[j+1]-pcx[j])/dlf)*(lf-(lfmin+(double)(j)*dlf));
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
          alpha = exp(fit)*1.0e-40;
          conf = alpha -SAE;
          if(conf < SAE/30.0) conf = 1.0e-46;
@@ -577,7 +616,7 @@ void startX(long imin, long imax, int Nfit, double *XP, double *Xfit, double *fp
   return;
 }
 
-double chiX(long imin, long imax, int Nfit, double *XP, double *Xfit, double *fpoints)
+double chiX(long imin, long imax, int Nfit, double fstar, double L, double *XP, double *Xfit, double *fpoints)
 {
   double f, logf;
   double XC, SAE, SXYZ;
@@ -589,7 +628,7 @@ double chiX(long imin, long imax, int Nfit, double *XP, double *Xfit, double *fp
      for(i=imin; i< imax; i++)
        {
          f = (double)(i)/T;
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, fstar, L, &SAE, &SXYZ);
          XC = Xconf(f,Nfit,Xfit,fpoints);
 	 chi += scale*(XP[i]-SXYZ-XC)*(XP[i]-SXYZ-XC)/(2.0*SXYZ*SXYZ);
        }
@@ -619,22 +658,22 @@ double Xconf(double f, int Nfit, double *Xfit, double *fpoints)
 
 }
 
-void instrument_noise(double f, double *SAE, double *SXYZ)
+void instrument_noise(double f, double fstar, double L, double *SAE, double *SXYZ)
 {
-  //Power spectral density of the detector noise and transfer frequency
-  double Sn, red, confusion_noise;
-  double f1, f2;
-  double A1, A2, slope;
-  FILE *outfile;
-  
-  red = (2.0*pi*1.0e-4)*(2.0*pi*1.0e-4);
-
-
-  // Calculate the power spectral density of the detector noise at the given frequency
-
-  *SAE = (16.0/3.0*pow(sin(f/fstar),2.0)*( ( (2.0+cos(f/fstar))*Sps + 2.0*(3.0+2.0*cos(f/fstar)+cos(2.0*f/fstar))*Sacc*(1.0/pow(2.0*pi*f,4)+ red/pow(2.0*pi*f,6))) / pow(2.0*L,2.0)));
-
-  *SXYZ = (4.0*pow(sin(f/fstar),2.0)*( ( 4.0*Sps + 8.0*(1.0+pow(cos(f/fstar),2.0))*Sacc*(1.0/pow(2.0*pi*f,4)+ red/pow(2.0*pi*f,6))) / pow(2.0*L,2.0)));
+	//Power spectral density of the detector noise and transfer frequency
+	double Sn, red, confusion_noise;
+	double f1, f2;
+	double A1, A2, slope;
+	FILE *outfile;
+	
+	red = (2.0*pi*1.0e-4)*(2.0*pi*1.0e-4);
+	
+	
+	// Calculate the power spectral density of the detector noise at the given frequency
+	
+	*SAE = 16.0/3.0*pow(sin(f/fstar),2.0)*( ( (2.0+cos(f/fstar))*Sps + 2.0*(3.0+2.0*cos(f/fstar)+cos(2.0*f/fstar))*Sacc*(1.0/pow(2.0*pi*f,4)+ red/pow(2.0*pi*f,6))) / pow(2.0*L,2.0));
+	
+	*SXYZ = 4.0*pow(sin(f/fstar),2.0)*( ( 4.0*Sps + 8.0*(1.0+pow(cos(f/fstar),2.0))*Sacc*(1.0/pow(2.0*pi*f,4)+ red/pow(2.0*pi*f,6))) / pow(2.0*L,2.0));
 	
 }
 
@@ -756,4 +795,168 @@ double quickselect(double *arr, int n, int k)
       if (j <= k) l=i;
     }
   }
+}
+
+void initialize_orbit(char OrbitFile[], struct lisa_orbit *orbit)
+{
+	int n,i;
+	double junk;
+	
+	FILE *infile = fopen(OrbitFile,"r");
+	
+	//how big is the file
+	n=0;
+	while(!feof(infile))
+	{
+		/*columns of orbit file:
+		 t sc1x sc1y sc1z sc2x sc2y sc2z sc3x sc3y sc3z 
+		 */
+		n++;
+		fscanf(infile,"%lg %lg %lg %lg %lg %lg %lg %lg %lg %lg",&junk,&junk,&junk,&junk,&junk,&junk,&junk,&junk,&junk,&junk);
+	}
+	n--;
+	rewind(infile);
+	
+	//allocate memory for local workspace
+	int N = n;
+	double *t  = dvector(0,N-1);
+	double **x  = dmatrix(0,2,0,N-1);
+	double **y  = dmatrix(0,2,0,N-1);
+	double **z  = dmatrix(0,2,0,N-1);
+	double **dx = dmatrix(0,2,0,N-1);
+	double **dy = dmatrix(0,2,0,N-1);
+	double **dz = dmatrix(0,2,0,N-1);
+	
+	//allocate memory for orbit structure
+	orbit->N = n;
+	
+	orbit->t  = dvector(0,orbit->N-1);
+	orbit->x  = dmatrix(0,2,0,orbit->N-1);
+	orbit->y  = dmatrix(0,2,0,orbit->N-1);
+	orbit->z  = dmatrix(0,2,0,orbit->N-1);
+	orbit->dx = dmatrix(0,2,0,orbit->N-1);
+	orbit->dy = dmatrix(0,2,0,orbit->N-1);
+	orbit->dz = dmatrix(0,2,0,orbit->N-1);
+	
+	//read in orbits
+	for(n=0; n<orbit->N; n++)
+    {
+		//First time sample must be at t=0 for phasing
+		fscanf(infile,"%lg",&t[n]);
+		for(i=0; i<3; i++) fscanf(infile,"%lg %lg %lg",&x[i][n],&y[i][n],&z[i][n]);
+		
+		orbit->t[n] = t[n];
+		
+		//Repackage orbit positions into arrays for interpolation
+		for(i=0; i<3; i++) 
+		{
+			orbit->x[i][n] = x[i][n]; 
+			orbit->y[i][n] = y[i][n]; 
+			orbit->z[i][n] = z[i][n]; 			
+		}
+	}
+	fclose(infile);
+	
+	//calculate derivatives for cubic spline
+	for(i=0; i<3; i++) 
+	{
+		LISA_spline(t, orbit->x[i], N, 1.e30, 1.e30, orbit->dx[i]);
+		LISA_spline(t, orbit->y[i], N, 1.e30, 1.e30, orbit->dy[i]);
+		LISA_spline(t, orbit->z[i], N, 1.e30, 1.e30, orbit->dz[i]);
+	}
+	
+	//calculate average arm length
+	printf("estimating average armlengths -- assumes evenly sampled orbits\n");
+	double L12=0.0;
+	double L23=0.0;
+	double L31=0.0;
+	double x1,x2,x3,y1,y2,y3,z1,z2,z3;
+	for(n=0; n<orbit->N; n++)
+	{
+		x1 = orbit->x[0][n];
+		x2 = orbit->x[1][n];
+		x3 = orbit->x[2][n];
+		
+		y1 = orbit->y[0][n];
+		y2 = orbit->y[1][n];
+		y3 = orbit->y[2][n];
+		
+		z1 = orbit->z[0][n];
+		z2 = orbit->z[1][n];
+		z3 = orbit->z[2][n];
+		
+		
+		//L12
+		L12 += sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2) ); 
+		
+		//L23
+		L23 += sqrt( (x3-x2)*(x3-x2) + (y3-y2)*(y3-y2) + (z3-z2)*(z3-z2) ); 
+		
+		//L31
+		L31 += sqrt( (x1-x3)*(x1-x3) + (y1-y3)*(y1-y3) + (z1-z3)*(z1-z3) ); 
+	}
+	L12 /= (double)orbit->N;
+	L31 /= (double)orbit->N;
+	L23 /= (double)orbit->N;
+	
+	printf("Average arm lengths for the constellation:\n");
+	printf("  L12 = %g\n",L12);
+	printf("  L31 = %g\n",L31);
+	printf("  L23 = %g\n",L23);
+	
+	//are the armlenghts consistent?
+	double L = (L12+L31+L23)/3.;
+	printf("Fractional deviation from average armlength for each side:\n");
+	printf("  L12 = %g\n",fabs(L12-L)/L);
+	printf("  L31 = %g\n",fabs(L31-L)/L);
+	printf("  L23 = %g\n",fabs(L23-L)/L);
+	
+	//store armlenght & transfer frequency in orbit structure.
+	orbit->L     = L;
+	orbit->fstar = clight/(2.0*pi*L); 
+	
+	//free local memory
+	free_dvector(t,0,N-1);
+	free_dmatrix(x ,0,2,0,N-1);
+	free_dmatrix(y ,0,2,0,N-1);
+	free_dmatrix(z ,0,2,0,N-1);
+	free_dmatrix(dx,0,2,0,N-1);
+	free_dmatrix(dy,0,2,0,N-1);
+	free_dmatrix(dz,0,2,0,N-1);
+}
+
+
+void LISA_spline(double *x, double *y, int n, double yp1, double ypn, double *y2)
+// Unlike NR version, assumes zero-offset arrays.  CHECK THAT THIS IS CORRECT.
+{
+	int i, k;
+	double p, qn, sig, un, *u;
+	u = dvector(0, n-2);
+	// Boundary conditions: Check which is best.
+	if (yp1 > 0.99e30)
+		y2[0] = u[0] = 0.0;
+	else {
+		y2[0] = -0.5;
+		u[0] = (3.0/(x[1]-x[0]))*((y[1]-y[0])/(x[1]-x[0])-yp1);
+	}
+	
+	
+	for(i = 1; i < n-1; i++) {
+		sig = (x[i]-x[i-1])/(x[i+1]-x[i-1]);
+		p = sig*y2[i-1] + 2.0;
+		y2[i] = (sig-1.0)/p;
+		u[i] = (y[i+1]-y[i])/(x[i+1]-x[i]) - (y[i]-y[i-1])/(x[i]-x[i-1]);
+		u[i] = (6.0*u[i]/(x[i+1]-x[i-1])-sig*u[i-1])/p;
+	}
+	// More boundary conditions.
+	if (ypn > 0.99e30)
+		qn = un = 0.0;
+	else {
+		qn = 0.5;
+		un = (3.0/(x[n-1]-x[n-2]))*(ypn-(y[n-1]-y[n-2])/(x[n-1]-x[n-2]));
+	}
+	y2[n-1] = (un-qn*u[n-2])/(qn*y2[n-2]+1.0);
+	for (k = n-2; k >= 0; k--)
+		y2[k] = y2[k]*y2[k+1]+u[k];
+	free_dvector(u, 0, n-2);
 }
