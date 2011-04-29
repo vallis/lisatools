@@ -1,5 +1,11 @@
-/* gcc -O2 -o Galaxy Galaxy.c arrays.c -lm */
-/* 04/05/2011 -- orbits are read from file -- TBL */
+/*********************************************************/
+/*                                                       */
+/*           Galaxy.c, Version 2.3, 4/28/2011            */                                                            
+/*      Written by Neil Cornish & Tyson Littenberg       */                                          
+/*                                                       */
+/*        gcc -O2 -o Galaxy Galaxy.c arrays.c -lm        */
+/*                                                       */
+/*********************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +16,10 @@
 
 struct lisa_orbit{                     
 	int N;
+	
+	double L;
+	double fstar;
+	
 	double *t;              
 	double **x;             
 	double **y;                     
@@ -25,10 +35,10 @@ void initialize_orbit(char OrbitFile[], struct lisa_orbit *orbit);
 void LISA_spline(double *x, double *y, int n, double yp1, double ypn, double *y2);
 void LISA_splint(double *xa, double *ya, double *y2a, int n, double x, double *y);
 void convolve(long N, double *a, long M, double *b, double *cn);
-void XYZ(double ***d, double f0, long q, long M, double *XLS, double *ALS, double *ELS);
+void XYZ(double L, double fstar, double ***d, double f0, long q, long M, double *XLS, double *ALS, double *ELS);
 void FAST_LISA(struct lisa_orbit *orbit, double *params, long N, long M, double *XLS, double *ALS, double *ELS);
 void dfour1(double data[], unsigned long nn, int isign);
-void instrument_noise(double f, double *SAE, double *SXYZ);
+void instrument_noise(double f, double fstar, double L, double *SAE, double *SXYZ);
 double ran2(long *idum);
 double gasdev2(long *idum);
 void KILL(char*);
@@ -119,14 +129,14 @@ int main(int argc,char **argv)
        if(f > 0.1) N = 1024*mult;
 
 
-       fonfs = f/fstar;
+       fonfs = f/LISAorbit->fstar;
 
        q = (long)(f*T);
 
-       instrument_noise(f, &SAE, &SXYZ);
+       instrument_noise(f, LISAorbit->fstar, LISAorbit->L, &SAE, &SXYZ);
 
        /*  calculate michelson noise  */
-       Sm = SXYZ/(4.0*sin(f/fstar)*sin(f/fstar));
+       Sm = SXYZ/(4.0*sin(fonfs)*sin(fonfs));
 
        Acut = A*sqrt(T/Sm);
 
@@ -189,7 +199,7 @@ int main(int argc,char **argv)
       for(i=1; i< imax; i++)
        {
 	 f = (double)(i)/T;
-         instrument_noise(f, &SAE, &SXYZ);
+         instrument_noise(f, LISAorbit->fstar, LISAorbit->L, &SAE, &SXYZ);
          XR = 0.5*sqrt(SXYZ) * gasdev2(&rseed);
          XI = 0.5*sqrt(SXYZ) * gasdev2(&rseed);
          AR = 0.5*sqrt(SAE) * gasdev2(&rseed);
@@ -231,7 +241,7 @@ void FAST_LISA(struct lisa_orbit *orbit, double *params, long N, long M, double 
    /*   Time and distance variables   */
   double *xi, t;
   /*   Gravitational wave frequency & ratio of f and transfer frequency f*  */
-  double *f, *fonfs;
+  double L, fstar, *f, *fonfs;
   /*   LISA response to slow terms (Real & Imaginary pieces)   */
   //Static quantities (Re and Im)
   double DPr, DPi, DCr, DCi;
@@ -337,6 +347,8 @@ void FAST_LISA(struct lisa_orbit *orbit, double *params, long N, long M, double 
   
   
   /*****************************   Main Loop   **********************************/
+	L = orbit->L;
+	fstar = orbit->fstar;
   for(n=1; n<=N; n++)
     {
       //First time sample must be at t=0 for phasing
@@ -353,7 +365,7 @@ void FAST_LISA(struct lisa_orbit *orbit, double *params, long N, long M, double 
           //First order approximation to frequency at spacecraft i
           f[i]     = f0 + fdot*xi[i]+0.5*fddot*xi[i]*xi[i];
           //Ratio of true frequencto transfer frequency
-          fonfs[i] = f[i]/fstar;
+          fonfs[i] = f[i]/orbit->fstar;
         }
 
 	     
@@ -460,7 +472,7 @@ void FAST_LISA(struct lisa_orbit *orbit, double *params, long N, long M, double 
 
   /*   Call subroutines for synthesizing different TDI data channels  */
   /*   X Y Z-Channel   */
-  XYZ(d, f0, q, M, XLS, ALS, ELS);
+  XYZ(L, fstar, d, f0, q, M, XLS, ALS, ELS);
 
 
   /*   Deallocate Arrays   */
@@ -583,6 +595,56 @@ void initialize_orbit(char OrbitFile[], struct lisa_orbit *orbit)
 		LISA_spline(t, orbit->z[i], N, 1.e30, 1.e30, orbit->dz[i]);
 	}
 	
+	//calculate average arm length
+	printf("estimating average armlengths -- assumes evenly sampled orbits\n");
+	double L12=0.0;
+	double L23=0.0;
+	double L31=0.0;
+	double x1,x2,x3,y1,y2,y3,z1,z2,z3;
+	for(n=0; n<orbit->N; n++)
+	{
+		x1 = orbit->x[0][n];
+		x2 = orbit->x[1][n];
+		x3 = orbit->x[2][n];
+
+		y1 = orbit->y[0][n];
+		y2 = orbit->y[1][n];
+		y3 = orbit->y[2][n];
+
+		z1 = orbit->z[0][n];
+		z2 = orbit->z[1][n];
+		z3 = orbit->z[2][n];
+		
+		
+		//L12
+		L12 += sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) + (z1-z2)*(z1-z2) ); 
+		
+		//L23
+		L23 += sqrt( (x3-x2)*(x3-x2) + (y3-y2)*(y3-y2) + (z3-z2)*(z3-z2) ); 
+		
+		//L31
+		L31 += sqrt( (x1-x3)*(x1-x3) + (y1-y3)*(y1-y3) + (z1-z3)*(z1-z3) ); 
+	}
+	L12 /= (double)orbit->N;
+	L31 /= (double)orbit->N;
+	L23 /= (double)orbit->N;
+	
+	printf("Average arm lengths for the constellation:\n");
+	printf("  L12 = %g\n",L12);
+	printf("  L31 = %g\n",L31);
+	printf("  L23 = %g\n",L23);
+
+	//are the armlenghts consistent?
+	double L = (L12+L31+L23)/3.;
+	printf("Fractional deviation from average armlength for each side:\n");
+	printf("  L12 = %g\n",fabs(L12-L)/L);
+	printf("  L31 = %g\n",fabs(L31-L)/L);
+	printf("  L23 = %g\n",fabs(L23-L)/L);
+	
+	//store armlenght & transfer frequency in orbit structure.
+	orbit->L     = L;
+	orbit->fstar = clight/(2.0*pi*L); 
+	
 	//free local memory
 	free_dvector(t,0,N-1);
 	free_dmatrix(x ,0,2,0,N-1);
@@ -651,7 +713,7 @@ void LISA_splint(double *xa, double *ya, double *y2a, int n, double x, double *y
 
 /*************************************************************************/
 
-void XYZ(double ***d, double f0, long q, long M, double *XLS, double *ALS, double *ELS)
+void XYZ(double L, double fstar, double ***d, double f0, long q, long M, double *XLS, double *ALS, double *ELS)
 { 
   int i;  
   double fonfs, sqT;
@@ -742,7 +804,7 @@ void XYZ(double ***d, double f0, long q, long M, double *XLS, double *ALS, doubl
 
 }
 
-void instrument_noise(double f, double *SAE, double *SXYZ)
+void instrument_noise(double f, double fstar, double L, double *SAE, double *SXYZ)
 {
   //Power spectral density of the detector noise and transfer frequency
   double Sn, red, confusion_noise;
