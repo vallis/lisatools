@@ -1,4 +1,12 @@
-/* gcc -o Density Density.c arrays.c -lm */
+/*********************************************************/
+/*                                                       */
+/*          Density.c, Version 2.3, 4/28/2011            */                                                            
+/*      Written by Neil Cornish & Tyson Littenberg       */                                          
+/*                                                       */
+/*       gcc -o Density Density.c arrays.c -lm           */
+/*                                                       */
+/*********************************************************/
+
 
 #include <stdlib.h>
 #include <math.h>
