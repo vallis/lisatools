@@ -299,23 +299,14 @@ if (platform.system() == 'Darwin') and ('10.5' in platform.mac_ver()[0]):
         print "--> I've found m4 version 1.4.6; I'll install 1.4.9 locally."
         installpackage('http://ftp.gnu.org/gnu/m4/m4-1.4.9.tar.gz',prefix=libdir,keepdownload=False)
 
-# check if we have numpy, install it otherwise
+# check if we have numpy and if it's new enough, install it otherwise
 
 print "--> Checking numpy"
-try:
-    import numpy
-except:
+
+if checkpackage('numpy') < LooseVersion('1.5.1') or newsynthlisa:
     print "--> Installing numpy"
-    os.chdir('Packages')
-    assert(0 == os.system('tar zxf numpy-1.0.tar.gz'))
-    # run patch to exclude numarray compilation on cygwin
-    if 'CYGWIN' in platform.system():
-        assert(0 == os.system('patch numpy-1.0/numpy/setup.py Patch-cygwin/numpy-setup.py'))
-    os.chdir('numpy-1.0')
-    assert(0 == os.system('python setup.py install --prefix=%s' % libdir))
-    os.chdir('..')
-    assert(0 == os.system('rm -rf numpy-1.0'))
-    os.chdir(here)
+    installpackage('http://downloads.sourceforge.net/project/numpy/NumPy/1.5.1/numpy-1.5.1.tar.gz',prefix=libdir,keepdownload=False)
+    # forget about Patch-cygwin/numpy-setup.py....
 
 # check if we have pyRXP, install it otherwise
 
