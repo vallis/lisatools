@@ -53,17 +53,21 @@ parser.add_option("-x", "--redAcceleration",
                   action="store_true", dest="redAcceleration", default=False,
                   help="disable pink proof-mass acceleration noise [enabled by default]")
 
+parser.add_option("-c", "--accelerationNoise",
+                  type="string", dest="accelerationNoise", default='Standard',
+                  help="proof-mass noise level: Standard [default], <numerical value> [in (m/s^2)^2 Hz^-1]")
+
 parser.add_option("-P", "--positionNoise",
                   type="string", dest="positionNoise", default='Standard',
-                  help="proof-mass noise level: Standard [default], <numerical value> [in m^2 Hz^-1]")
+                  help="optical-/shot-noise level: Standard [default], <numerical value> [in m^2 Hz^-1]")
 
 parser.add_option("-o", "--rescalePositionNoise",
                   action="store_true", dest="rescalePositionNoise", default=False,
-                  help="rescale proof-mass noise level by armlength [off by default]")
+                  help="rescale proof-mass noise level by armlength [off by default, only available for analytical LISA orbits]")
 
 parser.add_option("-a", "--armlength",
                   type="string", dest="armlength", default='Standard',
-                  help="LISA armlength (Static and Rigid LISA only): Standard [default, = 16.6782 s], <numerical value> [s]")
+                  help="LISA armlength: Standard [default, = 16.6782 s], <numerical value> [s]")
 
 parser.add_option("-l", "--laserNoise",
                   type="string", dest="laserNoise", default='None',
@@ -71,7 +75,7 @@ parser.add_option("-l", "--laserNoise",
 
 parser.add_option("-L", "--LISA",
                   type="string", dest="LISAmodel", default='Eccentric',
-                  help="LISA model: Static, Rigid, Eccentric [default]")
+                  help="LISA model: Static, Rigid, Eccentric [default], filename (using synthlisa's makeSampledLISA)")
 
 parser.add_option("-k", "--keyOnly",
                   action="store_true", dest="keyOnly", default=False,
@@ -83,7 +87,7 @@ parser.add_option("-A", "--keyOmitsLISA",
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
-                  help="display parameter values [off by default]")
+                  help="display progress [off by default]")
 
 (options, args) = parser.parse_args()
 
@@ -106,13 +110,16 @@ random.seed(options.seed)
 # make LISA, add caching?
 if options.armlength == 'Standard':
     if options.LISAmodel == 'Eccentric':
-        lisa = synthlisa.EccentricInclined(0.0,1.5*math.pi,-1)
+        lisa = synthlisa.EccentricInclined(0.0,1.5*pi,-1)
     elif options.LISAmodel == 'Static':
         lisa = synthlisa.OriginalLISA()
     elif options.LISAmodel == 'Rigid':
-        lisa = synthlisa.CircularRotating(0.0,1.5*math.pi,-1)
+        lisa = synthlisa.CircularRotating(0.0,1.5*pi,-1)
     else:
-        parser.error("I don't recognize this LISA model!")
+        try:
+            lisa = synthlisa.makeSampledLISA(options.LISAmodel)
+        except IOError:
+            parser.error("I don't recognize this LISA model!")
 else:
     L = float(options.armlength)
     
@@ -123,7 +130,7 @@ else:
     elif options.LISAmodel == 'Rigid':
         lisa = synthlisa.CircularRotating(L,0.0,1.5*math.pi,-1,0)
     else:
-        parser.error("I don't recognize this LISA model!")    
+        parser.error("I don't recognize this LISA model! (Or perhaps you tried to change armlength when using an orbits file?)")    
 
 # save LISA
 if not options.keyOmitsLISA:
@@ -157,8 +164,12 @@ for ind in ['pm1', 'pm1s', 'pm2', 'pm2s', 'pm3', 'pm3s']:
     else:
         noise.SpectralType = 'WhiteAcceleration'
     
-    noise.PowerSpectralDensity = 2.5e-48 * randnoise()
-    noise.Fknee = 1e-4
+    if options.accelerationNoise == 'Standard':
+        noise.PowerSpectralDensity = 2.5e-48 * randnoise()
+    else:
+        noise.PowerSpectralDensity = float(options.accelerationNoise) * 2.81838e-19 * randnoise()   # divide by (2 pi c)^2
+    
+    noise.Fknee = 1e-4  # this should not be defined for WhiteAcceleration, but never mind
     noise.GenerationTimeStep = 100
     noise.InterpolationOrder = 2
     noise.PseudoRandomSeed = random.randint(0,2**30)

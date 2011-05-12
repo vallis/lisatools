@@ -53,7 +53,7 @@ parser.add_option("-c", "--combinedSNR",
 
 parser.add_option("-L", "--LISA",
                   type="string", dest="LISAmodel", default='Eccentric',
-                  help="LISA model: Static, Rigid, Eccentric [default]")
+                  help="LISA model: Static, Rigid, Eccentric [default], filename (using synthlisa's makeSampledLISA)")
 
 parser.add_option("-v", "--verbose",
                   action="store_true", dest="verbose", default=False,
@@ -148,7 +148,10 @@ elif options.LISAmodel == 'Static':
 elif options.LISAmodel == 'Rigid':
     lisa = synthlisa.CircularRotating(0.0,1.5*pi,-1)
 else:
-    parser.error("I don't recognize this LISA model!")
+    try:
+        lisa = synthlisa.makeSampledLISA(options.LISAmodel)
+    except IOError:
+        parser.error("I don't recognize this LISA model!")
 
 if len(sourceobjects) == 0:
     print "!!! Could not find any suitable sources..."
