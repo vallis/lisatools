@@ -4,10 +4,13 @@
 \usepackage{url}
 \usepackage{amsbsy}
 \usepackage{graphicx}
+\usepackage{subfig}
+
 \input{epsf} 
 
 \begin{document}
 
+\newcommand{\lesssim}{\approx}
 
 
 \title
@@ -441,13 +444,91 @@ Sensitivity formulation :
 %                                                 Galactic binaries                                                 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{ Galactic binaries : confusion noise and galactic binaries}
+\section{ Science return for Galactic Binaries }
 \label{S:GalBin}
 { \it \small ('section captain' : Tyson Littenberg)}
 
+Here we summarize the detection capabilities for Galactic Binaries with different ELISA configurations.
 
+\subsection{Methodology}
+The galactic confusion estimation is performed using the {\tt GB\_confusion} package of codes which have 
+been incorporated into {\tt lisatools/MLDCwaveforms}.  Included in the directory on the SVN repository are 
+example files, run scripts and a (readable?) README. 
 
+To estimate the confusion noise we first simulate the instrument response to the galactic foreground by 
+generating and co-adding waveforms for each source in the simulated galaxy downloaded from 
+\begin{quotation}
+{\tt https://lisa-light.aei.mpg.de/bin/view/GalacticBinaries/PopulationGalacticBinaries}
+\end{quotation}  
+The {\tt GB\_confusion} codes expect the source 
+catalogue to be in the ``MLDC'' file format, i.e. with columns
+\[f_0,\ \dot{f}_0,\ \theta,\ \phi,\ \mathcal{A}_0,\  \iota,\ \psi,\ \varphi_0. \]
+Parameters $f$ is the GW frequency, subscript 0 denotes values measured at the start of the mission observation, $\{\theta,\phi\}$ are the 
+ecliptic latitude and longitude of the source in radians, $\mathcal{A}$ is the amplitude, and $\{\i,\psi,\varphi_0\}$ are 
+the inclination, polarization, and initial wave phase, together describing the orientation of the binary with respect 
+to the line of sight from the solar system barycenter (SSB).  The{\tt PopulationGalacticBinaries} sources are parameterized 
+by their orbital period (and $\dot{P}$), the component masses of the binary, the luminosity distance, and the sky-location in 
+galactic coordinates, so the appropriate conversions need to be applied \emph{a priori}.  Also, the supplied galaxy simulations are over-populated with interacting binaries (those with $\dot{f}_0<0$ by a factor of $\sim10$.  We account for this by randomly
+culling 90\% of mass-transferring binaries from the population before computing the instrument response.  While the TDI 
+signals from the galaxy are being simulated, any binaries with signal-to-noise ratio (SNR) greater than one are stored in a 
+separate ``Brights'' file which will later analyzed to determine which are detectable.
 
+With the simulated data in hand, we iteratively estimate the confusion noise by dividing the Fourier domain data into $\sim30$ segments between $\sim10^{-4}$ and $\sim10^{-1}$ Hz and compute the median Fourier power in each segment.  The SNR for each signal in the Brights file is computed against this confusion noise (plus instrument noise), and any with signal-to-noise 
+greater than 7 are stored as ``detectable'' and removed from the data.  This process is repeated iteratively until the confusion 
+estimation converges.  The analysis is performed simultaneously considering 4- and 6-link configurations, producing separate 
+results for the Michelson ``X'' channel (4 links) and noise orthogonal ``AET'' channels (6 links).
+
+To understand the parameter estimation capabilities of different configurations, the lower-bound on the uncertainties for each source's parameters are computed using the Fisher Information Matrix (FIM), using the instrument + confusion noise as the weighting in the inner products.  We separately report on the number of  signals w/ $\dot{f}$ measured w/in 20\% as a 
+proxy for number with measurable $D_L$.  Using only $\dot{f}$ to disentangle the distance from the overall amplitude 
+implicitly assumes that the binary's dynamics are dominated by the radiation reaction force.  To unequivocally verify this assumption, we also need to measure the second time derivative of the frequency which was a difficult task even for LISA.  
+
+\subsection{Results}
+\subsubsection{Confusion Noise}
+The confusion noise estimates for each configuration under consideration are shown in Figure~\ref{Figure:Confusion}.  The green [dashed] traces show the instrument noise.  The red [solid] curves are are the full noise spectra with confusion noise included, illustrating the impact of the astrophysical foreground on the instrument sensitivity.  The the black [dotted] lines are 
+the LISA baseline instrument noise, and are included for reference.  All estimates are for two year observation 
+times.  The confusion noise does not have a significant impact on the detector sensitivity for the 1 Gm configurations.
+\begin{figure*}[htbp]
+   \includegraphics[width=1\textwidth]{confusion.eps} % requires the graphicx package
+   \caption{Noise spectra for different detector configurations.  The red [solid] curves show the full noise spectrum, the green [dashed] curves are the instrument-only noise spectra and the black [dotted] line is the baseline LISA instrument noise curve.  All results are for two year mission lifetimes. }
+   \label{Figure:Confusion}
+\end{figure*}
+
+\subsubsection{Recovered Source Catalogue}
+Here we use the lists of detectable binaries and the FIM to make very coarse statements about the science potential for the 
+different configurations.  Table~\ref{Table:Fisher} summarizes the parameter estimation results.  Of the total number of 
+detectable binaries (shown in the SNR$>7$ column of the table), the number of which that can be resolved on the sky to 
+$\lesssim$ 1 deg$^2$ are separately tabulated.  This number ranges between a few hundred to $\sim 2000$ for the most sensitive configuration.  Binaries with a fractional error in $\dot{f}_0$ of less than 20\% are of particular interest, as the 
+frequency evolution can be used to constrain the luminosity distance to the source.  Perhaps the most astrophysically 
+interesting number is in the final column of Table~\ref{Table:Fisher}, which shows the number of detectable binaries that are 
+both well localized in the sky and have potentially well constrained luminosity distances.  It is from this sub-population of 
+detectable binaries that the 3D spatial distribution of the Galaxy can be directly probed.  The bottom row of the table shows 
+the results for the baseline LISA design.
+
+The evaluation software also tracks the number of binaries with $\ddot{f}_0$ constrained to within 20\%.  This quantity is 
+required to unambiguously determine if the orbital period of the binary is being solely driven by the emission of gravitational 
+waves, or if there is some additional dynamical interaction between to two stars.  Unfortunately, for the new configurations 
+being considered, only a few binaries will have sufficiently well constrained $\ddot{f}$ during a two year observation time.  This is not all that surprising, as the prospects for measuring  $\ddot{f}_0$ with LISA were uncertain at best.
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{cccccc}
+\hline\hline
+& Detector & SNR$>7$ & $\Delta \Omega \lesssim 1$ deg$^2$ & $\Delta\dot{f}/\dot{f} \leq 20\%$ & $\{\theta,\phi,D_L\}$\\
+& Configurations & 4-link (6-link) & 4-link (6-link) & 4-link (6-link)  & 4-link (6-link)\\
+\hline
+1: &{\tt CLISA1\_P005c\_LPF} & 1071 (1846) & 149 (387) & 290 (469) & 33 (55)\\
+2: &{\tt 10LISA1\_P2\_DRS} & 4586 (6204) & 1107 (1892 )& 1331 (1678) & 370 (457)\\
+3: &{\tt 10LISA1\_P07\_D25\_DRS} & 4087 (5735) & 932 (1679) & 1176 (1510) & 286 (357)\\
+4: &{\tt LISA3\_P07\_D25\_DR} & 7058 (12754) & 1527 (2997) & 1563 (2093) & 465 (616) \\
+5: &{\tt LISA2\_P2\_D28\_DRS} & 6827 (11272) & 1821 (3150) & 1814 (2284) & 628 (814) \\
+%-- &{\tt LISA} & -- & -- & -- & --\\
+\end{tabular}
+\caption{Summary of FIM parameter estimation results for the ensemble of detectable binaries for each configuration, 
+considering both 6-link and 4-link operations.  All results are for two year mission lifetimes. }
+\label{Table:Fisher}
+\end{center}
+\end{table}
+
+\subsubsection{Verification Binaries}
 
 
 
