@@ -1,4 +1,5 @@
 \documentclass{iopart}
+%\documentclass[showpacs,amssymb,prd,superscriptaddress,nofootinbib,amssymb,amsmath,amsfonts,aps,mathrsfs,altaffilletter]{revtex4-1}
 %\documentclass[12pt]{article}
 
 \usepackage{url}
@@ -8,9 +9,10 @@
 \usepackage{graphicx}
 \usepackage{graphicx,epsf, epsfig, amssymb}% Include figure files
 \usepackage{bm}
-\usepackage{longtable}
+%\usepackage{longtable}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage{float}
 
 
 \input{epsf}
@@ -51,8 +53,36 @@
 \def\f{\frac}
 \def\nn{\nonumber}
 
+%% Command from Emanuele
 
+\newcommand{\secintro}{I}
+\newcommand{\secsetup}{II}
+\newcommand{\secresults}{III}
+\newcommand{\secconclusion}{IV}
 
+\newcommand{\eb}[1]{{\textcolor{red}{\sf{EB: #1}} }}
+\newcommand{\Vitor}[1]{{\textcolor{blue}{\sf{Vitor: #1}} }}
+
+\newcommand{\lp}{\left(}
+\newcommand{\rp}{\right)}
+\newcommand{\lb}{\left[}
+\newcommand{\rb}{\right]}
+\newcommand{\Dta}{\Delta}
+\newcommand{\omg}{\omega}
+\newcommand{\Gma}{\Gamma}
+\newcommand{\lmda}{\lambda}
+\newcommand{\lgl}{\langle}
+\newcommand{\rgl}{\rangle}
+\newcommand{\bgaln}{\begin{align}}
+\newcommand{\bgeq}{\begin{equation}}
+\newcommand{\eiwv}{e^{i\omega V}}
+\newcommand{\eimphi}{e^{-im\phi}}
+\newcommand{\npt}{($n+2$)}
+\newcommand{\onespc}{\hspace{7pt}}
+\newcommand{\rmnum}[1]{\romannumeral #1}
+\newcommand{\Rmnum}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\def\ph{\phi_{lmn}}
+\def\Qlm{Q_{lmn}}
 
 
 
@@ -65,7 +95,7 @@
 \title
 {First results of scientific performance for the design of ESA space based gravitational wave detector ({\it ELISA}) }
 
-\author{The \emph{Science Performance Task Force}:
+\author{The \emph{Science Performance Task Force (SPTF)}:
 Pau Amaro-Seoane$^1$,
 Sofiane Aoudia$^1$,
 G\'erard Auger$^2$,
@@ -119,7 +149,7 @@ Marta Volonteri$^{16}$
 
 \begin{abstract}
 
-This document collects the current results of 
+This document collects the current results of science performance studies of potential configurations for the "new LISA".    
 
 \end{abstract}
 
@@ -156,7 +186,7 @@ This document collects the current results of
 
 During the "first phase" (before CDF), 6 configurations had been defined. The table \ref{T:Configs} gives a summary of their main characteristics and the induced noise levels.
 
-\begin{table}[htdp]
+\begin{table}[H]
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
@@ -349,7 +379,7 @@ We also use the standard analytical LISA orbits from \cite{dhu05} changing the a
 The figure \ref{F:OrbSC} shows the numerical orbits compared to the analytic orbits with $L = 10^9$ m.
 Regarding the position of the spacecraft the numerical orbits are close to the analytic ones. This means that the analytic orbits are a good approximation to the numeric one for computing the response of the detector to gravitational waves.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.45\textwidth]{FigNoiseOrbSens/Orb_SC1_LISA-CLISA-10LISA}
 \includegraphics[width=0.45\textwidth]{FigNoiseOrbSens/Orb_SC2_LISA-CLISA-10LISA}
@@ -362,7 +392,7 @@ Regarding the position of the spacecraft the numerical orbits are close to the a
 The main difference between this orbits is the time variation of the armlength as shown on the figure \ref{Arm-1_LISA-CLISA-10LISA}.
 This is an important point for the technological design of the detector (Doppler effect, ...) and for the application of the Time Delay Interferometry which is the pre-data-analysis method for reducing the laser noise. 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.45\textwidth]{FigNoiseOrbSens/Arm-1_LISA-CLISA-10LISA}
 \includegraphics[width=0.45\textwidth]{FigNoiseOrbSens/Arm-2_LISA-CLISA-10LISA}
@@ -380,7 +410,7 @@ This orbits are the results of numerical simulation done by Vitali Mueller (AEI-
 It's a mother/daughter configuration : there are only 4 links (2 arms).
 The figure \ref{F:HL1Orb} shows the orbits and the figure \ref{F:HL1Arm} shows the armlength evolution.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=\textwidth]{FigNoiseOrbSens/HL1isometric}
 \end{center}
@@ -388,7 +418,7 @@ The figure \ref{F:HL1Orb} shows the orbits and the figure \ref{F:HL1Arm} shows t
 \label{F:HL1Orb} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=\textwidth]{FigNoiseOrbSens/HL1armlength}
 \end{center}
@@ -418,7 +448,7 @@ S^X_{n, {\delta \nu \over \nu}}(f) = 16 * \sin^2(\phi_L(f))  \left(  S_{SN, {\de
 \end{equation}
 with $ \phi_L(f) =  2 \pi f L/c $
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.9\textwidth]{FigNoiseOrbSens/PSD-Noise_std-c1-c2-c3}
 \caption{Comparison of power spectral density of noises' response for  standard LISA, configurations 3a, 4a and 5a}
@@ -427,7 +457,7 @@ with $ \phi_L(f) =  2 \pi f L/c $
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.9\textwidth]{FigNoiseOrbSens/PSD-Noise_std-c1-c2-c3}
 \caption{Comparison of power spectral density of noises' response for standard LISA, configurations 1c, 2 and 3}
@@ -466,7 +496,7 @@ Sensitivity formulation :
 \end{equation}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.9\textwidth]{FigNoiseOrbSens/Sensitivity_std-c3-c4-c5}
 \caption{Comparison of sensitivity (SNR=1, "instantaneous") for standard LISA, configurations 3a, 4a and 5a}
@@ -475,7 +505,7 @@ Sensitivity formulation :
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=0.9\textwidth]{FigNoiseOrbSens/Sensitivity_std-c1-c2-c3}
 \caption{Comparison of sensitivity (SNR=1, "instantaneous") for standard LISA, configurations 1c, 2 and 3}
@@ -536,7 +566,7 @@ implicitly assumes that the binary's dynamics are dominated by the radiation rea
 The confusion noise estimates for each configuration under consideration are shown in Figure~\ref{Figure:Confusion}.  The green [dashed] traces show the instrument noise.  The red [solid] curves are are the full noise spectra with confusion noise included, illustrating the impact of the astrophysical foreground on the instrument sensitivity.  The the black [dotted] lines are 
 the LISA baseline instrument noise, and are included for reference.  All estimates are for two year observation 
 times.  The confusion noise does not have a significant impact on the detector sensitivity for the 1 Gm configurations.
-\begin{figure*}[htbp]
+\begin{figure*}[H]
    \includegraphics[width=1\textwidth]{confusion.eps} % requires the graphicx package
    \caption{Noise spectra for different detector configurations.  The red [solid] curves show the full noise spectrum, the green [dashed] curves are the instrument-only noise spectra and the black [dotted] line is the baseline LISA instrument noise curve.  All results are for two year mission lifetimes. }
    \label{Figure:Confusion}
@@ -557,7 +587,7 @@ The evaluation software also tracks the number of binaries with $\ddot{f}_0$ con
 required to unambiguously determine if the orbital period of the binary is being solely driven by the emission of gravitational 
 waves, or if there is some additional dynamical interaction between to two stars.  Unfortunately, for the new configurations 
 being considered, only a few binaries will have sufficiently well constrained $\ddot{f}$ during a two year observation time.  This is not all that surprising, as the prospects for measuring  $\ddot{f}_0$ with LISA were uncertain at best.
-\begin{table}[htbp]
+\begin{table}[H]
 \begin{center}
 \begin{tabular}{cccccc}
 \hline\hline
@@ -1003,21 +1033,21 @@ N.B. For model  HOR, only the first 11 columns are present. We consider the bina
 studies, we suggest to assume two extreme cases of (i) non spinning binaries,
 and (ii) binaries with $a_1=a_2=0.9$, aligned to the binary angular momentum.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_EXAMPLE_POP.eps}
 \caption{Example of marginalized $dN/dM_z$ (upper left panel), $dN/dq$ (upper right panel) and $dN/dz$ (lower panel) distributions for model HOR. In each panel, the black lines are the marginalized distributions contained in the files located in the directory 'distributions'. The green histograms are the distributions obtained by realization 1 in the file model-HOR-MCevents.OUT in the 'montecarlo-catalogues' directory.
 \label{F:MBHbMod:fig1} }
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_EXAMPLE_SPINS.eps}
 \caption{Example of marginalized spin distributions $dN/da_1$ (solid lines) and $dN/da_2$ (dashed lines) for models SE (VHM coherent, lower panel) and SC (VHM chaotic, upper panel). Histograms are the distributions obtained by realization 1 in the file model-SC-MCevents.OUT (upper panel) and model-SE-MCevents.OUT (lower panel) in the 'montecarlo-catalogues' directory.
 \label{F:MBHbMod:fig2} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_EXAMPLE_ECCENTRICITY.eps}
 \caption{Eccentricity distributions at {\it observed} gravitational wave frequency of $10^{-4}$ Hz for model SE (VHM coherent, solid green histogram), SC (VHM chaotic, dashed green histogram), LE (BVR coherent, solid red histogram), LC (BVR chaotic, dashed red histogram). Coherent models are evolved via gas dynamics, whereas star driven dynamics is assumed for the chaotic models. The distributions are obtained by averaging over the 10 Montecarlo realizations contained in the
@@ -1037,31 +1067,517 @@ respective model*-MCevents.OUT files in the 'montecarlo-catalogues' directory.
 \label{SS:MBHbPE}
 {\it ('section captains' : Neil Cornish \& Emanuele Berti) }
 
-\subsubsection{Horizon distance  {\it (Emanuele Berti, Neil Cornish,  \&  Stas Babak)}}
+\subsubsection{Averaged SNRs and horizon distances  {\it (Emanuele Berti, Neil Cornish,  \&  Stas Babak)}}
 \label{SSS:MBHbPEHorizon}
 
+Let us consider the restricted PN waveforms as computed (say) in Maggiore's
+book:
+%
+\be
+\tilde h(f)=\sqrt{\f{5}{6}}\f{{\cal M}^{5/6}f^{-7/6}}{2\pi^{2/3}D_L} e^{i\psi}
+\f{2Q}{2}\,.
+\ee
+where we write $Q=2Q/2$ for reasons that will be apparent below. Here
+%
+\be
+Q=\f{1+\cos^2 \iota}{2}F_+ + i \cos\iota F_\times\,.
+\ee
+%
+The angular average of the modulus squared of $2Q$ yields
+%
+\be
+\langle (1+\cos^2 \iota)^2 F^2_+ + 4\cos^2\iota F^2_\times
+\rangle^{1/2}=\f{4}{5}\,,
+\ee
+%
+so we get an angle-averaged Fourier amplitude of
+%
+\be
+\tilde h(f)
+=\sqrt{\f{5}{6}}\f{{\cal M}^{5/6}f^{-7/6}}{2\pi^{2/3}D_L}e^{i\psi}\f{2}{5}
+=\f{1}{\sqrt{30}}\f{{\cal M}^{5/6}f^{-7/6}}{\pi^{2/3}D_L}e^{i\psi}\,.
+\ee
+%
+which is the same as Eq.~(2.1b) in \cite{Berti:2004bd}. We multiply this by
+$\f{\sqrt{3}}{2}$ to take into account the $60^\circ$ orientation of the LISA
+configuration, so our starting point is Eq.~(2.1a) in \cite{Berti:2004bd}:
+%
+\be
+\tilde h(f)
+=\f{\sqrt{3}}{2}
+\f{1}{\sqrt{30}}
+\f{{\cal M}^{5/6}f^{-7/6}}{\pi^{2/3}D_L}e^{i\psi}\,.
+\ee
+%
+The SNR is defined in the usual way (see e.g. Eq.~(2.6) in
+\cite{Berti:2004bd}):
+%
+\be
+\rho^2 = 4\int_{f_{\rm in}}^{f_{\rm fin}} \f{|\tilde
+  h(f)|^2}{S_n^{\rm NSA}(f)} df\,,
+\ee
+%
+where the {\it non sky-averaged} noise spectral density $S_n^{\rm NSA}(f)$ is
+related to the {\it sky-averaged} (but not inclination-averaged!) noise
+spectral density provided by Neil and by Shane's Sensitivity Curve Generator,
+$S_n^{\rm NSA}(f)$, by
+%
+\be\label{noiseNSA}
+S_n^{\rm NSA}(f)=\f{3}{20}S_n^{\rm SA}(f)\,.
+\ee
+%
+Putting everything together, the integral to compute for restricted PN
+inspirals is
+%
+\be
+\rho = \sqrt{\f{2}{3}} \f{{\cal M}^{5/6}}{\pi^{2/3}D_L}
+\left[
+\int_{f_{\rm in}}^{f_{\rm fin}} \f{f^{-7/3}}{S_n^{\rm SA}(f)}df
+\right]^{1/2}\,.
+\ee
+%
+The SNR for phenomenological waveforms is computed following the same
+conventions. For the 5/6 link configurations, these average SNRs are then
+multiplied by a factor $\sqrt{2}$. In the present calculation we use the {\sc
+  PhenomC} model \cite{Santamaria:2010yb}, but if needed for comparisons we
+can easily compute SNRs for {\sc PhenomA} \cite{Ajith:2007kx} and {\sc
+  PhenomB} \cite{Ajith:2009bn}.
+
+Horizon distances are computed as follows: for a given cosmological model
+(here $\Omega_M = 0.28$, $\Omega_\Lambda = 0.72$, $H_0 = 70$~km/s/Mpc), first
+compute the SNR as a function of $M_z=M(1+z)$ at (say) $z=1$. Then use the
+fact that SNR$\sim D_L^{-1}$ to find the horizon luminosity distance $D_{L,
+  {\rm hor}}$ at which SNR$=10$. Finally, find the redshift $z_{\rm hor}(D_{L,
+  {\rm hor}})$ corresponding to that luminosity distance by inverting
+(numerically) $D_L(z)$. Horizon distances and redshifts are plotted as
+functions of the mass $M$ in the {\it source} frame.
+
+The right panel of Fig.~\ref{fig:zMiniLISA} shows that, even including merger
+and ringdown, Configuration 2 is necessary to reach $z>10$ for all $M\gtrsim
+10^4 M_\odot$.
+
+%\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{``Quick and dirty'' ringdown parameter estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Errors on ringdown estimates of the mass and spin should be very small and
+generally negligible. I propose to estimate them following \cite{Berti:2005ys}
+(henceforth BCW), as follows. In the $\delta$-function or constant noise limit
+we can compute the SNR as [(3.16) in BBW, where we include redshift factors
+  and substitute $r$ by $D_L$ as appropriate]:
+%
+\beq
+\label{rhoanalytic}
+\rho_{\rm FH} = \left (\frac{2}{5} \right )^{1/2} 
+	\left (\frac{1}{\pi {\cal F}_{lmn} D_L} \right )
+	\left (\frac{\epsilon_{\rm rd}}{S_h^{\rm NSA}(f_{lmn})} \right )^{1/2}
+        \left[M(1+z)\right]^{3/2}
+	\frac{2Q_{lmn}}{\sqrt{1+4Q_{lmn}^2}} \,,
+\eeq
+%
+where $M$ is the mass in the source frame. Note that this expression involves
+the {\it non sky-averaged} noise curve (see expressions above). Also,
+%
+\beq
+{\cal F}_{lmn}&=&M\omega_{lmn}=2\pi M\, f_{lmn}=f_1+f_2(1-j)^{f_3}\,,\\
+Q_{lmn}&=&q_1+q_2(1-j)^{q_3}\,,
+\eeq
+%
+where $j$ is the dimensionless spin of the final black hole, and for the
+fundamental mode with $l=m=2$ we have (Table VIII):
+%
+$f_1=1.5251$,
+$f_2=-1.1568$,
+$f_3=0.1292$ and
+$q_1=0.7000$,
+$q_2=1.4187$,
+$q_3=-0.4990$.
+%
+Then the errors on mass and spin, in the Flanagan-Hughes convention
+\cite{Flanagan:1997sx}, can be estimated as [(4.12a), (4.12b) in BCW]:
+%
+%\begin{subequations}
+\label{rii}
+\beq
+\sigma_j &=&
+\frac{1}{\rho_{\rm FH}}
+\left|2\frac{Q_{lmn}}{Q_{lmn}'}
+\left(1+\f{1+4\beta}{16\Qlm^2}\right)\right|\,, \label{erra}\\
+\f{\sigma _M}{M} &=&
+\frac{1}{\rho_{\rm FH}}
+\left|2\frac{Q_{lmn}
+f_{lmn}'}{f_{lmn}Q_{lmn}'}
+\left(1+\f{1+4\beta}{16 \Qlm^2}\right)\right|\,, \label{errm}
+\eeq
+%\end{subequations}
+%
+where a prime denotes a derivative with respect to $j$. In general we would
+have
+%
+\be
+\beta = \sin^2 \psi \cos 2\ph^\times - \cos^2 \psi \cos 2\ph^+\,
+\ee
+%
+with 
+%
+$\cos \psi \equiv 1/\sqrt{1+N_\times^2}$, 
+%
+$\sin \psi \equiv N_\times/\sqrt{1+N_\times^2}$. 
+%
+The parameter $N_\times$ is the ratio between plus and cross polarization
+amplitudes. If we follow Flanagan-Hughes, we can set $N_\times=1$,
+$\phi^+=\phi^\times=0$, and therefore $\beta=0$, which simplifies the
+expressions even further.
+
+The only missing ingredient here is an estimate of ringdown efficiency,
+$\epsilon_{\rm rd}$. I propose to use the estimate of Eq.~(4.12) in
+  \cite{Berti:2007fi}:
+%
+\be
+\epsilon_{\rm rd}=0.271\f{q^2}{(1+q)^4}\,,
+\ee
+%
+where $q=m_1/m_2>1$ is the mass ratio of the binary. In fact, we can even use
+the more optimistic ``matched-filtering based'' estimate of Eq.~(4.17) in
+\cite{Berti:2007fi}:
+%
+\be
+\epsilon_{\rm rd}=0.44\f{q^2}{(1+q)^4}\,.
+\ee
+%
+If you want I can try to improve these estimates by including corrections due
+to the spins. The ``spin expansion'' formalism of Boyle and Kesden suggests
+that these corrections will be proportional to the sum of the components of
+the binary spins along the orbital angular momentum. The corrections will
+change $\epsilon_{\rm rd}$ by at most a factor $\approx 2$. I expect the
+errors on mass and spin to be negligible anyway, so I would not bother...
+
+%\clearpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section*{Averaged SNRs and horizon distances for New LISA (5/2/2011)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRNewLISAinsp.eps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRNewLISAIMR.eps}\\
+\end{tabular}
+\caption{\label{fig:SNRMiniLISA} Angle-averaged SNR for equal-mass,
+  nonspinning binaries as a function of redshifted mass, $M_z=M(1+z)$. Solid
+  lines: instrumental noise+galactic background; dashed lines: instrumental
+  noise only.  Left: restricted PN inspiral; right: {\sc PhenomC}
+  inspiral/merger/ringdown. In the right panel, thick lines refer to
+  nonspinning binaries, and thin lines refer to binaries with $s_1=s_2=0.9$.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorNewLISAinsp.eps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorNewLISAIMR.eps}\\
+\end{tabular}
+\caption{\label{fig:zMiniLISA} Horizon redshift $z_{\rm hor}$ (in Mpc) for
+  equal-mass binaries as a function of the source mass $M$. Left: restricted
+  PN inspiral; right: {\sc PhenomC} inspiral/merger/ringdown. Linestyles are
+  the same as in Fig.~\ref{fig:SNRMiniLISA}.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLNewLISAinsp.eps}&
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLNewLISAIMR.eps}\\
+\end{tabular}
+\caption{\label{fig:DLMiniLISA} Horizon luminosity distance $D_{L, {\rm hor}}$
+  (in Mpc) for equal-mass binaries as a function of the source mass $M$. Left:
+  restricted PN inspiral; right: {\sc PhenomC}
+  inspiral/merger/ringdown. Linestyles are the same as in
+  Fig.~\ref{fig:SNRMiniLISA}.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspSNRContourz1.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRSNRContourz1.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspSNRContourz1.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRSNRContourz1.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspSNRContourz1.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRSNRContourz1.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspSNRContourz1.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRSNRContourz1.ps}\\
+\end{tabular}
+\caption{\label{fig:SNRMiniLISA2} Angle-averaged SNR for equal-mass,
+  nonspinning binaries as a function of redshifted mass, $M_z=M(1+z)$.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspSNRContourz1.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRSNRContourz1.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspSNRContourz1.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRSNRContourz1.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspSNRContourz1.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRSNRContourz1.ps}\\
+\end{tabular}
+\caption{\label{fig:SNRMiniLISA3} Angle-averaged SNR for equal-mass,
+  nonspinning binaries as a function of redshifted mass, $M_z=M(1+z)$.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspZhorContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRZhorContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspZhorContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRZhorContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspZhorContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRZhorContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspZhorContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRZhorContour.ps}\\
+\end{tabular}
+\caption{\label{fig:SNRMiniLISA4} Horizon redshift.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspZhorContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRZhorContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspZhorContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRZhorContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspZhorContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRZhorContour.ps}\\
+\end{tabular}
+\caption{\label{fig:SNRMiniLISA5} Horizon redshift.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspDLContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRDLContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspDLContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRDLContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspDLContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRDLContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspDLContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRDLContour.ps}\\
+\end{tabular}
+\caption{\label{fig:SNRMiniLISA6} Horizon luminosity distance.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspDLContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRDLContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspDLContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRDLContour.ps}\\
+\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspDLContour.ps}
+&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRDLContour.ps}\\
+\end{tabular}
+\caption{\label{fig:SNRMiniLISA7} Horizon luminosity distance.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRinsp.eps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRIMR.eps}\\
+\end{tabular}
+\caption{\label{fig:SNR} Angle-averaged SNR for equal-mass, nonspinning
+  binaries as a function of redshifted mass, $M_z=M(1+z)$. For the 5/6link
+  configurations we multiplied the average SNR by a factor $\sqrt{2}$. Left:
+  restricted PN inspiral; right: {\sc PhenomC} inspiral/merger/ringdown.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLinsp.eps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLIMR.eps}\\
+\end{tabular}
+\caption{\label{fig:DL} Horizon luminosity distance $D_{L, {\rm hor}}$ (in
+  Mpc) for equal-mass, nonspinning binaries as a function of the source mass
+  $M$. Recall that for the 5/6link configurations we multiplied the average
+  SNR by a factor $\sqrt{2}$. Left: restricted PN inspiral; right: {\sc
+    PhenomC} inspiral/merger/ringdown.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\begin{tabular}{cc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorinsp.eps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorIMR.eps}\\
+\end{tabular}
+\caption{\label{fig:z} Horizon redshift $z_{\rm hor}$ (in Mpc) for equal-mass,
+  nonspinning binaries as a function of the source mass $M$. Recall that for
+  the 5/6link configurations we multiplied the average SNR by a factor
+  $\sqrt{2}$. Left: restricted PN inspiral; right: {\sc PhenomC}
+  inspiral/merger/ringdown.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRIMRSpin09.eps}\\
+\begin{tabular}{cc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLIMRSpin09.eps}&
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorIMRSpin09.eps}\\
+\end{tabular}
+\caption{\label{fig:spin} SNR, horizon luminosity distance $D_{L, {\rm hor}}$
+  (in Mpc) and horizon redshift $z_{\rm hor}$ for equal-mass, spinning
+  binaries with near-maximal aligned spins (Kerr parameters
+  $s_1=s_2=0.9$). SNRs and horizon distances improve slightly with respect to
+  the nonspinning case, but not by orders of magnitude.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/noise.eps}
+\caption{\label{fig:PSD}
+  Non-sky averaged noise spectral density, Eq.~(\ref{noiseNSA}), for Classic
+  LISA and for the three New LISA configurations. Dashed lines include the
+  galactic background, solid lines refer to the instrumental noise only.}
+\end{center}
+\end{figure*}
+%
+
+%
+\begin{figure*}[H]
+\begin{center}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/noiseC3C5.eps}
+\caption{\label{fig:PSDC3C5} Non-sky averaged noise spectral density,
+  Eq.~(\ref{noiseNSA}), for Classic LISA and for New LISA C3/C5 including the
+  galactic background.}
+\end{center}
+\end{figure*}
+%
 
 
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Results using inspiral waveform with spin precession and higher harmonics  {\it (Ryan Lang \& Neil Cornish)}}
 \label{SSS:MBHbPEInspPrecHHRyan}
 
 
+Preliminary results for parameter estimation with spin precession and higher harmonics
+Sources: LC and SC catalogs, requiring SNR $> 8$ (6 link case), 3 months $< t_c < $ 2 years, mass ratio $< 50$.  (SCClassic and SCConfig4 are not quite done but have more viable sources than the other cases.)
+
+\begin{figure}[H]
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LCm13.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LCm14.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SCm13.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SCm14.eps}
+\caption{Mass error}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LCchi13.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LCchi14.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SCchi13.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SCchi14.eps}
+\caption{Spin error}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LCD3.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LCD4.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SCD3.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SCD4.eps}
+\caption{Distance error}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LC2a3.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/LC2a4.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SC2a3.eps}
+\includegraphics[scale=0.54]{FigSMBHRyanNeil/SC2a4.eps}
+\caption{Sky position major axis (degrees)}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Results using inspiral waveform with spin precession and higher harmonics  {\it (Antoine Petiteau, Sofiane Aoudia \& Stas Babak)}}
 \label{SSS:MBHbPEInspAEI}
 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Inspiral-Merger-Ringdown with higher harmonics (EOB based)  {\it (Sean McWilliams)}}
 \label{SSS:MBHbPEPhenomAEI}
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Results using inspiral waveform with higher harmonics  {\it (Ed Porter)}}
 \label{SSS:MBHbPEInspHHEd}
 
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Results using PhenomC (Inspiral-Merger-Ringdown) from AEI {\it (Stas Babak, Antoine Petiteau, Alberto Sesana, Frank Ohme \& Emma Robinson)}}
 \label{SSS:MBHbPEPhenomAEI}
-We use PhenomC waveforms described in \cite{sm10}. Waveforms include merger and ringdown and assume aligned spins. Given the latter assumption, we apply them to efficient accretion models (SE, LE) only. Moreover, since the waveforms can not handle too extreme cases, we lower the maximal spin limit to 0.98, and considered only sources with mass ratio larger than $q=M_2/M_1=0.05$, thus loosing 10-20\% of the sources (depending on the MBH population model) in our analysis.
+We use PhenomC waveforms described in \cite{Santamaria:2010yb}. Waveforms include merger and ringdown and assume aligned spins. Given the latter assumption, we apply them to efficient accretion models (SE, LE) only. Moreover, since the waveforms can not handle too extreme cases, we lower the maximal spin limit to 0.98, and considered only sources with mass ratio larger than $q=M_2/M_1=0.05$, thus loosing 10-20\% of the sources (depending on the MBH population model) in our analysis.
 
 We consider a threshold SNR$=6$ for detection, and SNR$=10$ for trustworthy parameter estimations. We show results for detectors LISA, C4, C5, C2, C3 and C5,  assuming a single Michelson interferometer. 
 
@@ -1089,14 +1605,14 @@ The median source SNR and parameter estimation accuracy as a function of redshif
 
 %%%%%%%%%%%%%%%%  Histogram LISA, C2, C4 and C5  %%%%%%%%%%%%%%%%
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_SE_LISAC2C4C5.eps}
 \caption{1-$\sigma$ errors on source parameters: redshifted mass (upper left); symmetric mass ratio (upper right); spin parameter (lower left); luminosity distance (lower right). Histograms collect all the events in the SE catalogue (small seed), with SNR$>10$. Ligth blue histograms are for LISA, blue histograms are for C2, green histograms are for C4 and red histograms are for C5.
 \label{Hist_SE_LISAC2C4C5} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_LE_LISAC2C4C5.eps}
 \caption{1-$\sigma$ errors on source parameters. Similar as \ref{Hist_SE_LISAC2C4C5} with LE catalogue (large seed).
@@ -1106,7 +1622,7 @@ The median source SNR and parameter estimation accuracy as a function of redshif
 
 %%%%%%%%%%%%%%%%  Median errors LISA, C2, C4 and C5  %%%%%%%%%%%%%%%%
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=\textwidth]{FigSMBHPhenomAEI/MedianErrs_SE_LISAC2C4C5.eps}
 \caption{Median 1-$\sigma$ errors on the source parameters as a function of 
@@ -1114,7 +1630,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 \label{MedianErrs_SE_LISAC2C4C5} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/MedianErrs_LE_LISAC2C4C5.eps}
 \caption{Same as figure \ref{MedianErrs_SE_LISAC2C4C5} but for the LE (large seed) catalogue.
@@ -1125,14 +1641,14 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 %%%%%%%%%%%%%%%%  Median SNR LISA, C2, C4 and C5  %%%%%%%%%%%%%%%%
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_SE_LISAC2C4C5.eps}
 \caption{Median SNR s as a function of  $z$. Colorstyle as in figure \ref{Hist_SE_LISAC2C4C5} : ligth blue histograms are for LISA, blue histograms are for C2, green histograms are for C4 and red histograms are for C5. Model SE (small seeds) is assumed.
 \label{MedianSNR_SE_LISAC2C4C5} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_LE_LISAC2C4C5.eps}
 \caption{Same as figure \ref{MedianSNR_SE_LISAC2C4C5} but for the LE (large seed) catalogue.
@@ -1143,7 +1659,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 %%%%%%%%%%%%%%%%  SNR vs z LISA, C1 and C3  %%%%%%%%%%%%%%%%
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/LISA_mc_SNRs.eps}
 \caption{LISA performances as a function of redshift. From the top to the bottom we plot the average source SNR, the fraction of detectable sources (SNR$>6$), the mean number of detected sources, and the cumulative number of detected sources. Error bars are standard deviations; SE population model is assumed.
@@ -1151,7 +1667,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C3_mc_SNRs.eps}
 \caption{Same as figure \ref{LISA_mc_SNR} but for C3.
@@ -1159,7 +1675,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C2_mc_SNRs.eps}
 \caption{Same as figure \ref{LISA_mc_SNR} but for C2.
@@ -1167,7 +1683,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C1_mc_SNRs}
 \caption{Same as figure \ref{LISA_mc_SNR} but for C1.
@@ -1179,7 +1695,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 %%%%%%%%%%%%%%%%  Histogram LISA, C1 and C3  %%%%%%%%%%%%%%%%
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_SE_LISAC1C2.eps}
 \caption{1-$\sigma$ errors on source parameters: redshifted mass (upper left); symmetric mass ratio (upper right); spin parameter (lower left); luminosity distance (lower right). Histograms collect all the events in the SE catalogue, with SNR$>10$. Red histograms are for LISA, green histograms are for C2 and blue histograms are for C1.
@@ -1188,7 +1704,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_LE_LISAC1C2.eps}
 \caption{Same as figure \ref{Hist_SE_LISAC1C2} but for the LE catalogue.
@@ -1199,7 +1715,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 %%%%%%%%%%%%%%%%  Median erroe LISA, C1 and C3  %%%%%%%%%%%%%%%%
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_SE_LISAC1C2.eps}
 \caption{Median source SNR as a function of $z$. Colorstyle as in figure
@@ -1208,7 +1724,7 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 \end{figure}
 
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=\textwidth]{FigSMBHPhenomAEI/MedianErrs_SE_LISAC1C2.eps}
 \caption{Median 1-$\sigma$ errors on the source parameters as a function of 
@@ -1216,14 +1732,14 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 \label{MedianErrs_SE_LISAC1C2} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_LE_LISAC1C2.eps}
 \caption{Same as figure \ref{MedianErrs_SE_LISAC1C2} but for the LE catalogue.
 \label{MedianSNR_LE_LISAC1C2} } 
 \end{figure}
 
-%\begin{figure}[htbp]
+%\begin{figure}[H]
 %   \includegraphics[width=\textwidth]{FigSMBHPhenomAEI/MedianErrs_LE_LISAC1C2.eps}
 %\caption{Same as figure \ref{MedianErrs_SE_LISAC1C2} but for the LE catalogue.
 %\label{MedianErrs_LE_LISAC1C2} } 
@@ -1234,9 +1750,9 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%% Alberto comparaison 4 vs 6 links
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{4 vs 6 links and low frequency sensitivity impact on the source distance determination {\it (A. Sesana)} }
 \label{SS:SMBH4vs6link}
 
@@ -1250,7 +1766,7 @@ LISA gives us distance information through: {\bf (i) constellation motion during
 The information can be restored by including higher harmonics, eccentricity, and spin precession. However their impact has to be properly quantify. Moreover, as Gerard and Stas pointed out, {\bf our ability to determine the source distance is not anymore 'detector dependent' but 'waveform dependent'}, which is, in any case, a risk. For example, if most of the sources have almost perfectly aligned spins, even with the correct waveforms given by Mother Nature, we might not be able to determine the distance of most of them with a 4 links descoped detector; conversely we would be able to do so anyway, with a 6 links LISA-like baseline.
 
  
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_comparison_all.eps}
 \caption{Redshift determination accuracy over all the observable population.
@@ -1259,14 +1775,14 @@ is given in the panels.
 \label{F:SMBH4vs6link:fig1} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_comparison_massive.eps}
 \caption{Same as figure \ref{F:SMBH4vs6link:fig1}, but for massive sources only.
 \label{F:SMBH4vs6link:fig2} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_comparison_light.eps}
 \caption{Same as figure \ref{F:SMBH4vs6link:fig1}, but for light sources only.
@@ -1275,8 +1791,9 @@ is given in the panels.
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%    Model selection 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Model selection {\it (Alberto Sesana, Marta Volonteri, Emanuele Berti, Jonathan Gair) } }
 \label{SS:MBHbModel}
 {\it ('section captain' : Alberto Sesana) }
@@ -1343,35 +1860,35 @@ LC & C2   & 38.72 &     30.47 &     41.21 &     36.00\\
 \label{tabI}
 \end{table*}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_MODEL_SE_DIST.eps}
 \caption{{\it Theoretically observable} marginalized distributions for model SE. In each panel we plot curves for LISA (black), C2 (blue) and C1 (red). Thick--dashed curves are for IMR waveforms, while thin--solid are for inspiral only. The curves are normalized so that their integrals return the number of observed events in two years. The three panels show the distributions as a function of total redshifted mass ($M_z=(M_1+M_2)(1+z)$, upper left panel), mass ratio ($q=M_2/M_1<1$, upper right panel), and redshift ($z$, lower panel).
 \label{F:MBHbModel:fig1} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_MODEL_LE_DIST.eps}
 \caption{Same as figure \ref{F:MBHbModel:fig1} but for model LE.
 \label{F:MBHbModel:fig2} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_ERRORS_C2.eps}
 \caption{1-$\sigma$ errors in the determination of the binary parameters, averaged over 1000 realizations of model LE. Here we assume configuration C2, one Michelson and threshold SNR$=8$. Dashed histograms are for inspiral only, solid ones are for IMR waveforms. 
 \label{F:MBHbModel:fig3} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_ERRORS_COMPARISON_81.eps}
 \caption{1-$\sigma$ errors in the determination of the binary parameters, averaged over 1000 realizations of model LE, assuming different detectors: LISA (black), C2 (blue), C1 (red). We assume one Michelson and threshold SNR$=8$
 \label{F:MBHbModel:fig4} } 
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \center
    \includegraphics[width=0.65\textwidth]{FigSMBHModSel/FIG_ERR_Z_81_82.eps} 
 \caption{1-$\sigma$ errors in the determination of $z$ for LISA (black, lower panel) and C1 (red, upper panel). Solid and dashed histograms are for one and two Michelson respectively. We averaged over 1000 realizations of model LE, assuming threshold SNR$=8$. 
@@ -1395,7 +1912,8 @@ LC & C2   & 38.72 &     30.47 &     41.21 &     36.00\\
 
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -1431,9 +1949,6 @@ LC & C2   & 38.72 &     30.47 &     41.21 &     36.00\\
 
 
 \begin{thebibliography}{}
-
-\bibitem{sm10}
-L. Santamaria, F. Ohme, P. Ajith, B. Bruegmann, N. Dorband, M. Hannam, S. Husa, P. Moesta, D. Pollney, C. Reisswig, E. L. Robinson, J. Seiler and B. Krishnan,  Phys.\ Rev.\  D {\bf 82}, 064016 (2010)
 
 \bibitem{dhu05}
 {Dhurandhar}, S.~V. and {Nayak}, K.~R. and {Koshti}, S. and {Vinet}, J.-Y. Classical and Quantum Gravity {\bf 22}, 481-487 (2005)
@@ -1582,6 +2097,57 @@ A. Sesana,
   [arXiv:astro-ph/0101196].
   %%CITATION = ASJOA,558,535;%%
 
+%\cite{Berti:2004bd}
+\bibitem{Berti:2004bd}
+  E.~Berti, A.~Buonanno, C.~M.~Will,
+  %``Estimating spinning binary parameters and testing alternative theories of gravity with LISA,''
+  Phys.\ Rev.\  {\bf D71}, 084025 (2005).
+  [gr-qc/0411129].
+
+%\cite{Santamaria:2010yb}
+\bibitem{Santamaria:2010yb}
+  L.~Santamaria, F.~Ohme, P.~Ajith, B.~Bruegmann, N.~Dorband, M.~Hannam, S.~Husa, P.~Mosta {\it et al.},
+  %``Matching post-Newtonian and numerical relativity waveforms: systematic errors and a new phenomenological model for non-precessing black hole binaries,''
+  Phys.\ Rev.\  {\bf D82}, 064016 (2010).
+  [arXiv:1005.3306 [gr-qc]].
+
+%\bibitem{sm10}
+%L. Santamaria, F. Ohme, P. Ajith, B. Bruegmann, N. Dorband, M. Hannam, S. Husa, P. Moesta, D. Pollney, C. Reisswig, E. L. Robinson, J. Seiler and B. Krishnan,  Phys.\ Rev.\  D {\bf 82}, 064016 (2010)
+
+
+%\cite{Ajith:2007kx}
+\bibitem{Ajith:2007kx}
+  P.~Ajith, S.~Babak, Y.~Chen, M.~Hewitson, B.~Krishnan, A.~M.~Sintes, J.~T.~Whelan, B.~Bruegmann {\it et al.},
+  %``A Template bank for gravitational waveforms from coalescing binary black holes. I. Non-spinning binaries,''
+  Phys.\ Rev.\  {\bf D77}, 104017 (2008).
+  [arXiv:0710.2335 [gr-qc]].
+
+%\cite{Ajith:2009bn}
+\bibitem{Ajith:2009bn}
+  P.~Ajith, M.~Hannam, S.~Husa, Y.~Chen, B.~Bruegmann, N.~Dorband, D.~Muller, F.~Ohme {\it et al.},
+  %``Inspiral-merger-ringdown waveforms for black-hole binaries with non-precessing spins,''  
+  [arXiv:0909.2867 [gr-qc]].
+
+%\cite{Berti:2005ys}
+\bibitem{Berti:2005ys}
+  E.~Berti, V.~Cardoso, C.~M.~Will,
+  %``On gravitational-wave spectroscopy of massive black holes with the space interferometer LISA,''
+  Phys.\ Rev.\  {\bf D73}, 064030 (2006).
+  [gr-qc/0512160].
+
+%\cite{Flanagan:1997sx}
+\bibitem{Flanagan:1997sx}
+  E.~E.~Flanagan, S.~A.~Hughes,
+  %``Measuring gravitational waves from binary black hole coalescences: 1. Signal-to-noise for inspiral, merger, and ringdown,''
+  Phys.\ Rev.\  {\bf D57}, 4535-4565 (1998).
+  [gr-qc/9701039].
+
+%\cite{Berti:2007fi}
+\bibitem{Berti:2007fi}
+  E.~Berti, V.~Cardoso, J.~A.~Gonzalez, U.~Sperhake, M.~Hannam, S.~Husa, B.~Bruegmann,
+  %``Inspiral, merger and ringdown of unequal mass black hole binaries: A Multipolar analysis,''
+  Phys.\ Rev.\  {\bf D76}, 064034 (2007).
+  [gr-qc/0703053 [GR-QC]].
 
 \end{thebibliography}{}
 
