@@ -1026,8 +1026,11 @@ the $x$ axis. The $x$ axis points from the source toward the Earth.
 The angles defining the direction of the binary angular momentum $L$
 ($\theta_L$, $\phi_L$, i.e. the orientation of the binary plane)
 and the sky location ($\theta_s$, $\phi_s$), are measured in the 
-ecliptic frame ($x_e,y_e,z_e$). [Stas and Antoine will provide a 
-script to transform the angles in a standard reference frame.]
+ecliptic frame ($x_e,y_e,z_e$). 
+Additional script (can be found on the  wiki) was used to translate spin angles from 
+source frame to ecliptic frame. Those together with estimations of the luminosity distance,
+chirp mass and symmetric mass ratio were added as extra columns. 
+
 
 N.B. For model  HOR, only the first 11 columns are present. We consider the binaries to be circular in this case. As stated before, for horizon
 studies, we suggest to assume two extreme cases of (i) non spinning binaries,
@@ -1581,31 +1584,81 @@ Sources: LC and SC catalogs, requiring SNR $> 8$ (6 link case), 3 months $< t_c 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Results using PhenomC (Inspiral-Merger-Ringdown) from AEI {\it (Stas Babak, Antoine Petiteau, Alberto Sesana, Frank Ohme \& Emma Robinson)}}
 \label{SSS:MBHbPEPhenomAEI}
-We use PhenomC waveforms described in \cite{Santamaria:2010yb}. Waveforms include merger and ringdown and assume aligned spins. Given the latter assumption, we apply them to efficient accretion models (SE, LE) only. Moreover, since the waveforms can not handle too extreme cases, we lower the maximal spin limit to 0.98, and considered only sources with mass ratio larger than $q=M_2/M_1=0.05$, thus loosing 10-20\% of the sources (depending on the MBH population model) in our analysis.
+We use PhenomC waveforms described in \cite{Santamaria:2010yb}. Waveforms include merger and ringdown and assume aligned spins. Given the latter assumption, we apply them to efficient accretion models (SE, LE) only. Moreover, since the waveforms can not handle too extreme cases, we lower the maximal spin limit to 0.98, and considered only sources with mass ratio larger than $q=M_2/M_1=0.05$, thus loosing 10-20\% of the sources (depending on the MBH population model) in our analysis. The waveform is designed only for a dominant (2,2) harmonic and $h_{+}, h_{x}$ are
+generated in the frequency domain. We have used rigid-adiabatic approximation to the TDI response (1st generation). For the inspiral part 
+we have considered the spacecraft motion by using the correspondence (via  stationary phase  approximation) between frequency of the GW signal 
+and the time. However this relationship becomes not applicable as we approach the merger (we use monotonous increase in time and in frequency
+as validity condition).  For the merger and the ringdown (less than few days) we have assumed the static LISA. This simplified assumption 
+does not affect SNR estimation but might overestimate (slightly) the error for the sky location. Some information about the sky location 
+comes from the triangulation (at high frequency) as GW signal propagates across the constellation, and other information is due to modulation of the 
+amplitude through antenna pattern and Dopper modulation of the phase. Assumption of the static LISA removes the modulation of the signal.
+For the halo orbit around L1 we have used the numerical orbit and assuming adiabatic evolution of the GW signal.
 
-We consider a threshold SNR$=6$ for detection, and SNR$=10$ for trustworthy parameter estimations. We show results for detectors LISA, C4, C5, C2, C3 and C5,  assuming a single Michelson interferometer. 
+We consider a threshold SNR$=6$ for detection, and SNR$=10$ for trustworthy parameter estimations. We show results for detectors LISA, halo L1, C4, C5, C2, C3 and C5,  assuming a single Michelson interferometer. 
 
-
-Figures \ref{Hist_SE_LISAC2C4C5} and \ref{Hist_LE_LISAC2C4C5} show histograms of parameter estimation accuracy for the ten realizations of model SE and LE respectively with LISA, C2, C4 and C5; only sources with SNR$>10$ are included. 
-
-The median parameter estimation accuracy with LISA, C2, C4 and C5 as a function of redshift is shown in figures \ref{MedianSNR_SE_LISAC2C4C5}-to-\ref{MedianSNR_LE_LISAC2C4C5}.
-
-The median source SNR with LISA, C2, C4 and C5 as a function of redshift is shown in figures \ref{MedianSNR_SE_LISAC2C4C5}-to-\ref{MedianSNR_LE_LISAC2C4C5}.
-
-
-\vspace{1cm}
-
-For comparison we also add results comparing about C1, C2 and LISA and SNR for C3 : 
-
-Figures \ref{LISA_mc_SNR}, \ref{C3_mc_SNR}, \ref{C2_mc_SNR} and \ref{C1_mc_SNR} show the performances of LISA, C2 and C1 respectively, assuming the SE MBH binary population model.
+First we consider the detection abilities of different configurations for that we have considered all realizations and sources from 
+the ``{\bf HOR}'' catalog  described earlier in the section 3.1. The LISA and C2 configurations are given in the figures \ref{LISA_mc_SNR},
+ \ref{C2_mc_SNR} below.  In all these figures the horizontal axis is the redshift. The top panel shows the average SNR for a given 
+ configuration (black circles) upper and lower triangles show the dispersion (one sigma). The second panel from the top gives an 
+ average over realizations fraction of the  detected events with one sigma error bar. This plot has to be read together with the lower panel
+ which gives the average number of detectable events (third panel from the top). The last (bottom) panel gives the accumulative number of the 
+ detected events with the legend providing the average number of the events observed up to redshift 5 and the total.
 
 
 
-Figures \ref{Hist_SE_LISAC1C2} and \ref{Hist_LE_LISAC1C2} show histograms of parameter estimation accuracy for the ten realizations of model SE and LE respectively; only sources with SNR$>10$ are included. 
- 
+\begin{figure}[H]
+\center
+   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/LISA_mc_SNRs.eps}
+\caption{LISA performances as a function of redshift. From the top to the bottom we plot the average source SNR, the fraction of detectable sources (SNR$>6$), the mean number of detected sources, and the cumulative number of detected sources. Error bars are standard deviations; SE population model is assumed.
+\label{LISA_mc_SNR} } 
+\end{figure}
 
-The median source SNR and parameter estimation accuracy as a function of redshift is shown in figures \ref{MedianErrs_SE_LISAC1C2}-to-\ref{MedianErrs_LE_LISAC1C2}.
 
+%\begin{figure}[H]
+%\center
+%   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C3_mc_SNRs.eps}
+%\caption{Same as figure \ref{LISA_mc_SNR} but for C3.
+%\label{C3_mc_SNR} } 
+%\end{figure}
+
+
+\begin{figure}[H]
+\center
+   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C2_mc_SNRs.eps}
+\caption{Same as figure \ref{LISA_mc_SNR} but for C2.
+\label{C2_mc_SNR} } 
+\end{figure}
+
+
+%\begin{figure}[H]
+%\center
+%   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C1_mc_SNRs}
+%\caption{Same as figure \ref{LISA_mc_SNR} but for C1.
+%\label{C1_mc_SNR} } 
+%\end{figure}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The next set of figures corresponds to the results of the parameter estimation. We have used the Fisher information matrix 
+to estimate expected errors. We have computed derivatives numerically. The results quoted below are obtained only for a single
+Michelson (X) interferometer. Note that the PhenomC waveform possesses all parameter degeneracies as restricted PN 
+model for the inspiral because it uses only the dominant harmonic, therefore the result for the sky location and for the 
+distance measurement is so poor. It is known that including the higher harmonics and spin precession improves the 
+result obtained here. However, the fact that we include merger and ringdown helps to have larger SNR  and  propagates the signal 
+to the higher frequencies. Adding modulation of the signal due to spin-orbital coupling and higher harmonics allows 
+to measure of polarization and breaks degeneracies in the parameter space (but does not add much to SNR). So these results 
+have to be combined with estimates obtained from the inspiral only and interpolated to the case where we have both 
+higher harmonics spin modulation and the merger-ring-down. 
+
+The first set of figures gives the overall histograms for the error distribution for two population (for all realizations). 
+All histograms give the relative errors. The tow populations used are {\bf LE} for the large seed and efficient accretion 
+(spins always assumed aligned)  and {\bf SE} for small seeds and efficient accretion.
+
+Figures \ref{Hist_SE_LISAC2C4C5} ({\bf SE} model)   and \ref{Hist_LE_LISAC2C4C5} ({\bf LE} model) compare LISA (magenta)
+with C2 (blue), C4 (green) and C5 (red).  Only sources with SNR$>10$ are included. 
 
 %%%%%%%%%%%%%%%%  Histogram LISA, C2, C4 and C5  %%%%%%%%%%%%%%%%
 
@@ -1624,6 +1677,18 @@ The median source SNR and parameter estimation accuracy as a function of redshif
 \end{figure}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+In the next set of figures we show the degradation of the performance with the redshift. There we present the median over the 
+realizations value versus the redshift. In the figures \ref{MedianSNR_SE_LISAC2C4C5} ({\bf SE} model) and in 
+\ref{MedianSNR_LE_LISAC2C4C5} ({\bf LE} model) we compare again LISA, C2, C4 and C5 with the same color-coding as 
+in the figures with histograms
+
+
+
+The median source SNR with LISA, C2, C4 and C5 as a function of redshift is shown in figures \ref{MedianSNR_SE_LISAC2C4C5}-to-\ref{MedianSNR_LE_LISAC2C4C5}.
+
 %%%%%%%%%%%%%%%%  Median errors LISA, C2, C4 and C5  %%%%%%%%%%%%%%%%
 
 \begin{figure}[H]
@@ -1640,6 +1705,26 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 \caption{Same as figure \ref{MedianErrs_SE_LISAC2C4C5} but for the LE (large seed) catalogue.
 \label{MedianErrs_LE_LISAC2C4C5} } 
 \end{figure}
+
+
+Those curves are not smooth at low and high redshifts. The low redshift end has only few events and observed 
+outliers are effect of low statistic.  For high redshift events we again do not have many event but due to low SNR. 
+We also provide the median SNR for {\bf LE} and {\bf SE} models (with the same color-codding)  in the figures 
+\ref{MedianSNR_LE_LISAC2C4C5}, \ref{MedianSNR_SE_LISAC2C4C5}.
+
+
+%\vspace{1cm}
+
+%For comparison we also add results comparing about C1, C2 and LISA and SNR for C3 : 
+
+%Figures \ref{LISA_mc_SNR}, \ref{C3_mc_SNR}, \ref{C2_mc_SNR} and \ref{C1_mc_SNR} show the performances of LISA, C2 and C1 respectively, assuming the SE MBH binary population model.
+
+
+
+%Figures \ref{Hist_SE_LISAC1C2} and \ref{Hist_LE_LISAC1C2} show histograms of parameter estimation accuracy for the ten realizations of model SE and LE respectively; only sources with SNR$>10$ are included. 
+ 
+
+%The median source SNR and parameter estimation accuracy as a function of redshift is shown in figures 
 
 
 %%%%%%%%%%%%%%%%  Median SNR LISA, C2, C4 and C5  %%%%%%%%%%%%%%%%
@@ -1663,85 +1748,52 @@ $z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin para
 %%%%%%%%%%%%%%%%  SNR vs z LISA, C1 and C3  %%%%%%%%%%%%%%%%
 
 
-\begin{figure}[H]
-\center
-   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/LISA_mc_SNRs.eps}
-\caption{LISA performances as a function of redshift. From the top to the bottom we plot the average source SNR, the fraction of detectable sources (SNR$>6$), the mean number of detected sources, and the cumulative number of detected sources. Error bars are standard deviations; SE population model is assumed.
-\label{LISA_mc_SNR} } 
-\end{figure}
-
-
-\begin{figure}[H]
-\center
-   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C3_mc_SNRs.eps}
-\caption{Same as figure \ref{LISA_mc_SNR} but for C3.
-\label{C3_mc_SNR} } 
-\end{figure}
-
-
-\begin{figure}[H]
-\center
-   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C2_mc_SNRs.eps}
-\caption{Same as figure \ref{LISA_mc_SNR} but for C2.
-\label{C2_mc_SNR} } 
-\end{figure}
-
-
-\begin{figure}[H]
-\center
-   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/C1_mc_SNRs}
-\caption{Same as figure \ref{LISA_mc_SNR} but for C1.
-\label{C1_mc_SNR} } 
-\end{figure}
-
-
-
 %%%%%%%%%%%%%%%%  Histogram LISA, C1 and C3  %%%%%%%%%%%%%%%%
 
 
-\begin{figure}[H]
-\center
-   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_SE_LISAC1C2.eps}
-\caption{1-$\sigma$ errors on source parameters: redshifted mass (upper left); symmetric mass ratio (upper right); spin parameter (lower left); luminosity distance (lower right). Histograms collect all the events in the SE catalogue, with SNR$>10$. Red histograms are for LISA, green histograms are for C2 and blue histograms are for C1.
-\label{Hist_SE_LISAC1C2} } 
-\end{figure}
+%\begin{figure}[H]
+%\center
+%   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_SE_LISAC1C2.eps}
+%\caption{1-$\sigma$ errors on source parameters: redshifted mass (upper left); symmetric mass ratio (upper right); spin parameter (lower left); luminosity distance (lower right). Histograms collect all the events in the SE catalogue, with SNR$>10$. Red histograms are for LISA, green histograms are for C2 and blue histograms are for C1.
+%\label{Hist_SE_LISAC1C2} } 
+%\end{figure}
 
 
 
-\begin{figure}[H]
-\center
-   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_LE_LISAC1C2.eps}
-\caption{Same as figure \ref{Hist_SE_LISAC1C2} but for the LE catalogue.
-\label{Hist_LE_LISAC1C2} } 
-\end{figure}
+%\begin{figure}[H]
+%\center
+%   \includegraphics[width=1\textwidth]{FigSMBHPhenomAEI/Hist_LE_LISAC1C2.eps}
+%\caption{Same as figure \ref{Hist_SE_LISAC1C2} but for the LE catalogue.
+%\label{Hist_LE_LISAC1C2} } 
+%\end{figure}
 
 
 %%%%%%%%%%%%%%%%  Median erroe LISA, C1 and C3  %%%%%%%%%%%%%%%%
 
 
-\begin{figure}[H]
-\center
-   \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_SE_LISAC1C2.eps}
-\caption{Median source SNR as a function of $z$. Colorstyle as in figure
-\ref{Hist_SE_LISAC1C2}. Model SE is assumed.
-\label{MedianSNR_SE_LISAC1C2} } 
-\end{figure}
+%\begin{figure}[H]
+%\center
+%   \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_SE_LISAC1C2.eps}
+%\caption{Median source SNR as a function of $z$. Colorstyle as in figure
+%\ref{Hist_SE_LISAC1C2}. Model SE is assumed.
+%\label{MedianSNR_SE_LISAC1C2} } 
+%\end{figure}
 
 
-\begin{figure}[H]
-\center
-   \includegraphics[width=\textwidth]{FigSMBHPhenomAEI/MedianErrs_SE_LISAC1C2.eps}
-\caption{Median 1-$\sigma$ errors on the source parameters as a function of 
-$z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin parameter (middle left); sky location in deg$^2$ (middle right); coalescence time in seconds (lower left); luminosity distance (lower right). Colorstyle as in figure \ref{fig4}. Model SE is assumed.
-\label{MedianErrs_SE_LISAC1C2} } 
-\end{figure}
+%\begin{figure}[H]
+%\center
+%   \includegraphics[width=\textwidth]{FigSMBHPhenomAEI/MedianErrs_SE_LISAC1C2.eps}
+%\caption{Median 1-$\sigma$ errors on the source parameters as a function of 
+%$z$: redshifted mass (upper left); symmetric mass ratio (upper right); spin parameter (middle left); sky location in deg$^2$ (middle right); coalescence time in seconds (lower left); luminosity distance (lower right). Colorstyle as in figure \ref{fig4}. Model SE is assumed.
+%\label{MedianErrs_SE_LISAC1C2} } 
+%\end{figure}
 
-\begin{figure}[H]
-\center
-   \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_LE_LISAC1C2.eps}
-\caption{Same as figure \ref{MedianErrs_SE_LISAC1C2} but for the LE catalogue.
-\label{MedianSNR_LE_LISAC1C2} } 
-\end{figure}
+%\begin{figure}[H]
+%\center
+%   \includegraphics[width=0.8\textwidth]{FigSMBHPhenomAEI/MedianSNR_LE_LISAC1C2.eps}
+%\caption{Same as figure \ref{MedianErrs_SE_LISAC1C2} but for the LE catalogue.
+%\label{MedianSNR_LE_LISAC1C2} } 
+%\end{figure}
 
 %\begin{figure}[H]
 %   \includegraphics[width=\textwidth]{FigSMBHPhenomAEI/MedianErrs_LE_LISAC1C2.eps}
