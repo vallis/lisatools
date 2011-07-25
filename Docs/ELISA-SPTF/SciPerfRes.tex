@@ -13,7 +13,7 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{float}
-
+\usepackage{color}
 
 \input{epsf}
 
@@ -61,7 +61,6 @@
 \newcommand{\secconclusion}{IV}
 
 \newcommand{\eb}[1]{{\textcolor{red}{\sf{EB: #1}} }}
-\newcommand{\Vitor}[1]{{\textcolor{blue}{\sf{Vitor: #1}} }}
 
 \newcommand{\lp}{\left(}
 \newcommand{\rp}{\right)}
@@ -205,9 +204,9 @@ Fixed noise ($10^{-38} f^{2} \textrm{Hz}^{-1}$)  &  2.81 &  2.81 &  2.81 & 2.81 
 \hline
 \end{tabular}
 \end{center}
-\caption{Summary of configuration. Noises are given in $\delta \nu / \nu$ unit. \\ 
-{ \scriptsize Notes about particular cases including mistakes : ${(1)}$ the margin has been taken into account 2 times  ; 
-${(2)}$ the laser power has been considered in the rms shot noise  with power -1 instead of -0.5 . } }
+\caption{Summary of configuration. Noises are given in $\delta \nu / \nu$ unit.} %\\ 
+%{ \scriptsize Notes about particular cases including mistakes : ${(1)}$ the margin has been taken into account 2 times  ; 
+%${(2)}$ the laser power has been considered in the rms shot noise  with power -1 instead of -0.5 . } }
 \label{T:Configs}
 \end{table}%
 
@@ -776,14 +775,6 @@ and it is not self consistently implemented in the merger trees.
 %momenta, as suggested in \cite{Bogdanovic:2007hp} and found in detailed
 %SPH simulations by \cite{dotti} (see Ref.~\cite{Berti:2008af} for more details).
 
-%\noindent
-%{\bf [E: Marta, in which regime does the assumption break down?]}
-%{\bf [M: Using the weighing technique that we discussed, the assumption is
-%  correct. In principle, a given tree describes a galaxy/cluster. So if, for
-%  instance, you want to determine the merger events that you'd see along the
-%  formation of, say, the Virgo cluster, then we should think of how to
-%  implement anisotropy.]}.
-
 \subsubsection{Details of the merger tree implementation}
 
 For each formation scenario, we usually have $N_{\rm tree}\sim 10$ different
@@ -816,13 +807,6 @@ least $\sim 5\times 10^4$ merging events.
 %limited: {\it it will be useful for assessing the capabilities of LISA, but it
 %  is not intended to be used for a reliable analysis of the black hole
 %  population}.
-%  [M: Emanuele, if my files go to the whole public (aaaargh!), I'd feel more
-%  comfortable adding this caveat. I typically use at least 5 realizations for
-%  merger tree number 12 in my papers. Also, this would discourage from using
-%  the files indiscriminately beyond the scope of this experiment. There are
-%  several assumptions and uncertainties in my models, and I would not like
-%  someone to publish a paper based on these files without pondering on the
-%  various modeling issues involved!]
 %Merger tree simulations provide no angular information on the source. We can
 %decide to randomly generate $\sim 100$ values of angular positions and orbital
 %orientations, Monte Carlo over the angles, and compute averages or medians of
@@ -1129,6 +1113,17 @@ $S_n^{\rm NSA}(f)$, by
 S_n^{\rm NSA}(f)=\f{3}{20}S_n^{\rm SA}(f)\,.
 \ee
 %
+
+%
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/noiseC2C5.eps}
+\caption{\label{fig:PSDC3C5} Non-sky averaged noise spectral density,
+  Eq.~(\ref{noiseNSA}), for Classic LISA and for New LISA C2/C5 including the
+  galactic background.}
+\end{center}
+\end{figure}
+%
 Putting everything together, the integral to compute for restricted PN
 inspirals is
 %
@@ -1161,101 +1156,101 @@ and ringdown, Configuration 2 is necessary to reach $z>10$ for all $M\gtrsim
 
 %\clearpage
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{``Quick and dirty'' ringdown parameter estimation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section*{``Quick and dirty'' ringdown parameter estimation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Errors on ringdown estimates of the mass and spin should be very small and
-generally negligible. I propose to estimate them following \cite{Berti:2005ys}
-(henceforth BCW), as follows. In the $\delta$-function or constant noise limit
-we can compute the SNR as [(3.16) in BBW, where we include redshift factors
-  and substitute $r$ by $D_L$ as appropriate]:
+%Errors on ringdown estimates of the mass and spin should be very small and
+%generally negligible. I propose to estimate them following \cite{Berti:2005ys}
+%(henceforth BCW), as follows. In the $\delta$-function or constant noise limit
+%we can compute the SNR as [(3.16) in BBW, where we include redshift factors
+%  and substitute $r$ by $D_L$ as appropriate]:
+%%
+%\beq
+%\label{rhoanalytic}
+%\rho_{\rm FH} = \left (\frac{2}{5} \right )^{1/2} 
+%	\left (\frac{1}{\pi {\cal F}_{lmn} D_L} \right )
+%	\left (\frac{\epsilon_{\rm rd}}{S_h^{\rm NSA}(f_{lmn})} \right )^{1/2}
+%        \left[M(1+z)\right]^{3/2}
+%	\frac{2Q_{lmn}}{\sqrt{1+4Q_{lmn}^2}} \,,
+%\eeq
+%%
+%where $M$ is the mass in the source frame. Note that this expression involves
+%the {\it non sky-averaged} noise curve (see expressions above). Also,
+%%
+%\beq
+%{\cal F}_{lmn}&=&M\omega_{lmn}=2\pi M\, f_{lmn}=f_1+f_2(1-j)^{f_3}\,,\\
+%Q_{lmn}&=&q_1+q_2(1-j)^{q_3}\,,
+%\eeq
+%%
+%where $j$ is the dimensionless spin of the final black hole, and for the
+%fundamental mode with $l=m=2$ we have (Table VIII):
+%%
+%$f_1=1.5251$,
+%$f_2=-1.1568$,
+%$f_3=0.1292$ and
+%$q_1=0.7000$,
+%$q_2=1.4187$,
+%$q_3=-0.4990$.
+%%
+%Then the errors on mass and spin, in the Flanagan-Hughes convention
+%\cite{Flanagan:1997sx}, can be estimated as [(4.12a), (4.12b) in BCW]:
+%%
+%%\begin{subequations}
+%\label{rii}
+%\beq
+%\sigma_j &=&
+%\frac{1}{\rho_{\rm FH}}
+%\left|2\frac{Q_{lmn}}{Q_{lmn}'}
+%\left(1+\f{1+4\beta}{16\Qlm^2}\right)\right|\,, \label{erra}\\
+%\f{\sigma _M}{M} &=&
+%\frac{1}{\rho_{\rm FH}}
+%\left|2\frac{Q_{lmn}
+%f_{lmn}'}{f_{lmn}Q_{lmn}'}
+%\left(1+\f{1+4\beta}{16 \Qlm^2}\right)\right|\,, \label{errm}
+%\eeq
+%%\end{subequations}
+%%
+%where a prime denotes a derivative with respect to $j$. In general we would
+%have
+%%
+%\be
+%\beta = \sin^2 \psi \cos 2\ph^\times - \cos^2 \psi \cos 2\ph^+\,
+%\ee
+%%
+%with 
+%%
+%$\cos \psi \equiv 1/\sqrt{1+N_\times^2}$, 
+%%
+%$\sin \psi \equiv N_\times/\sqrt{1+N_\times^2}$. 
+%%
+%The parameter $N_\times$ is the ratio between plus and cross polarization
+%amplitudes. If we follow Flanagan-Hughes, we can set $N_\times=1$,
+%$\phi^+=\phi^\times=0$, and therefore $\beta=0$, which simplifies the
+%expressions even further.
 %
-\beq
-\label{rhoanalytic}
-\rho_{\rm FH} = \left (\frac{2}{5} \right )^{1/2} 
-	\left (\frac{1}{\pi {\cal F}_{lmn} D_L} \right )
-	\left (\frac{\epsilon_{\rm rd}}{S_h^{\rm NSA}(f_{lmn})} \right )^{1/2}
-        \left[M(1+z)\right]^{3/2}
-	\frac{2Q_{lmn}}{\sqrt{1+4Q_{lmn}^2}} \,,
-\eeq
-%
-where $M$ is the mass in the source frame. Note that this expression involves
-the {\it non sky-averaged} noise curve (see expressions above). Also,
-%
-\beq
-{\cal F}_{lmn}&=&M\omega_{lmn}=2\pi M\, f_{lmn}=f_1+f_2(1-j)^{f_3}\,,\\
-Q_{lmn}&=&q_1+q_2(1-j)^{q_3}\,,
-\eeq
-%
-where $j$ is the dimensionless spin of the final black hole, and for the
-fundamental mode with $l=m=2$ we have (Table VIII):
-%
-$f_1=1.5251$,
-$f_2=-1.1568$,
-$f_3=0.1292$ and
-$q_1=0.7000$,
-$q_2=1.4187$,
-$q_3=-0.4990$.
-%
-Then the errors on mass and spin, in the Flanagan-Hughes convention
-\cite{Flanagan:1997sx}, can be estimated as [(4.12a), (4.12b) in BCW]:
-%
-%\begin{subequations}
-\label{rii}
-\beq
-\sigma_j &=&
-\frac{1}{\rho_{\rm FH}}
-\left|2\frac{Q_{lmn}}{Q_{lmn}'}
-\left(1+\f{1+4\beta}{16\Qlm^2}\right)\right|\,, \label{erra}\\
-\f{\sigma _M}{M} &=&
-\frac{1}{\rho_{\rm FH}}
-\left|2\frac{Q_{lmn}
-f_{lmn}'}{f_{lmn}Q_{lmn}'}
-\left(1+\f{1+4\beta}{16 \Qlm^2}\right)\right|\,, \label{errm}
-\eeq
-%\end{subequations}
-%
-where a prime denotes a derivative with respect to $j$. In general we would
-have
-%
-\be
-\beta = \sin^2 \psi \cos 2\ph^\times - \cos^2 \psi \cos 2\ph^+\,
-\ee
-%
-with 
-%
-$\cos \psi \equiv 1/\sqrt{1+N_\times^2}$, 
-%
-$\sin \psi \equiv N_\times/\sqrt{1+N_\times^2}$. 
-%
-The parameter $N_\times$ is the ratio between plus and cross polarization
-amplitudes. If we follow Flanagan-Hughes, we can set $N_\times=1$,
-$\phi^+=\phi^\times=0$, and therefore $\beta=0$, which simplifies the
-expressions even further.
-
-The only missing ingredient here is an estimate of ringdown efficiency,
-$\epsilon_{\rm rd}$. I propose to use the estimate of Eq.~(4.12) in
-  \cite{Berti:2007fi}:
-%
-\be
-\epsilon_{\rm rd}=0.271\f{q^2}{(1+q)^4}\,,
-\ee
-%
-where $q=m_1/m_2>1$ is the mass ratio of the binary. In fact, we can even use
-the more optimistic ``matched-filtering based'' estimate of Eq.~(4.17) in
-\cite{Berti:2007fi}:
-%
-\be
-\epsilon_{\rm rd}=0.44\f{q^2}{(1+q)^4}\,.
-\ee
-%
-If you want I can try to improve these estimates by including corrections due
-to the spins. The ``spin expansion'' formalism of Boyle and Kesden suggests
-that these corrections will be proportional to the sum of the components of
-the binary spins along the orbital angular momentum. The corrections will
-change $\epsilon_{\rm rd}$ by at most a factor $\approx 2$. I expect the
-errors on mass and spin to be negligible anyway, so I would not bother...
+%The only missing ingredient here is an estimate of ringdown efficiency,
+%$\epsilon_{\rm rd}$. I propose to use the estimate of Eq.~(4.12) in
+%  \cite{Berti:2007fi}:
+%%
+%\be
+%\epsilon_{\rm rd}=0.271\f{q^2}{(1+q)^4}\,,
+%\ee
+%%
+%where $q=m_1/m_2>1$ is the mass ratio of the binary. In fact, we can even use
+%the more optimistic ``matched-filtering based'' estimate of Eq.~(4.17) in
+%\cite{Berti:2007fi}:
+%%
+%\be
+%\epsilon_{\rm rd}=0.44\f{q^2}{(1+q)^4}\,.
+%\ee
+%%
+%If you want I can try to improve these estimates by including corrections due
+%to the spins. The ``spin expansion'' formalism of Boyle and Kesden suggests
+%that these corrections will be proportional to the sum of the components of
+%the binary spins along the orbital angular momentum. The corrections will
+%change $\epsilon_{\rm rd}$ by at most a factor $\approx 2$. I expect the
+%errors on mass and spin to be negligible anyway, so I would not bother...
 
 %\clearpage
 
@@ -1264,7 +1259,7 @@ errors on mass and spin to be negligible anyway, so I would not bother...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %
-\begin{figure*}[H]
+\begin{figure}[H]
 \begin{center}
 \begin{tabular}{cc}
 \includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRNewLISAinsp.eps}
@@ -1275,13 +1270,15 @@ errors on mass and spin to be negligible anyway, so I would not bother...
   lines: instrumental noise+galactic background; dashed lines: instrumental
   noise only.  Left: restricted PN inspiral; right: {\sc PhenomC}
   inspiral/merger/ringdown. In the right panel, thick lines refer to
-  nonspinning binaries, and thin lines refer to binaries with $s_1=s_2=0.9$.}
+  nonspinning binaries, and thin lines refer to binaries with $s_1=s_2=0.9$.
+  \eb{If we decide to keep this and the following plots, I should replace C1
+    by C5.}}
 \end{center}
-\end{figure*}
+\end{figure}
 %
 
 %
-\begin{figure*}[H]
+\begin{figure}[H]
 \begin{center}
 \begin{tabular}{cc}
 \includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorNewLISAinsp.eps}
@@ -1292,11 +1289,11 @@ errors on mass and spin to be negligible anyway, so I would not bother...
   PN inspiral; right: {\sc PhenomC} inspiral/merger/ringdown. Linestyles are
   the same as in Fig.~\ref{fig:SNRMiniLISA}.}
 \end{center}
-\end{figure*}
+\end{figure}
 %
 
 %
-\begin{figure*}[H]
+\begin{figure}[H]
 \begin{center}
 \begin{tabular}{cc}
 \includegraphics[scale=0.33,clip=true]{FigEmanuele/DLNewLISAinsp.eps}&
@@ -1308,206 +1305,237 @@ errors on mass and spin to be negligible anyway, so I would not bother...
   inspiral/merger/ringdown. Linestyles are the same as in
   Fig.~\ref{fig:SNRMiniLISA}.}
 \end{center}
-\end{figure*}
+\end{figure}
 %
 
 %
-\begin{figure*}[H]
+\begin{figure*}[htb]
 \begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspSNRContourz1.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRSNRContourz1.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspSNRContourz1.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRSNRContourz1.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspSNRContourz1.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRSNRContourz1.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspSNRContourz1.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRSNRContourz1.ps}\\
+\begin{tabular}{ccc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/C2InspSNRContourz1.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/C5InspSNRContourz1.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/InspSNRContourz1.ps}\\
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/C2IMRSNRContourz1.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/C5IMRSNRContourz1.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/IMRSNRContourz1.ps}\\
 \end{tabular}
-\caption{\label{fig:SNRMiniLISA2} Angle-averaged SNR for equal-mass,
-  nonspinning binaries as a function of redshifted mass, $M_z=M(1+z)$.}
+\caption{\label{fig:SNRz1} Angle-averaged SNR for equal-mass,
+  nonspinning binaries at $z=1$.}
 \end{center}
 \end{figure*}
 %
 
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspSNRContourz1.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRSNRContourz1.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspSNRContourz1.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRSNRContourz1.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspSNRContourz1.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRSNRContourz1.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspSNRContourz1.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRSNRContourz1.ps}\\
+%\end{tabular}
+%\caption{\label{fig:SNRMiniLISA2} Angle-averaged SNR for equal-mass,
+%  nonspinning binaries as a function of redshifted mass, $M_z=M(1+z)$.}
+%\end{center}
+%\end{figure}
+%%
+
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspSNRContourz1.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRSNRContourz1.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspSNRContourz1.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRSNRContourz1.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspSNRContourz1.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRSNRContourz1.ps}\\
+%\end{tabular}
+%\caption{\label{fig:SNRMiniLISA3} Angle-averaged SNR for equal-mass,
+%  nonspinning binaries as a function of redshifted mass, $M_z=M(1+z)$.}
+%\end{center}
+%\end{figure}
+%%
+
 %
-\begin{figure*}[H]
+\begin{figure*}[htb]
 \begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspSNRContourz1.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRSNRContourz1.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspSNRContourz1.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRSNRContourz1.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspSNRContourz1.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRSNRContourz1.ps}\\
+\begin{tabular}{ccc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/C2InspZhorContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/C5InspZhorContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/InspZhorContour.ps}\\
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/C2IMRZhorContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/C5IMRZhorContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/IMRZhorContour.ps}\\
 \end{tabular}
-\caption{\label{fig:SNRMiniLISA3} Angle-averaged SNR for equal-mass,
-  nonspinning binaries as a function of redshifted mass, $M_z=M(1+z)$.}
+\caption{\label{fig:zhor} Horizon redshift.}
 \end{center}
 \end{figure*}
 %
 
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspZhorContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRZhorContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspZhorContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRZhorContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspZhorContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRZhorContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspZhorContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRZhorContour.ps}\\
+%\end{tabular}
+%\caption{\label{fig:SNRMiniLISA4} Horizon redshift.}
+%\end{center}
+%\end{figure}
+%%
+
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspZhorContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRZhorContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspZhorContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRZhorContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspZhorContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRZhorContour.ps}\\
+%\end{tabular}
+%\caption{\label{fig:SNRMiniLISA5} Horizon redshift.}
+%\end{center}
+%\end{figure}
+%%
+
 %
-\begin{figure*}[H]
+\begin{figure*}[htb]
 \begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspZhorContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRZhorContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspZhorContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRZhorContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspZhorContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRZhorContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspZhorContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRZhorContour.ps}\\
+\begin{tabular}{ccc}
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/C2InspDLContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/C2IMRDLContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/C5InspDLContour.ps}\\
+\includegraphics[scale=0.33,clip=true]{FigEmanuele/C5IMRDLContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/InspDLContour.ps}
+&\includegraphics[scale=0.33,clip=true]{FigEmanuele/IMRDLContour.ps}\\
 \end{tabular}
-\caption{\label{fig:SNRMiniLISA4} Horizon redshift.}
+\caption{\label{fig:DLMiniLISA2} Horizon (luminosity) distance $D_L$.}
 \end{center}
 \end{figure*}
 %
 
-%
-\begin{figure*}[H]
-\begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspZhorContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRZhorContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspZhorContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRZhorContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspZhorContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRZhorContour.ps}\\
-\end{tabular}
-\caption{\label{fig:SNRMiniLISA5} Horizon redshift.}
-\end{center}
-\end{figure*}
-%
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspDLContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRDLContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspDLContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRDLContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspDLContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRDLContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspDLContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRDLContour.ps}\\
+%\end{tabular}
+%\caption{\label{fig:SNRMiniLISA6} Horizon luminosity distance.}
+%\end{center}
+%\end{figure}
+%%
 
-%
-\begin{figure*}[H]
-\begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspDLContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRDLContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2InspDLContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C2IMRDLContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3InspDLContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C3IMRDLContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1InspDLContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C1IMRDLContour.ps}\\
-\end{tabular}
-\caption{\label{fig:SNRMiniLISA6} Horizon luminosity distance.}
-\end{center}
-\end{figure*}
-%
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspDLContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRDLContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspDLContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRDLContour.ps}\\
+%\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspDLContour.ps}
+%&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRDLContour.ps}\\
+%\end{tabular}
+%\caption{\label{fig:SNRMiniLISA7} Horizon luminosity distance.}
+%\end{center}
+%\end{figure}
+%%
 
-%
-\begin{figure*}[H]
-\begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/InspDLContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/IMRDLContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4InspDLContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C4IMRDLContour.ps}\\
-\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5InspDLContour.ps}
-&\includegraphics[scale=0.41,clip=true]{FigEmanuele/C5IMRDLContour.ps}\\
-\end{tabular}
-\caption{\label{fig:SNRMiniLISA7} Horizon luminosity distance.}
-\end{center}
-\end{figure*}
-%
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRinsp.eps}
+%&\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRIMR.eps}\\
+%\end{tabular}
+%\caption{\label{fig:SNR} Angle-averaged SNR for equal-mass, nonspinning
+%  binaries as a function of redshifted mass, $M_z=M(1+z)$. For the 5/6link
+%  configurations we multiplied the average SNR by a factor $\sqrt{2}$. Left:
+%  restricted PN inspiral; right: {\sc PhenomC} inspiral/merger/ringdown.}
+%\end{center}
+%\end{figure}
+%%
 
-%
-\begin{figure*}[H]
-\begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRinsp.eps}
-&\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRIMR.eps}\\
-\end{tabular}
-\caption{\label{fig:SNR} Angle-averaged SNR for equal-mass, nonspinning
-  binaries as a function of redshifted mass, $M_z=M(1+z)$. For the 5/6link
-  configurations we multiplied the average SNR by a factor $\sqrt{2}$. Left:
-  restricted PN inspiral; right: {\sc PhenomC} inspiral/merger/ringdown.}
-\end{center}
-\end{figure*}
-%
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLinsp.eps}
+%&\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLIMR.eps}\\
+%\end{tabular}
+%\caption{\label{fig:DL} Horizon luminosity distance $D_{L, {\rm hor}}$ (in
+%  Mpc) for equal-mass, nonspinning binaries as a function of the source mass
+%  $M$. Recall that for the 5/6link configurations we multiplied the average
+%  SNR by a factor $\sqrt{2}$. Left: restricted PN inspiral; right: {\sc
+%    PhenomC} inspiral/merger/ringdown.}
+%\end{center}
+%\end{figure}
+%%
 
-%
-\begin{figure*}[H]
-\begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLinsp.eps}
-&\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLIMR.eps}\\
-\end{tabular}
-\caption{\label{fig:DL} Horizon luminosity distance $D_{L, {\rm hor}}$ (in
-  Mpc) for equal-mass, nonspinning binaries as a function of the source mass
-  $M$. Recall that for the 5/6link configurations we multiplied the average
-  SNR by a factor $\sqrt{2}$. Left: restricted PN inspiral; right: {\sc
-    PhenomC} inspiral/merger/ringdown.}
-\end{center}
-\end{figure*}
-%
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorinsp.eps}
+%&\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorIMR.eps}\\
+%\end{tabular}
+%\caption{\label{fig:z} Horizon redshift $z_{\rm hor}$ (in Mpc) for equal-mass,
+%  nonspinning binaries as a function of the source mass $M$. Recall that for
+%  the 5/6link configurations we multiplied the average SNR by a factor
+%  $\sqrt{2}$. Left: restricted PN inspiral; right: {\sc PhenomC}
+%  inspiral/merger/ringdown.}
+%\end{center}
+%\end{figure}
+%%
 
-%
-\begin{figure*}[H]
-\begin{center}
-\begin{tabular}{cc}
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorinsp.eps}
-&\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorIMR.eps}\\
-\end{tabular}
-\caption{\label{fig:z} Horizon redshift $z_{\rm hor}$ (in Mpc) for equal-mass,
-  nonspinning binaries as a function of the source mass $M$. Recall that for
-  the 5/6link configurations we multiplied the average SNR by a factor
-  $\sqrt{2}$. Left: restricted PN inspiral; right: {\sc PhenomC}
-  inspiral/merger/ringdown.}
-\end{center}
-\end{figure*}
-%
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRIMRSpin09.eps}\\
+%\begin{tabular}{cc}
+%\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLIMRSpin09.eps}&
+%\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorIMRSpin09.eps}\\
+%\end{tabular}
+%\caption{\label{fig:spin} SNR, horizon luminosity distance $D_{L, {\rm hor}}$
+%  (in Mpc) and horizon redshift $z_{\rm hor}$ for equal-mass, spinning
+%  binaries with near-maximal aligned spins (Kerr parameters
+%  $s_1=s_2=0.9$). SNRs and horizon distances improve slightly with respect to
+%  the nonspinning case, but not by orders of magnitude.}
+%\end{center}
+%\end{figure}
+%%
 
-%
-\begin{figure*}[H]
-\begin{center}
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/SNRIMRSpin09.eps}\\
-\begin{tabular}{cc}
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/DLIMRSpin09.eps}&
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/zhorIMRSpin09.eps}\\
-\end{tabular}
-\caption{\label{fig:spin} SNR, horizon luminosity distance $D_{L, {\rm hor}}$
-  (in Mpc) and horizon redshift $z_{\rm hor}$ for equal-mass, spinning
-  binaries with near-maximal aligned spins (Kerr parameters
-  $s_1=s_2=0.9$). SNRs and horizon distances improve slightly with respect to
-  the nonspinning case, but not by orders of magnitude.}
-\end{center}
-\end{figure*}
-%
-
-%
-\begin{figure*}[H]
-\begin{center}
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/noise.eps}
-\caption{\label{fig:PSD}
-  Non-sky averaged noise spectral density, Eq.~(\ref{noiseNSA}), for Classic
-  LISA and for the three New LISA configurations. Dashed lines include the
-  galactic background, solid lines refer to the instrumental noise only.}
-\end{center}
-\end{figure*}
-%
-
-%
-\begin{figure*}[H]
-\begin{center}
-\includegraphics[scale=0.33,clip=true]{FigEmanuele/noiseC3C5.eps}
-\caption{\label{fig:PSDC3C5} Non-sky averaged noise spectral density,
-  Eq.~(\ref{noiseNSA}), for Classic LISA and for New LISA C3/C5 including the
-  galactic background.}
-\end{center}
-\end{figure*}
-%
-
-
-
-
-
-
-
+%%
+%\begin{figure}[H]
+%\begin{center}
+%\includegraphics[scale=0.33,clip=true]{FigEmanuele/noise.eps}
+%\caption{\label{fig:PSD}
+%  Non-sky averaged noise spectral density, Eq.~(\ref{noiseNSA}), for Classic
+%  LISA and for the three New LISA configurations. Dashed lines include the
+%  galactic background, solid lines refer to the instrumental noise only.}
+%\end{center}
+%\end{figure}
+%%
 
 
 
