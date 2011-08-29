@@ -1,0 +1,303 @@
+
+#######################################################################
+1) Code name (as you want it to be listed in tables and in the text)
+
+People/groups who contributed
+
+References to relevant published literature with a detailed description
+of the code
+
+-----------------------------------------------------------------------
+
+Antoine Petiteau, Stas Babak, Sofiane Aoudia
+
+Version 2.0 of LISACode (reference paper for this code : Petiteau, A., Auger, G., Halloin, H., Jeannin, O., Plagnol, E., Pireaux, S., Regimbau, T., et al. (2008). {LISACode}: A scientific simulator of {LISA}. Phys. Rev. D, 77(023002), 11.)
+which includes :
+_ Implementation of waveform based on :  Arun, K. ~G, Buonanno, A., Faye, G., & Ochsner, E. (2009). Higher-order spin effects in the amplitude and phase of gravitational waveforms emitted by inspiraling compact binaries: Ready-to-use gravitational waveforms. Phys. Rev. D, 79, 104023.
+- Response of detector
+- Fisher Matrix estimation
+=======================================================================
+
+
+
+
+#######################################################################
+2) PN order in phasing
+-----------------------------------------------------------------------
+3.5 PN
+=======================================================================
+
+
+
+
+#######################################################################
+3) PN amplitude corrections/higher harmonics? (Yes/No)
+
+* if yes, to what order? did you Taylor re-expand the amplitude?
+(give details...)
+-----------------------------------------------------------------------
+Yes until 1PN in amplitude
+=======================================================================
+
+
+
+
+#######################################################################
+4) Spins in inspiral phasing/amplitude? (Yes/No)
+-----------------------------------------------------------------------
+Yes
+=======================================================================
+
+
+
+
+#######################################################################
+5) Spin precession during inspiral? (Yes/No)
+-----------------------------------------------------------------------
+Yes
+=======================================================================
+
+
+
+
+#######################################################################
+6) Eccentricity? (Yes/No)
+-----------------------------------------------------------------------
+No
+=======================================================================
+
+
+
+
+#######################################################################
+7) Merger/ringdown? (Yes/No)
+
+* if yes, what model? (EOB, PhenomA/B/C, IRS...)
+
+* if yes, does the model allow for unequal mass ratios and spins?
+
+* did you make assumptions on the LISA response during merger?
+-----------------------------------------------------------------------
+No
+=======================================================================
+
+
+
+
+#######################################################################
+8) Higher harmonics in merger/ringdown? (yes/no)
+
+* if yes, what model? (EOB, PhenomX...)
+
+* if yes, does it allow for unequal mass ratios and spins?
+-----------------------------------------------------------------------
+No
+=======================================================================
+
+
+
+
+#######################################################################
+9) LISA response model
+
+Please give a short description or refer to a published paper.
+
+* if you work in the frequency domain: please give details (e.g. explain
+lower/upper limits of integration, PSD you used and so on; I assume we
+are all using the PSDs in the wiki, but I'd like to make sure);
+
+* if you work in the time domain: give details (e.g. explain your
+tapering method);
+-----------------------------------------------------------------------
+We use LISACode version 2.0 simulator (the version 1.4.6 has been used 
+in MLDC3 and MLDC4). The goal of this simulator is to make a realistic 
+simulation of the detector following a time evolution and taking as 
+many effect as possible : the people involved in LISACode are :
++ Antoine Petiteau (main developer AEI/APC), 
++ for technological part :  APC (Halloin & al.) and AEI-Hannover(Heinzel & al.) 
++ for GW part AEI-Potsdam(Babak & al.) and APC (Plagnol & al.).
+So, it's a full TDI response switching of the noises, the phasemeter filters
+and TDI second generation.
+
+For the PSD of noises, we use analytical expressions given on the wiki 
+for the instrumental noise and the galactic background.
+
+We work in time domain :
+
+1. The initial data (initial phase and initial direction of orbital angular 
+momentum and spins) are defined for the initial time t0 = 0 s (time reference 
+at the Sun).
+
+2. From this initial time we integrate the precession equation and the 
+orbital frequency backward (to reach the beginning of the observation 
+for the detector) and forward until the merger or other termination conditions are reached. The minimal time 
+step is 4s then the maximum possible value for maximum frequency is 0.125.
+The forward integration is stopped one the following condition is reached :
+- Minimal energy condition : dE/domega = 0
+- Orbital frequency decrease : domega/dt = 0   
+- Orbital frequency > 2*pi/(8*dt)
+
+3. We run the LISACode which computes h+ & hx and the detector response.
+When LISACode computes h+ & hx, if needed it integrate forward the 
+precession equation.
+
+4. We apply the same taper on amplitude that is used in MLDC
+(half-sided Hanning window).
+ 
+5. For the Fisher Infromation Matrix(FIM) computation we used centered
+numerical derivative for all parameters except for the distance (analytic 
+expression). The parameters that we used are :
+- ecliptic latitude in sky
+- ecliptic longitude in sky
+- chirp mass (redshifted)
+- symetric mass ratio
+- time at coalescence according to PN definition
+- distance
+- amplitude of spin 1
+- amplitude of spin 2
+- initial polar angle of orbital angular momentum L (at beginning of observation)
+- initial azimuthal angle of orbital angular momentum L (at beginning of observation)
+- initial polar angle of direction of spin 1 (at beginning of observation)
+- initial azimuthal angle of direction of spin 1 (at beginning of observation)
+- initial polar angle of direction of spin 2 (at beginning of observation)
+- initial azimuthal angle of direction of spin 2 (at beginning of observation)
+- initial phase (at beginning of observation)
+
+
+6. For the inversion of (FIM), we used 3 differents methods. We check the results
+of each one and take the best as final resutls
+
+Note: we consider only the source with mass ratio q > 1/50. and when 
+spin amplitude > 0.98 we bring it down to 0.98
+
+=======================================================================
+
+
+
+
+#######################################################################
+10) Alternative theories? (Yes/No)
+
+* if yes, please give a short summary of what you included and/or refer
+to the relevant paper(s).
+
+Note that here we should be careful in comparing results between
+different codes: if we want to report results on alternative theories
+from different codes, we should have a consistent "underlying" GR model
+(e.g. no spins, no amplitude corrections, inspiral only - but let's
+discuss!)
+-----------------------------------------------------------------------
+No
+=======================================================================
+
+
+
+
+#######################################################################
+11) I think it would be a good idea for calibration (at least for us -
+not sure that we should report this in the Yellow Book) to list PE
+accuracy on the following parameters:
+
+M, eta, angular resolution (both axes of the ellipse?),
+
+For codes that can do this:
+spins, eccentricity, final BH mass/spin, ***anything else?***
+
+This comparison should be done on a canonical binary.
+I propose to use this "canonical binary":
+
+M_total=1e6Msun;
+eta=0.25;
+s1=s2=eccentricity=0.;
+z=1.0 [Cosmology: Omega_M=0.3, Omega_Lambda=0.7, h=0.7]
+
+We should also fix location in the sky/direction of orbital angular
+momentum, or else provide histograms. Any preference?
+
+We may have additional "test binaries" for codes that can handle spin
+precession and/or eccentricity.
+-----------------------------------------------------------------------
+We use a set of 4 sources to make our basics checking. The first one is
+almost the canonical binary (s1=s2=0.0001, eta=0.2499997). The 3 others
+are the source 8, 14 & 27 of realization 1 of catalogue LC.
+I join the corresponding catalogue :  SMBHTestSrc_ext.dat  (note: it's 
+redshifted chirp mass). If needed I also have the corresponding xml file 
+compatible with lisatools.
+Our results for these 4 sources using LISA are in the file FIM-LISA-SMBHTestSrc.txt
+the relevant columns are :
+ 1: ID realization
+ 2: ID source in realization
+32: SNR 4 links
+33: SNR 6 links
+34: Error on ecliptic latitude
+35: Error on ecliptic longitude
+36: Error on Initial Polar Angle L
+37: Error on Initial Azimuthal Angle L
+38: Error on initial phase
+39: Error on time at coalescence
+40: Error on distance (in kpc)
+41: Error on chirp mass
+42: Error on eta
+43: Error on amplitude spin 1
+44: Error on amplitude spin 2
+45: Error on Initial Polar Angle of spin 1
+46: Error on Initial Polar Angle of spin 2
+47: Error on Initial Azimuthal Angle of spin 1
+48: Error on Initial Azimuthal Angle of spin 2
+49: Error on sky location in deg^2
+50: Error on sky location ellipse major axis 2a 
+51: Error on sky location ellipse minor axis 2b
+52-69 : idem as 34-51 but for 6 links
+ 
+=======================================================================
+
+
+
+
+#######################################################################
+12) Did you already cross-check your code against other codes?
+Which ones, and in which cases?
+-----------------------------------------------------------------------
+1. Detector response and SNR computation :
+The detector response has been check against the previous LISACode (v1.4.6
+used in MLDC) and SyntheticLISA.
+Moreover we check on several source that taking the same h+,hx in the
+barycentric frame, we obtain the SNR as syntheticLISA and 
+lisasimulator from lisatools. 
+
+2. Waveform at 0PN in amplitude and precession computation :
+For the sources in the test catalogue when the 0.5PN and 1PN amplitude
+correction are removed, we recover similar SNR as the one obtain with 
+lisatools using either FastSpinBlackHoleBinary waveform (Neil's implementation, 
+2 PN in phase, 0PN in amplitude) or SpinBlackHoleBinary waveform (Stas's implementation, 
+2 PN in phase, 0PN in amplitude, but not the same way as Neil). The reason 
+for the small residual difference seems to be the phase at 3.5PN in our 
+code and 2PN in lisatools.
+
+3. Full waveform including 0.5PN and 1PN amplitude correction :
+We made an internal check for the coding of the waveform : Stas and 
+Sofiane did to independent coding for PN amplitude starting from the same 
+paper and we check that the two resulting waveform are identic
+
+4. Comparison with Ryan results (same kind of waveform) : 
+For the errors on parameters Sky, distance, spin amplitudes, angles of 
+initial direction of L,S1 & S2, the distribution of the errors are 
+similar for LISA and C5 for catalogue LC. (SC catalogue will be check soon) 
+But for the SNR we don't : the Ryan's SNR are always higher the ours by 
+a factor 1.3 and 4. I spent the 2 last weeks checking what we did but
+I never found a way to match his results.
+
+=======================================================================
+
+
+
+
+#######################################################################
+Finally, it would help us a lot if you can provide a list of references
+relevant to understand how your code works, and - even better - a SHORT
+(max two paragraphs) writeup with a description of the code.
+-----------------------------------------------------------------------
+See part 9 (I hope that it's not too long !)
+=======================================================================
+
+

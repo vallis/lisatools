@@ -1,0 +1,112 @@
+Hi Emanuele and Neil,
+Here's the Goddard-Princeton questionairre, with answers beneath each question in bold:
+
+1) Code name (as you want it to be listed in tables and in the text)
+calcFisher
+People/groups who contributed
+Sean McWilliams, Ira Thorpe, Tyson Littenberg, Bernard Kelly, and John Baker
+References to relevant published literature with a detailed description
+of the code
+Sean T. McWilliams, James Ira Thorpe, John G. Baker, and Bernard J. Kelly, Phys. Rev. D 81, 064014 (2010) 
+
+2) PN order in phasing
+3.5+ PN (phenomenological 4 PN corrections) 
+
+3) PN amplitude corrections/higher harmonics? (Yes/No)
+Yes to both.
+* if yes, to what order? did you Taylor re-expand the amplitude?
+(give details...)
+3 PN amplitude, results use standard Taylor flux (no re-expansion)
+
+4) Spins in inspiral phasing/amplitude? (Yes/No)
+Yes to both
+
+5) Spin precession during inspiral? (Yes/No)
+No
+
+6) Eccentricity? (Yes/No)
+No
+
+7) Merger/ringdown? (Yes/No)
+Yes
+* if yes, what model? (EOB, PhenomA/B/C, IRS...)
+IRSEOB
+* if yes, does the model allow for unequal mass ratios and spins?
+Arbitrary mass ratios, individual spins < 0.5
+* did you make assumptions on the LISA response during merger?
+No, we use the full response as implemented in Synthetic LISA
+
+8) Higher harmonics in merger/ringdown? (yes/no)
+Yes
+* if yes, what model? (EOB, PhenomX...)
+IRSEOB
+* if yes, does it allow for unequal mass ratios and spins?
+Yes
+
+9) LISA response model
+Synthetic LISA
+Please give a short description or refer to a published paper.
+Sean T. McWilliams, James Ira Thorpe, John G. Baker, and Bernard J. Kelly, Phys. Rev. D 81, 064014 (2010)
+* if you work in the frequency domain: please give details (e.g. explain
+lower/upper limits of integration, PSD you used and so on; I assume we
+are all using the PSDs in the wiki, but I'd like to make sure);
+
+* if you work in the time domain: give details (e.g. explain your
+tapering method);
+Sean T. McWilliams, James Ira Thorpe, John G. Baker, and Bernard J. Kelly, Phys. Rev. D 81, 064014 (2010)
+
+We apply a Hann window over 5 WF cycles of the lowest m-mode present
+to the start of the WF, and do not taper the end since the ringdown
+effectively does so.
+
+10) Alternative theories? (Yes/No)
+No
+* if yes, please give a short summary of what you included and/or refer
+to the relevant paper(s).
+
+Note that here we should be careful in comparing results between
+different codes: if we want to report results on alternative theories
+from different codes, we should have a consistent "underlying" GR model
+(e.g. no spins, no amplitude corrections, inspiral only - but let's
+discuss!)
+
+11) I think it would be a good idea for calibration (at least for us -
+not sure that we should report this in the Yellow Book) to list PE
+accuracy on the following parameters:
+
+M, eta, angular resolution (both axes of the ellipse?),
+
+For codes that can do this:
+spins, eccentricity, final BH mass/spin, ***anything else?***
+
+This comparison should be done on a canonical binary.
+I propose to use this "canonical binary":
+
+M_total=1e6Msun;
+eta=0.25;
+s1=s2=eccentricity=0.;
+z=1.0 [Cosmology: Omega_M=0.3, Omega_Lambda=0.7, h=0.7]
+
+We should also fix location in the sky/direction of orbital angular
+momentum, or else provide histograms. Any preference?
+
+We may have additional "test binaries" for codes that can handle spin
+precession and/or eccentricity.
+
+12) Did you already cross-check your code against other codes?
+Which ones, and in which cases?
+
+We have compared with the Cornish-Lang-Hughes code for numerous
+nonspinning and aligned spin cases.  We find agreement typically
+within O(10%) for most parameters, but occasionally some errors will
+differ by O(100%) for some cases.  The matrix inversion of
+Cornish-Lang-Hughes appears to suffer from instabilities (Ryan Lang,
+private communication), so in those cases we compare Fisher matrices.
+
+Finally, it would help us a lot if you can provide a list of references
+relevant to understand how your code works, and - even better - a SHORT
+(max two paragraphs) writeup with a description of the code.
+
+Sean T. McWilliams, James Ira Thorpe, John G. Baker, and Bernard J. Kelly, Phys. Rev. D 81, 064014 (2010)
+Baker et al., Phys. Rev. D 78, 044046 (2008)
+Kelly et al., arXiv:1107.1181 

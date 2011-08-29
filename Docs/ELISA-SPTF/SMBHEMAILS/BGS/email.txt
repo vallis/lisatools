@@ -1,0 +1,35 @@
+Ciao amici
+
+I have now looked at the data with spins. Once I got round to it, it
+didn't take too long, but apologies for the delay in getting
+started. I have attached a few plots for your perusal. These are all
+using just 3 months of data, and filter assumptions 2 (i.e., 1 IFO,
+snr 20, the most pessimistic ones). There are 8 plots, one each of
+four different types for both config 2 and config 5.
+
+The plots entitled "CovsCh..." show comparisons of model 1 to 2, and
+model 3 to 4 with and without the spin information. From these we see
+that, as we hoped, there is a significant improvement from including
+spin information, in particular for the heavier seed models, 3 to 4.
+
+The plots entitled "VHMvsBVR..." show the comparisons of model 1 to 3
+and model 2 to 4, to show how the heavy to light seed models are
+affected by the addition of the spin information. Here we also gain a
+little, but much less than we did in the coherent versus chaotic
+comparisons as we would expect since the heavy vs light comparisons
+were much easier in the first place.
+
+For completeness, in the figures "AllCompWithSpin..." and
+"AllCompNoSpin..." I show all 6 model comparisons including the spin
+information and not. Including spin we see that the comparisons are
+all better, and more closely bunched, i.e., all model comparisons are
+equally easy with this additional information.
+
+I am doing the Bayesian CDF runs now, but the question is, what next?
+Do we want to write a paper on this, or just include this information
+in the Yellow Book, or extend the work into a longer paper, in which
+case what else do youw ant to do?
+
+Cheers,
+
+Jon

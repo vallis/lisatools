@@ -1,0 +1,46 @@
+Hi Emanuele and Neil,
+
+I start to put some results obtained with the code described in my
+previous mail on wiki at
+
+https://lisa-light.aei.mpg.de/bin/view/SMBHBEvaluation/ParametersEstimation
+
+I should have more results tomorrow.
+
+By the way, I miss to give you a code name so I used : 
+LC2PrecHHInsp
+
+Best,
+Antoine
+
+***
+
+Hi Emanuele and Neil,
+
+I attach the description of our work on inspiral precessing high
+harmonics waveform for SMBH binaries (
+Description_LC2PrecHHInsp-AEI.txt ) .
+
+I also attach a catalogue ( SMBHTestSrc_ext.dat ) of 4 tests sources
+that we used and the corresponding results ( FIM-LISA-SMBHTestSrc.txt
+) : the first one is almost the canonical binary (s1=s2=0.0001,
+eta=0.2499997) and the 3 others are the source 8, 14 & 27 of
+realization 1 of catalogue LC.
+
+If needed I can also provide the results for the same catalogue using
+lisatools (waveform and detector response).
+
+We have results for LC and LEm catalogues and the catalogues SC and
+SEm are almost done.  I still need to make some checking and plots but
+I hope to send that in 1 or 2 days.
+
+Stas will provide similar the things for PhenomC results and I will
+provide that for the work in progress with Numerical relativity group
+at AEI as soon as we will have results
+
+Let me know , if you need more information.
+
+Thanks.
+
+Best,
+Antoine

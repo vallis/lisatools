@@ -1,0 +1,86 @@
+Hello all,
+
+here are the results for the LC catalog using our code, for the C2-4 links configuration.
+
+It is a 2PN Fourier-domain code which includes spin-induced
+precession, higher harmonics, and eccentricity. I will send more
+details about it to Emanuele and Neil tomorrow.
+
+The pdf file contains a few histograms, plotting number of systems per
+bin and per realization against error, which are fractional for the
+masses and luminosity distance, and absolute for the spins and
+eccentricity. The last plot should be Omega, the area of the
+localization ellipse in square degrees. Strangely you cannot read the
+legend in the pdf.
+
+The other one is a data file with columns:
+- realization ID
+- source ID
+- SNR
+- fractional error on m1 (the bigger mass)
+- fractional error on m2
+- absolute error on chi1 (the spin parameter of m1)
+- major axis of the localization ellipse of the spin of m1 in radians
+- corresponding minor axis
+- absolute error on chi2 (the spin parameter of m2)
+- major axis of the localization ellipse of the spin of m2 in radians
+- corresponding minor axis
+- error on merger time in seconds
+- major axis of the localization ellipse of the orbital angular momentum in radians
+- corresponding minor axis
+- fractional error on the luminosity distance
+- major axis of the localization ellipse of the system in radians
+- corresponding minor axis
+- error on the initial angle with respect to periastron in radians
+- absolute error on the initial eccentricity
+- error on the initial angle of the periastron
+
+I didn't include in the file the systems with an SNR lower than 8.
+
+I will update the files when the last systems are computed, and I'll
+send the same for the LE catalog when it is done.
+
+Cheers,
+Antoine
+
+***
+
+Hi Emanuele and Neil,
+
+here is the description of the waveform we're using:
+
+You could call it Zurich code. It was programmed by myself, and
+Philippe Jetzer contributed to the theoretical part.
+
+It is 2PN in phasing, includes subdominant harmonics, and the
+amplitudes are hybrid between 2PN not Taylor re-expanded, and leading
+order (by which I mean ~(dn/dt)^1/2, with dn/dt at 2PN order, the
+derivative of the mean anomaly).
+
+Spins are included in the phasing and the amplitudes, and they
+precess. There is eccentricity, and no merger/ringdown.
+
+Our code is in the Fourier domain, and we use as limits of integration
+10^-5 and 1 Hertz.
+
+The PSDs we use are the ones on the wiki, and the orbits are
+analytical LISA-like.
+
+There is no inclusion of alternative theories within this code, but
+Cedric Huwyler here in Zurich modified my old code for circular orbits
+to add that. It is the same code except that it doesn't include
+eccentricity, and the amplitudes are 2PN Taylor re-expanded.
+
+I haven't published yet a description of the code, I'm waiting for
+other simulations to complete. But basically, the evolution of the
+mean motion and eccentricity is taken from
+http://arxiv.org/abs/gr-qc/0404128 and
+http://arxiv.org/abs/1005.2046. Using this, we evolve the mean anomaly
+and the phase, and use the amplitudes from
+http://arxiv.org/abs/gr-qc/0110100. We then use the stationary phase
+approximation to get a Fourier domain waveform.
+
+Please let me know if anything is unclear.
+
+Cheers,
+Antoine
