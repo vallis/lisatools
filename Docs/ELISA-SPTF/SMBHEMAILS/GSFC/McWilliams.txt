@@ -110,3 +110,32 @@ relevant to understand how your code works, and - even better - a SHORT
 Sean T. McWilliams, James Ira Thorpe, John G. Baker, and Bernard J. Kelly, Phys. Rev. D 81, 064014 (2010)
 Baker et al., Phys. Rev. D 78, 044046 (2008)
 Kelly et al., arXiv:1107.1181 
+
+***
+
+Hi everyone,
+
+Here are some results for the large seed, aligned spin catalog for
+configuration 2, using the "Goddard code" which includes higher
+harmonics (HHs) during both the inspiral and the merger, but which
+lacks precession.  These results are complementary to Neil et al's in
+that we swap precession for HHs during the merger.  It is interesting
+to note that HHs have half as large an impact in log space as going
+from 4 to 6 links does for the distance determination.  This seems to
+be due primarily to the determination of \iota, which is the same with
+4 links and HHs as it is for 6 links without HHs.  Since the majority
+of the benefit from HHs comes from the very late inspiral and merger,
+I expect the improvement in distance determination we see to be more
+dramatic than Neil et al's results for the same catalog, unless
+precession has already broken that degeneracy for them by the time of
+the merger. This statement refers to the "small misalignment" catalog,
+which I assume is essentially the same as the aligned catalog, but
+with some amount of precession.
+
+I've finished running the small seed catalog with HHs for
+configuration 2, and am currently running without HHs for comparison.
+I will send that info around once the analysis is complete, and will
+try to repeat for configuration 5, time-and-resources permitting.
+
+Regards,
+Sean McWilliams

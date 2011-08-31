@@ -1,0 +1,163 @@
+1) Code name (as you want it to be listed in tables and in the text)
+
+
+PhenomC (I think)
+
+People/groups who contributed
+
+
+Stas Babak, Antoine Petiteau, Frank Ohme, Emma Robinson
+
+References to relevant published literature with a detailed description
+of the code
+
+2) PN order in phasing
+
+Phenomenological waveform: joining inspiral and merger + ringdown.
+
+
+3) PN amplitude corrections/higher harmonics? (Yes/No)
+
+
+No
+
+* if yes, to what order? did you Taylor re-expand the amplitude?
+(give details...)
+
+4) Spins in inspiral phasing/amplitude? (Yes/No)
+
+
+Spin (alligned) in the phase, not in the amplitude.
+
+5) Spin precession during inspiral? (Yes/No)
+
+No.
+
+
+6) Eccentricity? (Yes/No)
+
+
+No.
+
+7) Merger/ringdown? (Yes/No)
+
+* if yes, what model? (EOB, PhenomA/B/C, IRS...)
+
+
+Yes, phenomC
+
+* if yes, does the model allow for unequal mass ratios and spins?
+
+
+Yes. Mass ratio was restricted to the 1:50 and individual spins to 0.98.
+Higher mass ratio (i) were not tested with this model (ii) give clearly wrong results
+Higher mass could lead to final spin >1 as estimated by empirical formula.
+
+* did you make assumptions on the LISA response during merger?
+
+
+Rigid adiabatic approximation +  Static LISA.
+
+8) Higher harmonics in merger/ringdown? (yes/no)
+
+
+no.
+
+* if yes, what model? (EOB, PhenomX...)
+
+* if yes, does it allow for unequal mass ratios and spins?
+
+9) LISA response model
+
+Please give a short description or refer to a published paper.
+
+
+Rigid adiabatic approximation was used in models C-type (C1, C2, C3, C4, C5)
+During the inspiral we connect time and frequency of GW via 3PN expression t(f).
+Close to the inspiral we keep LISA fix in calculating the response. For C-type
+configurations we have assumed equal arms and analytic (LISA-type orbit).
+
+For L-configuration, we have used actual numerical orbit and corresponding
+armlength + adiabatic approximation as above.
+
+* if you work in the frequency domain: please give details (e.g. explain
+lower/upper limits of integration, PSD you used and so on; I assume we
+are all using the PSDs in the wiki, but I'd like to make sure);
+
+
+It was done in frequency domain.
+fMin = 1.e-5 Hz;
+fMax = 1.0 Hz;
+
+or freq  <  0.15 M (as suggested in orig. PhenomC paper)
+
+PSD. I have Used michelson X-psd analytic expression with analytic fit of the galactic binary noise
+as explained on wiki:
+https://lisa-light.aei.mpg.de/bin/view/DetectorConfigurations/NewConfigurations
+
+for L-configuration I have used an average over the whole orbit numerical PSD (see the same wiki page)
+
+
+* if you work in the time domain: give details (e.g. explain your
+tapering method);
+
+10) Alternative theories? (Yes/No)
+
+
+No.
+
+* if yes, please give a short summary of what you included and/or refer
+to the relevant paper(s).
+
+Note that here we should be careful in comparing results between
+different codes: if we want to report results on alternative theories
+from different codes, we should have a consistent "underlying" GR model
+(e.g. no spins, no amplitude corrections, inspiral only - but let's
+discuss!)
+
+11) I think it would be a good idea for calibration (at least for us -
+not sure that we should report this in the Yellow Book) to list PE
+accuracy on the following parameters:
+
+M, eta, angular resolution (both axes of the ellipse?),
+
+
+For the angular resolution I have neglected correlation (ellipse) and just took the
+dtheta times dphi (so it is worse case).
+
+
+For codes that can do this:
+spins, eccentricity, final BH mass/spin, ***anything else?***
+
+This comparison should be done on a canonical binary.
+I propose to use this "canonical binary":
+
+M_total=1e6Msun;
+eta=0.25;
+s1=s2=eccentricity=0.;
+z=1.0 [Cosmology: Omega_M=0.3, Omega_Lambda=0.7, h=0.7]
+
+We should also fix location in the sky/direction of orbital angular
+momentum, or else provide histograms. Any preference?
+
+
+To be done.
+
+We may have additional "test binaries" for codes that can handle spin
+precession and/or eccentricity.
+
+12) Did you already cross-check your code against other codes?
+Which ones, and in which cases?
+
+Fisher computations were checked with inspiral only (if it counts as a test).
+The waveform was validated by cross comparison of several
+implementations.
+
+Please let me know if you need further info.
+
+The code is in free access on lisasolve repository (google code).
+
+Cheers,
+Stas.
+
+

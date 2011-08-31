@@ -1,0 +1,14 @@
+Hi Folks,
+
+Here are some results that combine precession, higher harmonics, merger and ringdown.
+The large seed models are something I sent earlier. I now have results for the small, chaotic
+model as well. All are for Configuration 2. The red lines are with merger/ringdown and the
+blue are without.
+
+It is interesting to see that merger/ringdown is also helping the distance determination of the
+small seed case, but not be quite as much as for the large seed case.
+
+I will have the efficient accretion (partially aligned spin results) for the small seed catalog soon.
+Then I will run all of them again for Configuration 5.
+
+Neil
