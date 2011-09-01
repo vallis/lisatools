@@ -103,14 +103,14 @@ Stanislav Babak$^1$,
 Emanuele Berti$^3$
 Neil J. Cornish$^4$,
 Jonathan Gair$^5$,
-Ryan Lang$^6$,
-Tyson Littenberg$^6$,
-Sean McWilliams$^6$,
-Oliver Jennrich$^7$,
-Philippe Jetzer$^8$,
-Ioannis Kamaretsos$^9$,
-Antoine Klein$^8$,
-Gijs Nelemans$^{10}$,
+Oliver Jennrich$^6$,
+Philippe Jetzer$^7$,
+Ioannis Kamaretsos$^8$,
+Antoine Klein$^7$,
+Ryan Lang$^9$,
+Tyson Littenberg$^9$,
+Sean T. McWilliams$^{10}$,
+Gijs Nelemans$^{11}$,
 Frank Ohme$^1$,
 Eric Plagnol$^2$,
 Antoine Petiteau$^1$,
@@ -119,12 +119,12 @@ Emma Robinson$^1$,
 B. S. Sathyaprakash$^9$,
 Bernard Schutz$^1$,
 Alberto Sesana$^1$,
-Carlos Sopuerta$^{11}$,
-Alessandro Spallicci$^{12}$,
-Ira Thorpe$^6$,
-Michele Vallisneri$^{13,14}$,
-Alberto Vecchio$^{15}$,
-Marta Volonteri$^{16}$
+Carlos Sopuerta$^{12}$,
+Alessandro Spallicci$^{13}$,
+James I. Thorpe$^9$,
+Michele Vallisneri$^{14,15}$,
+Alberto Vecchio$^{16}$,
+Marta Volonteri$^{17}$
 }
 
 \address{$^1$ Max-Planck-Institut f\"ur Gravitationsphysik (Albert-Einstein-Institut), Am M\"uhlenberg 1, D-14476 Golm bei Potsdam, Germany}
@@ -132,17 +132,18 @@ Marta Volonteri$^{16}$
 \address{$^3$ University of Mississippi, USA}
 \address{$^4$ Dept.\ of Physics, Montana State Univ., Bozeman, MT 59717, USA}
 \address{$^5$ Inst.\ of Astronomy, Univ.\ of Cambridge, Madingley Rd., Cambridge, CB30HA, UK}
-\address{$^6$ Gravitational Astrophysics Lab., NASA Goddard Space Flight Center, 8800 Greenbelt Rd., Greenbelt, MD 20771, USA}
-\address{$^7$ European Space Agency}
-\address{$^8$ Institute of Theoretical Physics, University of Zurich}
-\address{$^9$ School of Physics and Astronomy, Cardiff Univ., 5, The Parade, Cardiff, CF243YB, UK}
-\address{$^{10}$ Department of Astrophysics, Radboud University Nijmegen, The Netherlands}
-\address{$^{11}$ Institute of Space Sciences (ICE-CSIC), Barcelona, Spain}
-\address{$^{12}$ University of Orleans, France}
-\address{$^{13}$ Jet Propulsion Laboratory, California Inst.\ of Technology, Pasadena, CA 91109, USA}
-\address{$^{14}$ Theoretical Astrophysics, California Inst.\ of Technology, Pasadena, CA 91125}
-\address{$^{15}$ School of Physics and Astronomy, Univ.\ of Birmingham, Edgbaston, Birmingham B152TT, UK}
-\address{$^{16}$ University of Michigan}
+\address{$^6$ European Space Agency}
+\address{$^7$ Institute of Theoretical Physics, University of Zurich}
+\address{$^8$ School of Physics and Astronomy, Cardiff Univ., 5, The Parade, Cardiff, CF243YB, UK}
+\address{$^9$ Gravitational Astrophysics Lab., NASA Goddard Space Flight Center, 8800 Greenbelt Rd., Greenbelt, MD 20771, USA}
+\address{$^{10}$ Department of Physics, Princeton University, Princeton, NJ 08544, USA}
+\address{$^{11}$ Department of Astrophysics, Radboud University Nijmegen, The Netherlands}
+\address{$^{12}$ Institute of Space Sciences (ICE-CSIC), Barcelona, Spain}
+\address{$^{13}$ University of Orleans, France}
+\address{$^{14}$ Jet Propulsion Laboratory, California Inst.\ of Technology, Pasadena, CA 91109, USA}
+\address{$^{15}$ Theoretical Astrophysics, California Inst.\ of Technology, Pasadena, CA 91125}
+\address{$^{16}$ School of Physics and Astronomy, Univ.\ of Birmingham, Edgbaston, Birmingham B152TT, UK}
+\address{$^{17}$ University of Michigan}
 
 \ead{Antoine.Petiteau@aei.mpg.de, porter@apc.univ-paris7.fr}
 
@@ -1593,7 +1594,65 @@ Sources: LC and SC catalogs, requiring SNR $> 8$ (6 link case), 3 months $< t_c 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Inspiral-Merger-Ringdown with higher harmonics (EOB based)  {\it (Sean McWilliams)}}
-\label{SSS:MBHbPEPhenomAEI}
+\label{SSS:MBHbPEGSFC}
+
+We focus specifically on configuration 5, although we expect our
+conclusions will apply more generally.  We performed a Fisher analysis on the aligned spin catalogs, using
+a waveform model that includes all available post-Newtonian corrections to the inspiral phase and amplitude, as well as a merger model which
+includes all relevant harmonic content.  We do not include spin precession, so the relative amount of improvement due to higher harmonics (HHs) in the merger
+should be considered an upper limit.  The uncertainty itself should also be considered an upper limit, meaning we expect that precession
+will generically make parameter uncertainties smaller despite the introduction of 4 extra parameters.
+
+We can draw several conclusions from the uncertainty histograms.  First, we note that our 4 link results without HHs should be
+comparable to the results using PhenomC mergers, which also lack HHs.  It is interesting that HHs have as large an impact in 
+log space as going from 4 to 6 links does for the distance determination, for both large and small seed catalogs.  This seems to be due primarily to the 
+determination of $\iota$, which is the same with 4 links and HHs as it is for 6 links with HHs.  Since the majority of the benefit from HHs comes from 
+the very late inspiral and merger, we expect the improvement in distance determination we see to be more dramatic than results that include HHs in the
+inspiral, but not the merger.  Codes with precession and HHs in the inspiral but not in the merger will see even less importance from HHs, as precession
+may break the same degeneracies that we see broken by HHs.  We also see significant improvement in sky localization, with HHs improving latitude
+and longitude uncertainties by half an order of magnitude.  However, this is much less than the improvement one would expect from 6 links, which
+yields an additional order-of-magnitude improvement beyond the inclusion of HHs.  All angle parameters show improvement from HHs, as does the mass ratio,
+but the uncertainty in spin magnitude is unaffected by either HHs or 6 links.
+
+\begin{figure}
+\begin{center}
+\includegraphics*[trim = 0mm 0mm 0mm 0mm, clip, scale=.16, angle=0]{FigSean/noiseA.eps}
+\caption
+{
+Comparison of noise model with average of a 1000-case ensemble of noise realizations using {\sc Synthetic LISA},
+for the {\emph A} channel with classic LISA and configurations 2 and 5. 
+\vspace{10mm}}
+\label{fig:noise}
+\end{center}
+\end{figure}
+
+\begin{figure*}
+\begin{center}
+\includegraphics*[trim = 0mm 0mm 0mm 0mm, clip, scale=.28, angle=0]{FigSean/model_LE_1.eps}
+\includegraphics*[trim = 0mm 0mm 0mm 0mm, clip, scale=.28, angle=0]{FigSean/model_LE_2.eps}
+\includegraphics*[trim = 0mm 0mm 0mm 0mm, clip, scale=.28, angle=0]{FigSean/model_LE_3.eps}
+\caption
+{
+Uncertainty histograms for the large seed, aligned spin catalog, using the configuration 5 LISA redesign.  All angle uncertainties are in degrees, $\Delta t_c$ is in seconds,
+and mass and distance errors are fractional.  The catalog spin values are not used, but rather all cases are given dimensionless
+spins $\chi_{1,2}=S_{1,2}/M^2_{1,2}=0.5$ due to the limitations of our model for HHs.
+\vspace{10mm}}
+\label{fig:LE}
+\end{center}
+\end{figure*}
+
+\begin{figure*}
+\begin{center}
+\includegraphics*[trim = 0mm 0mm 0mm 0mm, clip, scale=.28, angle=0]{FigSean/model_SE_1.eps}
+\includegraphics*[trim = 0mm 0mm 0mm 0mm, clip, scale=.28, angle=0]{FigSean/model_SE_2.eps}
+\includegraphics*[trim = 0mm 0mm 0mm 0mm, clip, scale=.28, angle=0]{FigSean/model_SE_3.eps}
+\caption
+{
+Uncertainty histograms for the small seed, aligned spin catalog using configuration 5.
+\vspace{10mm}}
+\label{fig:SE}
+\end{center}
+\end{figure*}
 
 
 
