@@ -567,11 +567,13 @@ implicitly assumes that the binary's dynamics are dominated by the radiation rea
 The confusion noise estimates for each configuration under consideration are shown in Figure~\ref{Figure:Confusion}.  The green [dashed] traces show the instrument noise.  The red [solid] curves are are the full noise spectra with confusion noise included, illustrating the impact of the astrophysical foreground on the instrument sensitivity.  The the black [dotted] lines are 
 the LISA baseline instrument noise, and are included for reference.  All estimates are for two year observation 
 times.  The confusion noise does not have a significant impact on the detector sensitivity for the 1 Gm configurations.
-\begin{figure*}[H]
-   \includegraphics[width=1\textwidth]{confusion.eps} % requires the graphicx package
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=1\textwidth]{FigGBTyson/confusion.eps} % requires the graphicx package
    \caption{Noise spectra for different detector configurations.  The red [solid] curves show the full noise spectrum, the green [dashed] curves are the instrument-only noise spectra and the black [dotted] line is the baseline LISA instrument noise curve.  All results are for two year mission lifetimes. }
    \label{Figure:Confusion}
-\end{figure*}
+  \end{center}
+\end{figure}
 
 \subsubsection{Recovered Source Catalogue}
 Here we use the lists of detectable binaries and the FIM to make very coarse statements about the science potential for the 
@@ -609,13 +611,87 @@ considering both 6-link and 4-link operations.  All results are for two year mis
 \end{table}
 
 \subsubsection{Verification Binaries}
+The parameter estimation capabilities of the ``finalist'' configurations (2,5) for the known verification binaries (VBs) are estimated 
+using the Fisher Information Matrix.  The FIM is computed for 1 000 realizations of each binary, Monte Carlo'ed over orientation. The inclination is drawn uniformly in $\cos(\iota)$ over the range constrained by EM measurements~\cite{VBs}.  For sources without well determined inclination angle (ES Cet and V407 Vul), $\cos{\iota}$ is drawn from U[-1,1].  
+Consequently, these two sources show the largest spread in parameter estimation results.  The binary source parameters, including ranges for inclination angle, can be found in Table~\ref{Table:VB}.
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{ccccccc}
+\hline\hline
+Source & $f$ mHz & $\dot{f}\times 10^{-16}$ Hz/s & $\cos\theta$ & $\phi$ rad & $\mathcal{A}\times10^{-22}$ & $\iota$ deg\\
+\hline
+
+RX J0806.3+1527 & 6.22028 & -7.25472 & -0.08212 & 2.10224 & 0.63782 & 38--39\\
+
+HP Lib & 1.81324 & 0 & 0.08665 & 4.10305 & 1.76277 & 26--34\\
+
+SDSS J0651+2844 & 2.61301 & 0 & 0.10132 & 1.76872 & 1.66997 & 85.9--88.5\\
+
+AM CVn & 1.94414 & 0  & 0.65349 & 2.97383 & 1.50933 & 41--45\\
+
+ES Cet  & 3.22061 & 0 & -0.35488 & 0.42962 & 0.53591 & 0--180\\
+
+V407 Vul & 3.51250 & -0.19555 & 0.81654 & 5.14867 & 0.32957 & 0--180\\
+
+V803 Cen & 1.25313 & 0 & -0.52905 & 3.77284 & 1.36368 & 12--15\\
+
+CR Boo & 1.35962 & 0 & 0.31234 & 3.53028 & 1.07345 & 30--31
+
+%-- &{\tt LISA} & -- & -- & -- & --\\
+\end{tabular}
+\caption{Verification binary parameters.}
+\label{Table:VB}
+\end{center}
+\end{table}
+
+The FIM results are shown in Figures~\ref{Figure:VBSNR}~--~\ref{Figure:VBOmega}.  
+The analysis was repeated where we take the sky-location to be known exactly.  While knowledge of the sky-location and frequency \emph{a 
+priori} makes detection significantly easier, breaking the correlations between these and the other parameters tabulated here account for 
+differences at the 10\% level or below, and so are omitted.
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[angle=270,width=0.75\textwidth]{FigGBTyson/SNR.eps} % requires the graphicx package
+   \caption{SNR of detectable verification binaries for Config 1 and 2, 4 and 6 links.  Error bars represent the full range of values from 1000 realizations of each binary Monte Carlo'ed over orientation.  The marked point represents the mode of the distribution.  The ranges for each binary's inclination angle can be found in Table~\ref{Table:VB}.}
+   \label{Figure:VBSNR}
+   \end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[angle=270, width=0.75\textwidth]{FigGBTyson/Amp.eps} % requires the graphicx package
+   \caption{Fractional error in amplitude of detectable verification binaries for Config 1 and 2, 4 and 6 links.  Error bars represent the full range of values from 1000 realizations of each binary Monte Carlo'ed over orientation.  The marked point represents the mode of the distribution.  The ranges for each binary's inclination angle can be found in Table~\ref{Table:VB}.}
+   \label{Figure:VBAmp}
+   \end{center}
+\end{figure}
 
 
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[angle=270,width=0.75\textwidth]{FigGBTyson/fdot.eps} % requires the graphicx package
+   \caption{Error in $\dot{f}$ of detectable verification binaries for Config 1 and 2, 4 and 6 links.  Error bars represent the full range of values from 1000 realizations of each binary Monte Carlo'ed over orientation.  The marked point represents the mode of the distribution.  The ranges for each binary's inclination angle can be found in Table~\ref{Table:VB}.}
+   \label{Figure:VBfdot}
+   \end{center}
+\end{figure}
 
 
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[angle=270,width=0.75\textwidth]{FigGBTyson/inc.eps} % requires the graphicx package
+   \caption{Inclination error of detectable verification binaries for Config 1 and 2, 4 and 6 links.  Error bars represent the full range of values from 1000 realizations of each binary Monte Carlo'ed over orientation.  The marked point represents the mode of the distribution.  The ranges for each binary's inclination angle can be found in Table~\ref{Table:VB}.}
+   \label{Figure:VBinc}
+   \end{center}
+\end{figure}
 
 
-
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[angle=270, width=0.75\textwidth]{FigGBTyson/Omega.eps} % requires the graphicx package
+   \caption{Angular resolution for detectable verification binaries for Config 1 and 2, 4 and 6 links.  Error bars represent the full range of values from 1000 realizations of each binary Monte Carlo'ed over orientation.  The marked point represents the mode of the distribution.  The ranges for each binary's inclination angle can be found in Table~\ref{Table:VB}.}
+   \label{Figure:VBOmega}
+   \end{center}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                     Massive Black Hole binaries                                        %
