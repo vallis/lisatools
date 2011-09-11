@@ -1,0 +1,9 @@
+In terms of the massive black hole waveforms, at APC we are running
+MCMCs on the catalogues using two waveform families.  The first with
+my student Jerome Carre is an inspiral waveform with higher harmonics
+and no spin.  The phase is at the 3.5 PN order and the harmonic
+corrections are up to 2.5 PN.
+
+The other waveform is a non-spinning eccentric inspiral.  For this
+waveform both the conservative orbital dynamics and the radiation
+reaction terms are at 3 PN order.
