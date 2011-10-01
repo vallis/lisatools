@@ -44,3 +44,70 @@ Thanks.
 
 Best,
 Antoine
+
+***
+
+Dear Monica,
+
+I attach to this mail the graphics that we did with Stas for the
+figure SNR versus redshift.
+
+The associated data (computed by Stas) are also included ( the columns
+are z mean_spin0, min_spin0, max_spin0, mean_spin09, min_spin09,
+max_spin09 ) .
+
+There are two types of graphics, so you can choose (and of course we
+can do more if you want !).
+
+The corresponding captions are :
+
++ For figures : 
+  SNRz_ELISA_spin00.eps		ELISA(NGO)	spin = 0
+  SNRz_ELISA_spin09.eps				ELISA(NGO)	spin = 0.9
+  SNRz_LISA_spin00.eps    			LISA		       spin = 0
+  SNRz_LISA_spin09.eps 						       LISA	spin = 0.9
+
+"SNR versus redshift for ELISA/LISA obtained using the
+inspiral-merger-ringdown waveform PhenomC [Santamaria2010] with spin =
+0/0.9.
+
+The black line corresponds to the mean value and the grey area to the
+the distribution, (i.e. low limit corresponds to the minimal SNR and
+high limit to the maximal one).
+
+These results are based on a catalogue of 15360 sources with
+parameters randomly chosen in distributions which mix several
+astrophysical models."
+
++ For figures : 
+  eLISAhorSNR.png	ELISA(NGO)
+  LISAhorSNR.png		LISA
+
+"SNR versus redshift for ELISA/LISA obtained using the
+inspiral-merger-ringdown waveform PhenomC [Santamaria2010] with spin =
+0 (top panel) and 0.9 (bottom panel).
+
+The black line corresponds to the mean value and the grey area to the
+the distribution, (i.e. low limit corresponds to the minimal SNR and
+high limit to the maximal one).
+
+These results are based on a catalogue of 15360 sources with
+parameters randomly chosen in distributions which mix several
+astrophysical models."
+
+Reference :
+
+[Santamaria2010] L. Santamaria, F. Ohme, P. Ajith, B. Bruegmann,
+N. Dorband, M. Hannam, S. Husa, P. Moesta, D. Pollney, C. Reisswig,
+E. L. Robinson, J. Seiler and B. Krishnan, Phys. Rev. D 82, 064016
+(2010)
+
+There are not nice but we can improve.
+
+We hope it helps.
+
+Please ask to me and Stas, if you need more informations, change in
+the figures, formats, etc ...
+
+Best regards,
+Antoine
