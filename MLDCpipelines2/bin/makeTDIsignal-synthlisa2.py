@@ -51,6 +51,10 @@ parser.add_option("-c", "--combinedSNR",
                   action="store_true", dest="combinedSNR", default=False,
                   help="use combined snr = sqrt(2)*max{SNR_x, SNR_y, SNR_z} as SNR constrain [off by default]")
 
+parser.add_option("-a", "--armlength",
+                  type="string", dest="armlength", default='Standard',
+                  help="LISA armlength: Standard [default, = 16.6782 s], <numerical value> [s]")
+
 parser.add_option("-L", "--LISA",
                   type="string", dest="LISAmodel", default='Eccentric',
                   help="LISA model: Static, Rigid, Eccentric [default], filename (using synthlisa's makeSampledLISA)")
@@ -140,18 +144,32 @@ for waveforms in allsources:
     
     sourceobjects.append(source)
 
-# add caching?
-if options.LISAmodel == 'Eccentric':
-    lisa = synthlisa.EccentricInclined(0.0,1.5*pi,-1)
-elif options.LISAmodel == 'Static':
-    lisa = synthlisa.OriginalLISA()
-elif options.LISAmodel == 'Rigid':
-    lisa = synthlisa.CircularRotating(0.0,1.5*pi,-1)
+# make LISA, add caching?
+if options.armlength == 'Standard':
+    L = 16.6782
+    
+    if options.LISAmodel == 'Eccentric':
+        lisa = synthlisa.EccentricInclined(0.0,1.5*pi,-1)
+    elif options.LISAmodel == 'Static':
+        lisa = synthlisa.OriginalLISA()
+    elif options.LISAmodel == 'Rigid':
+        lisa = synthlisa.CircularRotating(0.0,1.5*pi,-1)
+    else:
+        try:
+            lisa = synthlisa.makeSampledLISA(options.LISAmodel)
+        except IOError:
+            parser.error("I don't recognize this LISA model!")
 else:
-    try:
-        lisa = synthlisa.makeSampledLISA(options.LISAmodel)
-    except IOError:
-        parser.error("I don't recognize this LISA model!")
+    L = float(options.armlength)
+    
+    if options.LISAmodel == 'Eccentric':
+        lisa = synthlisa.EccentricInclined(L,0.0,1.5*math.pi,-1,0)
+    elif options.LISAmodel == 'Static':
+        lisa = synthlisa.OriginalLISA(L,L,L)
+    elif options.LISAmodel == 'Rigid':
+        lisa = synthlisa.CircularRotating(L,0.0,1.5*math.pi,-1,0)
+    else:
+        parser.error("I don't recognize this LISA model! (Or perhaps you tried to change armlength when using an orbits file?)")    
 
 if len(sourceobjects) == 0:
     print "!!! Could not find any suitable sources..."
@@ -202,11 +220,15 @@ if options.debugSNR or hasattr(allsources[0],'RequestSN'):
     fr = hX[1:,0]
     
     om = 2.0 * pi * fr
-    L  = 16.6782
     
     # instrument noise (was 2.5, 1.8)
-    Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
-    Sop = 1.8e-37 * fr**2
+    if options.armlength == 'Standard':
+        Spm = 2.5e-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
+        Sop = 1.8e-37 * fr**2
+    else:
+        print "Warning: adopting eLISA noise parameters for non-standard armlength"
+        Spm = 6.00-48 * (1.0 + (fr/1.0e-4)**-2) * fr**(-2)
+        Sop = 5.06e-38 * fr**2
     
     Sx = 16.0 * numpy.sin(om*L)**2 * (2.0 * (1.0 + numpy.cos(om*L)**2) * Spm + Sop)
     
