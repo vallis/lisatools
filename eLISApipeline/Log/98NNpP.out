@@ -1,0 +1,12 @@
+Command: /home/stas/lisatools/eLISApipeline/bin/makeTDIsignal-synthlisa2.py --noiseOnly  --armlength=3.33 --duration=31457280.0 --timeStep=15.0 -D Barycentric/GB-1.1.1a-barycentric.xml TDI/GB-1.1.1a-tdi-frequency.xml
+Started on Tue May  7 10:55:03 2013.
+---
+Warning: adopting eLISA noise parameters for non-standard armlength
+Stas: no galactic noise added
+Stas: debugging SNx,y,z = 9.46595404332 8.18816415828 8.74740132086
+makeTDIsignal-synthlisa.py: maximum X,Y,Z SNR = 9.46595404332
+makeTDIsignal-synthlisa.py: SNR X, Y, Z = 9.46595404332, 8.18816415828, 8.74740132086
+makeTDIsignal-synthlisa.py: SNR A, E, total = 9.46511264755, 8.11520349934, 12.467753818
+makeTDIsignal-synthlisa.py: satisfying RequestSN=30.0 by rescaling by 3.1692526567
+---
+Finished on Tue May  7 10:56:05 2013.

@@ -1,0 +1,6 @@
+Command: python /home/stas/lisatools/eLISApipeline/bin/challenge1.1.1a.py 908041 -T 1
+Started on Tue May  7 10:55:02 2013.
+---
+----> /home/stas/lisatools/eLISApipeline/bin/makesource-GalacticBinary.py --seed=908042 --amplitude=1e-21 --requestSN=30.0 --centerf=1.0e-3 --deltaf=0.1e-3 --sourceName="GB-1.1.1a" Source/GB-1.1.1a.xml
+---
+Finished on Tue May  7 10:55:02 2013.

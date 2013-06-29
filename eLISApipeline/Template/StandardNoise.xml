@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">
+<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
+<XSIL>
+    <Param Name="Author"></Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2006-11-29T20:14:12PST</Param>
+    <Comment>
+        lisaXML 1.1 [M. Vallisneri, Dec 2006]
+    </Comment>
+
+    <XSIL Type="NoiseData">
+        <XSIL Name="Standard LISA noises" Type="PseudoRandomNoiseTable">
+            <Table>
+                <!-- Don't have all the nice synthlisa parameters... -->
+                
+                <Column Name="Name"                 Unit="String"      Type="String"/>
+                <Column Name="SpectralType"         Unit="String"      Type="String"/>
+                <Column Name="PowerSpectralDensity" Unit="(f/Hz)^n/Hz" Type="double"/>
+
+                <Dim Name="Length">18</Dim>
+                <Dim Name="Records">3</Dim>
+                
+                <!-- How to split this into a table in the XSL? -->
+                <!-- Also need to be able to parse Local Table... -->
+                <!-- Don't really need to parse it; just save it to a string, treat it like a file -->
+                
+                <Stream Type="Local" Encoding="Text">
+                    pm1   WhiteAcceleration  6.0e-48
+                    pm1   RedAcceleration    6.0e-52
+                    pm2   WhiteAcceleration  6.0e-48
+                    pm2   RedAcceleration    6.0e-52
+                    pm3   WhiteAcceleration  6.0e-48
+                    pm3   RedAcceleration    6.0e-52
+                    pm1s  WhiteAcceleration  6.0e-48
+                    pm1s  RedAcceleration    6.0e-52
+                    pm2s  WhiteAcceleration  6.0e-48
+                    pm2s  RedAcceleration    6.0e-52
+                    pm3s  WhiteAcceleration  6.0e-48
+                    pm3s  RedAcceleration    6.0e-52
+                    pd1   WhitePhase         5.07e-38
+                    pd2   WhitePhase         5.07e-38
+                    pd3   WhitePhase         5.07e-38
+                    pdm1  WhitePhase         5.07e-38
+                    pdm2  WhitePhase         5.07e-38
+                    pdm3  WhitePhase         5.07e-38
+                </Stream>
+            </Table>
+        </XSIL>
+    </XSIL>
+</XSIL>

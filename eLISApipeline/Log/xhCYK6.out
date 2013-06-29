@@ -1,0 +1,7 @@
+Command: /home/stas/lisatools/eLISApipeline/bin/makebarycentric.py --duration=31457280.0 --timeStep=15.0 Source/GB-1.1.1a.xml Barycentric/GB-1.1.1a-barycentric.xml
+Started on Tue May  7 10:55:02 2013.
+---
+^^^^^ Checking polarization
+Stas (makebarycentric): applying polarization
+---
+Finished on Tue May  7 10:55:02 2013.
