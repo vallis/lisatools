@@ -307,7 +307,6 @@ if options.duration == None:
 dosynthlisa = not (                         options.lisasimonly or options.lisacodeonly) or options.synthlisaonly
 dolisacode  = not (options.synthlisaonly or options.lisasimonly                        ) or options.lisacodeonly
 dolisasim = False
-dolisacode = False
 
 
 seed = options.seed
@@ -483,9 +482,9 @@ if dosynthlisa:
     
     for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
         if 'barycentric.xml' in xmlfile:
-            tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-frequency.xml',os.path.basename(xmlfile))
+            tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-freq-synthlisa2.xml',os.path.basename(xmlfile))
         else:
-            tdifile = 'TDI/' + re.sub('\.xml$','-tdi-frequency.xml',os.path.basename(xmlfile))
+            tdifile = 'TDI/' + re.sub('\.xml$','-tdi-freq-synthlisa2.xml',os.path.basename(xmlfile))
 
         if (not makemode) or newer(xmlfile,tdifile):
             # TO DO - more kludging... would be better to do RequestTimeStep
@@ -514,155 +513,47 @@ if dosynthlisa:
 
 step4time = time.time()
 
-# --------------------------
-# STEP 4: run LISA Simulator
-# --------------------------
-
-# TO DO: adjust the timestep for MLDC4?
-#### Stas: I disable lisaim for eLISA
-if dolisasim:
-### {{{	
-    for xmlfile in glob.glob('Immediate/*.xml'):
-        print "--> !!! Ignoring immediate synthlisa file %s" % xmlfile
-
-    for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
-        if 'Barycentric' in xmlfile:
-            tdifile = 'TDI/' + re.sub('\-barycentric.xml','-tdi-strain.xml',os.path.basename(xmlfile))
-            lisasimexe = 'makeTDIsignal-lisasim.py'
-        elif 'Immediate' in xmlfile:
-            tdifile = 'TDI/' + re.sub('\.xml','-tdi-strain.xml',os.path.basename(xmlfile))
-            lisasimexe = 'makeTDIsignal-lisasim.py --immediate'
-        
-        if (not makemode) or newer(xmlfile,tdifile):
-            # remember that we're not doing any SNR adjusting here...
-            prun('%(execdir)s/%(lisasimexe)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
-    
-    slnoisefile = 'TDI/tdi-strain-noise.xml'
-    
-    if donoise and ((not makemode) or (not os.path.isfile(slnoisefile))):
-        if 'challenge4' in challengename:
-            prun('%(execdir)s/makeTDInoise-lisasim.py --duration=%(duration)s --timeStep=1.875 --seedNoise=%(seednoise)s %(slnoisefile)s')
-        else:
-            prun('%(execdir)s/makeTDInoise-lisasim.py --duration=%(duration)s --timeStep=%(timestep)s --seedNoise=%(seednoise)s %(slnoisefile)s')
-    
-    pwait()
-#}}}    
-
-step4btime = time.time()
-
 # ---------------------
-# STEP 4b: run LISAcode
+# STEP 4: run LISAcode
 # ---------------------
 dolcsigseparate = True
 if dolisacode:
-### {{{	
-    # Use new lisacode pipeline for challenge4
-    if 'challenge4' in challengename:
 
-        os.chdir('LISACode')
+    runfile = 'makeTDI-lisacode2.py --MLDC --Instrument=ELISA --OutDataType=XML'
 
-        # Make TDI for sources
-
-        dosmallstep = False
-        if dolcsigseparate:
-            # Compute signals separately
-            runfile = 'makeTDIsignal-lisacode.py'
-            for xmlfile in glob.glob('../Barycentric/*-barycentric.xml') + glob.glob('*Background.xml'):
-                if 'barycentric.xml' in xmlfile:
-                    tdifile = re.sub('barycentric\.xml$','tdi-lisacode.xml',os.path.basename(xmlfile))
-                else:
-                    tdifile = re.sub('\.xml$','-tdi-lisacode.xml',os.path.basename(xmlfile))
-                if (not makemode) or newer(xmlfile,tdifile):
-                    if 'challenge4' in challengename and 'Burst' in xmlfile:
-                        dosmallstep = True
-                        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=1.875 %(xmlfile)s %(tdifile)s')
-                    else:
-                        prun('%(execdir)s/%(runfile)s %(runoptions)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')            
+    ### Generate signal only data
+    
+    for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
+        if 'barycentric.xml' in xmlfile:
+            tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-freq-lisacode2',os.path.basename(xmlfile))
         else:
-            # Compute signal all at once
-            runfile = 'makeTDI-lisacode.py'
-            lcsigfileinput = ''
-            lcsigfile = 'Signals-tdi-lisacode.xml'
-            dosignal = False
-            for xmlfile in glob.glob('../Barycentric/*-barycentric.xml'):
-                dosignal = True
-                lcsigfileinput = lcsigfileinput + ' ' + xmlfile
-                if 'challenge4' in challengename and ('Burst' in xmlfile):
-                    dosmallstep = True
-            if dosignal:
-                if dosmallstep:
-                    prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=1.875 -e %(lcsigfile)s %(lcsigfileinput)s')
-                else:
-                    prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=15.0 -e %(lcsigfile)s %(lcsigfileinput)s')
-            # Compute stochastic-background separatly
-            dosignal = False
-            lcsigfileinput = ''
-            lcsigfile = 'SignalsBack-tdi-lisacode.xml'
-            for xmlfile in glob.glob('*Background.xml'):
-                dosignal = True
-                lcsigfileinput = lcsigfileinput + ' ' + xmlfile
-            if dosignal:
-                prun('%(execdir)s/%(runfile)s -w -N %(runoptions)s --duration=%(duration)s --timeStep=15.0 -e %(lcsigfile)s %(lcsigfileinput)s')
-                
+            tdifile = 'TDI/' + re.sub('\.xml$','tdi-freq-lisacode2',os.path.basename(xmlfile))
 
-        # Make TDI for noises
+        if (not makemode) or newer(xmlfile,tdifile):
+            prun('%(execdir)s/%(runfile)s %(runoptions)s --NoNoise --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-        runfile = 'makeTDInoise-lisacode.py'
-        lcnoisefile = 'tdi-lisacode-noise.xml'
-        if dosmallstep:
-            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=1.875 %(noiseoptions)s %(lcnoisefile)s')
+
+    ### Generate noise only data
+
+    noisefile = 'TDI/tdi-freq-lisacode2-noise-only'
+    prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s %(noisefile)s')
+
+
+    ### Generate noise only data
+
+    for xmlfile in glob.glob('Barycentric/*-barycentric.xml') + glob.glob('Immediate/*.xml'):
+        if 'barycentric.xml' in xmlfile:
+            tdifile = 'TDI/' + re.sub('barycentric\.xml$','tdi-freq-lisacode2-noise',os.path.basename(xmlfile))
         else:
-            prun('%(execdir)s/%(runfile)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=15.0 %(noiseoptions)s %(lcnoisefile)s')
-        
-        pwait()
-        
-        os.chdir('..')
-        run("mv LISACode/*lisacode.xml TDI/.")
-        run("mv LISACode/*lisacode-noise.xml TDI/.")
-        run("mv LISACode/*TDI.bin TDI/.")
- 
-    else:
-        # Use of LISACode before challenge4 : challenge3.5
-        if dolisacode and glob.glob('LISACode/source-*.xml'):
+            tdifile = 'TDI/' + re.sub('\.xml$','tdi-freq-lisacode2-noise',os.path.basename(xmlfile))
 
-            # make the standard lisacode instruction set
-            cname = outputfile
+        if (not makemode) or newer(xmlfile,tdifile):
+            prun('%(execdir)s/%(runfile)s %(runoptions)s --seed=%(seednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(xmlfile)s %(tdifile)s')
 
-            if istraining:  cname += '-training'
-            if not donoise: cname += '-nonoise'
 
-            # (use same seed as synthlisa if we're training)
-            lcseednoise = istraining and seednoise or (seednoise + 1)
-
-            makefromtemplate('LISACode/%s-lisacode-input.xml' % cname,'%s/../Template/LISACode.xml' % execdir,
-                             challengename=cname,
-                             cadence=timestep,
-                             duration=duration,
-                             randomseed=lcseednoise,
-                             orbit=options.LISAmodel)
-
-            if donoise:
-                # make lisacode noise (note that the random seed is really set above in the standard instruction set)
-                run('%(execdir)s/makeTDInoise-synthlisa2.py --keyOnly --keyOmitsLISA --seed=%(lcseednoise)s --duration=%(duration)s --timeStep=%(timestep)s %(noiseoptions)s LISACode/noise.xml')
-
-                # merge with source data into a single lisacode input file
-                run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/noise.xml LISACode/source-*.xml')
-                run('rm LISACode/noise.xml')
-            else:
-                run('%(execdir)s/mergeXML.py LISACode/%(cname)s-lisacode-input.xml LISACode/source-*.xml')
-
-            run('rm LISACode/source-*.xml')
-
-            os.chdir('LISACode')
-
-            import lisacode    
-            run('%s %s-lisacode-input.xml' % (lisacode.lisacode,cname))
-
-            os.chdir('..')
-#}}}
+            
 
 step5time = time.time()
-
 
 # -----------------------
 # STEP 5: run Fast Galaxy
@@ -672,7 +563,7 @@ step5time = time.time()
 
 if glob.glob('Galaxy/*.xml'):
     for xmlfile in glob.glob('Galaxy/*.xml'):
-        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
+        sltdifile = 'TDI/' + re.sub('.xml','-tdi-freq-synthlisa2.xml',os.path.basename(xmlfile))
         lstdifile = 'TDI/' + re.sub('.xml','-tdi-strain.xml',os.path.basename(xmlfile))
 
         if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
@@ -681,8 +572,8 @@ if glob.glob('Galaxy/*.xml'):
     pwait()
 
     for xmlfile in glob.glob('Galaxy/*.xml'):
-        sltdifile = 'TDI/' + re.sub('.xml','-tdi-frequency.xml',os.path.basename(xmlfile))
-        lctdifile = 'TDI/' + re.sub('.xml','-tdi-lisacode.xml',os.path.basename(xmlfile))
+        sltdifile = 'TDI/' + re.sub('.xml','-tdi-freq-synthlisa2.xml',os.path.basename(xmlfile))
+        lctdifile = 'TDI/' + re.sub('.xml','-tdi-freq-lisacode2.xml',os.path.basename(xmlfile))
         if (not makemode) or (newer(xmlfile,sltdifile) or newer(xmlfile,lstdifile)):
             lisaxml.lisaXML(lctdifile,
                         author="MLDC Task Force",
@@ -695,12 +586,8 @@ if glob.glob('Galaxy/*.xml'):
 
 if 'challenge3.2' in challengename:
     if dosynthlisa:
-        run('%s/mergeXML.py %s %s' % (execdir,noisefile  ,'TDI/TheGalaxy-tdi-frequency.xml'))
-        run('rm TDI/TheGalaxy-tdi-frequency.xml TDI/TheGalaxy-tdi-frequency-0.bin')
-
-    if dolisasim:
-        run('%s/mergeXML.py %s %s' % (execdir,slnoisefile,'TDI/TheGalaxy-tdi-strain.xml'))
-        run('rm TDI/TheGalaxy-tdi-strain.xml TDI/TheGalaxy-tdi-strain-0.bin')
+        run('%s/mergeXML.py %s %s' % (execdir, noisefile  ,'TDI/TheGalaxy-tdi-freq-synthlisa2.xml'))
+        run('rm TDI/TheGalaxy-tdi-freq-synthlisa2.xml TDI/TheGalaxy-tdi-freq-synthlisa2-0.bin')
 
 step6time = time.time()
 sys.exit(0)
@@ -784,14 +671,9 @@ def makedataset(simulator,dokey=True,hifreq=False):
                                                      re.sub('\.xml','-[0-9].bin',noisydataset)))
 
 if dosynthlisa:
-    makedataset('frequency')
+    makedataset('freq-synthlisa2')
     if 'challenge4' in challengename and not options.nohighfreq:
-        makedataset('frequency',dokey=False,hifreq=True)
-
-if dolisasim:
-    makedataset('strain')
-    if 'challenge4' in challengename and not options.nohighfreq:
-        makedataset('strain',dokey=False,hifreq=True)
+        makedataset('freq-synthlisa2',dokey=False,hifreq=True)
 
 if dolisacode:
     if 'challenge3' in challengename:
@@ -828,7 +710,7 @@ if dolisacode:
             
             os.chdir('..')
     else:
-        makedataset('lisacode')
+        makedataset('freq-lisacode2')
         if 'challenge4' in challengename and not options.nohighfreq:
             makedataset('lisacode',dokey=False,hifreq=True)
 
@@ -868,8 +750,7 @@ print "--> Completed generating %s" % challengename
 print "    Total time         : %s" % timestring(endtime    - step0time)
 print "    Sources time       : %s" % timestring(step3time  - step1time)
 print "    Synthetic LISA time: %s" % timestring(step4time  - step3time)
-print "    LISA Simulator time: %s" % timestring(step4btime - step4time)
-print "    LISACode time      : %s" % timestring(step5time  - step4btime)
+print "    LISACode time      : %s" % timestring(step5time  - step4time)
 print "    Fast Galaxy time   : %s" % timestring(step6time  - step5time)
 
 # exit with success code

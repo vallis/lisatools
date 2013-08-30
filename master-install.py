@@ -124,6 +124,8 @@ def installpackage(package,packagedir=None,prefix=None,keepdownload=False,config
     else:
         print "!!! Don't know how to install", packagetar
         sys.exit(1)
+    if os.path.isfile('setWorkDir.sh'):
+        assert(0 == os.system('./setworkdir.sh ' + prefix))
     os.chdir('..')
     
     if 'm4' in package and prefix != None:
@@ -147,8 +149,10 @@ fftwdir = None
 newsynthlisa = False
 newlisasim   = False
 nolisasim    = False
-newlisacode  = False
-nolisacode   = False
+newlisacode1 = False
+nolisacode1  = False
+newlisacode2 = False
+nolisacode2  = False
 dotraits     = False
 installgsl   = False
 installswig  = False
@@ -172,10 +176,14 @@ for arg in sys.argv:
         newlisasim = True
     elif arg.startswith('--nolisasim'):         # avoid lisasim installation
         nolisasim = True
-    elif arg.startswith('--newlisacode'):       # force lisacode reinstallation
-        newlisacode = True
-    elif arg.startswith('--nolisacode'):        # avoid lisacode installation
-        nolisacode = True
+    elif arg.startswith('--newlisacode1'):       # force lisacode1 reinstallation
+        newlisacode1 = True
+    elif arg.startswith('--nolisacode1'):        # avoid lisacode1 installation
+        nolisacode1 = True
+    elif arg.startswith('--newlisacode2'):       # force lisacode2 reinstallation
+        newlisacode2 = True
+    elif arg.startswith('--nolisacode2'):        # avoid lisacode2 installation
+        nolisacode2 = True
     elif arg.startswith('--traits'):            # include experimental traits functionality
         dotraits = True
     elif arg.startswith('--installgsl'):        # force GSL install
@@ -504,17 +512,29 @@ if checkpackage('synthlisa') < LooseVersion('2.0.0') or newsynthlisa:
     print "--> Installing Synthetic LISA"
     installpackage('http://www.vallis.org/software/synthLISA-2.0.0.tar.gz',prefix=libdir,keepdownload=False)
 
-# install/check install for LISACode
 
-print "--> Checking LISACode"
+# install/check install for LISACode version 1.4.6
 
-if ((not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode) and (not nolisacode):
-    print "--> Installing LISACode"
+print "--> Checking LISACode1"
+
+if ((not os.path.isfile(libdir + '/bin/LISACode')) or newlisacode1) and (not nolisacode1):
+    print "--> Installing LISACode version 1.4.6"
     if os.path.isfile('LISACode/Makefile'):
         assert(0 == os.system('make -C LISACode clean'))
     installpackage('LISACode',prefix=libdir,configureflags='CPPFLAGS="-I'+fftwdir+'/include" LDFLAGS="-L'+fftwdir+'/lib" CXXFLAGS="-O3" CFLAGS=""')
 
 print >> open('MLDCpipelines2/bin/lisacode.py','w'), "lisacode = '%s'" % (libdir + '/bin/LISACode')
+
+
+# install/check install for LISACode version 2
+
+print "--> Checking LISACode2"
+
+if ((not os.path.isfile(libdir + '/bin/LISACode2')) or newlisacode2) and (not nolisacode2):
+    print "--> Installing LISACode version 2.0.beta6"
+    installpackage('http://www.apc.univ-paris7.fr/Downloads/lisa/LISACode/lisacode-2.0.beta6.tar.gz',prefix=libdir,configureflags='CPPFLAGS="-I'+fftwdir+'/include -I'+gsldir+'/include" LDFLAGS="-L'+fftwdir+'/lib -L'+gsldir+'/lib" CXXFLAGS="-O3" CFLAGS=""')
+    assert(0 == os.system('cp '+libdir+'/bin/makeTDI-lisacode2.py MLDCpipelines2/bin/.'))
+    assert(0 == os.system('cp '+libdir+'/bin/makeTDI-lisacode2.py eLISApipeline/bin/.'))
 
 # install/check install for LISA Simulator
 
