@@ -21,8 +21,8 @@ import numpy as np
 
 ################ Globales variables ################
 
-CfgDir = "/home/stas/lisatools/LISACode/Cfg25/"
-BinDir = "/home/stas/lisatools/LISACode/bin25/"
+CfgDir = "/Users/petiteau/Applications/lisatools//Cfg/"
+BinDir = "/Users/petiteau/Applications/lisatools//bin/"
 # For testing
 #CfgDir="/Users/petiteau/Applications/src/LISACode/LISACode_2_0/LISACode2/ConfigFiles/"
 #BinDir="/Users/petiteau/Applications/src/LISACode/LISACode_2_0/LISACode2/Main/Exe/"
@@ -62,7 +62,7 @@ def run(command, disp=False, NoExit=False):
 ######### XML tools
 
 #### Add tree file 
-def AddRootTree(newR, refR) :
+def AddRootTree(newR, refR, absPath) :
     # 2 arguments :
     #  - newR : the new root that we have to add
     #  - refR : the root in reference tree where we want to add the new root
@@ -81,9 +81,15 @@ def AddRootTree(newR, refR) :
         Elmt.text = Elmt.text + newR.text
     else :
         Elmt.text = newR.text
+    ### Set absolute path for stream
+    if Elmt.tag == 'Stream' :
+        oldTxt=re.sub("\n","",re.sub("\s","",Elmt.text))
+        print ">>>"+oldTxt+"<<<"
+        if oldTxt[0]!='/' :
+            Elmt.text=re.sub(oldTxt,absPath+'/'+oldTxt,Elmt.text)
     #print newR, refR, foundR,  Elmt.attrib, newR.getchildren()
     for child in newR :
-        AddRootTree(child,Elmt)
+        AddRootTree(child,Elmt,absPath)
 
 
 def dispTree(root,indent):
@@ -92,6 +98,65 @@ def dispTree(root,indent):
     for elmt in root :
         dispTree(elmt,indent2)
         
+
+def ReIndent(inS,indent):
+    CopyS = False
+    ### Reindent
+    tmpS = ""
+    for ii in xrange(indent):
+        tmpS = tmpS + "    "
+    for ic in xrange(len(inS)):        
+        if inS[ic] != "\s" :
+            CopyS = True
+        if CopyS :
+            tmpS = tmpS + inS[ic]
+    ic=len(tmpS)-1
+    while ic>0 and ( tmpS[ic]==" " or tmpS[ic]=="\t" or tmpS[ic]=='\n' ) :
+        ic = ic - 1
+    #print ic, ">>>"+tmpS[0:ic+1]+"<<<"
+    OutS=tmpS[0:ic+1]+"\n"
+    return OutS
+
+
+def TypeBlockLine(line) :
+    Nop=0
+    for ic in xrange(len(line)) :
+        if line[ic]=='<' :
+            if line[ic+1]=='/' :
+                Nop = Nop - 1
+            else :
+                Nop = Nop + 1
+    if Nop > 0 :
+        return "open"
+    elif Nop < 0 :
+        return "close"
+    else :
+        return ""
+
+def WriteXMLTree(Tree,OutputFile) :
+    rec=ET.tostringlist(Tree)
+    fOut=open(OutputFile,'w')
+    fOut.write('<?xml version="1.0"?>\n')
+    fOut.write('<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">\n')
+    fOut.write('<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>\n')
+    Indent=0
+    xline=""
+    for ir in xrange(len(rec)) :
+        xr=rec[ir]
+        xline = xline + xr
+        if re.search('</',xr) or ir==1 :
+            xline = xline + "\n"
+        if re.search("\n",xline) :
+            blockType=TypeBlockLine(xline)
+            if blockType=="close" :
+                Indent = Indent - 1
+            xlineI = ReIndent(xline,Indent)
+            #print Indent,blockType, ">>>>"+xlineI+"<<<<"
+            fOut.write(xlineI)
+            xline = ""
+            if blockType=="open" :
+                Indent = Indent + 1    
+    fOut.close()
 
 
 ############### Main program ###############
@@ -116,9 +181,37 @@ parser.add_option("-O", "--OutDataType",
                   type="string", dest="OutDataType", default="ASCII",
                   help="Type of output : ASCII,Binary,XML [default ASCII]")
 
-#### Options fixing xml files to used ####
+#### Options fixing xml files to be used ####
 
-parser.add_option("-I", "--Instrument",
+
+### Options for MeLDC ###
+parser.add_option("-r", "--rawMeasurements",
+                  action="store_true", dest="rawMeasurements", default=False,
+                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z [synthlisa and lisacode only]")
+
+parser.add_option("-L", "--LaserNoise",
+                  action="store_true", dest="LaserNoise", default=False,
+                  help="Include laser noise (this option is always true if FullSim) [off by default]")
+
+parser.add_option("-n", "--noiseOnly",
+                  action="store_true", dest="noiseOnly", default=False,
+                  help="compute SNR using instrumental noise only [off by default] Not use by LISACode2 at the moment")
+
+parser.add_option("-R", "--randomizeNoise",
+                  type="float", dest="randomizeNoise", default=0.0,
+                  help="randomize level of noises [e.g., 0.2 for 20% randomization; defaults to 0] Not use by LISACode2 at the moment")
+
+parser.add_option("-I", "--LISA",
+                  type="string", dest="LISAmodel", default='Eccentric',
+                  help="LISA model for orbits: Static, Rigid, Eccentric [default] Not use by LISACode2 at the moment")
+
+
+### LISACode only option ###
+parser.add_option("-M", "--MLDC",
+                  action="store_true", dest="MLDC", default=False,
+                  help="Update configuration for MLDC: MLDC orbits (for LISA only), polarization ar 0 for input GW file [off by default]")
+
+parser.add_option("-i", "--Instrument",
                   type="string", dest="Instrument", default="ELISA",
                   help="Type of instrument : ELISA, LISA [default ELISA]")
 
@@ -130,17 +223,10 @@ parser.add_option("-P", "--phasemeterFilter",
                   action="store_true", dest="PhaMetFilter", default=False,
                   help="Use standard filter on phasemeter (this option is always true if FullSim) [off by default]")
 
-parser.add_option("-L", "--LaserNoise",
-                  action="store_true", dest="LaserNoise", default=False,
-                  help="Include laser noise (this option is always true if FullSim or not NoNoise ) [off by default]")
 
 parser.add_option("-F", "--FullSim",
                   action="store_true", dest="FullSim", default=False,
                   help="Full simulation [off by default]")
-
-parser.add_option("-r", "--rawMeasurements",
-                  action="store_true", dest="rawMeasurements", default=False,
-                  help="output raw phase measurements (y's and z's) in addition to TDI X, Y, Z")
 
 parser.add_option("-D", "--TDI",
                   type="string", dest="TDI", default="XYZ",
@@ -180,10 +266,6 @@ parser.add_option("-A", "--keyOmitsLISA",
                   action="store_true", dest="keyOmitsLISA", default=False,
                   help="do not include LISA specification in key [included by default]")
 
-parser.add_option("-n", "--noiseOnly",
-                  action="store_true", dest="noiseOnly", default=False,
-                  help="compute SNR using instrumental noise only [off by default] : Not use by LISACode at the moment")
-
 parser.add_option("-D", "--debugSNR",
                   action="store_true", dest="debugSNR", default=False,
                   help="show more SNR data [off by default] : Not use by LISACode at the moment")
@@ -199,6 +281,8 @@ parser.add_option("-c", "--combinedSNR",
 if len(args) < 1:
     parser.error("You must specify the output file (and input file before if you don't want the default noise only simulation) !")
 
+CurrentDir = os.getcwd()
+
 IdTmpRun=str(options.seed)+""+str(int(100000*np.random.random()))
 
 
@@ -210,7 +294,6 @@ elif options.OutDataType=="Binary" or options.OutDataType=="XML" :
 else :
     print options.OutDataType, " : unknown type of data (only ASCII, Binary and XML)"
     sys.exit(1)
-
 
 
 PhaMetFilter = options.PhaMetFilter
@@ -245,7 +328,10 @@ if options.Instrument=="ELISA" :
 elif options.Instrument=="LISA" :
     Nlinks="3links"
     PhaMetmesSC="sci1,sci1s,sci2,sci2s,sci3,sci3s"
-    InXML.append(CfgDir+'/ConfigNewLISA/LISA/Config-Orbits_std.xml')
+    if options.MLDC :
+        InXML.append(CfgDir+'/ConfigNewLISA/LISA/Config-Orbits_MLDC.xml')
+    else:
+        InXML.append(CfgDir+'/ConfigNewLISA/LISA/Config-Orbits_std.xml')
     InXML.append(CfgDir+'/ConfigNewLISA/LISA/Config-TelescLaser_std.xml')
     if not options.NoNoise :
         InXML.append(CfgDir+'/ConfigNewLISA/LISA/Noises/Config-NoiseAcc_std2.xml')
@@ -327,29 +413,35 @@ tmp.text = "lisaXML 1.2 [A. Petiteau (based on M. Vallisneri), July 2013]"
 
 ##### Loop on input xml file
 for fNIn in InXML :
+    AbsPathfNInDir=os.path.dirname(CurrentDir+'/'+fNIn)
     root = (ET.parse(fNIn)).getroot()
     childs = root.getchildren()
     icStart=0
     while icStart<len(childs) and (childs[icStart].tag == 'Comment' or childs[icStart].get('Name')=="Author" or childs[icStart].get('Name')=="GenerationDate" ) :
         icStart = icStart + 1
     for ic in xrange(icStart,len(childs)) :
-        AddRootTree(childs[ic],OutTree)
+        AddRootTree(childs[ic],OutTree,AbsPathfNInDir)
+
+##### Update for MLDC configuration 
+if options.MLDC :
+    ### Set polarisation at 0 for input GW file
+    for root in OutTree.iter('XSIL'):
+        if root.get('Type')=="SampledPlaneWave" :
+            for param in root.findall('Param'):
+                if param.get('Name')=="Polarization" :
+                    ## Replace number keeping spacing 
+                    oldTxt=re.sub("\n","",re.sub(" ","",param.text))
+                    newTxt=re.sub(oldTxt,"0.0",param.text)
+                    param.text = newTxt
+            
 
 #dispTree(OutTree,"")
 
+
+
+
 ##### Write the output tree
-rec=ET.tostringlist(OutTree)
-fOut=open(OutputBaseName+".xml",'w')
-fOut.write('<?xml version="1.0"?>\n')
-fOut.write('<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">\n')
-fOut.write('<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>\n')
-for ir in xrange(len(rec)) :
-    xr=rec[ir]
-    if re.search('</',xr) or ir==1 :
-        fOut.write(xr+"\n")
-    else:
-        fOut.write(xr)
-fOut.close()
+WriteXMLTree(OutTree,OutputBaseName+".xml")
 
 
 ##### Clean
@@ -367,50 +459,31 @@ if options.verbose :
 if options.OutDataType=="XML" :
     cmdLC = cmdLC + " -x " + xmlOutGlob
 cmdLC = cmdLC + " " +  OutputBaseName + ".xml"
-cmdLC = cmdLC +	" > log_" + OutputBaseName + "\n" 
 
-"""
-print cmdLC
 
-for fls in glob.glob(OutputBaseName+"*"):
-   print "stas:", fls
+if os.path.isdir('Log'):
+    print "==================== Start run LISACode2 ===================="
+else :
+    cmdLC = cmdLC +	" > " + OutputBaseName + "_log.out\n" 
+	
+#print cmdLC
 
-for fls in glob.glob("log_*"):
-   print "stas, log files:", fls
-
-sys.exit(0)
-"""
 ### Run LISACode 
 run(cmdLC,True,True)
+if os.path.isdir('Log'):
+    print "==================== End run LISACode2 ===================="
+
 
 if options.OutDataType=="XML" and os.path.isfile(xmlOutGlob) :
-    print "Stas check:", xmlOutGlob	
     root = (ET.parse(xmlOutGlob)).getroot()
     childs = root.getchildren()
     icStart=0
     while icStart<len(childs) and (childs[icStart].tag == 'Comment' or childs[icStart].get('Name')=="Author" or childs[icStart].get('Name')=="GenerationDate" ) :
         icStart = icStart + 1
     for ic in xrange(icStart,len(childs)) :
-        AddRootTree(childs[ic],OutTree)
-    rec=ET.tostringlist(OutTree)
-    fOut=open(OutputBaseName+".xml",'w')
-    fOut.write('<?xml version="1.0"?>\n')
-    fOut.write('<!DOCTYPE XSIL SYSTEM "http://www.vallis.org/lisa-xml.dtd">\n')
-    fOut.write('<?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>\n')
-    for ir in xrange(len(rec)) :
-        xr=rec[ir]
-        if re.search('</',xr) or ir==1 :
-            fOut.write(xr+"\n")
-        else:
-            fOut.write(xr)
-    fOut.close()
+        AddRootTree(childs[ic],OutTree,CurrentDir)
+    WriteXMLTree(OutTree,OutputBaseName+".xml")
 
-for fls in glob.glob(OutputBaseName+"*"):
-   print "stas:", fls
-   run("mv " + fls + " TDI/", True) 
 
-for fls in glob.glob("log_*"):
-   print "stas, log files:", fls
-   run("mv " + fls + " Log/", True)
 
 

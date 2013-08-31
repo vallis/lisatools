@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="lisa-xml.xsl"?>
 <XSIL>
     <Param Name="Author">M. Vallisneri</Param>
-    <Param Name="GenerationDate" Type="ISO-8601">2013-05-07T10:55:02CEST</Param>
+    <Param Name="GenerationDate" Type="ISO-8601">2013-08-30T15:26:54CEST</Param>
     <Comment>
         lisaXML 1.0 [M. Vallisneri, June 2006]
     </Comment>
@@ -13,28 +13,28 @@
                 GalacticBinary
             </Param>
             <Param Name="Frequency" Unit="Hertz">
-                0.000984452818091
+                0.000908715010202
             </Param>
             <Param Name="FrequencyDerivative" Unit="Hertz/s">
                 0
             </Param>
             <Param Name="EclipticLatitude" Unit="Radian">
-                0.353694053431
+                -0.511253284702
             </Param>
             <Param Name="EclipticLongitude" Unit="Radian">
-                3.57226908845
+                3.03594743246
             </Param>
             <Param Name="Amplitude" Unit="1">
                 1e-21
             </Param>
             <Param Name="Inclination" Unit="Radian">
-                1.62297449119
+                2.20981896771
             </Param>
             <Param Name="Polarization" Unit="Radian">
-                3.49750427525
+                4.57226253105
             </Param>
             <Param Name="InitialPhase" Unit="Radian">
-                2.00455559298
+                2.51388854312
             </Param>
             <Param Name="RequestSN" Unit="1">
                 30.0
