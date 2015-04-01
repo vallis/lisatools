@@ -1,0 +1,12 @@
+
+# /
+/MLDCwaveforms/EMRI/EMRI.py
+
+# /Docs/
+/Docs/*.aux *.log *.dvi
+
+# /Docs/2006-gwdaw11-challenge2/
+/Docs/2006-gwdaw11-challenge2/*.aux *.log *.dvi
+
+# /Docs/2007-challenge3/
+/Docs/2007-challenge3/*.aux *.log *.dvi
