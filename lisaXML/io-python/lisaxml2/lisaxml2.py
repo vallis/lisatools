@@ -1,6 +1,7 @@
 __version__ = '$Id: lisaxml.py 479 2007-07-26 16:19:50Z vallisneri $'
 
-import pyRXP, xmlutils
+import pyRXPU as pyRXP
+import xmlutils
 import numpy
 
 import convertunit
